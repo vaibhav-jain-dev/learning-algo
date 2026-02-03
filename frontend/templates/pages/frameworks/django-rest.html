@@ -1,0 +1,364 @@
+<style>
+    .fw-section { background: var(--bg-secondary, #f8fafc); padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color, #e2e8f0); }
+    .fw-section h2 { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-primary, #3b82f6); }
+    .fw-section h3 { font-size: 1.2rem; margin-top: 20px; margin-bottom: 12px; color: var(--accent-secondary, #8b5cf6); }
+    .diagram-container { background: var(--bg-tertiary, #f1f5f9); padding: 20px; border-radius: 10px; margin: 20px 0; overflow-x: auto; }
+    .code-example { background: #1e293b; border-radius: 8px; padding: 16px; margin: 16px 0; overflow-x: auto; }
+    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+    .concept-card { background: var(--bg-tertiary); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--accent-secondary); }
+    .concept-card h4 { color: var(--accent-secondary); margin-bottom: 10px; }
+    .highlight-box { background: rgba(59, 130, 246, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-primary); margin: 16px 0; }
+</style>
+
+<div class="page-layout">
+    <div class="page-main">
+        <nav style="margin-bottom: 16px;"><a href="/frameworks/django" style="color: var(--accent-primary);">&larr; Back to Django</a></nav>
+
+        <h1>Django REST Framework</h1>
+        <p class="text-muted mb-4">Powerful toolkit for building Web APIs - serialization, authentication, and viewsets</p>
+
+        <div class="fw-section">
+            <h2>DRF Request Flow</h2>
+            <div class="diagram-container">
+                <pre class="mermaid">
+flowchart TB
+    subgraph Input["1. HTTP Request"]
+        REQ["POST /api/users/"]
+    end
+
+    subgraph Router["2. Router"]
+        R["DefaultRouter\nURL pattern matching"]
+    end
+
+    subgraph Auth["3. Authentication"]
+        A1["TokenAuthentication"]
+        A2["SessionAuthentication"]
+        A3["JWTAuthentication"]
+    end
+
+    subgraph Perm["4. Permissions"]
+        P1["IsAuthenticated"]
+        P2["IsAdminUser"]
+        P3["Custom permissions"]
+    end
+
+    subgraph Throttle["5. Throttling"]
+        T["Rate limiting\n100/day, 1000/hour"]
+    end
+
+    subgraph View["6. ViewSet / APIView"]
+        V["ModelViewSet.create()\nor custom action"]
+    end
+
+    subgraph Serial["7. Serializer"]
+        S1["Validate input data"]
+        S2["Deserialize to model"]
+        S3["Serialize response"]
+    end
+
+    subgraph DB["8. Database"]
+        D["Model.objects.create()"]
+    end
+
+    subgraph Response["9. Response"]
+        RES["JSON Response\n201 Created"]
+    end
+
+    REQ --> R --> A1 --> P1 --> T --> V --> S1 --> S2 --> D --> S3 --> RES
+
+    style REQ fill:#3b82f6,color:#fff
+    style RES fill:#10b981,color:#fff
+    style Serial fill:#8b5cf6,color:#fff
+                </pre>
+            </div>
+        </div>
+
+        <div class="fw-section">
+            <h2>Core Concepts</h2>
+
+            <div class="concept-card">
+                <h4>1. Serializers - Data Transformation</h4>
+                <p>Convert complex data (querysets, model instances) to Python primitives for JSON rendering, and vice versa.</p>
+                <div class="code-example">
+                    <pre><code class="language-python">from rest_framework import serializers
+from .models import User, Post
+
+class UserSerializer(serializers.ModelSerializer):
+    # Computed field
+    full_name = serializers.SerializerMethodField()
+    # Nested relationship
+    posts = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'full_name', 'posts']
+        read_only_fields = ['id']
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
+
+    def get_full_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}"
+
+    def validate_email(self, value):
+        """Field-level validation"""
+        if 'spam' in value:
+            raise serializers.ValidationError("Invalid email")
+        return value
+
+    def validate(self, data):
+        """Object-level validation"""
+        if data.get('start_date') > data.get('end_date'):
+            raise serializers.ValidationError("End must be after start")
+        return data
+
+    def create(self, validated_data):
+        """Custom create logic"""
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+
+# Nested Serializer
+class PostSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)  # Nested representation
+    author_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        source='author',
+        write_only=True
+    )
+
+    class Meta:
+        model = Post
+        fields = ['id', 'title', 'content', 'author', 'author_id', 'created_at']</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>2. ViewSets & Routers</h4>
+                <p>ViewSets combine related views into a single class. Routers automatically generate URL patterns.</p>
+                <div class="code-example">
+                    <pre><code class="language-python"># views.py
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    A ViewSet for viewing and editing users.
+
+    Provides: list, create, retrieve, update, partial_update, destroy
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+    filterset_fields = ['is_active', 'role']
+    search_fields = ['username', 'email']
+    ordering_fields = ['created_at', 'username']
+
+    def get_queryset(self):
+        """Filter queryset based on user"""
+        if self.request.user.is_staff:
+            return User.objects.all()
+        return User.objects.filter(id=self.request.user.id)
+
+    def get_serializer_class(self):
+        """Different serializer for different actions"""
+        if self.action == 'list':
+            return UserListSerializer
+        return UserSerializer
+
+    @action(detail=True, methods=['post'])
+    def activate(self, request, pk=None):
+        """Custom action: POST /api/users/{id}/activate/"""
+        user = self.get_object()
+        user.is_active = True
+        user.save()
+        return Response({'status': 'user activated'})
+
+    @action(detail=False, methods=['get'])
+    def me(self, request):
+        """Custom action: GET /api/users/me/"""
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
+
+# urls.py
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'users', UserViewSet, basename='user')
+router.register(r'posts', PostViewSet, basename='post')
+
+urlpatterns = [
+    path('api/', include(router.urls)),
+]
+# Creates: /api/users/, /api/users/{pk}/, /api/users/{pk}/activate/, etc.</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>3. Authentication & Permissions</h4>
+                <div class="code-example">
+                    <pre><code class="language-python"># settings.py
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day',
+        'user': '1000/day'
+    }
+}
+
+# Custom Permission
+from rest_framework.permissions import BasePermission
+
+class IsOwnerOrReadOnly(BasePermission):
+    """Only owners can edit, anyone can read"""
+
+    def has_object_permission(self, request, view, obj):
+        # Read permissions for any request
+        if request.method in ['GET', 'HEAD', 'OPTIONS']:
+            return True
+        # Write permissions only to owner
+        return obj.owner == request.user
+
+# Using in view
+class PostViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>4. Filtering, Search & Pagination</h4>
+                <div class="code-example">
+                    <pre><code class="language-python"># settings.py
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20
+}
+
+# Custom Pagination
+from rest_framework.pagination import CursorPagination
+
+class PostCursorPagination(CursorPagination):
+    page_size = 50
+    ordering = '-created_at'
+    cursor_query_param = 'cursor'
+
+# Custom Filter
+import django_filters
+
+class PostFilter(django_filters.FilterSet):
+    title = django_filters.CharFilter(lookup_expr='icontains')
+    created_after = django_filters.DateTimeFilter(field_name='created_at', lookup_expr='gte')
+
+    class Meta:
+        model = Post
+        fields = ['author', 'status', 'title', 'created_after']
+
+class PostViewSet(viewsets.ModelViewSet):
+    filterset_class = PostFilter
+    search_fields = ['title', 'content', 'author__username']
+    ordering_fields = ['created_at', 'title', 'views_count']
+    pagination_class = PostCursorPagination
+
+# GET /api/posts/?title=django&created_after=2024-01-01&search=tutorial&ordering=-created_at</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>5. Generic Views & Mixins</h4>
+                <div class="code-example">
+                    <pre><code class="language-python">from rest_framework import generics, mixins
+
+# Simple API views
+class UserList(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+# Using Mixins for custom combinations
+class CreateListRetrieveViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet
+):
+    """ViewSet that allows create, list, and retrieve (no update/delete)"""
+    pass
+
+# Low-level APIView
+from rest_framework.views import APIView
+
+class UserAPIView(APIView):
+    def get(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="fw-section">
+            <h2>Best Practices</h2>
+            <div class="highlight-box">
+                <ul style="margin: 0;">
+                    <li><strong>Use ViewSets</strong> for CRUD operations - less code, automatic URL routing</li>
+                    <li><strong>Nest serializers wisely</strong> - use depth or explicit nesting for reads, separate serializers for writes</li>
+                    <li><strong>Always paginate</strong> list endpoints to prevent large responses</li>
+                    <li><strong>Use select_related/prefetch_related</strong> in get_queryset to avoid N+1 queries</li>
+                    <li><strong>Version your API</strong> - use URL versioning (/api/v1/) or Accept header</li>
+                    <li><strong>Return proper status codes</strong> - 201 for create, 204 for delete, 400 for validation errors</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <aside class="page-sidebar">
+        <div class="panel">
+            <div class="panel-header">DRF Components</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Serializers</span><span class="quick-ref-value">Data transform</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">ViewSets</span><span class="quick-ref-value">CRUD logic</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Routers</span><span class="quick-ref-value">Auto URLs</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Permissions</span><span class="quick-ref-value">Access control</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Related</div>
+            <a href="/frameworks/django" class="quick-ref-item" style="display:block;text-decoration:none;">Django Basics</a>
+            <a href="/frameworks/django-orm" class="quick-ref-item" style="display:block;text-decoration:none;">Django ORM</a>
+            <a href="/network-protocols/rest" class="quick-ref-item" style="display:block;text-decoration:none;">REST API Design</a>
+        </div>
+    </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>

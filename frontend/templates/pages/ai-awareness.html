@@ -1,0 +1,1380 @@
+<style>
+    .ai-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 24px;
+        border-bottom: 2px solid var(--border-color, #e2e8f0);
+        padding-bottom: 12px;
+    }
+    .ai-tab-btn {
+        background: var(--bg-secondary, #f8fafc);
+        color: var(--text-secondary, #64748b);
+        border: 1px solid var(--border-color, #e2e8f0);
+        padding: 10px 18px;
+        border-radius: 8px 8px 0 0;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    .ai-tab-btn:hover {
+        background: var(--bg-tertiary, #f1f5f9);
+        color: var(--text-primary, #0f172a);
+    }
+    .ai-tab-btn.active {
+        background: var(--accent-primary, #3b82f6);
+        color: white;
+        border-color: var(--accent-primary, #3b82f6);
+    }
+    .ai-tab-content {
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
+    .ai-tab-content.active {
+        display: block;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .ai-section {
+        background: var(--bg-secondary, #f8fafc);
+        padding: 24px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        border: 1px solid var(--border-color, #e2e8f0);
+    }
+    .ai-section h2 {
+        font-size: 1.6rem;
+        margin-bottom: 12px;
+        color: var(--accent-primary, #3b82f6);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .ai-section h3 {
+        font-size: 1.2rem;
+        margin-top: 20px;
+        margin-bottom: 12px;
+        color: var(--accent-secondary, #8b5cf6);
+    }
+    .ai-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+    .ai-badge-backend {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+        border: 1px solid #3b82f6;
+    }
+    .ai-badge-heavy {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+        border: 1px solid #ef4444;
+    }
+    .ai-badge-critical {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+        border: 1px solid #f59e0b;
+    }
+    .work-item {
+        background: var(--bg-tertiary, #f1f5f9);
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        border-left: 4px solid var(--accent-primary, #3b82f6);
+    }
+    .work-item h4 {
+        color: var(--text-primary, #0f172a);
+        margin-bottom: 8px;
+        font-size: 1.1rem;
+    }
+    .work-item p {
+        color: var(--text-secondary, #64748b);
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+    }
+    .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+    }
+    .tech-tag {
+        background: rgba(139, 92, 246, 0.12);
+        color: var(--accent-secondary, #8b5cf6);
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        border: 1px solid rgba(139, 92, 246, 0.25);
+    }
+    .ai-highlight {
+        background: rgba(59, 130, 246, 0.08);
+        padding: 16px;
+        border-radius: 8px;
+        border-left: 4px solid var(--accent-primary, #3b82f6);
+        margin: 16px 0;
+    }
+    .ai-highlight strong {
+        color: var(--accent-primary, #3b82f6);
+    }
+    .real-world-example {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.04) 100%);
+        padding: 16px;
+        border-radius: 8px;
+        margin: 16px 0;
+        border-left: 4px solid #10b981;
+    }
+    .real-world-example h5 {
+        color: #10b981;
+        margin-bottom: 8px;
+        font-size: 1rem;
+    }
+    .real-world-example .company-name {
+        font-weight: 600;
+        color: var(--text-primary, #0f172a);
+    }
+    .real-world-example .description {
+        font-size: 0.9rem;
+        color: var(--text-secondary, #64748b);
+        margin-top: 5px;
+        line-height: 1.6;
+    }
+    .collapsible-btn {
+        background: var(--bg-tertiary, #f1f5f9);
+        color: var(--text-primary, #0f172a);
+        cursor: pointer;
+        padding: 12px;
+        width: 100%;
+        border: 1px solid var(--border-color, #e2e8f0);
+        text-align: left;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        margin-top: 10px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .collapsible-btn:hover, .collapsible-btn.active {
+        background: var(--accent-primary, #3b82f6);
+        color: white;
+    }
+    .collapsible-btn::after {
+        content: '\25BC';
+        font-size: 0.75rem;
+        transition: transform 0.2s ease;
+    }
+    .collapsible-btn.active::after {
+        transform: rotate(180deg);
+    }
+    .collapsible-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        background: var(--bg-secondary, #f8fafc);
+        border: 1px solid var(--border-color, #e2e8f0);
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+    }
+    .collapsible-content .inner {
+        padding: 16px;
+    }
+    .tool-detail {
+        background: white;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        border-left: 3px solid var(--accent-secondary, #8b5cf6);
+    }
+    .tool-detail h6 {
+        color: var(--accent-secondary, #8b5cf6);
+        margin-bottom: 5px;
+        font-size: 0.95rem;
+    }
+    .tool-detail p {
+        color: var(--text-secondary, #64748b);
+        font-size: 0.85rem;
+        margin-bottom: 0;
+    }
+    .diagram-container {
+        background: var(--bg-tertiary, #f1f5f9);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+        overflow-x: auto;
+    }
+    .ai-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    .ai-card {
+        background: var(--bg-tertiary, #f1f5f9);
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color, #e2e8f0);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .ai-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
+    }
+    .ai-card h4 {
+        color: var(--accent-primary, #3b82f6);
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+    }
+    .mermaid {
+        display: flex;
+        justify-content: center;
+    }
+</style>
+
+<div class="page-layout">
+    <div class="page-main">
+        <h1>AI Components Awareness</h1>
+        <p class="text-muted mb-4">Master AI/ML backend systems - from LLMs to RAG pipelines to production deployment</p>
+
+        <div class="card mb-4">
+            <h3 class="panel-header">What You'll Learn</h3>
+            <ul>
+                <li>How LLMs work internally and how to integrate them</li>
+                <li>Building RAG systems, vector search, and embeddings pipelines</li>
+                <li>Function calling, AI agents, and orchestration patterns</li>
+                <li>Production concerns: observability, guardrails, cost optimization</li>
+            </ul>
+        </div>
+
+        <div class="ai-tabs">
+            <button class="ai-tab-btn active" data-tab="llm">LLM APIs</button>
+            <button class="ai-tab-btn" data-tab="llm-deep">LLM Deep Dive</button>
+            <button class="ai-tab-btn" data-tab="embeddings">Embeddings</button>
+            <button class="ai-tab-btn" data-tab="rag">RAG Systems</button>
+            <button class="ai-tab-btn" data-tab="vector">Vector Search</button>
+            <button class="ai-tab-btn" data-tab="function-calling">Function Calling</button>
+            <button class="ai-tab-btn" data-tab="agents">AI Agents</button>
+            <button class="ai-tab-btn" data-tab="multimodal">Multimodal</button>
+            <button class="ai-tab-btn" data-tab="observability">Observability</button>
+            <button class="ai-tab-btn" data-tab="architecture">Architecture</button>
+        </div>
+
+        <!-- LLM APIs Tab -->
+        <div class="ai-tab-content active" id="llm">
+            <div class="ai-section">
+                <h2>Large Language Models (LLMs)</h2>
+                <span class="ai-badge ai-badge-backend">Backend Heavy</span>
+                <span class="ai-badge ai-badge-critical">Production Critical</span>
+
+                <p>LLMs like GPT-4, Claude, and Llama are the foundation. Your job: build everything around them.</p>
+
+                <h3>Request Flow Diagram</h3>
+                <div class="diagram-container">
+                    <pre class="mermaid">
+sequenceDiagram
+    participant Client
+    participant Backend
+    participant RateLimit as Rate Limiter
+    participant Cache
+    participant LLM as LLM API
+
+    Client->>Backend: POST /chat (prompt)
+    Backend->>RateLimit: Check user quota
+    RateLimit-->>Backend: Allowed
+    Backend->>Cache: Check cache
+    Cache-->>Backend: Cache miss
+    Backend->>LLM: API call with prompt
+    LLM-->>Backend: Stream tokens
+    Backend->>Backend: Count tokens
+    Backend->>Cache: Store response
+    Backend-->>Client: Stream response
+    Backend->>Backend: Log cost & metrics
+                    </pre>
+                </div>
+
+                <h3>What Backend Devs Own</h3>
+
+                <div class="work-item">
+                    <h4>API Integration & Proxying</h4>
+                    <p>You expose the model to your application via backend APIs. The model is just a remote service you integrate with.</p>
+                    <ul>
+                        <li>Build REST/GraphQL endpoints that accept user prompts</li>
+                        <li>Call OpenAI/Anthropic/Bedrock APIs from your backend</li>
+                        <li>Handle API errors, timeouts, and retries gracefully</li>
+                        <li>Implement circuit breakers for model downtime</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">FastAPI</span>
+                        <span class="tech-tag">Express.js</span>
+                        <span class="tech-tag">Go net/http</span>
+                        <span class="tech-tag">AWS API Gateway</span>
+                    </div>
+
+                    <div class="real-world-example">
+                        <h5>Real-World Example: Haptik (Mumbai)</h5>
+                        <p class="company-name">Intelligent Virtual Assistant API Gateway</p>
+                        <p class="description">Haptik's backend team built a unified API gateway that proxies requests to multiple LLM providers (GPT-4, Claude, custom models). Their system handles 10M+ conversations/month with automatic fallback routing. When OpenAI has rate limits, their middleware automatically routes to Anthropic with &lt;200ms additional latency.</p>
+                    </div>
+
+                    <button class="collapsible-btn">Tool Stack Details</button>
+                    <div class="collapsible-content">
+                        <div class="inner">
+                            <div class="tool-detail">
+                                <h6>FastAPI (Python)</h6>
+                                <p>Async web framework for building REST endpoints. Handles streaming responses with async/await, automatic OpenAPI docs generation, built-in request validation with Pydantic.</p>
+                            </div>
+                            <div class="tool-detail">
+                                <h6>Express.js (Node.js)</h6>
+                                <p>Lightweight web framework for JavaScript/TypeScript backends. Used for building API middleware that intercepts requests, adds authentication headers, logs usage metrics.</p>
+                            </div>
+                            <div class="tool-detail">
+                                <h6>Circuit Breakers (Resilience4j/Polly)</h6>
+                                <p>Libraries that prevent cascading failures when LLM APIs are down. Configure failure thresholds (e.g., 50% errors in 10s) to open circuit and return cached responses.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="work-item">
+                    <h4>Streaming Token Responses</h4>
+                    <p>LLMs stream responses token-by-token. You need to pipe this to clients in real-time.</p>
+                    <ul>
+                        <li>Implement Server-Sent Events (SSE) or WebSockets</li>
+                        <li>Buffer and flush tokens efficiently</li>
+                        <li>Handle client disconnections mid-stream</li>
+                        <li>Provide fallback to non-streaming for incompatible clients</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">WebSockets</span>
+                        <span class="tech-tag">SSE</span>
+                        <span class="tech-tag">Redis Streams</span>
+                        <span class="tech-tag">Socket.io</span>
+                    </div>
+                </div>
+
+                <div class="work-item">
+                    <h4>Rate Limiting & Throttling</h4>
+                    <p>Protect your backend and control costs by limiting requests per user/API key.</p>
+                    <ul>
+                        <li>Implement token bucket or sliding window algorithms</li>
+                        <li>Track usage per user, team, and organization</li>
+                        <li>Return proper 429 status codes with retry headers</li>
+                        <li>Queue requests during peak load</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">Redis</span>
+                        <span class="tech-tag">Kong</span>
+                        <span class="tech-tag">AWS WAF</span>
+                        <span class="tech-tag">Nginx</span>
+                    </div>
+                </div>
+
+                <div class="work-item">
+                    <h4>Cost Tracking & Attribution</h4>
+                    <p>Every LLM call costs money. You track it per user/request for billing and analytics.</p>
+                    <ul>
+                        <li>Count input/output tokens for each request</li>
+                        <li>Store cost data in time-series database</li>
+                        <li>Build dashboards showing spend by user/feature</li>
+                        <li>Alert when costs exceed thresholds</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">PostgreSQL</span>
+                        <span class="tech-tag">InfluxDB</span>
+                        <span class="tech-tag">Prometheus</span>
+                        <span class="tech-tag">Grafana</span>
+                    </div>
+                </div>
+
+                <div class="ai-highlight">
+                    <strong>Key Takeaway:</strong> The LLM itself is a black box API. Your backend owns authentication, rate limiting, cost tracking, streaming, retries, and integration. This is 100% backend engineering.
+                </div>
+            </div>
+        </div>
+
+        <!-- LLM Deep Dive Tab -->
+        <div class="ai-tab-content" id="llm-deep">
+            <div class="ai-section">
+                <h2>LLM Deep Dive - How It Actually Works</h2>
+                <span class="ai-badge ai-badge-critical">Core Understanding</span>
+
+                <p>Understanding LLMs from the ground up helps you build better AI applications. Let's break it down step by step.</p>
+
+                <h3>1. Tokenization - Text to Numbers</h3>
+                <div class="diagram-container">
+                    <pre class="mermaid">
+flowchart LR
+    subgraph Input
+        A[Hello world!]
+    end
+    subgraph Tokenizer
+        B[BPE/WordPiece]
+    end
+    subgraph Tokens
+        C["[15496, 995, 0]"]
+    end
+    subgraph Embeddings
+        D["[[0.1, 0.3, ...],<br/>[0.2, 0.1, ...],<br/>[0.5, 0.2, ...]]"]
+    end
+
+    A --> B --> C --> D
+
+    style A fill:#3b82f6,color:#fff
+    style D fill:#10b981,color:#fff
+                    </pre>
+                </div>
+                <div class="work-item">
+                    <h4>What Happens</h4>
+                    <ul>
+                        <li><strong>Text Input:</strong> "Hello world!" - raw string</li>
+                        <li><strong>Tokenizer:</strong> Breaks text into subword units (BPE algorithm)</li>
+                        <li><strong>Token IDs:</strong> Each token maps to a number in vocabulary (50K-100K tokens)</li>
+                        <li><strong>Embeddings:</strong> Each ID becomes a high-dimensional vector (768-4096 dims)</li>
+                    </ul>
+                    <p><strong>Why it matters:</strong> Token count = cost. GPT-4 charges per 1K tokens. Efficient prompts save money.</p>
+                </div>
+
+                <h3>2. Transformer Architecture - The Brain</h3>
+                <div class="diagram-container">
+                    <pre class="mermaid">
+flowchart TB
+    subgraph Input_Layer[Input Processing]
+        A[Token Embeddings] --> B[+ Position Embeddings]
+    end
+
+    subgraph Transformer_Block[Transformer Block x N]
+        C[Multi-Head Self-Attention]
+        D[Add & Normalize]
+        E[Feed-Forward Network]
+        F[Add & Normalize]
+        C --> D --> E --> F
+    end
+
+    subgraph Output_Layer[Output Generation]
+        G[Linear Layer]
+        H[Softmax]
+        I[Next Token Probabilities]
+    end
+
+    B --> C
+    F --> G --> H --> I
+
+    style C fill:#8b5cf6,color:#fff
+    style E fill:#f59e0b,color:#fff
+    style I fill:#10b981,color:#fff
+                    </pre>
+                </div>
+                <div class="work-item">
+                    <h4>Key Components Explained</h4>
+                    <ul>
+                        <li><strong>Self-Attention:</strong> Each token "looks at" all other tokens to understand context. "Bank" means different things in "river bank" vs "bank account"</li>
+                        <li><strong>Multi-Head:</strong> Multiple attention patterns run in parallel (12-96 heads) to capture different relationships</li>
+                        <li><strong>Feed-Forward:</strong> Simple neural network that processes each position independently</li>
+                        <li><strong>Layer Stacking:</strong> GPT-4 has ~120 layers, each refining the representation</li>
+                    </ul>
+                </div>
+
+                <h3>3. Attention Mechanism - "What to Focus On"</h3>
+                <div class="diagram-container">
+                    <pre class="mermaid">
+flowchart LR
+    subgraph Query["Query (Q)"]
+        Q[What am I looking for?]
+    end
+    subgraph Key["Key (K)"]
+        K[What do I contain?]
+    end
+    subgraph Value["Value (V)"]
+        V[What information to return?]
+    end
+    subgraph Attention["Attention Scores"]
+        S["softmax(Q * K^T / sqrt(d))"]
+    end
+    subgraph Output["Output"]
+        O["Weighted sum of V"]
+    end
+
+    Q --> S
+    K --> S
+    S --> O
+    V --> O
+
+    style S fill:#8b5cf6,color:#fff
+                    </pre>
+                </div>
+                <div class="work-item">
+                    <h4>Attention Formula Breakdown</h4>
+                    <pre><code>Attention(Q, K, V) = softmax(Q * K^T / sqrt(d_k)) * V
+
+Example: "The cat sat on the mat because it was tired"
+- When processing "it", attention scores might be:
+  - "cat": 0.7 (high - "it" refers to cat)
+  - "mat": 0.1 (low)
+  - "The": 0.05 (very low)</code></pre>
+                    <p><strong>Real Impact:</strong> This is why LLMs understand context. The model learned from billions of examples which words relate to which.</p>
+                </div>
+
+                <h3>4. Generation Process - Token by Token</h3>
+                <div class="diagram-container">
+                    <pre class="mermaid">
+sequenceDiagram
+    participant P as Prompt
+    participant M as Model
+    participant O as Output
+
+    Note over P: "What is 2+2?"
+    P->>M: Process prompt tokens
+    M->>M: Generate probabilities
+    M->>O: Sample "The"
+    Note over O: "The"
+
+    M->>M: Process "The" + context
+    M->>O: Sample "answer"
+    Note over O: "The answer"
+
+    M->>M: Process all tokens
+    M->>O: Sample "is"
+    Note over O: "The answer is"
+
+    M->>M: Process all tokens
+    M->>O: Sample "4"
+    Note over O: "The answer is 4"
+
+    M->>O: Sample EOS token
+    Note over O: Generation complete
+                    </pre>
+                </div>
+                <div class="work-item">
+                    <h4>Generation Parameters You Control</h4>
+                    <ul>
+                        <li><strong>Temperature (0-2):</strong> 0 = deterministic, 1 = creative, 2 = random. Use 0 for code, 0.7 for chat.</li>
+                        <li><strong>Top-p (nucleus sampling):</strong> Only consider tokens with cumulative probability > p. 0.9 is common.</li>
+                        <li><strong>Top-k:</strong> Only consider top k most likely tokens. 50 is common.</li>
+                        <li><strong>Max tokens:</strong> Stop after N tokens. Controls cost and response length.</li>
+                        <li><strong>Stop sequences:</strong> Custom strings that end generation (e.g., "Human:", "```")</li>
+                    </ul>
+                </div>
+
+                <h3>5. Context Window & KV Cache</h3>
+                <div class="diagram-container">
+                    <pre class="mermaid">
+flowchart TB
+    subgraph Context_Window["Context Window (e.g., 128K tokens)"]
+        A["System Prompt<br/>500 tokens"]
+        B["Conversation History<br/>5000 tokens"]
+        C["Retrieved Context (RAG)<br/>3000 tokens"]
+        D["User Query<br/>100 tokens"]
+        E["Available for Response<br/>119,400 tokens"]
+    end
+
+    subgraph KV_Cache["KV Cache (Optimization)"]
+        F["Cached K,V from previous tokens"]
+        G["Only compute attention for new token"]
+    end
+
+    A --> B --> C --> D --> E
+    F --> G
+
+    style A fill:#ef4444,color:#fff
+    style E fill:#10b981,color:#fff
+                    </pre>
+                </div>
+                <div class="work-item">
+                    <h4>Why This Matters for Backend</h4>
+                    <ul>
+                        <li><strong>Context Management:</strong> You decide what fits in the window. RAG retrieves relevant chunks.</li>
+                        <li><strong>KV Cache:</strong> Backend can maintain cache across requests for faster responses</li>
+                        <li><strong>Truncation Strategy:</strong> When context overflows, what do you drop? Recent history? Old context?</li>
+                        <li><strong>Cost Optimization:</strong> Longer context = higher cost. Be strategic about what you include.</li>
+                    </ul>
+                </div>
+
+                <h3>6. Model Sizes & Trade-offs</h3>
+                <div class="ai-grid">
+                    <div class="ai-card">
+                        <h4>Small (7B params)</h4>
+                        <ul>
+                            <li>Llama 3 7B, Mistral 7B</li>
+                            <li>Fast inference (~50ms)</li>
+                            <li>Can run on single GPU</li>
+                            <li>Good for: classification, extraction</li>
+                        </ul>
+                    </div>
+                    <div class="ai-card">
+                        <h4>Medium (70B params)</h4>
+                        <ul>
+                            <li>Llama 3 70B</li>
+                            <li>Moderate latency (~200ms)</li>
+                            <li>Needs multi-GPU or quantization</li>
+                            <li>Good for: most production use cases</li>
+                        </ul>
+                    </div>
+                    <div class="ai-card">
+                        <h4>Large (175B+ params)</h4>
+                        <ul>
+                            <li>GPT-4, Claude 3 Opus</li>
+                            <li>Higher latency (~500ms+)</li>
+                            <li>API-only (can't self-host)</li>
+                            <li>Good for: complex reasoning, coding</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="ai-highlight">
+                    <strong>Backend Engineer's Perspective:</strong> You don't train these models, but understanding how they work helps you:
+                    <ul style="margin-top: 8px;">
+                        <li>Choose the right model for your use case</li>
+                        <li>Optimize prompts for token efficiency</li>
+                        <li>Implement proper streaming and caching</li>
+                        <li>Debug when outputs are unexpected</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Embeddings Tab -->
+        <div class="ai-tab-content" id="embeddings">
+            <div class="ai-section">
+                <h2>Embedding Models (Text to Vectors)</h2>
+                <span class="ai-badge ai-badge-backend">Data Pipeline Heavy</span>
+
+                <p>Embeddings convert text to vectors for similarity search. Powers search, recommendations, and RAG.</p>
+
+                <h3>Pipeline Flow Diagram</h3>
+                <div class="diagram-container">
+                    <pre class="mermaid">
+flowchart LR
+    A[Documents] --> B[Text Chunking]
+    B --> C[Batch Texts]
+    C --> D[Embedding API]
+    D --> E["Vectors (768D)"]
+    E --> F[Vector DB]
+
+    G[User Query] --> H[Embed Query]
+    H --> I[Search Vector DB]
+    I --> J[Top K Results]
+    J --> K[Re-rank]
+    K --> L[Return to User]
+
+    style D fill:#3b82f6,color:#fff
+    style F fill:#8b5cf6,color:#fff
+    style I fill:#10b981,color:#fff
+                    </pre>
+                </div>
+
+                <h3>What You Build</h3>
+
+                <div class="work-item">
+                    <h4>Embedding Generation Pipeline</h4>
+                    <p>Convert text documents into vector representations at scale.</p>
+                    <ul>
+                        <li>Call embedding APIs (OpenAI, Cohere, Bedrock)</li>
+                        <li>Batch requests to reduce API calls (up to 100 texts/call)</li>
+                        <li>Handle rate limits and retries</li>
+                        <li>Normalize vectors for cosine similarity</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">OpenAI Embeddings</span>
+                        <span class="tech-tag">Sentence Transformers</span>
+                        <span class="tech-tag">AWS Bedrock</span>
+                        <span class="tech-tag">Cohere</span>
+                    </div>
+                </div>
+
+                <div class="work-item">
+                    <h4>Vector Database Integration</h4>
+                    <p>Store and query millions of vectors efficiently.</p>
+                    <ul>
+                        <li>Design vector schemas with metadata fields</li>
+                        <li>Index vectors for fast similarity search (HNSW, IVF)</li>
+                        <li>Implement upsert operations for updates</li>
+                        <li>Handle pagination for large result sets</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">Pinecone</span>
+                        <span class="tech-tag">Weaviate</span>
+                        <span class="tech-tag">pgvector</span>
+                        <span class="tech-tag">Qdrant</span>
+                    </div>
+                </div>
+
+                <div class="work-item">
+                    <h4>Similarity Search APIs</h4>
+                    <p>Expose endpoints for semantic search functionality.</p>
+                    <ul>
+                        <li>Embed user queries on-the-fly</li>
+                        <li>Query vector DB with cosine/euclidean distance</li>
+                        <li>Filter by metadata (date, category, user)</li>
+                        <li>Re-rank results using business logic</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">FastAPI</span>
+                        <span class="tech-tag">Flask</span>
+                        <span class="tech-tag">Express</span>
+                        <span class="tech-tag">gRPC</span>
+                    </div>
+                </div>
+
+                <div class="ai-highlight">
+                    <strong>Key Takeaway:</strong> Embeddings are a backend data pipeline problem. You generate vectors, store them, query them, and keep them updated. The model is just an API you call.
+                </div>
+            </div>
+        </div>
+
+        <!-- RAG Systems Tab -->
+        <div class="ai-tab-content" id="rag">
+            <div class="ai-section">
+                <h2>RAG (Retrieval-Augmented Generation)</h2>
+                <span class="ai-badge ai-badge-heavy">80% Backend Work</span>
+                <span class="ai-badge ai-badge-critical">Most Common AI Pattern</span>
+
+                <p>RAG = LLM + your data. This is where backend engineers shine. The model is 20%, your infrastructure is 80%.</p>
+
+                <h3>Complete RAG Pipeline</h3>
+                <div class="diagram-container">
+                    <pre class="mermaid">
+sequenceDiagram
+    participant User
+    participant Backend
+    participant Embed as Embedding API
+    participant VectorDB
+    participant Cache
+    participant LLM
+
+    Note over Backend,VectorDB: Indexing Phase (Offline)
+    Backend->>Backend: Ingest documents
+    Backend->>Backend: Chunk text (500 tokens)
+    Backend->>Embed: Batch embed chunks
+    Embed-->>Backend: Vectors
+    Backend->>VectorDB: Store vectors + metadata
+
+    Note over User,LLM: Query Phase (Real-time)
+    User->>Backend: Ask question
+    Backend->>Cache: Check cache
+    Cache-->>Backend: Cache miss
+    Backend->>Embed: Embed query
+    Embed-->>Backend: Query vector
+    Backend->>VectorDB: Similarity search
+    VectorDB-->>Backend: Top 5 chunks
+    Backend->>Backend: Assemble context
+    Backend->>LLM: Prompt + context
+    LLM-->>Backend: Answer
+    Backend->>Cache: Store result
+    Backend-->>User: Return answer
+                    </pre>
+                </div>
+
+                <h3>Complete Backend Ownership</h3>
+
+                <div class="work-item">
+                    <h4>Data Ingestion Pipeline</h4>
+                    <p>Get documents into the system from various sources.</p>
+                    <ul>
+                        <li>Connect to data sources (S3, databases, APIs, web scraping)</li>
+                        <li>Parse multiple formats (PDF, DOCX, HTML, Markdown, CSV)</li>
+                        <li>Extract text and metadata (author, date, category)</li>
+                        <li>Handle incremental updates and change detection</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">Apache Tika</span>
+                        <span class="tech-tag">PyPDF2</span>
+                        <span class="tech-tag">BeautifulSoup</span>
+                        <span class="tech-tag">AWS Glue</span>
+                    </div>
+
+                    <div class="real-world-example">
+                        <h5>Real-World Example: RevRag.AI (Bangalore)</h5>
+                        <p class="company-name">Multi-format Enterprise Document Ingestion</p>
+                        <p class="description">RevRag.AI built modular RAG pipelines handling Hindi/English PDFs, scanned images, and legacy document formats for Indian enterprises. Their ingestion system connects to client databases (MySQL, MongoDB), file systems (S3, NAS), and APIs with change detection via webhooks. Backend engineers handle 100K+ documents/day with parallel processing.</p>
+                    </div>
+                </div>
+
+                <div class="work-item">
+                    <h4>Chunking Strategy</h4>
+                    <p>Split documents into optimal-sized chunks for retrieval.</p>
+                    <ul>
+                        <li>Implement fixed-size, semantic, or recursive chunking</li>
+                        <li>Add overlap between chunks to preserve context</li>
+                        <li>Respect document structure (paragraphs, sections)</li>
+                        <li>Tune chunk size based on retrieval quality metrics</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">LangChain</span>
+                        <span class="tech-tag">LlamaIndex</span>
+                        <span class="tech-tag">spaCy</span>
+                        <span class="tech-tag">NLTK</span>
+                    </div>
+                </div>
+
+                <div class="work-item">
+                    <h4>Context Assembly</h4>
+                    <p>Format retrieved chunks into prompt context for the LLM.</p>
+                    <ul>
+                        <li>Rank chunks by relevance score</li>
+                        <li>Format chunks with source citations</li>
+                        <li>Truncate to fit within token limits</li>
+                        <li>Add instructions on how to use the context</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Jinja2</span>
+                        <span class="tech-tag">LangChain</span>
+                        <span class="tech-tag">LlamaIndex</span>
+                    </div>
+                </div>
+
+                <div class="ai-highlight">
+                    <strong>Key Takeaway:</strong> RAG is a massive backend system. Ingestion, chunking, embedding, vector DB, retrieval, caching, re-indexing - all backend work. The LLM just formats the final answer. You build everything around it.
+                </div>
+            </div>
+        </div>
+
+        <!-- Vector Search Tab -->
+        <div class="ai-tab-content" id="vector">
+            <div class="ai-section">
+                <h2>Vector Search</h2>
+                <span class="ai-badge ai-badge-backend">Database Engineering</span>
+
+                <p>Vector search powers RAG, recommendations, and semantic search. You manage the vector database infrastructure.</p>
+
+                <h3>Index Types Comparison</h3>
+                <div class="ai-grid">
+                    <div class="ai-card">
+                        <h4>HNSW (Hierarchical Navigable Small World)</h4>
+                        <ul>
+                            <li>Best for: Most production use cases</li>
+                            <li>Speed: Very fast queries</li>
+                            <li>Memory: Higher (stores graph)</li>
+                            <li>Accuracy: ~95-99% recall</li>
+                        </ul>
+                    </div>
+                    <div class="ai-card">
+                        <h4>IVF (Inverted File Index)</h4>
+                        <ul>
+                            <li>Best for: Large-scale, cost-sensitive</li>
+                            <li>Speed: Fast with tuning</li>
+                            <li>Memory: Lower</li>
+                            <li>Accuracy: ~90-95% recall</li>
+                        </ul>
+                    </div>
+                    <div class="ai-card">
+                        <h4>Flat (Brute Force)</h4>
+                        <ul>
+                            <li>Best for: Small datasets (&lt;100K)</li>
+                            <li>Speed: Slow (linear scan)</li>
+                            <li>Memory: Minimal overhead</li>
+                            <li>Accuracy: 100% (exact)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="work-item">
+                    <h4>Hybrid Search</h4>
+                    <p>Combine vector search with keyword search for best results.</p>
+                    <ul>
+                        <li>Run vector similarity search (semantic)</li>
+                        <li>Run BM25/Elasticsearch query (keyword)</li>
+                        <li>Merge results using reciprocal rank fusion (RRF)</li>
+                        <li>Tune weighting between semantic and keyword scores</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">OpenSearch</span>
+                        <span class="tech-tag">ElasticSearch</span>
+                        <span class="tech-tag">Weaviate</span>
+                        <span class="tech-tag">Meilisearch</span>
+                    </div>
+                </div>
+
+                <div class="ai-highlight">
+                    <strong>Key Takeaway:</strong> Vector search is database engineering. You manage indices, optimize queries, implement re-ranking, combine with keyword search, and handle metadata filtering.
+                </div>
+            </div>
+        </div>
+
+        <!-- Function Calling Tab -->
+        <div class="ai-tab-content" id="function-calling">
+            <div class="ai-section">
+                <h2>Function Calling / Tool Use</h2>
+                <span class="ai-badge ai-badge-heavy">100% Backend Work</span>
+                <span class="ai-badge ai-badge-critical">Security Critical</span>
+
+                <p>Function calling lets LLMs execute backend functions. This is the most backend-heavy AI feature.</p>
+
+                <h3>Function Calling Flow</h3>
+                <div class="diagram-container">
+                    <pre class="mermaid">
+sequenceDiagram
+    participant User
+    participant Backend
+    participant LLM
+    participant Tools as Backend Functions
+    participant DB
+
+    User->>Backend: "Book flight to Mumbai"
+    Backend->>LLM: Prompt + tool schemas
+    LLM-->>Backend: Call search_flights(origin, dest, date)
+    Backend->>Backend: Validate params
+    Backend->>Tools: Execute search_flights()
+    Tools->>DB: Query flights table
+    DB-->>Tools: Flight results
+    Tools-->>Backend: Return JSON results
+    Backend->>LLM: Continue with results
+    LLM-->>Backend: Call book_flight(flight_id)
+    Backend->>Backend: Check user permissions
+    Backend->>Tools: Execute book_flight()
+    Tools->>DB: Insert booking
+    DB-->>Tools: Booking confirmed
+    Tools-->>Backend: Success
+    Backend->>LLM: Continue with success
+    LLM-->>Backend: Final response
+    Backend-->>User: "Booked flight AI123"
+                    </pre>
+                </div>
+
+                <h3>What You Own (Everything)</h3>
+
+                <div class="work-item">
+                    <h4>Define Tool Schemas</h4>
+                    <p>Describe your functions in JSON Schema for the model to understand.</p>
+                    <ul>
+                        <li>Write OpenAPI/JSON Schema specs for each function</li>
+                        <li>Include parameter types, constraints, descriptions</li>
+                        <li>Version schemas as APIs evolve</li>
+                        <li>Register schemas with model API</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">JSON Schema</span>
+                        <span class="tech-tag">OpenAPI 3.0</span>
+                        <span class="tech-tag">Pydantic</span>
+                        <span class="tech-tag">TypeScript</span>
+                    </div>
+                </div>
+
+                <div class="work-item">
+                    <h4>Secure Side Effects</h4>
+                    <p>Functions often modify state (DB writes, API calls). You protect them.</p>
+                    <ul>
+                        <li>Implement role-based access control (RBAC)</li>
+                        <li>Require user confirmation for destructive actions</li>
+                        <li>Rate limit function calls per user</li>
+                        <li>Audit log all function executions</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">IAM</span>
+                        <span class="tech-tag">OAuth</span>
+                        <span class="tech-tag">JWT</span>
+                        <span class="tech-tag">CloudWatch</span>
+                    </div>
+                </div>
+
+                <div class="ai-highlight">
+                    <strong>Key Takeaway:</strong> Function calling is backend engineering disguised as AI. You define APIs, validate inputs, execute logic, handle errors, enforce security. The model just decides which function to call - you do everything else.
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Agents Tab -->
+        <div class="ai-tab-content" id="agents">
+            <div class="ai-section">
+                <h2>AI Agents (LLM + Memory + Tools)</h2>
+                <span class="ai-badge ai-badge-heavy">Backend State Machines</span>
+                <span class="ai-badge ai-badge-critical">Complex Backend System</span>
+
+                <p>Agents are autonomous systems that combine LLMs with tools and memory. This is sophisticated backend engineering.</p>
+
+                <h3>Agent Architecture</h3>
+                <div class="diagram-container">
+                    <pre class="mermaid">
+flowchart TB
+    User[User Input] --> Agent[Agent Controller]
+    Agent --> Memory[Memory Store]
+    Memory --> ShortTerm[Short-term: Redis]
+    Memory --> LongTerm[Long-term: Vector DB]
+
+    Agent --> LLM[LLM Reasoning]
+    LLM --> Decision{Decision}
+    Decision -->|Use Tool| Tools[Tool Executor]
+    Decision -->|Respond| Response[Generate Response]
+
+    Tools --> DB[(Database)]
+    Tools --> API[External APIs]
+    Tools --> Code[Code Runner]
+
+    Tools --> Result[Tool Result]
+    Result --> LLM
+    Response --> User
+
+    Agent --> Guard[Safety Rails]
+    Guard --> RateLimit[Rate Limits]
+    Guard --> Permissions[Permissions]
+    Guard --> Audit[Audit Log]
+
+    style Agent fill:#3b82f6,color:#fff
+    style LLM fill:#8b5cf6,color:#fff
+    style Tools fill:#10b981,color:#fff
+    style Memory fill:#f59e0b,color:#fff
+                    </pre>
+                </div>
+
+                <h3>What You Build</h3>
+
+                <div class="work-item">
+                    <h4>Agent State Storage</h4>
+                    <p>Track agent state across multi-turn interactions.</p>
+                    <ul>
+                        <li>Store conversation history (messages, tool calls, results)</li>
+                        <li>Track current task and sub-tasks</li>
+                        <li>Maintain agent memory (short-term and long-term)</li>
+                        <li>Handle state serialization for resuming later</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">Redis</span>
+                        <span class="tech-tag">DynamoDB</span>
+                        <span class="tech-tag">PostgreSQL</span>
+                        <span class="tech-tag">MongoDB</span>
+                    </div>
+                </div>
+
+                <div class="work-item">
+                    <h4>Memory Management</h4>
+                    <p>Give agents both short-term and long-term memory.</p>
+                    <ul>
+                        <li><strong>Short-term:</strong> Recent conversation in Redis (last 10-20 turns)</li>
+                        <li><strong>Long-term:</strong> Facts, preferences in vector DB (semantic retrieval)</li>
+                        <li>Implement memory summarization to compress history</li>
+                        <li>Apply TTL policies for privacy compliance</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">Redis</span>
+                        <span class="tech-tag">Pinecone</span>
+                        <span class="tech-tag">PostgreSQL</span>
+                        <span class="tech-tag">MemGPT</span>
+                    </div>
+                </div>
+
+                <div class="ai-highlight">
+                    <strong>Key Takeaway:</strong> Agents are backend systems that happen to use LLMs. You build state machines, tool executors, memory stores, safety systems, and orchestration logic. The LLM is just the decision-making component - you build everything else.
+                </div>
+            </div>
+        </div>
+
+        <!-- Multimodal Tab -->
+        <div class="ai-tab-content" id="multimodal">
+            <div class="ai-section">
+                <h2>Multimodal Models (Text + Image + Audio)</h2>
+                <span class="ai-badge ai-badge-backend">File Handling Heavy</span>
+
+                <p>Models like GPT-4o and Gemini accept multiple input types. You handle the file uploads and preprocessing.</p>
+
+                <h3>Request Flow</h3>
+                <div class="diagram-container">
+                    <pre class="mermaid">
+sequenceDiagram
+    participant Client
+    participant Backend
+    participant S3
+    participant Queue as Job Queue
+    participant Worker
+    participant Model as Multimodal API
+
+    Client->>Backend: Upload image/audio
+    Backend->>Backend: Validate file type/size
+    Backend->>S3: Store original
+    S3-->>Backend: File URL
+    Backend->>Queue: Enqueue job
+    Backend-->>Client: Job ID + polling URL
+    Worker->>Queue: Pull job
+    Worker->>S3: Fetch file
+    Worker->>Worker: Preprocess (resize/transcode)
+    Worker->>Model: Send to API
+    Model-->>Worker: Results
+    Worker->>Backend: Update job status
+    Client->>Backend: Poll for results
+    Backend-->>Client: Return results
+                    </pre>
+                </div>
+
+                <div class="work-item">
+                    <h4>File Upload Infrastructure</h4>
+                    <p>Users upload images, audio, PDFs. You need robust upload handling.</p>
+                    <ul>
+                        <li>Implement multipart/form-data endpoints</li>
+                        <li>Validate file types, sizes, and formats</li>
+                        <li>Scan for malware and malicious content</li>
+                        <li>Generate presigned URLs for direct S3 uploads</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">Multer</span>
+                        <span class="tech-tag">boto3</span>
+                        <span class="tech-tag">S3</span>
+                        <span class="tech-tag">CloudFlare R2</span>
+                    </div>
+                </div>
+
+                <div class="work-item">
+                    <h4>Media Preprocessing</h4>
+                    <p>Images need resizing, audio needs transcoding. You build these pipelines.</p>
+                    <ul>
+                        <li>Resize/compress images to reduce costs</li>
+                        <li>Convert audio formats (MP3, WAV, FLAC)</li>
+                        <li>Extract frames from video</li>
+                        <li>OCR preprocessing for document images</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">FFmpeg</span>
+                        <span class="tech-tag">Pillow</span>
+                        <span class="tech-tag">Sharp</span>
+                        <span class="tech-tag">Lambda</span>
+                    </div>
+                </div>
+
+                <div class="ai-highlight">
+                    <strong>Key Takeaway:</strong> Multimodal = file handling at scale. You own uploads, storage, preprocessing, async jobs, and metadata management. Classic backend work.
+                </div>
+            </div>
+        </div>
+
+        <!-- Observability Tab -->
+        <div class="ai-tab-content" id="observability">
+            <div class="ai-section">
+                <h2>AI Observability & Guardrails</h2>
+                <span class="ai-badge ai-badge-backend">Monitoring & Security</span>
+
+                <p>Production AI systems need monitoring, evaluation, and safety controls. Backend engineers own this.</p>
+
+                <h3>Input Validation Pipeline</h3>
+                <div class="diagram-container">
+                    <pre class="mermaid">
+flowchart TD
+    A[User Input] --> B{Length Check}
+    B -->|> 10K chars| C[Reject: 413 Too Large]
+    B -->|Valid| D{Format Validation}
+    D -->|Invalid| E[Reject: 400 Bad Request]
+    D -->|Valid| F{Prompt Injection Scan}
+    F -->|Detected| G[Reject: 400 Malicious]
+    F -->|Clean| H{Rate Limit Check}
+    H -->|Exceeded| I[Reject: 429 Rate Limited]
+    H -->|Within Limits| J{Content Filter}
+    J -->|Toxic/NSFW| K[Reject: 400 Policy Violation]
+    J -->|Safe| L[Send to LLM]
+
+    style C fill:#ef4444,color:#fff
+    style E fill:#ef4444,color:#fff
+    style G fill:#ef4444,color:#fff
+    style I fill:#f59e0b,color:#fff
+    style K fill:#ef4444,color:#fff
+    style L fill:#10b981,color:#fff
+                    </pre>
+                </div>
+
+                <div class="work-item">
+                    <h4>Latency Metrics</h4>
+                    <p>Track end-to-end and per-component latencies.</p>
+                    <ul>
+                        <li>Instrument API endpoints with timing middleware</li>
+                        <li>Measure embedding time, retrieval time, LLM time separately</li>
+                        <li>Track p50, p95, p99 latencies</li>
+                        <li>Alert on latency spikes</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">Prometheus</span>
+                        <span class="tech-tag">Grafana</span>
+                        <span class="tech-tag">DataDog</span>
+                        <span class="tech-tag">New Relic</span>
+                    </div>
+                </div>
+
+                <div class="work-item">
+                    <h4>Cost Tracking</h4>
+                    <p>Monitor spending on API calls and infrastructure.</p>
+                    <ul>
+                        <li>Track token usage per request (input + output)</li>
+                        <li>Calculate cost per user, per feature</li>
+                        <li>Build dashboards showing daily/monthly spend</li>
+                        <li>Set budget alerts and automatic shutoffs</li>
+                    </ul>
+                    <div class="tech-stack">
+                        <span class="tech-tag">CloudWatch</span>
+                        <span class="tech-tag">InfluxDB</span>
+                        <span class="tech-tag">PostgreSQL</span>
+                        <span class="tech-tag">Metabase</span>
+                    </div>
+                </div>
+
+                <div class="ai-highlight">
+                    <strong>Key Takeaway:</strong> Observability and guardrails are backend concerns. You instrument, monitor, log, validate, filter, and protect. These are standard backend practices applied to AI systems.
+                </div>
+            </div>
+        </div>
+
+        <!-- Architecture Tab -->
+        <div class="ai-tab-content" id="architecture">
+            <div class="ai-section">
+                <h2>AI System Architecture</h2>
+                <span class="ai-badge ai-badge-critical">Mental Model</span>
+
+                <p>Here's how all the pieces fit together in a production AI system.</p>
+
+                <h3>Full System Architecture</h3>
+                <div class="diagram-container">
+                    <pre class="mermaid">
+flowchart TB
+    User[User] --> API[API Gateway]
+    API --> Auth[Auth & Rate Limit]
+    Auth --> Router[Model Router]
+
+    Router --> LLM1[LLM API GPT-4]
+    Router --> LLM2[LLM API Claude]
+    Router --> LLM3[LLM API Llama]
+
+    Router --> RAG[RAG Pipeline]
+    RAG --> Embed[Embedding API]
+    RAG --> VectorDB[Vector DB]
+    RAG --> Cache[Redis Cache]
+
+    Router --> Tools[Function Calling]
+    Tools --> DB[(PostgreSQL)]
+    Tools --> External[External APIs]
+    Tools --> Lambda[AWS Lambda]
+
+    Router --> Agent[AI Agent]
+    Agent --> Memory[Memory Store]
+    Agent --> State[State Machine]
+    Agent --> Orchestrator[Orchestration]
+
+    Router --> Guard[Guardrails]
+    Guard --> InputVal[Input Validation]
+    Guard --> OutputFilter[Output Filtering]
+    Guard --> PIIRedact[PII Redaction]
+
+    LLM1 --> Metrics[Observability]
+    LLM2 --> Metrics
+    LLM3 --> Metrics
+    RAG --> Metrics
+    Tools --> Metrics
+    Agent --> Metrics
+
+    Metrics --> Prom[Prometheus]
+    Metrics --> Logs[CloudWatch Logs]
+    Metrics --> Cost[Cost Tracking]
+
+    style User fill:#3b82f6,color:#fff
+    style API fill:#8b5cf6,color:#fff
+    style Router fill:#10b981,color:#fff
+    style RAG fill:#f59e0b,color:#fff
+    style Tools fill:#ef4444,color:#fff
+    style Agent fill:#06b6d4,color:#fff
+                    </pre>
+                </div>
+
+                <h3>Component Summary</h3>
+                <div class="ai-grid">
+                    <div class="ai-card">
+                        <h4>LLMs</h4>
+                        <p>Black box APIs you integrate with. GPT-4, Claude, Llama accessed via REST APIs with streaming.</p>
+                    </div>
+                    <div class="ai-card">
+                        <h4>Embeddings</h4>
+                        <p>Convert text to vectors for similarity. OpenAI, Cohere APIs. Store in vector DB.</p>
+                    </div>
+                    <div class="ai-card">
+                        <h4>RAG</h4>
+                        <p>LLM + external knowledge. 80% backend data pipeline: ingest, chunk, embed, search.</p>
+                    </div>
+                    <div class="ai-card">
+                        <h4>Vector Search</h4>
+                        <p>Find similar content by embeddings. Pinecone, Weaviate, pgvector with hybrid search.</p>
+                    </div>
+                    <div class="ai-card">
+                        <h4>Tool Calling</h4>
+                        <p>LLMs execute your backend functions. 100% backend work: schema, validation, execution.</p>
+                    </div>
+                    <div class="ai-card">
+                        <h4>Agents</h4>
+                        <p>Autonomous systems with tools + memory. State machines, memory management, safety rails.</p>
+                    </div>
+                </div>
+
+                <div class="ai-highlight">
+                    <strong>Final Takeaway:</strong> LLMs are small black boxes you integrate via APIs. Everything else - RAG pipelines, vector search, function calling, agents, routing, guardrails, observability, orchestration - is backend engineering. Your existing skills in APIs, databases, caching, queues, and infrastructure directly apply. The AI era doesn't replace backend engineers - it needs them more than ever.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <aside class="page-sidebar">
+        <div class="panel">
+            <div class="panel-header">Key Concepts</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">LLM</span><span class="quick-ref-value">Large Language Model</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">RAG</span><span class="quick-ref-value">Retrieval-Augmented Generation</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Embeddings</span><span class="quick-ref-value">Text to Vectors</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Vector DB</span><span class="quick-ref-value">Similarity Search</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Popular Tools</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Pinecone</span><span class="quick-ref-value">Vector DB</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">LangChain</span><span class="quick-ref-value">LLM Framework</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">OpenAI</span><span class="quick-ref-value">LLM Provider</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Redis</span><span class="quick-ref-value">Cache/Memory</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Cost Factors</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Input Tokens</span><span class="quick-ref-value">$0.01/1K</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Output Tokens</span><span class="quick-ref-value">$0.03/1K</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Embeddings</span><span class="quick-ref-value">$0.0001/1K</span></div>
+        </div>
+    </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+    // Initialize Mermaid
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+            primaryColor: '#3b82f6',
+            primaryTextColor: '#1e293b',
+            primaryBorderColor: '#3b82f6',
+            lineColor: '#475569',
+            secondaryColor: '#8b5cf6',
+            tertiaryColor: '#10b981',
+            fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+            fontSize: '14px'
+        }
+    });
+
+    // Tab switching
+    document.querySelectorAll('.ai-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+
+            document.querySelectorAll('.ai-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.ai-tab-content').forEach(c => c.classList.remove('active'));
+
+            btn.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+    // Collapsible functionality
+    document.querySelectorAll('.collapsible-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const content = this.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + 'px';
+            }
+        });
+    });
+</script>

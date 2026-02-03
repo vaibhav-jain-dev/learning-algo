@@ -1,0 +1,140 @@
+<div class="page-layout">
+    <div class="page-main">
+        <h1>Web Frameworks</h1>
+        <p class="text-muted mb-6">Master backend frameworks - Flask, FastAPI, Django, Sanic, and Go Gin with request flow diagrams</p>
+
+        <div class="card mb-6">
+            <h3 class="panel-header">What You'll Learn</h3>
+            <ul>
+                <li>How each framework processes requests from input to output</li>
+                <li>Middleware, decorators, validation, and dependency injection patterns</li>
+                <li>Database interactions and ORM usage</li>
+                <li>When to choose each framework and why</li>
+            </ul>
+        </div>
+
+        <h2 class="mt-6 mb-4">Python Frameworks</h2>
+        <div class="topic-grid">
+            <a href="/frameworks/flask" class="topic-card">
+                <div class="topic-card-icon">Flask</div>
+                <h3>Flask</h3>
+                <p>Lightweight micro-framework. Simple, flexible, perfect for small to medium apps and APIs.</p>
+                <div class="tags"><span class="tag">Micro</span><span class="tag">WSGI</span><span class="tag">Jinja2</span></div>
+            </a>
+            <a href="/frameworks/fastapi" class="topic-card">
+                <div class="topic-card-icon">Fast</div>
+                <h3>FastAPI</h3>
+                <p>Modern async framework with automatic OpenAPI docs. Type hints, validation, high performance.</p>
+                <div class="tags"><span class="tag">Async</span><span class="tag">Pydantic</span><span class="tag">OpenAPI</span></div>
+            </a>
+            <a href="/frameworks/django" class="topic-card">
+                <div class="topic-card-icon">Dj</div>
+                <h3>Django</h3>
+                <p>Batteries-included framework. ORM, admin, auth, templates - everything for full-stack apps.</p>
+                <div class="tags"><span class="tag">Full-Stack</span><span class="tag">ORM</span><span class="tag">Admin</span></div>
+            </a>
+            <a href="/frameworks/sanic" class="topic-card">
+                <div class="topic-card-icon">Sanic</div>
+                <h3>Sanic</h3>
+                <p>Flask-like async framework. Fast, simple, perfect for high-performance async APIs.</p>
+                <div class="tags"><span class="tag">Async</span><span class="tag">Fast</span><span class="tag">Simple</span></div>
+            </a>
+        </div>
+
+        <h2 class="mt-6 mb-4">Go Frameworks</h2>
+        <div class="topic-grid">
+            <a href="/frameworks/gin" class="topic-card">
+                <div class="topic-card-icon">Gin</div>
+                <h3>Go Gin</h3>
+                <p>Fast HTTP router for Go. Middleware support, JSON validation, excellent performance.</p>
+                <div class="tags"><span class="tag">Go</span><span class="tag">Fast</span><span class="tag">Middleware</span></div>
+            </a>
+        </div>
+
+        <h2 class="mt-6 mb-4">Django Deep Dives</h2>
+        <div class="topic-grid">
+            <a href="/frameworks/django-rest" class="topic-card">
+                <div class="topic-card-icon">DRF</div>
+                <h3>Django REST Framework</h3>
+                <p>Build powerful REST APIs with Django. Serializers, viewsets, authentication, and browsable API.</p>
+                <div class="tags"><span class="tag">REST</span><span class="tag">Serializers</span><span class="tag">ViewSets</span></div>
+            </a>
+            <a href="/frameworks/django-orm" class="topic-card">
+                <div class="topic-card-icon">ORM</div>
+                <h3>Django ORM</h3>
+                <p>Master Django's ORM. QuerySets, relationships, migrations, and performance optimization.</p>
+                <div class="tags"><span class="tag">Database</span><span class="tag">QuerySet</span><span class="tag">Migrations</span></div>
+            </a>
+        </div>
+
+        <!-- Quick Comparison -->
+        <div class="card mt-6">
+            <h3 class="panel-header">Quick Comparison</h3>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="background: var(--bg-tertiary);">
+                            <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color);">Framework</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color);">Type</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color);">Async</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color);">Best For</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color);">Performance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);"><strong>Flask</strong></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Micro</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Limited</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Small APIs, prototypes</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Good</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);"><strong>FastAPI</strong></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Modern</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Native</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">APIs, ML services</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Excellent</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);"><strong>Django</strong></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Full-Stack</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Partial (4.0+)</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Full apps, admin</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Good</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);"><strong>Sanic</strong></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Async</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Native</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">High-perf APIs</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Excellent</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);"><strong>Gin (Go)</strong></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Minimal</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Goroutines</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Microservices</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Best</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <aside class="page-sidebar">
+        <div class="panel">
+            <div class="panel-header">When to Use</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Flask</span><span class="quick-ref-value">Simple APIs</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">FastAPI</span><span class="quick-ref-value">Modern APIs</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Django</span><span class="quick-ref-value">Full apps</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Gin</span><span class="quick-ref-value">High perf</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Related</div>
+            <a href="/network-protocols" class="quick-ref-item" style="display:block;text-decoration:none;">Network Protocols</a>
+            <a href="/network-protocols/rest" class="quick-ref-item" style="display:block;text-decoration:none;">REST API</a>
+        </div>
+    </aside>
+</div>

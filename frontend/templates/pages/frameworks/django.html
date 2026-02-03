@@ -1,0 +1,234 @@
+<style>
+    .fw-section { background: var(--bg-secondary, #f8fafc); padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color, #e2e8f0); }
+    .fw-section h2 { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-primary, #3b82f6); }
+    .fw-section h3 { font-size: 1.2rem; margin-top: 20px; margin-bottom: 12px; color: var(--accent-secondary, #8b5cf6); }
+    .diagram-container { background: var(--bg-tertiary, #f1f5f9); padding: 20px; border-radius: 10px; margin: 20px 0; overflow-x: auto; }
+    .code-example { background: #1e293b; border-radius: 8px; padding: 16px; margin: 16px 0; overflow-x: auto; }
+    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+    .concept-card { background: var(--bg-tertiary); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--accent-secondary); }
+    .concept-card h4 { color: var(--accent-secondary); margin-bottom: 10px; }
+    .highlight-box { background: rgba(59, 130, 246, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-primary); margin: 16px 0; }
+</style>
+
+<div class="page-layout">
+    <div class="page-main">
+        <nav style="margin-bottom: 16px;"><a href="/frameworks" style="color: var(--accent-primary);">&larr; Back to Frameworks</a></nav>
+
+        <h1>Django</h1>
+        <p class="text-muted mb-4">Batteries-included Python web framework - ORM, admin, auth, and more out of the box</p>
+
+        <div class="fw-section">
+            <h2>Request Flow: Input to Output</h2>
+            <div class="diagram-container">
+                <pre class="mermaid">
+flowchart TB
+    subgraph Input["1. HTTP Request"]
+        REQ["GET /users/123/"]
+    end
+
+    subgraph WSGI["2. WSGI Handler"]
+        W["WSGIHandler.get_response()"]
+    end
+
+    subgraph Middleware["3. Middleware Stack"]
+        M1["SecurityMiddleware"]
+        M2["SessionMiddleware"]
+        M3["AuthenticationMiddleware"]
+        M4["CommonMiddleware"]
+    end
+
+    subgraph URL["4. URL Resolution"]
+        U1["URLconf matching\npath('users/<id>/', views.user)"]
+    end
+
+    subgraph View["5. View Function/Class"]
+        V1["def user_detail(request, id):\n    or\nclass UserDetailView(View)"]
+    end
+
+    subgraph ORM["6. ORM Query"]
+        O1["User.objects.get(pk=id)\nQuerySet execution"]
+    end
+
+    subgraph Template["7. Template Rendering"]
+        T1["render(request, 'user.html', context)"]
+    end
+
+    subgraph Response["8. Response"]
+        RES["HttpResponse\nHTML or JSON"]
+    end
+
+    REQ --> W --> M1 --> M2 --> M3 --> M4 --> U1 --> V1 --> O1 --> T1 --> RES
+
+    style REQ fill:#3b82f6,color:#fff
+    style RES fill:#10b981,color:#fff
+    style O1 fill:#8b5cf6,color:#fff
+                </pre>
+            </div>
+        </div>
+
+        <div class="fw-section">
+            <h2>Key Concepts</h2>
+
+            <div class="concept-card">
+                <h4>1. URL Configuration</h4>
+                <div class="code-example">
+                    <pre><code class="language-python"># urls.py
+from django.urls import path, include
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('users/', views.user_list, name='user-list'),
+    path('users/<int:pk>/', views.user_detail, name='user-detail'),
+    path('api/', include('api.urls')),  # Include another URLconf
+]</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>2. Views (Function & Class-Based)</h4>
+                <div class="code-example">
+                    <pre><code class="language-python"># Function-based view
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+
+def user_detail(request, pk):
+    user = get_object_or_404(User, pk=pk)
+
+    if request.method == 'GET':
+        return render(request, 'users/detail.html', {'user': user})
+
+    elif request.method == 'POST':
+        # Handle form submission
+        pass
+
+# Class-based view
+from django.views import View
+from django.views.generic import DetailView, ListView
+
+class UserDetailView(DetailView):
+    model = User
+    template_name = 'users/detail.html'
+    context_object_name = 'user'
+
+class UserListView(ListView):
+    model = User
+    template_name = 'users/list.html'
+    paginate_by = 20</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>3. Models (ORM)</h4>
+                <div class="code-example">
+                    <pre><code class="language-python"># models.py
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+    bio = models.TextField(blank=True)
+    avatar = models.ImageField(upload_to='avatars/', null=True)
+
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+# QuerySet examples
+User.objects.all()                        # All users
+User.objects.filter(is_active=True)       # Filter
+User.objects.get(pk=1)                    # Single object
+Post.objects.select_related('author')     # JOIN optimization</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>4. Middleware</h4>
+                <div class="code-example">
+                    <pre><code class="language-python"># middleware.py
+class RequestTimingMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        import time
+        start = time.time()
+
+        response = self.get_response(request)  # Call view
+
+        duration = time.time() - start
+        response['X-Request-Time'] = str(duration)
+        return response
+
+# settings.py
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'myapp.middleware.RequestTimingMiddleware',  # Custom
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+]</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>5. Admin Panel</h4>
+                <div class="code-example">
+                    <pre><code class="language-python"># admin.py
+from django.contrib import admin
+from .models import User, Post
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ['title', 'author', 'created_at']
+    list_filter = ['created_at', 'author']
+    search_fields = ['title', 'content']
+    date_hierarchy = 'created_at'
+
+# Access at /admin/ - full CRUD interface automatically!</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="fw-section">
+            <h2>When to Use Django</h2>
+            <div class="highlight-box">
+                <strong>Best For:</strong>
+                <ul style="margin-top: 8px;">
+                    <li>Full-stack web applications</li>
+                    <li>Content management systems</li>
+                    <li>Projects needing admin panel</li>
+                    <li>Rapid prototyping with batteries included</li>
+                    <li>Teams who want conventions over configuration</li>
+                </ul>
+            </div>
+            <p><strong>Deep Dives:</strong></p>
+            <ul>
+                <li><a href="/frameworks/django-rest">Django REST Framework</a> - Build APIs</li>
+                <li><a href="/frameworks/django-orm">Django ORM</a> - Master database queries</li>
+            </ul>
+        </div>
+    </div>
+
+    <aside class="page-sidebar">
+        <div class="panel">
+            <div class="panel-header">Batteries Included</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">ORM</span><span class="quick-ref-value">Built-in</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Admin</span><span class="quick-ref-value">Built-in</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Auth</span><span class="quick-ref-value">Built-in</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Forms</span><span class="quick-ref-value">Built-in</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Related</div>
+            <a href="/frameworks/django-rest" class="quick-ref-item" style="display:block;text-decoration:none;">Django REST</a>
+            <a href="/frameworks/django-orm" class="quick-ref-item" style="display:block;text-decoration:none;">Django ORM</a>
+        </div>
+    </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>

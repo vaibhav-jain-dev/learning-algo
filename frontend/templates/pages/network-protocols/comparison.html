@@ -1,0 +1,354 @@
+<style>
+    .protocol-section { background: var(--bg-secondary, #f8fafc); padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color, #e2e8f0); }
+    .protocol-section h2 { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-primary, #3b82f6); }
+    .protocol-section h3 { font-size: 1.2rem; margin-top: 20px; margin-bottom: 12px; color: var(--accent-secondary, #8b5cf6); }
+    .diagram-container { background: var(--bg-tertiary, #f1f5f9); padding: 20px; border-radius: 10px; margin: 20px 0; overflow-x: auto; }
+    .comparison-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+    .comparison-table th, .comparison-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
+    .comparison-table th { background: var(--bg-tertiary); font-weight: 600; }
+    .feature-best { background: rgba(16, 185, 129, 0.15); color: #047857; font-weight: 600; }
+    .feature-good { background: rgba(59, 130, 246, 0.15); color: #1d4ed8; }
+    .feature-ok { background: rgba(245, 158, 11, 0.15); color: #b45309; }
+    .feature-poor { background: rgba(239, 68, 68, 0.15); color: #b91c1c; }
+    .decision-card { background: var(--bg-tertiary); padding: 20px; border-radius: 10px; margin-bottom: 16px; border-left: 4px solid var(--accent-primary); }
+    .decision-card h4 { color: var(--accent-primary); margin-bottom: 12px; }
+    .benchmark-bar { height: 24px; border-radius: 4px; margin: 8px 0; display: flex; align-items: center; padding-left: 8px; color: white; font-size: 0.85rem; font-weight: 600; }
+    .highlight-box { background: rgba(59, 130, 246, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-primary); margin: 16px 0; }
+</style>
+
+<div class="page-layout">
+    <div class="page-main">
+        <nav style="margin-bottom: 16px;"><a href="/network-protocols" style="color: var(--accent-primary);">&larr; Back to Network Protocols</a></nav>
+
+        <h1>Protocol Comparison</h1>
+        <p class="text-muted mb-4">REST vs GraphQL vs gRPC - when to use each, performance benchmarks, and decision guide</p>
+
+        <!-- Visual Comparison -->
+        <div class="protocol-section">
+            <h2>Visual Comparison</h2>
+            <div class="diagram-container">
+                <pre class="mermaid">
+flowchart TB
+    subgraph REST["REST"]
+        R1["Multiple Endpoints"]
+        R2["GET /users/123"]
+        R3["GET /users/123/posts"]
+        R4["GET /posts/1/comments"]
+        R5["3 HTTP Requests"]
+        R6["JSON Response"]
+    end
+
+    subgraph GraphQL["GraphQL"]
+        G1["Single Endpoint"]
+        G2["POST /graphql"]
+        G3["Query: user + posts + comments"]
+        G4["1 HTTP Request"]
+        G5["Exact Data Needed"]
+    end
+
+    subgraph gRPC["gRPC"]
+        P1["RPC Methods"]
+        P2["GetUser(123)"]
+        P3["Binary Protobuf"]
+        P4["HTTP/2 Streaming"]
+        P5["Code Generated Clients"]
+    end
+
+    style R5 fill:#f59e0b,color:#fff
+    style G4 fill:#10b981,color:#fff
+    style P3 fill:#3b82f6,color:#fff
+                </pre>
+            </div>
+        </div>
+
+        <!-- Feature Comparison -->
+        <div class="protocol-section">
+            <h2>Feature Comparison</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>REST</th>
+                        <th>GraphQL</th>
+                        <th>gRPC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Data Format</strong></td>
+                        <td>JSON/XML</td>
+                        <td>JSON</td>
+                        <td class="feature-best">Protobuf (binary)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Protocol</strong></td>
+                        <td>HTTP/1.1+</td>
+                        <td>HTTP/1.1+</td>
+                        <td class="feature-best">HTTP/2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Schema</strong></td>
+                        <td class="feature-ok">Optional (OpenAPI)</td>
+                        <td class="feature-best">Required (SDL)</td>
+                        <td class="feature-best">Required (.proto)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Type Safety</strong></td>
+                        <td class="feature-poor">Runtime only</td>
+                        <td class="feature-good">Schema validation</td>
+                        <td class="feature-best">Compile-time</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Browser Support</strong></td>
+                        <td class="feature-best">Native</td>
+                        <td class="feature-best">Native</td>
+                        <td class="feature-poor">gRPC-Web only</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Streaming</strong></td>
+                        <td class="feature-ok">SSE only</td>
+                        <td class="feature-good">Subscriptions</td>
+                        <td class="feature-best">Bidirectional</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Caching</strong></td>
+                        <td class="feature-best">HTTP caching</td>
+                        <td class="feature-poor">Complex</td>
+                        <td class="feature-ok">Manual</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Learning Curve</strong></td>
+                        <td class="feature-best">Low</td>
+                        <td class="feature-good">Medium</td>
+                        <td class="feature-ok">High</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tooling</strong></td>
+                        <td class="feature-best">Extensive</td>
+                        <td class="feature-good">Good</td>
+                        <td class="feature-good">Growing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Over-fetching</strong></td>
+                        <td class="feature-poor">Common</td>
+                        <td class="feature-best">Never</td>
+                        <td class="feature-good">Rare</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Code Generation</strong></td>
+                        <td class="feature-ok">Optional</td>
+                        <td class="feature-good">TypeScript types</td>
+                        <td class="feature-best">Full stubs</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Performance Benchmarks -->
+        <div class="protocol-section">
+            <h2>Performance Benchmarks</h2>
+            <p>Relative performance for a typical API call (lower is better for latency, higher for throughput):</p>
+
+            <h3>Latency (Median Request Time)</h3>
+            <div class="benchmark-bar" style="width: 100%; background: #ef4444;">REST: ~50ms</div>
+            <div class="benchmark-bar" style="width: 75%; background: #f59e0b;">GraphQL: ~40ms</div>
+            <div class="benchmark-bar" style="width: 30%; background: #10b981;">gRPC: ~15ms</div>
+
+            <h3>Payload Size (Same Data)</h3>
+            <div class="benchmark-bar" style="width: 100%; background: #ef4444;">REST JSON: 1000 bytes</div>
+            <div class="benchmark-bar" style="width: 100%; background: #f59e0b;">GraphQL: 1000 bytes</div>
+            <div class="benchmark-bar" style="width: 15%; background: #10b981;">gRPC Protobuf: 150 bytes</div>
+
+            <h3>Throughput (Requests/Second)</h3>
+            <div class="benchmark-bar" style="width: 40%; background: #ef4444;">REST: 10,000 rps</div>
+            <div class="benchmark-bar" style="width: 50%; background: #f59e0b;">GraphQL: 12,000 rps</div>
+            <div class="benchmark-bar" style="width: 100%; background: #10b981;">gRPC: 25,000 rps</div>
+
+            <p style="margin-top: 16px; font-size: 0.9rem; color: var(--text-secondary);">
+                * Benchmarks vary by implementation, hardware, and use case. These are typical relative differences.
+            </p>
+        </div>
+
+        <!-- Decision Guide -->
+        <div class="protocol-section">
+            <h2>Decision Guide: When to Use Each</h2>
+
+            <div class="decision-card">
+                <h4>Choose REST When...</h4>
+                <ul>
+                    <li>Building public APIs for third-party developers</li>
+                    <li>Simple CRUD operations are the main use case</li>
+                    <li>HTTP caching is important (GET requests)</li>
+                    <li>Team is familiar with REST conventions</li>
+                    <li>Need browser-native support without any libraries</li>
+                    <li>Debugging with simple tools (curl, Postman)</li>
+                </ul>
+                <p><strong>Examples:</strong> Stripe API, Twitter API, GitHub REST API</p>
+            </div>
+
+            <div class="decision-card">
+                <h4>Choose GraphQL When...</h4>
+                <ul>
+                    <li>Frontend needs flexible data fetching</li>
+                    <li>Multiple clients with different data needs (web, mobile, TV)</li>
+                    <li>Reducing round trips is critical (mobile apps)</li>
+                    <li>Rapid frontend development without backend changes</li>
+                    <li>Complex, nested data relationships</li>
+                    <li>Need built-in documentation (introspection)</li>
+                </ul>
+                <p><strong>Examples:</strong> GitHub GraphQL API, Shopify Storefront, Airbnb</p>
+            </div>
+
+            <div class="decision-card">
+                <h4>Choose gRPC When...</h4>
+                <ul>
+                    <li>Internal microservices communication</li>
+                    <li>Performance is critical (ML inference, gaming)</li>
+                    <li>Need bidirectional streaming</li>
+                    <li>Polyglot environment (multiple languages)</li>
+                    <li>Strong typing and code generation are priorities</li>
+                    <li>Bandwidth is constrained (IoT, mobile)</li>
+                </ul>
+                <p><strong>Examples:</strong> Kubernetes, Netflix microservices, TensorFlow Serving</p>
+            </div>
+        </div>
+
+        <!-- Common Patterns -->
+        <div class="protocol-section">
+            <h2>Common Architecture Patterns</h2>
+
+            <h3>Pattern 1: REST for Public, gRPC for Internal</h3>
+            <div class="diagram-container">
+                <pre class="mermaid">
+flowchart LR
+    Client[Web/Mobile Client]
+    Gateway[API Gateway]
+    S1[User Service]
+    S2[Order Service]
+    S3[Payment Service]
+
+    Client -->|REST/GraphQL| Gateway
+    Gateway -->|gRPC| S1
+    Gateway -->|gRPC| S2
+    Gateway -->|gRPC| S3
+    S1 -->|gRPC| S2
+    S2 -->|gRPC| S3
+
+    style Gateway fill:#3b82f6,color:#fff
+                </pre>
+            </div>
+            <p>Use REST or GraphQL at the edge (public-facing), gRPC between internal services for performance.</p>
+
+            <h3>Pattern 2: GraphQL Federation</h3>
+            <div class="diagram-container">
+                <pre class="mermaid">
+flowchart TB
+    Client[Client]
+    Gateway[GraphQL Gateway]
+    S1[User Subgraph]
+    S2[Product Subgraph]
+    S3[Order Subgraph]
+
+    Client -->|GraphQL| Gateway
+    Gateway -->|GraphQL| S1
+    Gateway -->|GraphQL| S2
+    Gateway -->|GraphQL| S3
+
+    style Gateway fill:#8b5cf6,color:#fff
+                </pre>
+            </div>
+            <p>Each team owns their subgraph. Gateway combines them into unified schema.</p>
+
+            <h3>Pattern 3: BFF (Backend for Frontend)</h3>
+            <div class="diagram-container">
+                <pre class="mermaid">
+flowchart TB
+    Web[Web App]
+    Mobile[Mobile App]
+    BFF1[Web BFF - REST]
+    BFF2[Mobile BFF - GraphQL]
+    Services[Backend Services - gRPC]
+
+    Web --> BFF1
+    Mobile --> BFF2
+    BFF1 --> Services
+    BFF2 --> Services
+
+    style BFF1 fill:#10b981,color:#fff
+    style BFF2 fill:#8b5cf6,color:#fff
+                </pre>
+            </div>
+            <p>Different BFFs optimize for each client type.</p>
+        </div>
+
+        <!-- Migration Strategies -->
+        <div class="protocol-section">
+            <h2>Migration Strategies</h2>
+
+            <h3>REST to GraphQL</h3>
+            <ul>
+                <li><strong>Strangler Pattern:</strong> Add GraphQL alongside REST, migrate endpoints gradually</li>
+                <li><strong>Schema-first:</strong> Design GraphQL schema that wraps existing REST endpoints</li>
+                <li><strong>Use Apollo Federation:</strong> Start with one service, expand</li>
+            </ul>
+
+            <h3>REST to gRPC</h3>
+            <ul>
+                <li><strong>Start Internal:</strong> Migrate service-to-service calls first</li>
+                <li><strong>gRPC Gateway:</strong> Auto-generate REST endpoints from proto files</li>
+                <li><strong>Dual Support:</strong> Support both protocols during migration</li>
+            </ul>
+
+            <div class="highlight-box">
+                <strong>Tip:</strong> You don't have to choose just one! Many successful systems use:
+                <ul style="margin-top: 8px;">
+                    <li>REST for simple public APIs</li>
+                    <li>GraphQL for complex frontend data needs</li>
+                    <li>gRPC for internal microservice communication</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="protocol-section">
+            <h2>Quick Decision Matrix</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Recommendation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Public API for developers</td><td class="feature-best">REST</td></tr>
+                    <tr><td>Mobile app with varying data needs</td><td class="feature-best">GraphQL</td></tr>
+                    <tr><td>Microservices communication</td><td class="feature-best">gRPC</td></tr>
+                    <tr><td>Real-time bidirectional streaming</td><td class="feature-best">gRPC</td></tr>
+                    <tr><td>Simple CRUD web app</td><td class="feature-best">REST</td></tr>
+                    <tr><td>ML model serving</td><td class="feature-best">gRPC</td></tr>
+                    <tr><td>Multiple client types (web/mobile/TV)</td><td class="feature-best">GraphQL</td></tr>
+                    <tr><td>Browser-only application</td><td class="feature-good">REST or GraphQL</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <aside class="page-sidebar">
+        <div class="panel">
+            <div class="panel-header">Quick Pick</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Public API</span><span class="quick-ref-value">REST</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Mobile</span><span class="quick-ref-value">GraphQL</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Microservices</span><span class="quick-ref-value">gRPC</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Learn More</div>
+            <a href="/network-protocols/rest" class="quick-ref-item" style="display:block;text-decoration:none;">REST Details</a>
+            <a href="/network-protocols/graphql" class="quick-ref-item" style="display:block;text-decoration:none;">GraphQL Details</a>
+            <a href="/network-protocols/grpc" class="quick-ref-item" style="display:block;text-decoration:none;">gRPC Details</a>
+        </div>
+    </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>

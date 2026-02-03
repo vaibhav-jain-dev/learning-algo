@@ -362,6 +362,118 @@ func (h *Handlers) TopicDetail(c *fiber.Ctx) error {
 	})
 }
 
+// AIAwareness renders the AI Components Awareness page
+func (h *Handlers) AIAwareness(c *fiber.Ctx) error {
+	return c.Render("pages/ai-awareness", fiber.Map{
+		"Title": "AI Components Awareness",
+	})
+}
+
+// WWWFlow renders the WWW/Web architecture flow page
+func (h *Handlers) WWWFlow(c *fiber.Ctx) error {
+	return c.Render("pages/www-flow", fiber.Map{
+		"Title": "How the Web Works",
+	})
+}
+
+// NetworkProtocols renders the network protocols main page
+func (h *Handlers) NetworkProtocols(c *fiber.Ctx) error {
+	return c.Render("pages/network-protocols", fiber.Map{
+		"Title": "Network Protocols & Interfaces",
+	})
+}
+
+// NetworkProtocolsREST renders the REST protocol page
+func (h *Handlers) NetworkProtocolsREST(c *fiber.Ctx) error {
+	return c.Render("pages/network-protocols/rest", fiber.Map{
+		"Title": "REST API - Network Protocols",
+	})
+}
+
+// NetworkProtocolsGraphQL renders the GraphQL protocol page
+func (h *Handlers) NetworkProtocolsGraphQL(c *fiber.Ctx) error {
+	return c.Render("pages/network-protocols/graphql", fiber.Map{
+		"Title": "GraphQL - Network Protocols",
+	})
+}
+
+// NetworkProtocolsHTTP renders the HTTP versions page
+func (h *Handlers) NetworkProtocolsHTTP(c *fiber.Ctx) error {
+	return c.Render("pages/network-protocols/http", fiber.Map{
+		"Title": "HTTP/1.1, HTTP/2, HTTP/3 & HTTPS",
+	})
+}
+
+// NetworkProtocolsGRPC renders the gRPC protocol page
+func (h *Handlers) NetworkProtocolsGRPC(c *fiber.Ctx) error {
+	return c.Render("pages/network-protocols/grpc", fiber.Map{
+		"Title": "gRPC - Network Protocols",
+	})
+}
+
+// NetworkProtocolsComparison renders the protocol comparison page
+func (h *Handlers) NetworkProtocolsComparison(c *fiber.Ctx) error {
+	return c.Render("pages/network-protocols/comparison", fiber.Map{
+		"Title": "Protocol Comparison - REST vs GraphQL vs gRPC",
+	})
+}
+
+// Frameworks renders the frameworks main page
+func (h *Handlers) Frameworks(c *fiber.Ctx) error {
+	return c.Render("pages/frameworks", fiber.Map{
+		"Title": "Web Frameworks",
+	})
+}
+
+// FrameworksFlask renders the Flask framework page
+func (h *Handlers) FrameworksFlask(c *fiber.Ctx) error {
+	return c.Render("pages/frameworks/flask", fiber.Map{
+		"Title": "Flask - Python Web Framework",
+	})
+}
+
+// FrameworksFastAPI renders the FastAPI framework page
+func (h *Handlers) FrameworksFastAPI(c *fiber.Ctx) error {
+	return c.Render("pages/frameworks/fastapi", fiber.Map{
+		"Title": "FastAPI - Python Web Framework",
+	})
+}
+
+// FrameworksDjango renders the Django framework page
+func (h *Handlers) FrameworksDjango(c *fiber.Ctx) error {
+	return c.Render("pages/frameworks/django", fiber.Map{
+		"Title": "Django - Python Web Framework",
+	})
+}
+
+// FrameworksDjangoREST renders the Django REST Framework page
+func (h *Handlers) FrameworksDjangoREST(c *fiber.Ctx) error {
+	return c.Render("pages/frameworks/django-rest", fiber.Map{
+		"Title": "Django REST Framework",
+	})
+}
+
+// FrameworksDjangoORM renders the Django ORM page
+func (h *Handlers) FrameworksDjangoORM(c *fiber.Ctx) error {
+	return c.Render("pages/frameworks/django-orm", fiber.Map{
+		"Title": "Django ORM",
+	})
+}
+
+// FrameworksSanic renders the Sanic framework page
+func (h *Handlers) FrameworksSanic(c *fiber.Ctx) error {
+	return c.Render("pages/frameworks/sanic", fiber.Map{
+		"Title": "Sanic - Python Async Web Framework",
+	})
+}
+
+// FrameworksGin renders the Go Gin framework page
+func (h *Handlers) FrameworksGin(c *fiber.Ctx) error {
+	return c.Render("pages/frameworks/gin", fiber.Map{
+		"Title": "Gin - Go Web Framework",
+	})
+}
+
 // ListProblems returns all problems as JSON
 func (h *Handlers) ListProblems(c *fiber.Ctx) error {
 	tree := h.buildProblemTree(problemsDir)

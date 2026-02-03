@@ -1,0 +1,385 @@
+<style>
+    .protocol-section { background: var(--bg-secondary, #f8fafc); padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color, #e2e8f0); }
+    .protocol-section h2 { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-primary, #3b82f6); }
+    .protocol-section h3 { font-size: 1.2rem; margin-top: 20px; margin-bottom: 12px; color: var(--accent-secondary, #8b5cf6); }
+    .diagram-container { background: var(--bg-tertiary, #f1f5f9); padding: 20px; border-radius: 10px; margin: 20px 0; overflow-x: auto; }
+    .code-example { background: #1e293b; border-radius: 8px; padding: 16px; margin: 16px 0; overflow-x: auto; }
+    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+    .highlight-box { background: rgba(59, 130, 246, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-primary); margin: 16px 0; }
+    .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .pros, .cons { padding: 16px; border-radius: 8px; }
+    .pros { background: rgba(16, 185, 129, 0.1); border-left: 4px solid #10b981; }
+    .cons { background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; }
+    .pros h4 { color: #10b981; } .cons h4 { color: #ef4444; }
+    @media (max-width: 768px) { .pros-cons { grid-template-columns: 1fr; } }
+    .streaming-card { background: var(--bg-tertiary); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--accent-secondary); }
+    .comparison-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    .comparison-table th, .comparison-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
+    .comparison-table th { background: var(--bg-tertiary); }
+</style>
+
+<div class="page-layout">
+    <div class="page-main">
+        <nav style="margin-bottom: 16px;"><a href="/network-protocols" style="color: var(--accent-primary);">&larr; Back to Network Protocols</a></nav>
+
+        <h1>gRPC</h1>
+        <p class="text-muted mb-4">High-performance RPC framework using Protocol Buffers - ideal for microservices and ML systems</p>
+
+        <div class="protocol-section">
+            <h2>What is gRPC?</h2>
+            <p>gRPC (Google Remote Procedure Call) is a high-performance RPC framework that uses Protocol Buffers for serialization and HTTP/2 for transport. It enables efficient communication between services with features like bidirectional streaming and automatic code generation.</p>
+
+            <h3>Request-Response Flow</h3>
+            <div class="diagram-container">
+                <pre class="mermaid">
+sequenceDiagram
+    participant Client
+    participant Stub as Client Stub
+    participant Server as gRPC Server
+    participant Handler
+
+    Client->>Stub: Call GetUser(id: 123)
+    Stub->>Stub: Serialize to Protobuf (binary)
+    Stub->>Server: HTTP/2 POST /UserService/GetUser
+    Note over Stub,Server: Binary payload (~10x smaller than JSON)
+    Server->>Handler: Deserialize & execute
+    Handler->>Handler: Business logic
+    Handler-->>Server: Return User object
+    Server->>Server: Serialize to Protobuf
+    Server-->>Stub: HTTP/2 Response
+    Stub->>Stub: Deserialize to typed object
+    Stub-->>Client: User {id: 123, name: "John"}
+                </pre>
+            </div>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Protocol Buffers:</strong> Binary serialization - 3-10x smaller and faster than JSON</li>
+                <li><strong>HTTP/2:</strong> Multiplexing, streaming, header compression</li>
+                <li><strong>Code Generation:</strong> Generate client/server stubs from .proto files</li>
+                <li><strong>Streaming:</strong> Unary, server streaming, client streaming, bidirectional</li>
+                <li><strong>Deadlines/Timeouts:</strong> Built-in support for request deadlines</li>
+                <li><strong>Interceptors:</strong> Middleware for logging, auth, metrics</li>
+            </ul>
+        </div>
+
+        <div class="protocol-section">
+            <h2>Protocol Buffers (Protobuf)</h2>
+            <p>The schema definition language for gRPC. Define your data structures and services, then generate code.</p>
+
+            <div class="code-example">
+                <pre><code class="language-protobuf">// user.proto - Service definition
+syntax = "proto3";
+
+package user;
+
+option go_package = "./pb";
+
+// Message definitions
+message User {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  repeated string roles = 4;  // Array
+  optional string phone = 5;  // Optional field
+}
+
+message GetUserRequest {
+  int32 id = 1;
+}
+
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+}
+
+message ListUsersRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+}
+
+message ListUsersResponse {
+  repeated User users = 1;
+  int32 total = 2;
+}
+
+// Service definition
+service UserService {
+  // Unary RPC
+  rpc GetUser(GetUserRequest) returns (User);
+  rpc CreateUser(CreateUserRequest) returns (User);
+
+  // Server streaming - server sends multiple responses
+  rpc ListUsers(ListUsersRequest) returns (stream User);
+
+  // Client streaming - client sends multiple requests
+  rpc UploadUsers(stream User) returns (ListUsersResponse);
+
+  // Bidirectional streaming
+  rpc Chat(stream ChatMessage) returns (stream ChatMessage);
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="protocol-section">
+            <h2>Streaming Patterns</h2>
+
+            <div class="streaming-card">
+                <h4>1. Unary RPC (Request-Response)</h4>
+                <p>Standard single request, single response. Like REST.</p>
+                <div class="diagram-container" style="margin: 10px 0;">
+                    <pre class="mermaid">
+sequenceDiagram
+    Client->>Server: GetUser(id: 123)
+    Server-->>Client: User {name: "John"}
+                    </pre>
+                </div>
+            </div>
+
+            <div class="streaming-card">
+                <h4>2. Server Streaming</h4>
+                <p>Client sends one request, server streams multiple responses.</p>
+                <div class="diagram-container" style="margin: 10px 0;">
+                    <pre class="mermaid">
+sequenceDiagram
+    Client->>Server: ListUsers(page: 1)
+    Server-->>Client: User 1
+    Server-->>Client: User 2
+    Server-->>Client: User 3
+    Server-->>Client: Stream complete
+                    </pre>
+                </div>
+                <p><strong>Use case:</strong> Large data downloads, real-time feeds, log streaming</p>
+            </div>
+
+            <div class="streaming-card">
+                <h4>3. Client Streaming</h4>
+                <p>Client streams multiple requests, server sends one response.</p>
+                <div class="diagram-container" style="margin: 10px 0;">
+                    <pre class="mermaid">
+sequenceDiagram
+    Client->>Server: User 1
+    Client->>Server: User 2
+    Client->>Server: User 3
+    Client->>Server: Stream complete
+    Server-->>Client: ImportResult {count: 3}
+                    </pre>
+                </div>
+                <p><strong>Use case:</strong> File uploads, batch imports, sensor data collection</p>
+            </div>
+
+            <div class="streaming-card">
+                <h4>4. Bidirectional Streaming</h4>
+                <p>Both client and server stream simultaneously.</p>
+                <div class="diagram-container" style="margin: 10px 0;">
+                    <pre class="mermaid">
+sequenceDiagram
+    par Client to Server
+        Client->>Server: Message A
+        Client->>Server: Message B
+    and Server to Client
+        Server-->>Client: Response X
+        Server-->>Client: Response Y
+    end
+                    </pre>
+                </div>
+                <p><strong>Use case:</strong> Chat applications, gaming, real-time collaboration</p>
+            </div>
+        </div>
+
+        <div class="protocol-section">
+            <h2>Code Examples</h2>
+
+            <h3>Python Server</h3>
+            <div class="code-example">
+                <pre><code class="language-python">import grpc
+from concurrent import futures
+import user_pb2
+import user_pb2_grpc
+
+class UserService(user_pb2_grpc.UserServiceServicer):
+
+    def __init__(self):
+        self.users = {}
+        self.next_id = 1
+
+    def GetUser(self, request, context):
+        user = self.users.get(request.id)
+        if not user:
+            context.abort(grpc.StatusCode.NOT_FOUND, "User not found")
+        return user
+
+    def CreateUser(self, request, context):
+        user = user_pb2.User(
+            id=self.next_id,
+            name=request.name,
+            email=request.email
+        )
+        self.users[self.next_id] = user
+        self.next_id += 1
+        return user
+
+    def ListUsers(self, request, context):
+        # Server streaming - yield multiple responses
+        for user in list(self.users.values()):
+            yield user
+
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    user_pb2_grpc.add_UserServiceServicer_to_server(UserService(), server)
+    server.add_insecure_port('[::]:50051')
+    server.start()
+    server.wait_for_termination()
+
+if __name__ == '__main__':
+    serve()</code></pre>
+            </div>
+
+            <h3>Go Server</h3>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import (
+    "context"
+    "log"
+    "net"
+    "google.golang.org/grpc"
+    pb "myapp/proto"
+)
+
+type server struct {
+    pb.UnimplementedUserServiceServer
+    users  map[int32]*pb.User
+    nextID int32
+}
+
+func (s *server) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.User, error) {
+    user, exists := s.users[req.Id]
+    if !exists {
+        return nil, status.Error(codes.NotFound, "user not found")
+    }
+    return user, nil
+}
+
+func (s *server) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.User, error) {
+    user := &pb.User{
+        Id:    s.nextID,
+        Name:  req.Name,
+        Email: req.Email,
+    }
+    s.users[s.nextID] = user
+    s.nextID++
+    return user, nil
+}
+
+// Server streaming
+func (s *server) ListUsers(req *pb.ListUsersRequest, stream pb.UserService_ListUsersServer) error {
+    for _, user := range s.users {
+        if err := stream.Send(user); err != nil {
+            return err
+        }
+    }
+    return nil
+}
+
+func main() {
+    lis, _ := net.Listen("tcp", ":50051")
+    s := grpc.NewServer()
+    pb.RegisterUserServiceServer(s, &server{users: make(map[int32]*pb.User), nextID: 1})
+    log.Fatal(s.Serve(lis))
+}</code></pre>
+            </div>
+
+            <h3>Python Client</h3>
+            <div class="code-example">
+                <pre><code class="language-python">import grpc
+import user_pb2
+import user_pb2_grpc
+
+# Create channel and stub
+channel = grpc.insecure_channel('localhost:50051')
+stub = user_pb2_grpc.UserServiceStub(channel)
+
+# Unary call
+user = stub.CreateUser(user_pb2.CreateUserRequest(name="John", email="john@example.com"))
+print(f"Created: {user.id}, {user.name}")
+
+# Get user
+user = stub.GetUser(user_pb2.GetUserRequest(id=1))
+print(f"Got: {user.name}")
+
+# Server streaming - iterate over responses
+for user in stub.ListUsers(user_pb2.ListUsersRequest()):
+    print(f"User: {user.name}")</code></pre>
+            </div>
+        </div>
+
+        <div class="protocol-section">
+            <h2>When to Use gRPC</h2>
+
+            <div class="pros-cons">
+                <div class="pros">
+                    <h4>Advantages</h4>
+                    <ul>
+                        <li>10x faster than JSON (binary serialization)</li>
+                        <li>Strongly typed with code generation</li>
+                        <li>Bidirectional streaming support</li>
+                        <li>Built-in deadlines and cancellation</li>
+                        <li>Language agnostic (10+ languages)</li>
+                        <li>Excellent for microservices</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4>Disadvantages</h4>
+                    <ul>
+                        <li>No native browser support (needs gRPC-Web)</li>
+                        <li>Binary format harder to debug</li>
+                        <li>Learning curve for Protobuf</li>
+                        <li>Less human-readable than JSON</li>
+                        <li>Schema changes need careful handling</li>
+                        <li>Less tooling than REST</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Best For:</strong> Microservices communication, ML model serving (TensorFlow Serving, Triton), real-time systems, mobile backends where bandwidth matters, polyglot environments.
+            </div>
+        </div>
+
+        <div class="protocol-section">
+            <h2>Real-World Examples</h2>
+            <ul>
+                <li><strong>Google:</strong> Uses gRPC internally for all service communication</li>
+                <li><strong>Netflix:</strong> gRPC between microservices for low latency</li>
+                <li><strong>Dropbox:</strong> Migrated from REST to gRPC for 10x performance</li>
+                <li><strong>Square:</strong> All internal APIs use gRPC</li>
+                <li><strong>Kubernetes:</strong> etcd uses gRPC for cluster state</li>
+                <li><strong>TensorFlow Serving:</strong> ML model inference over gRPC</li>
+            </ul>
+        </div>
+    </div>
+
+    <aside class="page-sidebar">
+        <div class="panel">
+            <div class="panel-header">Streaming Types</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Unary</span><span class="quick-ref-value">1 req, 1 res</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Server</span><span class="quick-ref-value">1 req, N res</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Client</span><span class="quick-ref-value">N req, 1 res</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Bidi</span><span class="quick-ref-value">N req, N res</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Performance</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Serialization</span><span class="quick-ref-value">3-10x faster</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Payload</span><span class="quick-ref-value">~10x smaller</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Related</div>
+            <a href="/network-protocols/rest" class="quick-ref-item" style="display:block;text-decoration:none;">REST API</a>
+            <a href="/network-protocols/comparison" class="quick-ref-item" style="display:block;text-decoration:none;">Comparison</a>
+        </div>
+    </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>

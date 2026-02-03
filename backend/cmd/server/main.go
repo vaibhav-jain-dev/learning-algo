@@ -241,6 +241,22 @@ func main() {
 	app.Get("/python", h.Python)
 	app.Get("/python-asyncio", h.PythonAsyncio)
 	app.Get("/deployment-guide", h.DeploymentGuide)
+	app.Get("/ai-awareness", h.AIAwareness)                              // AI Components Awareness
+	app.Get("/www-flow", h.WWWFlow)                                      // How the Web Works
+	app.Get("/network-protocols", h.NetworkProtocols)                    // Network Protocols main page
+	app.Get("/network-protocols/rest", h.NetworkProtocolsREST)           // REST sub-page
+	app.Get("/network-protocols/graphql", h.NetworkProtocolsGraphQL)     // GraphQL sub-page
+	app.Get("/network-protocols/http", h.NetworkProtocolsHTTP)           // HTTP versions sub-page
+	app.Get("/network-protocols/grpc", h.NetworkProtocolsGRPC)           // gRPC sub-page
+	app.Get("/network-protocols/comparison", h.NetworkProtocolsComparison) // Protocol comparison
+	app.Get("/frameworks", h.Frameworks)                                   // Frameworks main page
+	app.Get("/frameworks/flask", h.FrameworksFlask)                        // Flask
+	app.Get("/frameworks/fastapi", h.FrameworksFastAPI)                    // FastAPI
+	app.Get("/frameworks/django", h.FrameworksDjango)                      // Django
+	app.Get("/frameworks/django-rest", h.FrameworksDjangoREST)             // Django REST Framework
+	app.Get("/frameworks/django-orm", h.FrameworksDjangoORM)               // Django ORM
+	app.Get("/frameworks/sanic", h.FrameworksSanic)                        // Sanic
+	app.Get("/frameworks/gin", h.FrameworksGin)                            // Go Gin
 	app.Get("/topic/:category/:topic", h.TopicDetail)
 
 	// PDF print view (for chromedp to render)

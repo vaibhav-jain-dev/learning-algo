@@ -1,0 +1,278 @@
+<style>
+    .fw-section { background: var(--bg-secondary, #f8fafc); padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color, #e2e8f0); }
+    .fw-section h2 { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-primary, #3b82f6); }
+    .fw-section h3 { font-size: 1.2rem; margin-top: 20px; margin-bottom: 12px; color: var(--accent-secondary, #8b5cf6); }
+    .diagram-container { background: var(--bg-tertiary, #f1f5f9); padding: 20px; border-radius: 10px; margin: 20px 0; overflow-x: auto; }
+    .code-example { background: #1e293b; border-radius: 8px; padding: 16px; margin: 16px 0; overflow-x: auto; }
+    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+    .concept-card { background: var(--bg-tertiary); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--accent-secondary); }
+    .concept-card h4 { color: var(--accent-secondary); margin-bottom: 10px; }
+    .highlight-box { background: rgba(59, 130, 246, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-primary); margin: 16px 0; }
+</style>
+
+<div class="page-layout">
+    <div class="page-main">
+        <nav style="margin-bottom: 16px;"><a href="/frameworks" style="color: var(--accent-primary);">&larr; Back to Frameworks</a></nav>
+
+        <h1>Go Gin</h1>
+        <p class="text-muted mb-4">High-performance HTTP web framework for Go - fast router with middleware support</p>
+
+        <div class="fw-section">
+            <h2>Request Flow: Input to Output</h2>
+            <div class="diagram-container">
+                <pre class="mermaid">
+flowchart TB
+    subgraph Input["1. HTTP Request"]
+        REQ["POST /api/users\n{name: 'John'}"]
+    end
+
+    subgraph Server["2. Gin Engine"]
+        E["gin.Default()\nCreate router with default middleware"]
+    end
+
+    subgraph Middleware["3. Middleware Chain"]
+        M1["Logger()\nLog request"]
+        M2["Recovery()\nPanic recovery"]
+        M3["AuthMiddleware()\nJWT validation"]
+    end
+
+    subgraph Router["4. RadixTree Router"]
+        R1["Match /api/users\nO(n) where n = URL length"]
+    end
+
+    subgraph Binding["5. Request Binding"]
+        B1["c.ShouldBindJSON(&user)\nValidate struct tags"]
+    end
+
+    subgraph Handler["6. Handler Function"]
+        H1["func CreateUser(c *gin.Context)\nBusiness logic"]
+    end
+
+    subgraph Response["7. Response"]
+        RES["c.JSON(201, user)\nSerialized response"]
+    end
+
+    REQ --> E --> M1 --> M2 --> M3 --> R1 --> B1 --> H1 --> RES
+
+    style REQ fill:#3b82f6,color:#fff
+    style RES fill:#10b981,color:#fff
+    style B1 fill:#8b5cf6,color:#fff
+                </pre>
+            </div>
+        </div>
+
+        <div class="fw-section">
+            <h2>Key Concepts</h2>
+
+            <div class="concept-card">
+                <h4>1. Routes & Handlers</h4>
+                <div class="code-example">
+                    <pre><code class="language-go">package main
+
+import (
+    "net/http"
+    "github.com/gin-gonic/gin"
+)
+
+func main() {
+    r := gin.Default() // Logger + Recovery middleware
+
+    // Basic routes
+    r.GET("/ping", func(c *gin.Context) {
+        c.JSON(http.StatusOK, gin.H{"message": "pong"})
+    })
+
+    // Route groups
+    api := r.Group("/api")
+    {
+        api.GET("/users", listUsers)
+        api.GET("/users/:id", getUser)       // Path parameter
+        api.POST("/users", createUser)
+        api.PUT("/users/:id", updateUser)
+        api.DELETE("/users/:id", deleteUser)
+    }
+
+    r.Run(":8080")
+}
+
+// Handler function
+func getUser(c *gin.Context) {
+    id := c.Param("id")                    // Path param
+    format := c.DefaultQuery("format", "json")  // Query param
+
+    user := getUserFromDB(id)
+    if user == nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+        return
+    }
+    c.JSON(http.StatusOK, user)
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>2. Middleware</h4>
+                <div class="code-example">
+                    <pre><code class="language-go">// Custom middleware
+func AuthMiddleware() gin.HandlerFunc {
+    return func(c *gin.Context) {
+        token := c.GetHeader("Authorization")
+
+        if token == "" {
+            c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+                "error": "Authorization header required",
+            })
+            return
+        }
+
+        user, err := validateToken(token)
+        if err != nil {
+            c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+                "error": "Invalid token",
+            })
+            return
+        }
+
+        // Set user in context for handlers
+        c.Set("user", user)
+        c.Next() // Continue to next middleware/handler
+    }
+}
+
+// Apply middleware
+r := gin.Default()
+r.Use(AuthMiddleware())  // Global middleware
+
+// Or per-group
+protected := r.Group("/admin")
+protected.Use(AuthMiddleware())
+{
+    protected.GET("/stats", adminStats)
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>3. Request Binding & Validation</h4>
+                <div class="code-example">
+                    <pre><code class="language-go">// Model with validation tags
+type CreateUserRequest struct {
+    Name     string `json:"name" binding:"required,min=2,max=50"`
+    Email    string `json:"email" binding:"required,email"`
+    Age      int    `json:"age" binding:"gte=0,lte=150"`
+    Password string `json:"password" binding:"required,min=8"`
+}
+
+func createUser(c *gin.Context) {
+    var req CreateUserRequest
+
+    // Bind JSON and validate
+    if err := c.ShouldBindJSON(&req); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{
+            "error": err.Error(),
+        })
+        return
+    }
+
+    // req is now validated
+    user := User{
+        Name:  req.Name,
+        Email: req.Email,
+        Age:   req.Age,
+    }
+
+    db.Create(&user)
+    c.JSON(http.StatusCreated, user)
+}
+
+// Bind path params
+type GetUserRequest struct {
+    ID int `uri:"id" binding:"required"`
+}
+
+func getUser(c *gin.Context) {
+    var req GetUserRequest
+    if err := c.ShouldBindUri(&req); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+    // req.ID is now available
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>4. Database with GORM</h4>
+                <div class="code-example">
+                    <pre><code class="language-go">import (
+    "gorm.io/gorm"
+    "gorm.io/driver/postgres"
+)
+
+type User struct {
+    gorm.Model
+    Name  string `gorm:"not null"`
+    Email string `gorm:"uniqueIndex;not null"`
+}
+
+var db *gorm.DB
+
+func initDB() {
+    var err error
+    dsn := "host=localhost user=postgres password=pass dbname=mydb"
+    db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+    if err != nil {
+        log.Fatal(err)
+    }
+    db.AutoMigrate(&User{})
+}
+
+// Dependency injection via middleware
+func DBMiddleware() gin.HandlerFunc {
+    return func(c *gin.Context) {
+        c.Set("db", db)
+        c.Next()
+    }
+}
+
+func createUser(c *gin.Context) {
+    db := c.MustGet("db").(*gorm.DB)
+    // Use db...
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="fw-section">
+            <h2>When to Use Gin</h2>
+            <div class="highlight-box">
+                <strong>Best For:</strong>
+                <ul style="margin-top: 8px;">
+                    <li>High-performance microservices</li>
+                    <li>REST APIs with Go</li>
+                    <li>When you need maximum throughput</li>
+                    <li>Teams familiar with Go</li>
+                    <li>CPU-bound workloads</li>
+                </ul>
+            </div>
+            <p><strong>Performance:</strong> Gin can handle 50,000+ requests/second on modest hardware.</p>
+        </div>
+    </div>
+
+    <aside class="page-sidebar">
+        <div class="panel">
+            <div class="panel-header">Performance</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Requests/sec</span><span class="quick-ref-value">~50,000+</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Latency</span><span class="quick-ref-value">~0.5ms</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Memory</span><span class="quick-ref-value">Low</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Related</div>
+            <a href="/frameworks/fastapi" class="quick-ref-item" style="display:block;text-decoration:none;">FastAPI</a>
+            <a href="/golang" class="quick-ref-item" style="display:block;text-decoration:none;">Go Guide</a>
+        </div>
+    </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>

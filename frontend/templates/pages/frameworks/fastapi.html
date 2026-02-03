@@ -1,0 +1,410 @@
+<style>
+    .fw-section { background: var(--bg-secondary, #f8fafc); padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color, #e2e8f0); }
+    .fw-section h2 { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-primary, #3b82f6); }
+    .fw-section h3 { font-size: 1.2rem; margin-top: 20px; margin-bottom: 12px; color: var(--accent-secondary, #8b5cf6); }
+    .diagram-container { background: var(--bg-tertiary, #f1f5f9); padding: 20px; border-radius: 10px; margin: 20px 0; overflow-x: auto; }
+    .code-example { background: #1e293b; border-radius: 8px; padding: 16px; margin: 16px 0; overflow-x: auto; }
+    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+    .concept-card { background: var(--bg-tertiary); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--accent-secondary); }
+    .concept-card h4 { color: var(--accent-secondary); margin-bottom: 10px; }
+    .highlight-box { background: rgba(59, 130, 246, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-primary); margin: 16px 0; }
+    .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .pros, .cons { padding: 16px; border-radius: 8px; }
+    .pros { background: rgba(16, 185, 129, 0.1); border-left: 4px solid #10b981; }
+    .cons { background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; }
+    .pros h4 { color: #10b981; } .cons h4 { color: #ef4444; }
+    @media (max-width: 768px) { .pros-cons { grid-template-columns: 1fr; } }
+</style>
+
+<div class="page-layout">
+    <div class="page-main">
+        <nav style="margin-bottom: 16px;"><a href="/frameworks" style="color: var(--accent-primary);">&larr; Back to Frameworks</a></nav>
+
+        <h1>FastAPI</h1>
+        <p class="text-muted mb-4">Modern, fast Python web framework with automatic OpenAPI docs, type hints, and async support</p>
+
+        <!-- Request Flow Overview -->
+        <div class="fw-section">
+            <h2>Request Flow: Input to Output</h2>
+            <p>How FastAPI processes a request through all layers:</p>
+
+            <div class="diagram-container">
+                <pre class="mermaid">
+flowchart TB
+    subgraph Input["1. HTTP Request"]
+        REQ["POST /users\n{name: 'John', email: 'john@example.com'}"]
+    end
+
+    subgraph ASGI["2. ASGI Server (Uvicorn)"]
+        UV["Receive HTTP Request\nCreate Scope & Connection"]
+    end
+
+    subgraph Middleware["3. Middleware Stack"]
+        M1["CORS Middleware"]
+        M2["Authentication Middleware"]
+        M3["Request ID Middleware"]
+    end
+
+    subgraph Routing["4. Router & Path Matching"]
+        R1["Match /users route\nExtract path params"]
+    end
+
+    subgraph DI["5. Dependency Injection"]
+        D1["Resolve dependencies:\n- get_db()\n- get_current_user()"]
+    end
+
+    subgraph Validation["6. Request Validation"]
+        V1["Pydantic Model\nValidate & Parse JSON"]
+    end
+
+    subgraph Handler["7. Route Handler"]
+        H1["async def create_user()\nBusiness Logic"]
+    end
+
+    subgraph DB["8. Database"]
+        DB1["SQLAlchemy ORM\nINSERT INTO users"]
+    end
+
+    subgraph Response["9. Response"]
+        RES["Pydantic Serialization\nJSON Response"]
+    end
+
+    REQ --> UV --> M1 --> M2 --> M3 --> R1 --> D1 --> V1 --> H1 --> DB1 --> RES
+
+    style REQ fill:#3b82f6,color:#fff
+    style RES fill:#10b981,color:#fff
+    style V1 fill:#8b5cf6,color:#fff
+    style DI fill:#f59e0b,color:#fff
+                </pre>
+            </div>
+        </div>
+
+        <!-- Key Concepts -->
+        <div class="fw-section">
+            <h2>Key Concepts with Examples</h2>
+
+            <div class="concept-card">
+                <h4>1. Path Operations & Decorators</h4>
+                <p>Decorators define HTTP method and path. Type hints enable automatic validation.</p>
+                <div class="code-example">
+                    <pre><code class="language-python">from fastapi import FastAPI, Path, Query, Body
+from pydantic import BaseModel, EmailStr
+
+app = FastAPI()
+
+# Pydantic model for request/response
+class UserCreate(BaseModel):
+    name: str
+    email: EmailStr
+    age: int | None = None
+
+class UserResponse(BaseModel):
+    id: int
+    name: str
+    email: str
+
+# Path operation with decorators
+@app.post("/users", response_model=UserResponse, status_code=201)
+async def create_user(
+    user: UserCreate,                              # Body parameter (auto-parsed)
+    priority: int = Query(default=1, ge=1, le=10)  # Query param with validation
+):
+    """Create a new user - this docstring becomes API documentation"""
+    # Pydantic validates input automatically
+    # If invalid, returns 422 Unprocessable Entity
+    db_user = await save_to_db(user)
+    return db_user
+
+# Path parameters
+@app.get("/users/{user_id}")
+async def get_user(
+    user_id: int = Path(..., title="User ID", ge=1)  # Path param validation
+):
+    return await get_user_by_id(user_id)</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>2. Dependency Injection</h4>
+                <p>Dependencies are resolved automatically. Perfect for DB sessions, auth, and shared logic.</p>
+                <div class="diagram-container" style="margin: 10px 0;">
+                    <pre class="mermaid">
+flowchart LR
+    subgraph Dependencies
+        D1["get_db() -> Session"]
+        D2["get_current_user() -> User"]
+        D3["get_settings() -> Config"]
+    end
+
+    subgraph Handler
+        H["create_user(db, user, settings)"]
+    end
+
+    D1 --> H
+    D2 --> H
+    D3 --> H
+
+    style H fill:#3b82f6,color:#fff
+                    </pre>
+                </div>
+                <div class="code-example">
+                    <pre><code class="language-python">from fastapi import Depends
+from sqlalchemy.orm import Session
+
+# Database dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db  # Dependency is "injected" here
+    finally:
+        db.close()  # Cleanup after request
+
+# Auth dependency (can have sub-dependencies)
+async def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+) -> User:
+    user = verify_token(token, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return user
+
+# Use dependencies in handler
+@app.post("/posts")
+async def create_post(
+    post: PostCreate,
+    db: Session = Depends(get_db),              # DB session injected
+    current_user: User = Depends(get_current_user)  # User injected
+):
+    return await create_post_for_user(db, post, current_user)</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>3. Middleware</h4>
+                <p>Middleware runs before/after every request. Use for logging, CORS, auth, timing.</p>
+                <div class="diagram-container" style="margin: 10px 0;">
+                    <pre class="mermaid">
+sequenceDiagram
+    participant Client
+    participant CORS as CORS Middleware
+    participant Logging as Logging Middleware
+    participant Handler as Route Handler
+
+    Client->>CORS: Request
+    CORS->>Logging: Add CORS headers
+    Logging->>Logging: Start timer
+    Logging->>Handler: Forward request
+    Handler-->>Logging: Response
+    Logging-->>Logging: Log: 200 OK in 45ms
+    Logging-->>CORS: Response
+    CORS-->>Client: Response + CORS headers
+                    </pre>
+                </div>
+                <div class="code-example">
+                    <pre><code class="language-python">from fastapi import Request
+from fastapi.middleware.cors import CORSMiddleware
+import time
+
+# Built-in CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://myapp.com"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Custom middleware
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.time()
+
+    # Before request
+    request_id = str(uuid.uuid4())
+
+    response = await call_next(request)  # Call next middleware/handler
+
+    # After request
+    process_time = time.time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    response.headers["X-Request-ID"] = request_id
+
+    return response</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>4. Pydantic Validation</h4>
+                <p>Automatic request validation with detailed error messages.</p>
+                <div class="code-example">
+                    <pre><code class="language-python">from pydantic import BaseModel, Field, validator, EmailStr
+from typing import List, Optional
+from datetime import datetime
+
+class UserCreate(BaseModel):
+    name: str = Field(..., min_length=2, max_length=50)
+    email: EmailStr
+    age: int = Field(ge=0, le=150)
+    roles: List[str] = Field(default_factory=list)
+
+    # Custom validator
+    @validator('name')
+    def name_must_be_alpha(cls, v):
+        if not v.replace(' ', '').isalpha():
+            raise ValueError('Name must contain only letters')
+        return v.title()
+
+    class Config:
+        # Enable ORM mode for SQLAlchemy
+        from_attributes = True
+
+# If validation fails, FastAPI returns:
+# {
+#   "detail": [
+#     {
+#       "loc": ["body", "email"],
+#       "msg": "value is not a valid email address",
+#       "type": "value_error.email"
+#     }
+#   ]
+# }</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>5. Database with SQLAlchemy</h4>
+                <p>Common pattern for database integration with async support.</p>
+                <div class="code-example">
+                    <pre><code class="language-python">from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+# Database setup
+DATABASE_URL = "postgresql://user:password@localhost/dbname"
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+# Model
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    email = Column(String, unique=True, index=True)
+
+# CRUD operations
+def create_user(db: Session, user: UserCreate) -> User:
+    db_user = User(**user.dict())
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+# In handler
+@app.post("/users", response_model=UserResponse)
+async def create_user_endpoint(user: UserCreate, db: Session = Depends(get_db)):
+    db_user = create_user(db, user)
+    return db_user</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>6. Background Tasks</h4>
+                <p>Run tasks after response is sent (emails, notifications).</p>
+                <div class="code-example">
+                    <pre><code class="language-python">from fastapi import BackgroundTasks
+
+def send_email(email: str, message: str):
+    # This runs AFTER response is sent
+    # User doesn't wait for email to send
+    email_service.send(email, message)
+
+@app.post("/users")
+async def create_user(
+    user: UserCreate,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db)
+):
+    db_user = await create_user_in_db(db, user)
+
+    # Queue background task
+    background_tasks.add_task(
+        send_email,
+        email=user.email,
+        message="Welcome to our platform!"
+    )
+
+    return db_user  # Response sent immediately</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- When to Use -->
+        <div class="fw-section">
+            <h2>When to Use FastAPI</h2>
+
+            <div class="pros-cons">
+                <div class="pros">
+                    <h4>Advantages</h4>
+                    <ul>
+                        <li>Automatic OpenAPI/Swagger docs</li>
+                        <li>Type hints = validation + IDE support</li>
+                        <li>Native async/await support</li>
+                        <li>Excellent performance (Starlette + Pydantic)</li>
+                        <li>Dependency injection built-in</li>
+                        <li>Easy testing with TestClient</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4>Disadvantages</h4>
+                    <ul>
+                        <li>Relatively new (less mature ecosystem)</li>
+                        <li>No built-in ORM (need SQLAlchemy/Tortoise)</li>
+                        <li>No admin panel (unlike Django)</li>
+                        <li>Async can be complex for beginners</li>
+                        <li>Pydantic v2 migration can be tricky</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Best For:</strong> Modern REST APIs, ML model serving, microservices, real-time applications, when you need automatic documentation and type safety.
+            </div>
+        </div>
+
+        <!-- Real Examples -->
+        <div class="fw-section">
+            <h2>Real-World Usage</h2>
+            <ul>
+                <li><strong>Netflix:</strong> ML model serving and internal APIs</li>
+                <li><strong>Microsoft:</strong> Azure services documentation</li>
+                <li><strong>Uber:</strong> Internal microservices</li>
+                <li><strong>Explosion AI (spaCy):</strong> NLP model APIs</li>
+            </ul>
+        </div>
+    </div>
+
+    <aside class="page-sidebar">
+        <div class="panel">
+            <div class="panel-header">Key Features</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Async</span><span class="quick-ref-value">Native support</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Validation</span><span class="quick-ref-value">Pydantic</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Docs</span><span class="quick-ref-value">Auto OpenAPI</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">DI</span><span class="quick-ref-value">Built-in</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Performance</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Requests/sec</span><span class="quick-ref-value">~15,000</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Latency</span><span class="quick-ref-value">~2ms</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Related</div>
+            <a href="/frameworks/flask" class="quick-ref-item" style="display:block;text-decoration:none;">Flask</a>
+            <a href="/frameworks/django" class="quick-ref-item" style="display:block;text-decoration:none;">Django</a>
+        </div>
+    </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>
