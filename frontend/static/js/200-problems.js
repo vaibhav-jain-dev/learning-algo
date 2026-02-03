@@ -11783,11 +11783,13 @@
                     /* Description */
                     .desc { font-size: 9px; color: #475569; margin: 4px 0; line-height: 1.3; }
 
-                    /* Compact I/O box */
-                    .io-box { background: #fff; padding: 4px 6px; border-radius: 3px; font-size: 8px; margin: 4px 0; border: 1px solid #e2e8f0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+                    /* Compact I/O boxes */
+                    .examples-container { margin: 4px 0; }
+                    .io-box { background: #fff; padding: 3px 6px; border-radius: 3px; font-size: 8px; margin: 2px 0; border: 1px solid #e2e8f0; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 3px; }
+                    .io-num { font-weight: 700; color: #3b82f6; min-width: 14px; }
                     .io-label { font-weight: 600; color: #64748b; }
                     .io-arrow { color: #3b82f6; font-weight: bold; }
-                    .io-box code { background: #f1f5f9; padding: 1px 3px; border-radius: 2px; font-family: 'SF Mono', Consolas, monospace; font-size: 8px; word-break: break-all; }
+                    .io-box code { background: #f1f5f9; padding: 1px 3px; border-radius: 2px; font-family: 'SF Mono', Consolas, monospace; font-size: 8px; word-break: break-all; max-width: 100%; }
 
                     /* Complexity inline */
                     .complexity { font-size: 8px; color: #64748b; display: flex; gap: 12px; }
@@ -11909,20 +11911,24 @@
                 html += '<div class="desc">' + escapeHtml(desc) + '</div>';
             }
 
-            // Add first example I/O only (compact, inline format)
+            // Add all examples with I/O (compact format, truncate long ones to 300 chars)
             if (problemData.examples && problemData.examples.length > 0) {
-                var ex = problemData.examples[0];
-                var inputStr = typeof ex.input === 'object' ? JSON.stringify(ex.input) : String(ex.input);
-                var outputStr = typeof ex.output === 'object' ? JSON.stringify(ex.output) : String(ex.output);
+                html += '<div class="examples-container">';
+                problemData.examples.forEach(function(ex, idx) {
+                    var inputStr = typeof ex.input === 'object' ? JSON.stringify(ex.input) : String(ex.input);
+                    var outputStr = typeof ex.output === 'object' ? JSON.stringify(ex.output) : String(ex.output);
 
-                // Truncate to 200 chars max
-                if (inputStr.length > 200) inputStr = inputStr.substring(0, 200) + '...';
-                if (outputStr.length > 100) outputStr = outputStr.substring(0, 100) + '...';
+                    // Truncate to 300 chars max for large examples
+                    if (inputStr.length > 300) inputStr = inputStr.substring(0, 300) + '...';
+                    if (outputStr.length > 300) outputStr = outputStr.substring(0, 300) + '...';
 
-                html += '<div class="io-box">';
-                html += '<span class="io-label">Input:</span> <code>' + escapeHtml(inputStr) + '</code>';
-                html += ' <span class="io-arrow">→</span> ';
-                html += '<span class="io-label">Output:</span> <code>' + escapeHtml(outputStr) + '</code>';
+                    html += '<div class="io-box">';
+                    html += '<span class="io-num">' + (idx + 1) + '.</span> ';
+                    html += '<span class="io-label">In:</span> <code>' + escapeHtml(inputStr) + '</code>';
+                    html += ' <span class="io-arrow">→</span> ';
+                    html += '<span class="io-label">Out:</span> <code>' + escapeHtml(outputStr) + '</code>';
+                    html += '</div>';
+                });
                 html += '</div>';
             }
 
