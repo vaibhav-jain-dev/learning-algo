@@ -6417,23 +6417,32 @@
     // Parse solution code to extract individual approaches
     function parseApproaches(code, lang) {
         if (!code) return [];
+
+        // First check if we have APPROACH headers
+        if (code.match(/APPROACH\s*\d+:/i)) {
+            return parseHeaderBasedApproaches(code, lang);
+        }
+
+        // Fall back to function-based parsing
+        return parseFunctionBasedApproaches(code, lang);
+    }
+
+    // Parse files with "APPROACH N:" headers
+    function parseHeaderBasedApproaches(code, lang) {
         var approaches = [];
         var lines = code.split('\n');
         var currentApproach = null;
         var inApproachHeader = false;
-        var headerLines = [];
+        var commentPrefix = lang === 'python' ? '#' : '//';
 
         for (var i = 0; i < lines.length; i++) {
             var line = lines[i];
-            var commentPrefix = lang === 'python' ? '#' : '//';
             var approachMatch = line.match(/APPROACH\s*(\d+):\s*(.+)/i);
 
             if (approachMatch) {
-                // Save previous approach
                 if (currentApproach) {
                     approaches.push(currentApproach);
                 }
-                // Start new approach
                 currentApproach = {
                     number: parseInt(approachMatch[1]),
                     title: approachMatch[2].replace(/[⭐✓⚠️✗]/g, '').trim(),
@@ -6445,68 +6454,177 @@
                     whyBest: '',
                     whenToUse: '',
                     whenNotToUse: '',
-                    code: '',
-                    headerLines: []
+                    code: ''
                 };
                 inApproachHeader = true;
-                headerLines = [line];
             } else if (inApproachHeader) {
-                headerLines.push(line);
-                // Extract time complexity
                 var timeMatch = line.match(/Time\s*Complexity:\s*(.+)/i);
                 if (timeMatch) currentApproach.timeComplexity = timeMatch[1].trim();
 
-                // Extract space complexity
                 var spaceMatch = line.match(/Space\s*Complexity:\s*(.+)/i);
                 if (spaceMatch) currentApproach.spaceComplexity = spaceMatch[1].trim();
 
-                // Extract why best/when to use
                 if (line.includes('WHY THIS IS BEST') || line.includes('WHY IT\'S BEST')) {
                     currentApproach.whyBest = extractMultilineComment(lines, i + 1, commentPrefix);
                 }
                 if (line.includes('WHEN TO USE')) {
                     currentApproach.whenToUse = extractMultilineComment(lines, i + 1, commentPrefix);
                 }
-                if (line.includes('WHEN NOT TO USE')) {
-                    currentApproach.whenNotToUse = extractMultilineComment(lines, i + 1, commentPrefix);
-                }
-                if (line.includes('WHY IT\'S SUBOPTIMAL') || line.includes('SUBOPTIMAL')) {
-                    currentApproach.whySuboptimal = extractMultilineComment(lines, i + 1, commentPrefix);
-                }
 
-                // End of header (next function definition or next approach)
                 if (line.match(/^(def |func |function )/)) {
                     inApproachHeader = false;
                     currentApproach.code = line;
                 }
             } else if (currentApproach) {
-                // Check if we hit the next approach or test section
                 if (line.match(/APPROACH\s*\d+:/i) || line.match(/TEST\s*CASES/i)) {
                     approaches.push(currentApproach);
                     currentApproach = null;
-                    i--; // Re-process this line
+                    i--;
                 } else {
                     currentApproach.code += '\n' + line;
                 }
             }
         }
 
-        // Push last approach
         if (currentApproach) {
             approaches.push(currentApproach);
         }
 
-        // Clean up code - remove trailing test sections
+        // Clean up code
         approaches.forEach(function(a) {
             var testIdx = a.code.indexOf('# ===');
             if (testIdx === -1) testIdx = a.code.indexOf('// ===');
-            if (testIdx > 0) {
-                a.code = a.code.substring(0, testIdx).trim();
-            }
+            if (testIdx > 0) a.code = a.code.substring(0, testIdx).trim();
             a.code = a.code.trim();
         });
 
         return approaches;
+    }
+
+    // Parse files where each function is an approach (no APPROACH headers)
+    function parseFunctionBasedApproaches(code, lang) {
+        var approaches = [];
+        var lines = code.split('\n');
+        var funcPattern = lang === 'python' ? /^def\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/ : /^func\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/;
+        var helperPattern = /^(def|func)\s+_/; // Helper functions start with _
+        var currentFunc = null;
+        var approachNum = 0;
+
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i];
+            var funcMatch = line.match(funcPattern);
+
+            // Skip helper functions (starting with _)
+            if (helperPattern.test(line)) {
+                if (currentFunc) currentFunc.code += '\n' + line;
+                continue;
+            }
+
+            // Skip test/run functions
+            if (funcMatch && (funcMatch[1].includes('test') || funcMatch[1].includes('run_') || funcMatch[1] === 'main')) {
+                break; // Stop at test section
+            }
+
+            if (funcMatch && !helperPattern.test(line)) {
+                // Save previous function
+                if (currentFunc) {
+                    approaches.push(currentFunc);
+                }
+
+                approachNum++;
+                var funcName = funcMatch[1];
+                var title = formatFunctionName(funcName);
+                var docstring = extractDocstring(lines, i + 1, lang);
+
+                currentFunc = {
+                    number: approachNum,
+                    title: title,
+                    isRecommended: approachNum === 1 || funcName.includes('optimal') || title.toLowerCase().includes('dp'),
+                    isSuboptimal: funcName.includes('naive') || funcName.includes('brute'),
+                    isLearning: funcName.includes('recursive') && !funcName.includes('memo'),
+                    timeComplexity: extractComplexityFromDocstring(docstring, 'time'),
+                    spaceComplexity: extractComplexityFromDocstring(docstring, 'space'),
+                    whyBest: '',
+                    whenToUse: '',
+                    code: line
+                };
+            } else if (currentFunc) {
+                // Check for test section
+                if (line.match(/^(def|func)\s+(test_|run_|main)/) || line.match(/if\s+__name__\s*==\s*['"]__main__['"]/)) {
+                    break;
+                }
+                currentFunc.code += '\n' + line;
+            }
+        }
+
+        if (currentFunc) {
+            approaches.push(currentFunc);
+        }
+
+        // Clean up code
+        approaches.forEach(function(a) {
+            a.code = a.code.trim();
+            // Remove trailing empty function calls
+            var testIdx = a.code.indexOf('\n\ndef test_');
+            if (testIdx === -1) testIdx = a.code.indexOf('\n\nif __name__');
+            if (testIdx > 0) a.code = a.code.substring(0, testIdx).trim();
+        });
+
+        return approaches;
+    }
+
+    // Format function name to readable title
+    function formatFunctionName(name) {
+        // Remove common prefixes
+        name = name.replace(/^(get_|find_|solve_|calculate_|compute_)/, '');
+        // Convert snake_case to Title Case
+        return name.split('_').map(function(word) {
+            if (word === 'dp') return 'DP';
+            if (word === 'bfs') return 'BFS';
+            if (word === 'dfs') return 'DFS';
+            if (word === 'lcs') return 'LCS';
+            return word.charAt(0).toUpperCase() + word.slice(1);
+        }).join(' ');
+    }
+
+    // Extract docstring from function
+    function extractDocstring(lines, startIdx, lang) {
+        if (lang === 'python') {
+            // Look for triple-quoted docstring
+            for (var i = startIdx; i < Math.min(startIdx + 5, lines.length); i++) {
+                if (lines[i].trim().startsWith('"""') || lines[i].trim().startsWith("'''")) {
+                    var doc = '';
+                    var quote = lines[i].trim().substring(0, 3);
+                    var firstLine = lines[i].trim().substring(3);
+                    if (firstLine.endsWith(quote)) {
+                        return firstLine.slice(0, -3);
+                    }
+                    doc = firstLine;
+                    for (var j = i + 1; j < Math.min(i + 20, lines.length); j++) {
+                        if (lines[j].includes(quote)) {
+                            doc += ' ' + lines[j].split(quote)[0].trim();
+                            return doc.trim();
+                        }
+                        doc += ' ' + lines[j].trim();
+                    }
+                }
+            }
+        }
+        return '';
+    }
+
+    // Extract complexity from docstring
+    function extractComplexityFromDocstring(docstring, type) {
+        if (!docstring) return '';
+        var pattern = type === 'time' ? /[Tt]ime[:\s]*O\([^)]+\)/i : /[Ss]pace[:\s]*O\([^)]+\)/i;
+        var match = docstring.match(pattern);
+        if (match) return match[0].replace(/[Tt]ime[:\s]*/i, '').replace(/[Ss]pace[:\s]*/i, '');
+        // Try to find just O() notation
+        var oMatch = docstring.match(/O\([^)]+\)/g);
+        if (oMatch && oMatch.length > 0) {
+            return type === 'time' ? oMatch[0] : (oMatch[1] || oMatch[0]);
+        }
+        return '';
     }
 
     function extractMultilineComment(lines, startIdx, prefix) {
@@ -11266,4 +11384,543 @@
         // Check URL for direct problem link
         parseUrlAndOpenProblem();
     });
+
+    // ============================================
+    // PDF EXPORT FUNCTIONALITY
+    // ============================================
+    window.exportProblemsPDF = function() {
+        // Open export modal
+        var modal = document.getElementById('pdf-export-modal');
+        if (!modal) {
+            createExportModal();
+            modal = document.getElementById('pdf-export-modal');
+        }
+        modal.style.display = 'flex';
+        populateExportCategories();
+    };
+
+    function createExportModal() {
+        var modalHtml = `
+            <div id="pdf-export-modal" class="pdf-export-modal" style="display:none;">
+                <div class="pdf-export-overlay" onclick="window.closeExportModal()"></div>
+                <div class="pdf-export-content">
+                    <div class="pdf-export-header">
+                        <h2>Export Problems to PDF</h2>
+                        <button class="pdf-export-close" onclick="window.closeExportModal()">&times;</button>
+                    </div>
+                    <div class="pdf-export-body">
+                        <div class="pdf-export-options">
+                            <label class="pdf-export-option">
+                                <input type="checkbox" id="export-problems" checked>
+                                <span>Include Problems (with I/O examples)</span>
+                            </label>
+                            <label class="pdf-export-option">
+                                <input type="checkbox" id="export-solutions" checked>
+                                <span>Include Solutions (with explanations)</span>
+                            </label>
+                        </div>
+                        <div class="pdf-export-categories" id="export-categories"></div>
+                        <div class="pdf-export-actions">
+                            <button class="pdf-export-btn select-all" onclick="window.toggleAllCategories(true)">Select All</button>
+                            <button class="pdf-export-btn deselect-all" onclick="window.toggleAllCategories(false)">Deselect All</button>
+                        </div>
+                    </div>
+                    <div class="pdf-export-footer">
+                        <button class="pdf-export-btn cancel" onclick="window.closeExportModal()">Cancel</button>
+                        <button class="pdf-export-btn primary" onclick="window.generateProblemsPDF()">
+                            <span id="export-btn-text">Export PDF</span>
+                            <span id="export-btn-spinner" style="display:none;">Generating...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        addExportModalStyles();
+    }
+
+    function addExportModalStyles() {
+        if (document.getElementById('pdf-export-styles')) return;
+        var styles = `
+            <style id="pdf-export-styles">
+                .pdf-export-modal {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    z-index: 9999;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .pdf-export-overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.5);
+                    backdrop-filter: blur(4px);
+                }
+                .pdf-export-content {
+                    position: relative;
+                    background: white;
+                    border-radius: 12px;
+                    width: 90%;
+                    max-width: 600px;
+                    max-height: 80vh;
+                    display: flex;
+                    flex-direction: column;
+                    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+                }
+                .pdf-export-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 1.25rem;
+                    border-bottom: 1px solid #e2e8f0;
+                }
+                .pdf-export-header h2 {
+                    margin: 0;
+                    font-size: 1.25rem;
+                    color: #1e293b;
+                }
+                .pdf-export-close {
+                    background: none;
+                    border: none;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    color: #64748b;
+                    padding: 0.25rem;
+                    line-height: 1;
+                }
+                .pdf-export-close:hover { color: #1e293b; }
+                .pdf-export-body {
+                    flex: 1;
+                    overflow-y: auto;
+                    padding: 1.25rem;
+                }
+                .pdf-export-options {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.75rem;
+                    margin-bottom: 1rem;
+                    padding-bottom: 1rem;
+                    border-bottom: 1px solid #e2e8f0;
+                }
+                .pdf-export-option {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    cursor: pointer;
+                    font-size: 0.95rem;
+                    color: #374151;
+                }
+                .pdf-export-option input[type="checkbox"] {
+                    width: 18px;
+                    height: 18px;
+                    accent-color: #3b82f6;
+                }
+                .pdf-export-categories {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 0.75rem;
+                }
+                .pdf-export-category {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    padding: 0.75rem;
+                    background: #f8fafc;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: background 0.2s;
+                }
+                .pdf-export-category:hover { background: #f1f5f9; }
+                .pdf-export-category input[type="checkbox"] {
+                    width: 16px;
+                    height: 16px;
+                    accent-color: #3b82f6;
+                }
+                .pdf-export-category-name {
+                    flex: 1;
+                    font-size: 0.9rem;
+                    color: #1e293b;
+                }
+                .pdf-export-category-count {
+                    font-size: 0.75rem;
+                    color: #64748b;
+                    background: #e2e8f0;
+                    padding: 0.15rem 0.5rem;
+                    border-radius: 999px;
+                }
+                .pdf-export-actions {
+                    display: flex;
+                    gap: 0.5rem;
+                    margin-top: 1rem;
+                }
+                .pdf-export-footer {
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 0.75rem;
+                    padding: 1rem 1.25rem;
+                    border-top: 1px solid #e2e8f0;
+                    background: #f8fafc;
+                    border-radius: 0 0 12px 12px;
+                }
+                .pdf-export-btn {
+                    padding: 0.6rem 1.25rem;
+                    border-radius: 6px;
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    border: 1px solid #e2e8f0;
+                    background: white;
+                    color: #374151;
+                }
+                .pdf-export-btn:hover { background: #f1f5f9; }
+                .pdf-export-btn.primary {
+                    background: #3b82f6;
+                    color: white;
+                    border-color: #3b82f6;
+                }
+                .pdf-export-btn.primary:hover { background: #2563eb; }
+                .pdf-export-btn.select-all, .pdf-export-btn.deselect-all {
+                    padding: 0.4rem 0.75rem;
+                    font-size: 0.8rem;
+                }
+                @media (max-width: 640px) {
+                    .pdf-export-categories { grid-template-columns: 1fr; }
+                }
+            </style>
+        `;
+        document.head.insertAdjacentHTML('beforeend', styles);
+    }
+
+    function populateExportCategories() {
+        var container = document.getElementById('export-categories');
+        if (!container) return;
+
+        var categoryNames = {
+            'arrays': 'Arrays',
+            'binary-search-trees': 'Binary Search Trees',
+            'binary-trees': 'Binary Trees',
+            'dynamic-programming': 'Dynamic Programming',
+            'graphs': 'Graphs',
+            'linked-lists': 'Linked Lists',
+            'recursion': 'Recursion',
+            'famous-algorithms': 'Famous Algorithms'
+        };
+
+        var html = '';
+        Object.keys(problemsData).forEach(function(cat) {
+            var count = problemsData[cat].length;
+            var displayName = categoryNames[cat] || cat;
+            html += `
+                <label class="pdf-export-category">
+                    <input type="checkbox" name="export-cat" value="${cat}" checked>
+                    <span class="pdf-export-category-name">${displayName}</span>
+                    <span class="pdf-export-category-count">${count}</span>
+                </label>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    window.closeExportModal = function() {
+        var modal = document.getElementById('pdf-export-modal');
+        if (modal) modal.style.display = 'none';
+    };
+
+    window.toggleAllCategories = function(checked) {
+        var checkboxes = document.querySelectorAll('input[name="export-cat"]');
+        checkboxes.forEach(function(cb) { cb.checked = checked; });
+    };
+
+    window.generateProblemsPDF = async function() {
+        var btnText = document.getElementById('export-btn-text');
+        var btnSpinner = document.getElementById('export-btn-spinner');
+        btnText.style.display = 'none';
+        btnSpinner.style.display = 'inline';
+
+        try {
+            var includeProblems = document.getElementById('export-problems').checked;
+            var includeSolutions = document.getElementById('export-solutions').checked;
+
+            var selectedCategories = [];
+            document.querySelectorAll('input[name="export-cat"]:checked').forEach(function(cb) {
+                selectedCategories.push(cb.value);
+            });
+
+            if (selectedCategories.length === 0) {
+                alert('Please select at least one category');
+                return;
+            }
+
+            // Build PDF content
+            var pdfContent = await buildPDFContent(selectedCategories, includeProblems, includeSolutions);
+
+            // Create and download PDF using browser print
+            printToPDF(pdfContent);
+
+        } catch (err) {
+            console.error('PDF generation error:', err);
+            alert('Error generating PDF: ' + err.message);
+        } finally {
+            btnText.style.display = 'inline';
+            btnSpinner.style.display = 'none';
+        }
+    };
+
+    async function buildPDFContent(categories, includeProblems, includeSolutions) {
+        var content = `
+            <html>
+            <head>
+                <title>200 Must Solve Problems</title>
+                <style>
+                    @page { size: A4; margin: 15mm; }
+                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; line-height: 1.6; color: #1e293b; }
+                    h1 { font-size: 24px; color: #0f172a; border-bottom: 2px solid #3b82f6; padding-bottom: 8px; }
+                    h2 { font-size: 18px; color: #1e40af; margin-top: 24px; page-break-after: avoid; }
+                    h3 { font-size: 14px; color: #374151; margin-top: 16px; }
+                    .problem { margin-bottom: 24px; padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #3b82f6; page-break-inside: avoid; }
+                    .problem-title { font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 8px; }
+                    .problem-meta { font-size: 11px; color: #64748b; margin-bottom: 12px; }
+                    .problem-meta .difficulty { padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+                    .problem-meta .easy { background: #dcfce7; color: #166534; }
+                    .problem-meta .medium { background: #fef3c7; color: #a16207; }
+                    .problem-meta .hard { background: #fee2e2; color: #b91c1c; }
+                    .example { background: #fff; padding: 12px; border-radius: 6px; margin: 8px 0; border: 1px solid #e2e8f0; }
+                    .example-label { font-weight: 600; color: #475569; font-size: 11px; margin-bottom: 4px; }
+                    pre { background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-family: 'SF Mono', Consolas, monospace; font-size: 11px; overflow-x: auto; white-space: pre-wrap; }
+                    .approach { margin: 16px 0; padding: 12px; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; }
+                    .approach-title { font-weight: 600; color: #1e293b; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+                    .approach-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: #dbeafe; color: #1e40af; }
+                    .explanation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+                    .explanation-item { padding: 8px; background: #f8fafc; border-radius: 4px; border-left: 3px solid #3b82f6; }
+                    .explanation-label { font-size: 10px; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
+                    .explanation-content { font-size: 11px; color: #374151; }
+                    .page-break { page-break-before: always; }
+                    .category-header { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; padding: 16px; border-radius: 8px; margin: 24px 0 16px 0; }
+                    .category-header h2 { color: white; border: none; margin: 0; padding: 0; }
+                    .alt-problem { margin-left: 20px; border-left-color: #94a3b8; }
+                </style>
+            </head>
+            <body>
+                <h1>200 Must Solve Problems</h1>
+                <p style="color:#64748b;">Comprehensive problem collection with solutions and explanations</p>
+        `;
+
+        for (var i = 0; i < categories.length; i++) {
+            var cat = categories[i];
+            var problems = problemsData[cat];
+
+            content += `<div class="category-header"><h2>${formatCategoryName(cat)}</h2></div>`;
+
+            for (var j = 0; j < problems.length; j++) {
+                var problem = problems[j];
+
+                if (includeProblems) {
+                    content += await renderProblemForPDF(cat, problem, false);
+
+                    // Include similar/alternative problems
+                    if (problem.similar && problem.similar.length > 0) {
+                        for (var k = 0; k < problem.similar.length; k++) {
+                            content += await renderProblemForPDF(cat, problem, true, k);
+                        }
+                    }
+                }
+
+                if (includeSolutions) {
+                    content += await renderSolutionForPDF(cat, problem);
+                }
+
+                content += '<hr style="border:none;border-top:1px dashed #e2e8f0;margin:20px 0;">';
+            }
+
+            if (i < categories.length - 1) {
+                content += '<div class="page-break"></div>';
+            }
+        }
+
+        content += '</body></html>';
+        return content;
+    }
+
+    function formatCategoryName(cat) {
+        var names = {
+            'arrays': 'Arrays',
+            'binary-search-trees': 'Binary Search Trees',
+            'binary-trees': 'Binary Trees',
+            'dynamic-programming': 'Dynamic Programming',
+            'graphs': 'Graphs',
+            'linked-lists': 'Linked Lists',
+            'recursion': 'Recursion',
+            'famous-algorithms': 'Famous Algorithms'
+        };
+        return names[cat] || cat;
+    }
+
+    async function renderProblemForPDF(category, problem, isAlt, altIdx) {
+        var html = '<div class="problem' + (isAlt ? ' alt-problem' : '') + '">';
+        var title = isAlt ? problem.similar[altIdx].name : problem.name;
+        var id = isAlt ? problem.similar[altIdx].id : problem.id;
+
+        html += '<div class="problem-title">' + (isAlt ? '↳ Alt: ' : '') + escapeHtml(title) + '</div>';
+        html += '<div class="problem-meta">';
+        html += '<span class="difficulty ' + problem.difficulty + '">' + problem.difficulty.toUpperCase() + '</span>';
+        if (problem.tags) {
+            html += ' &nbsp; Tags: ' + problem.tags.join(', ');
+        }
+        html += '</div>';
+
+        // Fetch problem content for examples
+        try {
+            var basePath = '/problems/200-must-solve/' + category + '/' + id;
+            var mdPath = basePath + '/problem.md';
+
+            var response = await fetch(mdPath);
+            if (response.ok) {
+                var mdContent = await response.text();
+                var examples = extractExamplesFromMd(mdContent);
+
+                if (examples.length > 0) {
+                    html += '<div class="example">';
+                    html += '<div class="example-label">Example I/O:</div>';
+                    examples.forEach(function(ex, idx) {
+                        html += '<div style="margin:8px 0;"><strong>Example ' + (idx + 1) + ':</strong></div>';
+                        html += '<pre>Input: ' + escapeHtml(ex.input) + '\nOutput: ' + escapeHtml(ex.output) + '</pre>';
+                    });
+                    html += '</div>';
+                }
+            }
+        } catch (e) {
+            // Skip examples if can't fetch
+        }
+
+        html += '</div>';
+        return html;
+    }
+
+    async function renderSolutionForPDF(category, problem) {
+        var html = '<div class="solution-section">';
+        html += '<h3>Solutions for: ' + escapeHtml(problem.name) + '</h3>';
+
+        try {
+            var basePath = '/problems/200-must-solve/' + category + '/' + problem.id;
+            var pyResponse = await fetch(basePath + '/python_code.py');
+            var pythonCode = pyResponse.ok ? await pyResponse.text() : '';
+
+            if (pythonCode) {
+                var approaches = parseApproaches(pythonCode, 'python');
+
+                if (approaches.length > 0) {
+                    approaches.forEach(function(approach, idx) {
+                        html += '<div class="approach">';
+                        html += '<div class="approach-title">';
+                        html += '<span>' + approach.number + '. ' + escapeHtml(approach.title) + '</span>';
+                        if (approach.isRecommended) {
+                            html += '<span class="approach-badge" style="background:#dcfce7;color:#166534;">Best Choice</span>';
+                        }
+                        html += '</div>';
+
+                        // Explanations grid
+                        html += '<div class="explanation-grid">';
+
+                        if (approach.timeComplexity) {
+                            html += '<div class="explanation-item" style="border-left-color:#3b82f6;">';
+                            html += '<div class="explanation-label">Time Complexity</div>';
+                            html += '<div class="explanation-content">' + escapeHtml(approach.timeComplexity) + '</div>';
+                            html += '</div>';
+                        }
+
+                        if (approach.spaceComplexity) {
+                            html += '<div class="explanation-item" style="border-left-color:#8b5cf6;">';
+                            html += '<div class="explanation-label">Space Complexity</div>';
+                            html += '<div class="explanation-content">' + escapeHtml(approach.spaceComplexity) + '</div>';
+                            html += '</div>';
+                        }
+
+                        html += '<div class="explanation-item" style="border-left-color:#10b981;">';
+                        html += '<div class="explanation-label">How It Works</div>';
+                        html += '<div class="explanation-content">' + getFlowExplanation(approach) + '</div>';
+                        html += '</div>';
+
+                        html += '<div class="explanation-item" style="border-left-color:#f59e0b;">';
+                        html += '<div class="explanation-label">Edge Cases</div>';
+                        html += '<div class="explanation-content">' + getEdgeCases(approach) + '</div>';
+                        html += '</div>';
+
+                        html += '<div class="explanation-item" style="border-left-color:#22c55e;">';
+                        html += '<div class="explanation-label">Best Performance</div>';
+                        html += '<div class="explanation-content">' + getBestCase(approach) + '</div>';
+                        html += '</div>';
+
+                        html += '<div class="explanation-item" style="border-left-color:#ef4444;">';
+                        html += '<div class="explanation-label">Worst Performance</div>';
+                        html += '<div class="explanation-content">' + getWorstCase(approach) + '</div>';
+                        html += '</div>';
+
+                        html += '</div>'; // end explanation-grid
+
+                        // Code
+                        html += '<pre>' + escapeHtml(approach.code) + '</pre>';
+
+                        html += '</div>'; // end approach
+                    });
+                } else {
+                    html += '<pre>' + escapeHtml(filterSolutionCode(pythonCode, 'python')) + '</pre>';
+                }
+            }
+        } catch (e) {
+            html += '<p style="color:#94a3b8;">Solutions not available</p>';
+        }
+
+        html += '</div>';
+        return html;
+    }
+
+    function extractExamplesFromMd(mdContent) {
+        var examples = [];
+        var exampleRegex = /\*\*Example\s*\d*:?\*\*\s*[\r\n]+```[\s\S]*?Input:\s*([^\n]+)[\s\S]*?Output:\s*([^\n]+)/gi;
+        var match;
+
+        while ((match = exampleRegex.exec(mdContent)) !== null) {
+            examples.push({
+                input: match[1].trim(),
+                output: match[2].trim()
+            });
+        }
+
+        // Try alternate format
+        if (examples.length === 0) {
+            var altRegex = /Input:\s*([^\n]+)[\s\S]*?Output:\s*([^\n]+)/gi;
+            while ((match = altRegex.exec(mdContent)) !== null) {
+                examples.push({
+                    input: match[1].trim(),
+                    output: match[2].trim()
+                });
+                if (examples.length >= 3) break;
+            }
+        }
+
+        return examples.slice(0, 3);
+    }
+
+    function printToPDF(content) {
+        var printWindow = window.open('', '_blank');
+        printWindow.document.write(content);
+        printWindow.document.close();
+
+        // Wait for content to load then print
+        printWindow.onload = function() {
+            setTimeout(function() {
+                printWindow.print();
+            }, 500);
+        };
+
+        window.closeExportModal();
+    }
 })();
