@@ -1850,8 +1850,9 @@ article pre code {
     font-family: 'Fira Code', 'Consolas', monospace !important;
     font-size: 0.9rem !important;
     line-height: 1.6 !important;
-    white-space: pre-wrap !important;
-    word-wrap: break-word !important;
+    white-space: pre !important;
+    word-wrap: normal !important;
+    word-break: normal !important;
 }
 
 /* Inline code styling */
@@ -1863,7 +1864,7 @@ article pre code {
     font-size: 0.9em;
 }
 
-/* Mobile code blocks - ensure readability */
+/* Mobile code blocks - preserve formatting, allow horizontal scroll */
 @media screen and (max-width: 768px) {
     .code-example,
     .topic-content pre,
@@ -1871,6 +1872,8 @@ article pre code {
     article pre {
         padding: 12px !important;
         margin: 12px 0 !important;
+        overflow-x: auto !important;
+        max-width: 100% !important;
     }
 
     .code-example pre,
@@ -1880,5 +1883,17 @@ article pre code {
     article pre code {
         font-size: 0.75rem !important;
         line-height: 1.5 !important;
+        white-space: pre !important;
+        word-wrap: normal !important;
+        word-break: normal !important;
+        overflow-wrap: normal !important;
+    }
+
+    /* Exclude code blocks from aggressive word breaking */
+    pre, pre code, pre * {
+        word-break: normal !important;
+        word-wrap: normal !important;
+        overflow-wrap: normal !important;
+        max-width: none !important;
     }
 }
