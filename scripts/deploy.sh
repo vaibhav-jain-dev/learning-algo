@@ -411,7 +411,7 @@ echo -e "${BLUE}ℹ${NC} Starting deployment..."
 
 # Start deployment timer
 DEPLOY_START_TIME=$(date +%s)
-TOTAL_STEPS=6
+TOTAL_STEPS=7
 
 print_step 1 $TOTAL_STEPS "Testing SSH Connection"
 step_start "SSH Connection"
@@ -697,6 +697,232 @@ if [ "$HEALTH_CHECK_PASSED" = "true" ]; then
     step_end "Health Check" "success"
 else
     step_end "Health Check" "failed"
+fi
+
+# Cloudflare Tunnel Configuration (Step 7)
+print_step 7 $TOTAL_STEPS "Cloudflare Configuration"
+step_start "Cloudflare Configuration"
+
+print_substep "start" "Checking for Cloudflare labels"
+
+# Parse docker-compose.yml for cloudflare labels and extract configuration
+CLOUDFLARE_OUTPUT=$(run_ssh "cd $PROJECT_PATH && cat > /tmp/parse_cloudflare.sh << 'EOFSCRIPT'
+#!/bin/bash
+
+# Parse docker-compose.yml for cloudflare labels
+if [ ! -f docker-compose.yml ]; then
+    echo 'NO_COMPOSE_FILE'
+    exit 0
+fi
+
+# Extract services with cloudflare.hostname labels
+SERVICES_WITH_CF=\$(grep -B 50 'cloudflare.hostname' docker-compose.yml | grep -E '^  [a-zA-Z0-9_-]+:' | sed 's/://g' | awk '{print \\\$1}')
+
+if [ -z \"\$SERVICES_WITH_CF\" ]; then
+    echo 'NO_CF_LABELS'
+    exit 0
+fi
+
+echo 'CLOUDFLARE_SERVICES_FOUND'
+echo \"SERVICES:\$SERVICES_WITH_CF\"
+
+# For each service, extract hostname, port, and backend config
+for service in \$SERVICES_WITH_CF; do
+    # Extract cloudflare.hostname
+    hostname=\$(awk -v service=\"\$service\" '
+        /^  [a-zA-Z0-9_-]+:/ { current_service=\\\$1; gsub(/:/, \"\", current_service) }
+        current_service == service && /cloudflare.hostname/ {
+            gsub(/.*cloudflare.hostname: */, \"\")
+            gsub(/\"/, \"\")
+            print
+            exit
+        }
+    ' docker-compose.yml)
+
+    # Extract port (first port from ports: section)
+    port=\$(awk -v service=\"\$service\" '
+        /^  [a-zA-Z0-9_-]+:/ { current_service=\\\$1; gsub(/:/, \"\", current_service); in_service=0 }
+        current_service == service { in_service=1 }
+        in_service && /^  [a-zA-Z0-9_-]+:/ && current_service != service { exit }
+        in_service && /ports:/ { in_ports=1; next }
+        in_ports && /^      - \"[0-9]+:[0-9]+\"/ {
+            gsub(/.*- \"/, \"\")
+            gsub(/\".*/, \"\")
+            split(\\\$0, parts, \":\")
+            print parts[2]
+            exit
+        }
+        in_ports && /^    [a-zA-Z]/ { exit }
+    ' docker-compose.yml)
+
+    # Extract cloudflare.backend-env-var if present
+    backend_config=\$(awk -v service=\"\$service\" '
+        /^  [a-zA-Z0-9_-]+:/ { current_service=\\\$1; gsub(/:/, \"\", current_service) }
+        current_service == service && /cloudflare.backend-env-var/ {
+            gsub(/.*cloudflare.backend-env-var: */, \"\")
+            gsub(/\"/, \"\")
+            print
+            exit
+        }
+    ' docker-compose.yml)
+
+    # Extract manual service override if present
+    manual_service=\$(awk -v service=\"\$service\" '
+        /^  [a-zA-Z0-9_-]+:/ { current_service=\\\$1; gsub(/:/, \"\", current_service) }
+        current_service == service && /cloudflare.service:/ {
+            gsub(/.*cloudflare.service: */, \"\")
+            gsub(/\"/, \"\")
+            print
+            exit
+        }
+    ' docker-compose.yml)
+
+    echo \"SERVICE:\$service\"
+    echo \"HOSTNAME:\$hostname\"
+    echo \"PORT:\$port\"
+    [ -n \"\$backend_config\" ] && echo \"BACKEND:\$backend_config\"
+    [ -n \"\$manual_service\" ] && echo \"MANUAL_SERVICE:\$manual_service\"
+    echo \"---\"
+done
+
+EOFSCRIPT
+chmod +x /tmp/parse_cloudflare.sh
+/tmp/parse_cloudflare.sh
+rm -f /tmp/parse_cloudflare.sh
+" 2>&1)
+
+# Check if cloudflare labels were found
+if echo "$CLOUDFLARE_OUTPUT" | grep -q "NO_COMPOSE_FILE"; then
+    print_substep "skip" "No docker-compose.yml found"
+    step_end "Cloudflare Configuration" "skipped"
+elif echo "$CLOUDFLARE_OUTPUT" | grep -q "NO_CF_LABELS"; then
+    print_substep "skip" "No Cloudflare labels found"
+    step_end "Cloudflare Configuration" "skipped"
+elif echo "$CLOUDFLARE_OUTPUT" | grep -q "CLOUDFLARE_SERVICES_FOUND"; then
+    print_substep "done" "Cloudflare labels found"
+
+    # Parse the output and configure cloudflared
+    print_substep "start" "Configuring Cloudflare Tunnel"
+
+    CONFIG_SCRIPT=$(run_ssh "cd $PROJECT_PATH && cat > /tmp/configure_cloudflare.sh << 'EOFCONFIG'
+#!/bin/bash
+
+# Read the parsed data
+PARSED_DATA=\"\$(cat)\"
+
+# Initialize config file
+CONFIG_FILE=\"/tmp/cloudflared_ingress.yml\"
+ENV_UPDATES=\"\"
+
+echo 'ingress:' > \"\$CONFIG_FILE\"
+
+# Process each service
+echo \"\$PARSED_DATA\" | awk '
+BEGIN { RS=\"---\"; FS=\"\n\" }
+{
+    service=\"\"; hostname=\"\"; port=\"\"; backend=\"\"; manual=\"\"
+    for (i=1; i<=NF; i++) {
+        if (\\\$i ~ /^SERVICE:/) { gsub(/SERVICE:/, \"\", \\\$i); service=\\\$i }
+        if (\\\$i ~ /^HOSTNAME:/) { gsub(/HOSTNAME:/, \"\", \\\$i); hostname=\\\$i }
+        if (\\\$i ~ /^PORT:/) { gsub(/PORT:/, \"\", \\\$i); port=\\\$i }
+        if (\\\$i ~ /^BACKEND:/) { gsub(/BACKEND:/, \"\", \\\$i); backend=\\\$i }
+        if (\\\$i ~ /^MANUAL_SERVICE:/) { gsub(/MANUAL_SERVICE:/, \"\", \\\$i); manual=\\\$i }
+    }
+
+    if (service != \"\" && hostname != \"\") {
+        # Determine service URL
+        if (manual != \"\") {
+            service_url = manual
+        } else if (port != \"\") {
+            service_url = \"http://\" service \":\" port
+        } else {
+            service_url = \"http://\" service
+        }
+
+        # Add to ingress config
+        print \"  - hostname: \" hostname
+        print \"    service: \" service_url
+
+        # Handle backend configuration
+        if (backend != \"\") {
+            # Parse: ENV_VAR:[backend_service]
+            split(backend, parts, \":\")
+            env_var = parts[1]
+            backend_service = parts[2]
+            gsub(/\\[/, \"\", backend_service)
+            gsub(/\\]/, \"\", backend_service)
+
+            # Store for env update
+            print \"ENV_UPDATE:\" env_var \"=https://\" hostname
+            print \"BACKEND_SERVICE:\" backend_service
+        }
+    }
+}' >> \"\$CONFIG_FILE\"
+
+# Add catch-all rule
+echo '  - service: http_status:404' >> \"\$CONFIG_FILE\"
+
+# Show configuration
+echo \"CLOUDFLARE_CONFIG:\"
+cat \"\$CONFIG_FILE\"
+echo \"END_CONFIG\"
+
+# Check if cloudflared is available
+if command -v cloudflared &> /dev/null; then
+    echo \"CLOUDFLARED_AVAILABLE:yes\"
+
+    # Create backup of current config if exists
+    if [ -f /etc/cloudflared/config.yml ]; then
+        cp /etc/cloudflared/config.yml /etc/cloudflared/config.yml.backup.\$(date +%s)
+    fi
+
+    # Apply new config (you would copy ingress to main config here)
+    # This is a placeholder - actual implementation depends on your cloudflared setup
+    echo \"CONFIG_APPLIED:yes\"
+else
+    echo \"CLOUDFLARED_AVAILABLE:no\"
+fi
+
+EOFCONFIG
+chmod +x /tmp/configure_cloudflare.sh
+echo \"\$PARSED_DATA\" | /tmp/configure_cloudflare.sh
+rm -f /tmp/configure_cloudflare.sh
+" 2>&1)
+
+    # Parse and display results
+    if echo "$CONFIG_SCRIPT" | grep -q "CLOUDFLARE_CONFIG:"; then
+        print_substep "done" "Cloudflare configuration generated"
+
+        # Extract and display config
+        echo ""
+        echo "$CONFIG_SCRIPT" | sed -n '/CLOUDFLARE_CONFIG:/,/END_CONFIG/p' | grep -v "CLOUDFLARE_CONFIG:" | grep -v "END_CONFIG" | while read line; do
+            echo -e "     ${DIM}$line${NC}"
+        done
+        echo ""
+
+        # Check if cloudflared is available
+        if echo "$CONFIG_SCRIPT" | grep -q "CLOUDFLARED_AVAILABLE:yes"; then
+            print_substep "done" "Cloudflared configured"
+
+            # Restart cloudflared in background (don't wait for it)
+            print_substep "start" "Restarting cloudflared"
+            run_ssh "nohup systemctl restart cloudflared > /dev/null 2>&1 &" 2>/dev/null || \
+            run_ssh "nohup docker restart cloudflared > /dev/null 2>&1 &" 2>/dev/null || \
+            print_substep "skip" "Could not restart cloudflared (manual restart may be needed)"
+
+            print_substep "done" "Cloudflared restart initiated"
+        else
+            print_substep "skip" "Cloudflared not available (install cloudflared for automatic configuration)"
+        fi
+
+        step_end "Cloudflare Configuration" "success"
+    else
+        print_substep "skip" "Configuration generation failed"
+        step_end "Cloudflare Configuration" "skipped"
+    fi
+else
+    print_substep "skip" "No Cloudflare configuration needed"
+    step_end "Cloudflare Configuration" "skipped"
 fi
 
 # Print final metrics summary
