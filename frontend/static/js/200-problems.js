@@ -4518,38 +4518,47 @@
         loadProblemDescriptions(category, problems);
     };
 
-    // Load problem descriptions and I/O examples
-    async function loadProblemDescriptions(category, problems) {
+    // Load problem descriptions and I/O examples from JS definitions
+    function loadProblemDescriptions(category, problems) {
         for (var i = 0; i < problems.length; i++) {
             var p = problems[i];
             var descEl = document.getElementById('desc-' + p.id);
             if (!descEl) continue;
 
-            try {
-                var basePath = '/problems/200-must-solve/' + category + '/' + p.id;
-                var response = await fetch(basePath + '/problem.md');
-                if (response.ok) {
-                    var mdContent = await response.text();
-                    var desc = extractProblemDescription(mdContent);
-                    var examples = extractExamplesFromMd(mdContent);
+            // Get problem data from JS definitions (window.Problems)
+            var problemKey = category + '/' + p.id;
+            var problemData = window.Problems && window.Problems[problemKey];
 
-                    var descHtml = '';
-                    if (desc) {
-                        descHtml += '<div style="color: #374151; margin-bottom: 0.4rem;">' + escapeHtml(desc.substring(0, 150)) + (desc.length > 150 ? '...' : '') + '</div>';
-                    }
-                    if (examples.length > 0) {
-                        descHtml += '<div style="background: #f8fafc; padding: 0.4rem 0.6rem; border-radius: 4px; font-family: monospace; font-size: 0.75rem;">';
-                        descHtml += '<strong>I/O:</strong> ' + escapeHtml(examples[0].input.substring(0, 50)) + ' → ' + escapeHtml(examples[0].output.substring(0, 30));
-                        descHtml += '</div>';
-                    }
+            if (problemData) {
+                var descHtml = '';
 
-                    if (descHtml) {
-                        descEl.innerHTML = descHtml;
-                        descEl.style.display = 'block';
-                    }
+                // Add description
+                if (problemData.description) {
+                    var desc = problemData.description;
+                    descHtml += '<div style="color: #374151; margin-bottom: 0.5rem; line-height: 1.5;">' + escapeHtml(desc.substring(0, 200)) + (desc.length > 200 ? '...' : '') + '</div>';
                 }
-            } catch (e) {
-                // Skip on error
+
+                // Add first example I/O
+                if (problemData.examples && problemData.examples.length > 0) {
+                    var ex = problemData.examples[0];
+                    var inputStr = typeof ex.input === 'object' ? JSON.stringify(ex.input) : String(ex.input);
+                    var outputStr = typeof ex.output === 'object' ? JSON.stringify(ex.output) : String(ex.output);
+
+                    // Truncate if too long
+                    if (inputStr.length > 60) inputStr = inputStr.substring(0, 60) + '...';
+                    if (outputStr.length > 40) outputStr = outputStr.substring(0, 40) + '...';
+
+                    descHtml += '<div style="background: #f1f5f9; padding: 0.5rem 0.75rem; border-radius: 6px; font-family: \'SF Mono\', Consolas, monospace; font-size: 0.8rem; border-left: 3px solid #3b82f6;">';
+                    descHtml += '<div style="color: #64748b; font-size: 0.7rem; margin-bottom: 0.25rem;">Example:</div>';
+                    descHtml += '<div><strong style="color: #059669;">Input:</strong> <span style="color: #1e293b;">' + escapeHtml(inputStr) + '</span></div>';
+                    descHtml += '<div><strong style="color: #dc2626;">Output:</strong> <span style="color: #1e293b;">' + escapeHtml(outputStr) + '</span></div>';
+                    descHtml += '</div>';
+                }
+
+                if (descHtml) {
+                    descEl.innerHTML = descHtml;
+                    descEl.style.display = 'block';
+                }
             }
         }
     }
@@ -11840,37 +11849,82 @@
         var html = '<div class="problem' + (isAlt ? ' alt-problem' : '') + '">';
         var title = isAlt ? problem.similar[altIdx].name : problem.name;
         var id = isAlt ? problem.similar[altIdx].id : problem.id;
+        var difficulty = isAlt ? (problem.similar[altIdx].difficulty || problem.difficulty) : problem.difficulty;
 
         html += '<div class="problem-title">' + (isAlt ? '↳ Alt: ' : '') + escapeHtml(title) + '</div>';
         html += '<div class="problem-meta">';
-        html += '<span class="difficulty ' + problem.difficulty + '">' + problem.difficulty.toUpperCase() + '</span>';
+        html += '<span class="difficulty ' + difficulty.toLowerCase() + '">' + difficulty.toUpperCase() + '</span>';
         if (problem.tags) {
             html += ' &nbsp; Tags: ' + problem.tags.join(', ');
         }
         html += '</div>';
 
-        // Fetch problem content for examples
-        try {
-            var basePath = '/problems/200-must-solve/' + category + '/' + id;
-            var mdPath = basePath + '/problem.md';
+        // Get problem data from JS definitions (window.Problems)
+        var problemKey = category + '/' + id;
+        var problemData = window.Problems && window.Problems[problemKey];
 
-            var response = await fetch(mdPath);
-            if (response.ok) {
-                var mdContent = await response.text();
-                var examples = extractExamplesFromMd(mdContent);
-
-                if (examples.length > 0) {
-                    html += '<div class="example">';
-                    html += '<div class="example-label">Example I/O:</div>';
-                    examples.forEach(function(ex, idx) {
-                        html += '<div style="margin:8px 0;"><strong>Example ' + (idx + 1) + ':</strong></div>';
-                        html += '<pre>Input: ' + escapeHtml(ex.input) + '\nOutput: ' + escapeHtml(ex.output) + '</pre>';
-                    });
-                    html += '</div>';
-                }
+        if (problemData) {
+            // Add description
+            if (problemData.description) {
+                html += '<div style="margin: 12px 0; color: #374151; line-height: 1.6;">';
+                html += '<div class="example-label">Description:</div>';
+                html += '<p style="margin: 4px 0;">' + escapeHtml(problemData.description) + '</p>';
+                html += '</div>';
             }
-        } catch (e) {
-            // Skip examples if can't fetch
+
+            // Add examples with I/O
+            if (problemData.examples && problemData.examples.length > 0) {
+                html += '<div class="example">';
+                html += '<div class="example-label">Example I/O:</div>';
+                problemData.examples.forEach(function(ex, idx) {
+                    html += '<div style="margin:8px 0;"><strong>Example ' + (idx + 1) + ':</strong></div>';
+                    var inputStr = typeof ex.input === 'object' ? JSON.stringify(ex.input, null, 2) : String(ex.input);
+                    var outputStr = typeof ex.output === 'object' ? JSON.stringify(ex.output, null, 2) : String(ex.output);
+                    html += '<pre>Input: ' + escapeHtml(inputStr) + '\nOutput: ' + escapeHtml(outputStr) + '</pre>';
+                    if (ex.explanation) {
+                        html += '<div style="margin: 4px 0 12px 0; font-size: 11px; color: #64748b;"><em>Explanation: ' + escapeHtml(ex.explanation) + '</em></div>';
+                    }
+                });
+                html += '</div>';
+            }
+
+            // Add complexity info
+            if (problemData.complexity) {
+                html += '<div style="margin: 8px 0; font-size: 11px; color: #475569;">';
+                if (problemData.complexity.time) {
+                    html += '<span style="margin-right: 16px;"><strong>Time:</strong> ' + escapeHtml(problemData.complexity.time) + '</span>';
+                }
+                if (problemData.complexity.space) {
+                    html += '<span><strong>Space:</strong> ' + escapeHtml(problemData.complexity.space) + '</span>';
+                }
+                html += '</div>';
+            }
+        } else {
+            // Fallback: try to fetch from ProblemRenderer
+            try {
+                if (window.ProblemRenderer && window.ProblemRenderer.get) {
+                    var rendererData = window.ProblemRenderer.get(category, id);
+                    if (rendererData && rendererData.examples) {
+                        if (rendererData.description) {
+                            html += '<div style="margin: 12px 0; color: #374151;">';
+                            html += '<div class="example-label">Description:</div>';
+                            html += '<p style="margin: 4px 0;">' + escapeHtml(rendererData.description) + '</p>';
+                            html += '</div>';
+                        }
+                        html += '<div class="example">';
+                        html += '<div class="example-label">Example I/O:</div>';
+                        rendererData.examples.forEach(function(ex, idx) {
+                            html += '<div style="margin:8px 0;"><strong>Example ' + (idx + 1) + ':</strong></div>';
+                            var inputStr = typeof ex.input === 'object' ? JSON.stringify(ex.input, null, 2) : String(ex.input);
+                            var outputStr = typeof ex.output === 'object' ? JSON.stringify(ex.output, null, 2) : String(ex.output);
+                            html += '<pre>Input: ' + escapeHtml(inputStr) + '\nOutput: ' + escapeHtml(outputStr) + '</pre>';
+                        });
+                        html += '</div>';
+                    }
+                }
+            } catch (e) {
+                // Skip if can't get data
+            }
         }
 
         html += '</div>';
