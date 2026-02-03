@@ -3139,6 +3139,62 @@ html, body {
         grid-template-columns: 1fr;
     }
 }
+
+/* Run Code Button */
+.run-code-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.5rem 1.25rem;
+    background: linear-gradient(135deg, #3776ab 0%, #306998 100%);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.run-code-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(55, 118, 171, 0.4);
+}
+
+.run-code-btn:disabled {
+    background: #64748b;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Code Output */
+.code-output {
+    margin-top: 0.5rem;
+}
+
+.code-output pre {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.success-output {
+    background: #0f172a;
+    border: 1px solid #10b98140;
+    color: #4ade80;
+}
+
+.error-output {
+    background: #1e0a0a;
+    border: 1px solid #ef444440;
+    color: #f87171;
+}
 </style>
 
 <script>
