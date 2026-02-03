@@ -11762,37 +11762,62 @@
             <head>
                 <title>200 Must Solve Problems</title>
                 <style>
-                    @page { size: A4; margin: 15mm; }
-                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; line-height: 1.6; color: #1e293b; }
-                    h1 { font-size: 24px; color: #0f172a; border-bottom: 2px solid #3b82f6; padding-bottom: 8px; }
-                    h2 { font-size: 18px; color: #1e40af; margin-top: 24px; page-break-after: avoid; }
-                    h3 { font-size: 14px; color: #374151; margin-top: 16px; }
-                    .problem { margin-bottom: 24px; padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #3b82f6; page-break-inside: avoid; }
-                    .problem-title { font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 8px; }
-                    .problem-meta { font-size: 11px; color: #64748b; margin-bottom: 12px; }
-                    .problem-meta .difficulty { padding: 2px 8px; border-radius: 4px; font-weight: 600; }
-                    .problem-meta .easy { background: #dcfce7; color: #166534; }
-                    .problem-meta .medium { background: #fef3c7; color: #a16207; }
-                    .problem-meta .hard { background: #fee2e2; color: #b91c1c; }
-                    .example { background: #fff; padding: 12px; border-radius: 6px; margin: 8px 0; border: 1px solid #e2e8f0; }
-                    .example-label { font-weight: 600; color: #475569; font-size: 11px; margin-bottom: 4px; }
-                    pre { background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-family: 'SF Mono', Consolas, monospace; font-size: 11px; overflow-x: auto; white-space: pre-wrap; }
-                    .approach { margin: 16px 0; padding: 12px; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; }
-                    .approach-title { font-weight: 600; color: #1e293b; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-                    .approach-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: #dbeafe; color: #1e40af; }
-                    .explanation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
-                    .explanation-item { padding: 8px; background: #f8fafc; border-radius: 4px; border-left: 3px solid #3b82f6; }
-                    .explanation-label { font-size: 10px; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
-                    .explanation-content { font-size: 11px; color: #374151; }
+                    @page { size: A4; margin: 12mm; }
+                    * { box-sizing: border-box; }
+                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 10px; line-height: 1.4; color: #1e293b; margin: 0; padding: 0; }
+                    h1 { font-size: 18px; color: #0f172a; border-bottom: 2px solid #3b82f6; padding-bottom: 6px; margin: 0 0 8px 0; }
+                    h2 { font-size: 14px; color: #1e40af; margin: 12px 0 8px 0; page-break-after: avoid; }
+                    h3 { font-size: 11px; color: #374151; margin: 8px 0 4px 0; }
+
+                    /* Compact problem card */
+                    .problem { margin-bottom: 10px; padding: 8px 10px; background: #f8fafc; border-radius: 4px; border-left: 3px solid #3b82f6; page-break-inside: avoid; }
+                    .problem-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+                    .problem-title { font-size: 11px; font-weight: 600; color: #1e293b; }
+                    .difficulty { font-size: 8px; padding: 1px 5px; border-radius: 3px; font-weight: 600; text-transform: uppercase; }
+                    .easy { background: #dcfce7; color: #166534; }
+                    .medium { background: #fef3c7; color: #a16207; }
+                    .hard { background: #fee2e2; color: #b91c1c; }
+                    .very-hard { background: #fae8ff; color: #86198f; }
+                    .tags { font-size: 8px; color: #64748b; }
+
+                    /* Description */
+                    .desc { font-size: 9px; color: #475569; margin: 4px 0; line-height: 1.3; }
+
+                    /* Compact I/O box */
+                    .io-box { background: #fff; padding: 4px 6px; border-radius: 3px; font-size: 8px; margin: 4px 0; border: 1px solid #e2e8f0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+                    .io-label { font-weight: 600; color: #64748b; }
+                    .io-arrow { color: #3b82f6; font-weight: bold; }
+                    .io-box code { background: #f1f5f9; padding: 1px 3px; border-radius: 2px; font-family: 'SF Mono', Consolas, monospace; font-size: 8px; word-break: break-all; }
+
+                    /* Complexity inline */
+                    .complexity { font-size: 8px; color: #64748b; display: flex; gap: 12px; }
+                    .complexity span { background: #f1f5f9; padding: 1px 4px; border-radius: 2px; }
+
+                    /* Solutions */
+                    .solution-section { margin: 6px 0; }
+                    .approach { margin: 6px 0; padding: 6px 8px; background: #fff; border-radius: 4px; border: 1px solid #e2e8f0; page-break-inside: avoid; }
+                    .approach-title { font-size: 10px; font-weight: 600; color: #1e293b; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+                    .approach-badge { font-size: 7px; padding: 1px 4px; border-radius: 3px; background: #dcfce7; color: #166534; }
+                    pre { background: #1e293b; color: #e2e8f0; padding: 6px; border-radius: 3px; font-family: 'SF Mono', Consolas, monospace; font-size: 8px; overflow-x: auto; white-space: pre-wrap; margin: 4px 0; }
+
+                    /* Explanation grid - compact */
+                    .explanation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 4px 0; }
+                    .explanation-item { padding: 4px 6px; background: #f8fafc; border-radius: 3px; border-left: 2px solid #3b82f6; }
+                    .explanation-label { font-size: 7px; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 2px; }
+                    .explanation-content { font-size: 8px; color: #374151; line-height: 1.3; }
+
+                    /* Category header - compact */
+                    .category-header { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; padding: 8px 12px; border-radius: 4px; margin: 12px 0 8px 0; }
+                    .category-header h2 { color: white; border: none; margin: 0; padding: 0; font-size: 13px; }
+
+                    .alt-problem { margin-left: 12px; border-left-color: #94a3b8; padding: 6px 8px; }
                     .page-break { page-break-before: always; }
-                    .category-header { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; padding: 16px; border-radius: 8px; margin: 24px 0 16px 0; }
-                    .category-header h2 { color: white; border: none; margin: 0; padding: 0; }
-                    .alt-problem { margin-left: 20px; border-left-color: #94a3b8; }
+                    hr { border: none; border-top: 1px dashed #e2e8f0; margin: 8px 0; }
                 </style>
             </head>
             <body>
                 <h1>200 Must Solve Problems</h1>
-                <p style="color:#64748b;">Comprehensive problem collection with solutions and explanations</p>
+                <p style="color:#64748b;font-size:9px;margin:0 0 10px 0;">Comprehensive problem collection with solutions and explanations</p>
         `;
 
         for (var i = 0; i < categories.length; i++) {
@@ -11851,79 +11876,66 @@
         var id = isAlt ? problem.similar[altIdx].id : problem.id;
         var difficulty = isAlt ? (problem.similar[altIdx].difficulty || problem.difficulty) : problem.difficulty;
 
-        html += '<div class="problem-title">' + (isAlt ? '↳ Alt: ' : '') + escapeHtml(title) + '</div>';
-        html += '<div class="problem-meta">';
+        html += '<div class="problem-header">';
+        html += '<span class="problem-title">' + (isAlt ? '↳ ' : '') + escapeHtml(title) + '</span>';
         html += '<span class="difficulty ' + difficulty.toLowerCase() + '">' + difficulty.toUpperCase() + '</span>';
-        if (problem.tags) {
-            html += ' &nbsp; Tags: ' + problem.tags.join(', ');
+        if (problem.tags && !isAlt) {
+            html += '<span class="tags">' + problem.tags.join(', ') + '</span>';
         }
         html += '</div>';
 
-        // Get problem data from JS definitions (window.Problems)
+        // Get problem data from ProblemRenderer._problems or window.Problems
         var problemKey = category + '/' + id;
-        var problemData = window.Problems && window.Problems[problemKey];
+        var problemData = null;
+
+        // Try ProblemRenderer first (most reliable)
+        if (window.ProblemRenderer && window.ProblemRenderer._problems) {
+            problemData = window.ProblemRenderer._problems[problemKey];
+        }
+        // Fallback to window.Problems
+        if (!problemData && window.Problems) {
+            problemData = window.Problems[problemKey];
+        }
+        // Try ProblemRenderer.get() method
+        if (!problemData && window.ProblemRenderer && window.ProblemRenderer.get) {
+            problemData = window.ProblemRenderer.get(problemKey);
+        }
 
         if (problemData) {
-            // Add description
+            // Add description (truncated)
             if (problemData.description) {
-                html += '<div style="margin: 12px 0; color: #374151; line-height: 1.6;">';
-                html += '<div class="example-label">Description:</div>';
-                html += '<p style="margin: 4px 0;">' + escapeHtml(problemData.description) + '</p>';
-                html += '</div>';
+                var desc = problemData.description;
+                if (desc.length > 250) desc = desc.substring(0, 250) + '...';
+                html += '<div class="desc">' + escapeHtml(desc) + '</div>';
             }
 
-            // Add examples with I/O
+            // Add first example I/O only (compact, inline format)
             if (problemData.examples && problemData.examples.length > 0) {
-                html += '<div class="example">';
-                html += '<div class="example-label">Example I/O:</div>';
-                problemData.examples.forEach(function(ex, idx) {
-                    html += '<div style="margin:8px 0;"><strong>Example ' + (idx + 1) + ':</strong></div>';
-                    var inputStr = typeof ex.input === 'object' ? JSON.stringify(ex.input, null, 2) : String(ex.input);
-                    var outputStr = typeof ex.output === 'object' ? JSON.stringify(ex.output, null, 2) : String(ex.output);
-                    html += '<pre>Input: ' + escapeHtml(inputStr) + '\nOutput: ' + escapeHtml(outputStr) + '</pre>';
-                    if (ex.explanation) {
-                        html += '<div style="margin: 4px 0 12px 0; font-size: 11px; color: #64748b;"><em>Explanation: ' + escapeHtml(ex.explanation) + '</em></div>';
-                    }
-                });
+                var ex = problemData.examples[0];
+                var inputStr = typeof ex.input === 'object' ? JSON.stringify(ex.input) : String(ex.input);
+                var outputStr = typeof ex.output === 'object' ? JSON.stringify(ex.output) : String(ex.output);
+
+                // Truncate to 200 chars max
+                if (inputStr.length > 200) inputStr = inputStr.substring(0, 200) + '...';
+                if (outputStr.length > 100) outputStr = outputStr.substring(0, 100) + '...';
+
+                html += '<div class="io-box">';
+                html += '<span class="io-label">Input:</span> <code>' + escapeHtml(inputStr) + '</code>';
+                html += ' <span class="io-arrow">→</span> ';
+                html += '<span class="io-label">Output:</span> <code>' + escapeHtml(outputStr) + '</code>';
                 html += '</div>';
             }
 
-            // Add complexity info
+            // Add complexity inline
             if (problemData.complexity) {
-                html += '<div style="margin: 8px 0; font-size: 11px; color: #475569;">';
+                html += '<div class="complexity">';
                 if (problemData.complexity.time) {
-                    html += '<span style="margin-right: 16px;"><strong>Time:</strong> ' + escapeHtml(problemData.complexity.time) + '</span>';
+                    html += '<span>Time: ' + escapeHtml(problemData.complexity.time) + '</span>';
                 }
                 if (problemData.complexity.space) {
-                    html += '<span><strong>Space:</strong> ' + escapeHtml(problemData.complexity.space) + '</span>';
+                    html += '<span>Space: ' + escapeHtml(problemData.complexity.space) + '</span>';
                 }
                 html += '</div>';
-            }
-        } else {
-            // Fallback: try to fetch from ProblemRenderer
-            try {
-                if (window.ProblemRenderer && window.ProblemRenderer.get) {
-                    var rendererData = window.ProblemRenderer.get(category, id);
-                    if (rendererData && rendererData.examples) {
-                        if (rendererData.description) {
-                            html += '<div style="margin: 12px 0; color: #374151;">';
-                            html += '<div class="example-label">Description:</div>';
-                            html += '<p style="margin: 4px 0;">' + escapeHtml(rendererData.description) + '</p>';
-                            html += '</div>';
-                        }
-                        html += '<div class="example">';
-                        html += '<div class="example-label">Example I/O:</div>';
-                        rendererData.examples.forEach(function(ex, idx) {
-                            html += '<div style="margin:8px 0;"><strong>Example ' + (idx + 1) + ':</strong></div>';
-                            var inputStr = typeof ex.input === 'object' ? JSON.stringify(ex.input, null, 2) : String(ex.input);
-                            var outputStr = typeof ex.output === 'object' ? JSON.stringify(ex.output, null, 2) : String(ex.output);
-                            html += '<pre>Input: ' + escapeHtml(inputStr) + '\nOutput: ' + escapeHtml(outputStr) + '</pre>';
-                        });
-                        html += '</div>';
-                    }
-                }
-            } catch (e) {
-                // Skip if can't get data
             }
         }
 
