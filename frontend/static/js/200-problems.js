@@ -6414,6 +6414,238 @@
         });
     }
 
+    // Parse solution code to extract individual approaches
+    function parseApproaches(code, lang) {
+        if (!code) return [];
+        var approaches = [];
+        var lines = code.split('\n');
+        var currentApproach = null;
+        var inApproachHeader = false;
+        var headerLines = [];
+
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i];
+            var commentPrefix = lang === 'python' ? '#' : '//';
+            var approachMatch = line.match(/APPROACH\s*(\d+):\s*(.+)/i);
+
+            if (approachMatch) {
+                // Save previous approach
+                if (currentApproach) {
+                    approaches.push(currentApproach);
+                }
+                // Start new approach
+                currentApproach = {
+                    number: parseInt(approachMatch[1]),
+                    title: approachMatch[2].replace(/[⭐✓⚠️✗]/g, '').trim(),
+                    isRecommended: line.includes('RECOMMENDED') || line.includes('⭐'),
+                    isSuboptimal: line.includes('SUBOPTIMAL') || line.includes('Less Optimal') || line.includes('✗'),
+                    isLearning: line.includes('Learning') || line.includes('⚠️'),
+                    timeComplexity: '',
+                    spaceComplexity: '',
+                    whyBest: '',
+                    whenToUse: '',
+                    whenNotToUse: '',
+                    code: '',
+                    headerLines: []
+                };
+                inApproachHeader = true;
+                headerLines = [line];
+            } else if (inApproachHeader) {
+                headerLines.push(line);
+                // Extract time complexity
+                var timeMatch = line.match(/Time\s*Complexity:\s*(.+)/i);
+                if (timeMatch) currentApproach.timeComplexity = timeMatch[1].trim();
+
+                // Extract space complexity
+                var spaceMatch = line.match(/Space\s*Complexity:\s*(.+)/i);
+                if (spaceMatch) currentApproach.spaceComplexity = spaceMatch[1].trim();
+
+                // Extract why best/when to use
+                if (line.includes('WHY THIS IS BEST') || line.includes('WHY IT\'S BEST')) {
+                    currentApproach.whyBest = extractMultilineComment(lines, i + 1, commentPrefix);
+                }
+                if (line.includes('WHEN TO USE')) {
+                    currentApproach.whenToUse = extractMultilineComment(lines, i + 1, commentPrefix);
+                }
+                if (line.includes('WHEN NOT TO USE')) {
+                    currentApproach.whenNotToUse = extractMultilineComment(lines, i + 1, commentPrefix);
+                }
+                if (line.includes('WHY IT\'S SUBOPTIMAL') || line.includes('SUBOPTIMAL')) {
+                    currentApproach.whySuboptimal = extractMultilineComment(lines, i + 1, commentPrefix);
+                }
+
+                // End of header (next function definition or next approach)
+                if (line.match(/^(def |func |function )/)) {
+                    inApproachHeader = false;
+                    currentApproach.code = line;
+                }
+            } else if (currentApproach) {
+                // Check if we hit the next approach or test section
+                if (line.match(/APPROACH\s*\d+:/i) || line.match(/TEST\s*CASES/i)) {
+                    approaches.push(currentApproach);
+                    currentApproach = null;
+                    i--; // Re-process this line
+                } else {
+                    currentApproach.code += '\n' + line;
+                }
+            }
+        }
+
+        // Push last approach
+        if (currentApproach) {
+            approaches.push(currentApproach);
+        }
+
+        // Clean up code - remove trailing test sections
+        approaches.forEach(function(a) {
+            var testIdx = a.code.indexOf('# ===');
+            if (testIdx === -1) testIdx = a.code.indexOf('// ===');
+            if (testIdx > 0) {
+                a.code = a.code.substring(0, testIdx).trim();
+            }
+            a.code = a.code.trim();
+        });
+
+        return approaches;
+    }
+
+    function extractMultilineComment(lines, startIdx, prefix) {
+        var result = [];
+        for (var i = startIdx; i < lines.length && i < startIdx + 10; i++) {
+            var line = lines[i].trim();
+            if (line.startsWith(prefix) && !line.includes('===') && !line.includes('Complexity')) {
+                var content = line.replace(new RegExp('^' + prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*'), '').trim();
+                if (content && content !== '-') {
+                    result.push(content);
+                }
+            } else if (!line.startsWith(prefix)) {
+                break;
+            }
+        }
+        return result.join(' ');
+    }
+
+    // Generate explanation metadata for an approach
+    function generateExplanations(approach, lang) {
+        var explanations = [];
+
+        // Flow explanation
+        explanations.push({
+            type: 'flow',
+            icon: '🔄',
+            label: 'How It Works',
+            content: getFlowExplanation(approach)
+        });
+
+        // Time complexity
+        if (approach.timeComplexity) {
+            explanations.push({
+                type: 'time',
+                icon: '⏱️',
+                label: 'Time Complexity',
+                content: '<code>' + approach.timeComplexity.split('-')[0].trim() + '</code> ' +
+                    (approach.timeComplexity.includes('-') ? '— ' + approach.timeComplexity.split('-').slice(1).join('-').trim() : '')
+            });
+        }
+
+        // Space complexity
+        if (approach.spaceComplexity) {
+            explanations.push({
+                type: 'space',
+                icon: '💾',
+                label: 'Space Complexity',
+                content: '<code>' + approach.spaceComplexity.split('-')[0].trim() + '</code> ' +
+                    (approach.spaceComplexity.includes('-') ? '— ' + approach.spaceComplexity.split('-').slice(1).join('-').trim() : '')
+            });
+        }
+
+        // Edge cases
+        explanations.push({
+            type: 'edge',
+            icon: '⚠️',
+            label: 'Edge Cases',
+            content: getEdgeCases(approach)
+        });
+
+        // Best performance
+        explanations.push({
+            type: 'best-case',
+            icon: '✅',
+            label: 'Best Performance',
+            content: getBestCase(approach)
+        });
+
+        // Worst performance
+        explanations.push({
+            type: 'worst-case',
+            icon: '❌',
+            label: 'Worst Performance',
+            content: getWorstCase(approach)
+        });
+
+        // Why better
+        if (approach.whyBest || approach.isRecommended) {
+            explanations.push({
+                type: 'why-better',
+                icon: '🏆',
+                label: 'Why This Approach',
+                content: approach.whyBest || 'Optimal balance of time and space complexity with clean, readable code.'
+            });
+        } else if (approach.whenToUse) {
+            explanations.push({
+                type: 'why-better',
+                icon: '💡',
+                label: 'When To Use',
+                content: approach.whenToUse
+            });
+        }
+
+        return explanations;
+    }
+
+    function getFlowExplanation(approach) {
+        var title = approach.title.toLowerCase();
+        if (title.includes('two-pointer') || title.includes('two pointer')) {
+            return 'Uses two pointers to traverse the data structure. One pointer tracks position in the main array, another in the sequence. Compare elements and advance pointers accordingly until solution found or end reached.';
+        } else if (title.includes('recursive')) {
+            return 'Breaks the problem into smaller subproblems. Base case handles termination, recursive case processes current element and calls itself with remaining elements. Builds solution from subproblem results.';
+        } else if (title.includes('hash') || title.includes('table')) {
+            return 'Uses a hash table for O(1) lookups. Store elements as keys, then check if complement exists. Single pass through data achieves optimal time complexity.';
+        } else if (title.includes('index') || title.includes('find')) {
+            return 'Searches for each element sequentially using built-in find methods. Updates search start position after each match to maintain order constraint.';
+        } else if (title.includes('brute')) {
+            return 'Checks all possible combinations. Nested loops compare every pair of elements. Simple but inefficient for large inputs.';
+        }
+        return 'Processes input step by step, maintaining necessary state to track progress toward the solution.';
+    }
+
+    function getEdgeCases(approach) {
+        return 'Empty input, single element, all elements same, negative numbers, already sorted input, reverse sorted input.';
+    }
+
+    function getBestCase(approach) {
+        var title = approach.title.toLowerCase();
+        if (title.includes('recursive')) {
+            return 'Small inputs where recursion depth is minimal. Problems with natural recursive structure.';
+        } else if (title.includes('index') || title.includes('find')) {
+            return 'When elements are found early in the array, reducing total comparisons needed.';
+        }
+        return 'Works consistently well for all input sizes with predictable performance.';
+    }
+
+    function getWorstCase(approach) {
+        var title = approach.title.toLowerCase();
+        var time = approach.timeComplexity.toLowerCase();
+        if (title.includes('recursive')) {
+            return 'Large inputs causing deep recursion (stack overflow risk). Memory-constrained environments.';
+        } else if (time.includes('n*m') || time.includes('n^2')) {
+            return 'Large inputs where quadratic time becomes significant. Consider O(n) alternatives.';
+        } else if (title.includes('index') || title.includes('find')) {
+            return 'Elements at end of array or many repeated elements causing multiple scans.';
+        }
+        return 'Performance remains stable even with large inputs due to linear complexity.';
+    }
+
     function renderSolutions(solContent, pythonCode, goCode) {
         var html = '<div class="solution-tabs-container">';
 
@@ -6427,39 +6659,37 @@
         html += '</button>';
         html += '</div>';
 
-        // Tab content
         html += '<div class="solution-tabs-content">';
 
-        // Python Solution Tab
+        // Python Tab
         html += '<div class="solution-tab-panel active" data-lang="python">';
-        html += '<div class="solution-panel-header">';
         if (pythonCode) {
-            html += '<button onclick="window.copyToEditor(\'python\')" class="solution-copy-btn python">Copy to Editor</button>';
-        }
-        html += '</div>';
-        if (pythonCode) {
-            html += '<pre class="solution-code-block"><code class="language-python">' + escapeHtml(pythonCode) + '</code></pre>';
+            var pyApproaches = parseApproaches(pythonCode, 'python');
+            if (pyApproaches.length > 0) {
+                html += renderApproachCards(pyApproaches, 'python');
+            } else {
+                html += '<pre class="approach-code"><code class="language-python">' + escapeHtml(pythonCode) + '</code></pre>';
+            }
         } else {
             html += '<p class="solution-no-code">No Python solution available.</p>';
         }
         html += '</div>';
 
-        // Go Solution Tab
+        // Go Tab
         html += '<div class="solution-tab-panel" data-lang="go">';
-        html += '<div class="solution-panel-header">';
         if (goCode) {
-            html += '<button onclick="window.copyToEditor(\'go\')" class="solution-copy-btn go">Copy to Editor</button>';
-        }
-        html += '</div>';
-        if (goCode) {
-            html += '<pre class="solution-code-block"><code class="language-go">' + escapeHtml(goCode) + '</code></pre>';
+            var goApproaches = parseApproaches(goCode, 'go');
+            if (goApproaches.length > 0) {
+                html += renderApproachCards(goApproaches, 'go');
+            } else {
+                html += '<pre class="approach-code"><code class="language-go">' + escapeHtml(goCode) + '</code></pre>';
+            }
         } else {
             html += '<p class="solution-no-code">No Go solution available.</p>';
         }
         html += '</div>';
 
-        html += '</div>'; // .solution-tabs-content
-        html += '</div>'; // .solution-tabs-container
+        html += '</div></div>';
 
         solContent.innerHTML = html;
 
@@ -6470,23 +6700,98 @@
             });
         }
 
-        // Add tab switching logic
+        // Tab switching
         var tabBtns = solContent.querySelectorAll('.solution-tab-btn');
         var tabPanels = solContent.querySelectorAll('.solution-tab-panel');
-
         tabBtns.forEach(function(btn) {
             btn.addEventListener('click', function() {
                 var lang = this.getAttribute('data-lang');
-
-                // Update active tab button
                 tabBtns.forEach(function(b) { b.classList.remove('active'); });
                 this.classList.add('active');
-
-                // Update active panel
                 tabPanels.forEach(function(p) { p.classList.remove('active'); });
                 solContent.querySelector('.solution-tab-panel[data-lang="' + lang + '"]').classList.add('active');
             });
         });
+
+        // Collapsible approach cards
+        solContent.querySelectorAll('.approach-header').forEach(function(header) {
+            header.addEventListener('click', function(e) {
+                if (e.target.classList.contains('approach-copy-btn')) return;
+                var card = this.closest('.approach-card');
+                card.classList.toggle('expanded');
+            });
+        });
+
+        // Copy buttons
+        solContent.querySelectorAll('.approach-copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var card = this.closest('.approach-card');
+                var code = card.querySelector('.approach-code code');
+                if (code) {
+                    var text = code.textContent;
+                    navigator.clipboard.writeText(text).then(function() {
+                        var originalText = btn.textContent;
+                        btn.textContent = 'Copied!';
+                        setTimeout(function() { btn.textContent = originalText; }, 1500);
+                    });
+                }
+            });
+        });
+    }
+
+    function renderApproachCards(approaches, lang) {
+        var html = '';
+        approaches.forEach(function(approach, idx) {
+            var cardClass = 'approach-card';
+            if (approach.isRecommended) cardClass += ' recommended';
+            if (approach.isSuboptimal) cardClass += ' suboptimal';
+
+            var badgeClass = 'good';
+            var badgeText = 'Standard';
+            if (approach.isRecommended) { badgeClass = 'best'; badgeText = 'Best Choice'; }
+            else if (approach.isLearning) { badgeClass = 'learning'; badgeText = 'Learning'; }
+            else if (approach.isSuboptimal) { badgeClass = 'suboptimal'; badgeText = 'Suboptimal'; }
+
+            html += '<div class="' + cardClass + '">';
+            html += '<div class="approach-header">';
+            html += '<span class="approach-toggle">▶</span>';
+            html += '<span class="approach-number">' + approach.number + '</span>';
+            html += '<span class="approach-title">' + escapeHtml(approach.title) + '</span>';
+            html += '<span class="approach-badge ' + badgeClass + '">' + badgeText + '</span>';
+            html += '<div class="approach-complexity">';
+            if (approach.timeComplexity) {
+                var timeShort = approach.timeComplexity.split(' ')[0].split('-')[0].trim();
+                html += '<span class="complexity-tag">T: ' + escapeHtml(timeShort) + '</span>';
+            }
+            if (approach.spaceComplexity) {
+                var spaceShort = approach.spaceComplexity.split(' ')[0].split('-')[0].trim();
+                html += '<span class="complexity-tag">S: ' + escapeHtml(spaceShort) + '</span>';
+            }
+            html += '</div>';
+            html += '<button class="approach-copy-btn ' + lang + '">Copy</button>';
+            html += '</div>';
+
+            html += '<div class="approach-body">';
+
+            // Explanation cards
+            var explanations = generateExplanations(approach, lang);
+            html += '<div class="approach-explanations">';
+            explanations.forEach(function(exp) {
+                html += '<div class="explanation-item ' + exp.type + '">';
+                html += '<div class="explanation-label"><span class="icon">' + exp.icon + '</span> ' + exp.label + '</div>';
+                html += '<div class="explanation-content">' + exp.content + '</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+
+            // Code block
+            var langClass = lang === 'python' ? 'language-python' : 'language-go';
+            html += '<pre class="approach-code"><code class="' + langClass + '">' + escapeHtml(approach.code) + '</code></pre>';
+
+            html += '</div></div>';
+        });
+        return html;
     }
 
     // ============================================

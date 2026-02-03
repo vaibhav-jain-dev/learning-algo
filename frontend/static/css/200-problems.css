@@ -2041,139 +2041,369 @@ li.CodeMirror-hint-active {
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: #e8ecf1;
-    border-radius: 10px;
+    background: #f5f7fa;
+    border-radius: 8px;
     overflow: hidden;
 }
 
 .solution-tabs-header {
     display: flex;
-    background: #d1d9e3;
-    border-bottom: 2px solid #c4ced9;
+    background: #e8ecf1;
+    border-bottom: 1px solid #d1d9e3;
     padding: 0;
     flex-shrink: 0;
 }
 
 .solution-tab-btn {
     flex: 1;
-    padding: 0.875rem 1.25rem;
+    padding: 0.6rem 1rem;
     background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: #5a6a7a;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    position: relative;
+    gap: 0.4rem;
     font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
 }
 
 .solution-tab-btn:hover {
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.6);
     color: #3a4a5a;
 }
 
 .solution-tab-btn.active {
-    background: #e8ecf1;
+    background: #f5f7fa;
     color: #1e3a5f;
-    box-shadow: inset 0 -3px 0 #3b82f6;
+    box-shadow: inset 0 -2px 0 #3b82f6;
 }
 
 .solution-tab-btn.active[data-lang="python"] {
-    box-shadow: inset 0 -3px 0 #3776ab;
+    box-shadow: inset 0 -2px 0 #3776ab;
 }
 
 .solution-tab-btn.active[data-lang="go"] {
-    box-shadow: inset 0 -3px 0 #00ADD8;
+    box-shadow: inset 0 -2px 0 #00ADD8;
 }
 
 .solution-tab-icon {
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .solution-tabs-content {
     flex: 1;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    overflow: auto;
     min-height: 0;
 }
 
 .solution-tab-panel {
     display: none;
     flex-direction: column;
-    height: 100%;
-    overflow: hidden;
+    padding: 0.5rem;
 }
 
 .solution-tab-panel.active {
-    display: flex;
+    display: block;
 }
 
-.solution-panel-header {
+/* ============================================
+   COLLAPSIBLE APPROACH CARDS
+   ============================================ */
+.approach-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.approach-header {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
     padding: 0.75rem 1rem;
-    background: #dde4ec;
-    border-bottom: 1px solid #c4ced9;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    cursor: pointer;
+    user-select: none;
+    gap: 0.75rem;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.approach-header:hover {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e8ecf1 100%);
+}
+
+.approach-card.expanded .approach-header {
+    border-bottom-color: #e2e8f0;
+}
+
+.approach-toggle {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
     flex-shrink: 0;
 }
 
-.solution-copy-btn {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    transition: all 0.2s ease;
-    font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+.approach-card.expanded .approach-toggle {
+    transform: rotate(90deg);
 }
 
-.solution-copy-btn.python {
-    background: #3776ab;
+.approach-number {
+    width: 24px;
+    height: 24px;
+    background: #e2e8f0;
+    color: #475569;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.approach-card.recommended .approach-number {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
 }
 
-.solution-copy-btn.python:hover {
+.approach-card.suboptimal .approach-number {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.approach-title {
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #1e293b;
+}
+
+.approach-badge {
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.approach-badge.best {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.approach-badge.good {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.approach-badge.learning {
+    background: #fef9c3;
+    color: #a16207;
+}
+
+.approach-badge.suboptimal {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.approach-complexity {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.complexity-tag {
+    padding: 0.15rem 0.4rem;
+    background: #f1f5f9;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: #475569;
+}
+
+.approach-copy-btn {
+    padding: 0.35rem 0.6rem;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.approach-copy-btn:hover {
+    background: #2563eb;
+}
+
+.approach-copy-btn.python {
+    background: #3776ab;
+}
+
+.approach-copy-btn.python:hover {
     background: #2d5f8a;
 }
 
-.solution-copy-btn.go {
+.approach-copy-btn.go {
     background: #00ADD8;
-    color: white;
 }
 
-.solution-copy-btn.go:hover {
+.approach-copy-btn.go:hover {
     background: #0090b5;
 }
 
-.solution-code-block {
-    flex: 1;
-    margin: 0;
-    padding: 1.25rem;
-    background: #1e2736;
-    overflow: auto;
-    font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
-    font-size: 0.9rem;
-    line-height: 1.7;
-    color: #e4e8ed;
-    border-radius: 0;
-}
-
-.solution-code-block code {
-    font-family: inherit;
-    background: transparent;
+/* Approach Body - Hidden by default */
+.approach-body {
+    display: none;
     padding: 0;
 }
 
+.approach-card.expanded .approach-body {
+    display: block;
+}
+
+/* Explanation Sections */
+.approach-explanations {
+    padding: 1rem;
+    background: #fafbfc;
+    border-bottom: 1px solid #e2e8f0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.75rem;
+}
+
+.explanation-item {
+    background: white;
+    border: 1px solid #e8ecf1;
+    border-radius: 6px;
+    padding: 0.75rem;
+    transition: box-shadow 0.2s ease;
+}
+
+.explanation-item:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.explanation-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    margin-bottom: 0.4rem;
+}
+
+.explanation-label .icon {
+    font-size: 0.85rem;
+}
+
+.explanation-content {
+    font-size: 0.85rem;
+    color: #374151;
+    line-height: 1.5;
+}
+
+.explanation-content code {
+    background: #f1f5f9;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: #0f172a;
+}
+
+.explanation-item.time { border-left: 3px solid #3b82f6; }
+.explanation-item.space { border-left: 3px solid #8b5cf6; }
+.explanation-item.flow { border-left: 3px solid #10b981; }
+.explanation-item.edge { border-left: 3px solid #f59e0b; }
+.explanation-item.best-case { border-left: 3px solid #22c55e; }
+.explanation-item.worst-case { border-left: 3px solid #ef4444; }
+.explanation-item.why-better { border-left: 3px solid #06b6d4; }
+
+/* Code Block - Light Theme */
+.approach-code {
+    margin: 0;
+    padding: 1rem;
+    background: #fafbfc;
+    overflow-x: auto;
+    font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #1e293b;
+    border-top: 1px solid #e8ecf1;
+}
+
+.approach-code code {
+    font-family: inherit;
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
+}
+
+/* Light Theme Syntax Highlighting */
+.approach-code .hljs-keyword {
+    color: #7c3aed;
+    font-weight: 600;
+}
+
+.approach-code .hljs-built_in {
+    color: #0284c7;
+}
+
+.approach-code .hljs-type {
+    color: #0d9488;
+}
+
+.approach-code .hljs-literal,
+.approach-code .hljs-number {
+    color: #c2410c;
+}
+
+.approach-code .hljs-string {
+    color: #16a34a;
+}
+
+.approach-code .hljs-comment {
+    color: #94a3b8;
+    font-style: italic;
+}
+
+.approach-code .hljs-function,
+.approach-code .hljs-title {
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.approach-code .hljs-params {
+    color: #475569;
+}
+
+.approach-code .hljs-variable {
+    color: #dc2626;
+}
+
+.approach-code .hljs-attr {
+    color: #ca8a04;
+}
+
+/* No solutions message */
 .solution-no-code {
     color: #6b7a8a;
     padding: 2rem;
@@ -2182,73 +2412,58 @@ li.CodeMirror-hint-active {
     margin: 0;
 }
 
-/* Better syntax highlighting colors for light grey bg */
-.solution-code-block .hljs-keyword {
-    color: #c792ea;
-    font-weight: 600;
-}
-
-.solution-code-block .hljs-built_in {
-    color: #82aaff;
-}
-
-.solution-code-block .hljs-type {
-    color: #ffcb6b;
-}
-
-.solution-code-block .hljs-literal {
-    color: #f78c6c;
-}
-
-.solution-code-block .hljs-number {
-    color: #f78c6c;
-}
-
-.solution-code-block .hljs-string {
-    color: #c3e88d;
-}
-
-.solution-code-block .hljs-comment {
-    color: #7c8fa0;
-    font-style: italic;
-}
-
-.solution-code-block .hljs-function {
-    color: #82aaff;
-}
-
-.solution-code-block .hljs-title {
-    color: #82aaff;
-    font-weight: 600;
-}
-
-.solution-code-block .hljs-params {
-    color: #e4e8ed;
-}
-
-.solution-code-block .hljs-variable {
-    color: #f07178;
-}
-
-.solution-code-block .hljs-attr {
-    color: #ffcb6b;
-}
-
-/* Responsive adjustments */
+/* Responsive */
 @media (max-width: 768px) {
     .solution-tab-btn {
-        padding: 0.75rem 1rem;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .approach-header {
+        padding: 0.6rem 0.75rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .approach-title {
+        font-size: 0.8rem;
+        order: 1;
+        flex-basis: calc(100% - 60px);
+    }
+
+    .approach-complexity {
+        order: 3;
+        flex-basis: 100%;
+    }
+
+    .approach-copy-btn {
+        order: 2;
+    }
+
+    .approach-explanations {
+        grid-template-columns: 1fr;
+        padding: 0.75rem;
+        gap: 0.5rem;
+    }
+
+    .explanation-item {
+        padding: 0.6rem;
+    }
+
+    .approach-code {
         font-size: 0.85rem;
+        padding: 0.75rem;
+        line-height: 1.5;
+    }
+}
+
+@media (max-width: 480px) {
+    .approach-badge {
+        display: none;
     }
 
-    .solution-code-block {
-        font-size: 0.8rem;
-        padding: 1rem;
-        line-height: 1.6;
-    }
-
-    .solution-copy-btn {
-        padding: 0.4rem 0.75rem;
-        font-size: 0.8rem;
+    .complexity-tag {
+        font-size: 0.65rem;
+        padding: 0.1rem 0.3rem;
     }
 }
