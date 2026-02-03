@@ -11741,6 +11741,9 @@
                 return;
             }
 
+            // Load all problem JS files for selected categories first
+            await loadProblemFilesForCategories(selectedCategories);
+
             // Build PDF content
             var pdfContent = await buildPDFContent(selectedCategories, includeProblems, includeSolutions);
 
@@ -11755,6 +11758,40 @@
             btnSpinner.style.display = 'none';
         }
     };
+
+    // Load all problem JS files for given categories
+    async function loadProblemFilesForCategories(categories) {
+        var loadPromises = [];
+
+        categories.forEach(function(cat) {
+            var problems = problemsData[cat] || [];
+            problems.forEach(function(p) {
+                var problemKey = cat + '/' + p.id;
+
+                // Skip if already loaded
+                if (window.ProblemRenderer && window.ProblemRenderer._problems && window.ProblemRenderer._problems[problemKey]) {
+                    return;
+                }
+
+                // Create promise to load the JS file
+                var promise = new Promise(function(resolve) {
+                    var script = document.createElement('script');
+                    script.src = '/static/js/problems/' + cat + '/' + p.id + '.js';
+                    script.onload = function() { resolve(); };
+                    script.onerror = function() { resolve(); }; // Continue even if file doesn't exist
+                    document.head.appendChild(script);
+                });
+                loadPromises.push(promise);
+            });
+        });
+
+        // Wait for all scripts to load
+        if (loadPromises.length > 0) {
+            await Promise.all(loadPromises);
+            // Small delay to ensure scripts execute
+            await new Promise(function(r) { setTimeout(r, 100); });
+        }
+    }
 
     async function buildPDFContent(categories, includeProblems, includeSolutions) {
         var content = `
