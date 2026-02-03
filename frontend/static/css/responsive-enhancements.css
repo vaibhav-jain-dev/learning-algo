@@ -1800,6 +1800,30 @@ pre:not(.code-example pre) code,
     color: #1e293b !important;
 }
 
+/* Global pre/code styling for topic pages */
+.topic-content pre,
+.page-main pre,
+article pre {
+    background: #f8f9fa !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    padding: 16px !important;
+    margin: 16px 0 !important;
+    overflow-x: auto !important;
+}
+
+.topic-content pre code,
+.page-main pre code,
+article pre code {
+    background: transparent !important;
+    color: #1e293b !important;
+    font-family: 'Fira Code', 'Consolas', monospace !important;
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+}
+
 /* Inline code styling */
 :not(pre) > code {
     background: #f1f5f9 !important;
@@ -1811,13 +1835,19 @@ pre:not(.code-example pre) code,
 
 /* Mobile code blocks - ensure readability */
 @media screen and (max-width: 768px) {
-    .code-example {
+    .code-example,
+    .topic-content pre,
+    .page-main pre,
+    article pre {
         padding: 12px !important;
         margin: 12px 0 !important;
     }
 
     .code-example pre,
-    .code-example code {
+    .code-example code,
+    .topic-content pre code,
+    .page-main pre code,
+    article pre code {
         font-size: 0.75rem !important;
         line-height: 1.5 !important;
     }
