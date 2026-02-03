@@ -11799,68 +11799,70 @@
             <head>
                 <title>200 Must Solve Problems</title>
                 <style>
-                    @page { size: A4; margin: 12mm; }
-                    * { box-sizing: border-box; }
-                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 10px; line-height: 1.4; color: #1e293b; margin: 0; padding: 0; }
-                    h1 { font-size: 18px; color: #0f172a; border-bottom: 2px solid #3b82f6; padding-bottom: 6px; margin: 0 0 8px 0; }
-                    h2 { font-size: 14px; color: #1e40af; margin: 12px 0 8px 0; page-break-after: avoid; }
-                    h3 { font-size: 11px; color: #374151; margin: 8px 0 4px 0; }
+                    @page { size: A4; margin: 10mm; }
+                    @media print {
+                        * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+                    }
+                    * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 9px; line-height: 1.35; color: #1e293b; margin: 0; padding: 0; }
+                    h1 { font-size: 16px; color: #0f172a; border-bottom: 2px solid #3b82f6; padding-bottom: 4px; margin: 0 0 6px 0; }
+                    h2 { font-size: 12px; color: #1e40af; margin: 8px 0 6px 0; page-break-after: avoid; }
 
                     /* Compact problem card */
-                    .problem { margin-bottom: 8px; padding: 6px 10px; background: #f8fafc; border-radius: 4px; border-left: 3px solid #3b82f6; page-break-inside: avoid; }
-                    .problem-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; flex-wrap: wrap; }
-                    .q-num { font-size: 10px; font-weight: 700; color: #1e40af; background: #dbeafe; padding: 1px 6px; border-radius: 3px; }
-                    .a-num { font-size: 10px; font-weight: 700; color: #166534; background: #dcfce7; padding: 1px 6px; border-radius: 3px; }
-                    .problem-title { font-size: 10px; font-weight: 600; color: #1e293b; }
-                    .difficulty { font-size: 7px; padding: 1px 4px; border-radius: 3px; font-weight: 600; text-transform: uppercase; }
-                    .easy { background: #dcfce7; color: #166534; }
-                    .medium { background: #fef3c7; color: #a16207; }
-                    .hard { background: #fee2e2; color: #b91c1c; }
-                    .very-hard { background: #fae8ff; color: #86198f; }
+                    .problem { margin-bottom: 6px; padding: 5px 8px; background-color: #f8fafc; border-radius: 3px; border-left: 3px solid #3b82f6; page-break-inside: avoid; }
+                    .problem-header { display: flex; align-items: center; gap: 5px; margin-bottom: 3px; flex-wrap: wrap; }
+                    .q-num { font-size: 9px; font-weight: 700; color: #1e40af; background-color: #dbeafe; padding: 1px 5px; border-radius: 2px; }
+                    .a-num { font-size: 9px; font-weight: 700; color: #166534; background-color: #dcfce7; padding: 1px 5px; border-radius: 2px; }
+                    .problem-title { font-size: 9px; font-weight: 600; color: #1e293b; }
+                    .difficulty { font-size: 7px; padding: 1px 4px; border-radius: 2px; font-weight: 600; text-transform: uppercase; }
+                    .easy { background-color: #dcfce7; color: #166534; }
+                    .medium { background-color: #fef3c7; color: #a16207; }
+                    .hard { background-color: #fee2e2; color: #b91c1c; }
+                    .very-hard { background-color: #fae8ff; color: #86198f; }
                     .tags { font-size: 7px; color: #64748b; }
 
                     /* Description */
-                    .desc { font-size: 9px; color: #475569; margin: 4px 0; line-height: 1.3; }
+                    .desc { font-size: 8px; color: #475569; margin: 3px 0; line-height: 1.3; }
 
                     /* Compact I/O boxes */
-                    .examples-container { margin: 4px 0; }
-                    .io-box { background: #fff; padding: 3px 6px; border-radius: 3px; font-size: 8px; margin: 2px 0; border: 1px solid #e2e8f0; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 3px; }
-                    .io-num { font-weight: 700; color: #3b82f6; min-width: 14px; }
+                    .examples-container { margin: 3px 0; }
+                    .io-box { background-color: #ffffff; padding: 2px 5px; border-radius: 2px; font-size: 7px; margin: 1px 0; border: 1px solid #e2e8f0; }
+                    .io-num { font-weight: 700; color: #3b82f6; }
                     .io-label { font-weight: 600; color: #64748b; }
                     .io-arrow { color: #3b82f6; font-weight: bold; }
-                    .io-box code { background: #f1f5f9; padding: 1px 3px; border-radius: 2px; font-family: 'SF Mono', Consolas, monospace; font-size: 8px; word-break: break-all; max-width: 100%; }
+                    .io-box code { background-color: #f1f5f9; padding: 0px 2px; border-radius: 1px; font-family: 'SF Mono', Consolas, monospace; font-size: 7px; }
 
                     /* Complexity inline */
-                    .complexity { font-size: 8px; color: #64748b; display: flex; gap: 12px; }
-                    .complexity span { background: #f1f5f9; padding: 1px 4px; border-radius: 2px; }
+                    .complexity { font-size: 7px; color: #64748b; display: flex; gap: 8px; margin-top: 2px; }
+                    .complexity span { background-color: #f1f5f9; padding: 1px 3px; border-radius: 2px; }
 
-                    /* Solutions */
-                    .solution-section { margin: 6px 0; }
-                    .solution-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-                    .solution-title { font-size: 10px; font-weight: 600; color: #374151; }
-                    .approach { margin: 4px 0; padding: 5px 8px; background: #fff; border-radius: 4px; border: 1px solid #e2e8f0; page-break-inside: avoid; }
-                    .approach-title { font-size: 9px; font-weight: 600; color: #1e293b; margin-bottom: 3px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
-                    .approach-badge { font-size: 7px; padding: 1px 4px; border-radius: 3px; background: #dcfce7; color: #166534; }
-                    pre { background: #1e293b; color: #e2e8f0; padding: 6px; border-radius: 3px; font-family: 'SF Mono', Consolas, monospace; font-size: 8px; overflow-x: auto; white-space: pre-wrap; margin: 4px 0; }
+                    /* Solutions - with page break */
+                    .solution-section { margin: 4px 0; page-break-before: auto; }
+                    .solution-header { display: flex; align-items: center; gap: 5px; margin-bottom: 3px; page-break-after: avoid; }
+                    .solution-title { font-size: 9px; font-weight: 600; color: #374151; }
+                    .approach { margin: 3px 0; padding: 4px 6px; background-color: #ffffff; border-radius: 3px; border: 1px solid #e2e8f0; page-break-inside: avoid; }
+                    .approach-title { font-size: 8px; font-weight: 600; color: #1e293b; margin-bottom: 2px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+                    .approach-badge { font-size: 6px; padding: 1px 3px; border-radius: 2px; background-color: #dcfce7; color: #166534; }
+                    pre { background-color: #1e293b; color: #e2e8f0; padding: 4px; border-radius: 2px; font-family: 'SF Mono', Consolas, monospace; font-size: 7px; overflow-x: auto; white-space: pre-wrap; margin: 3px 0; }
 
                     /* Explanation grid - compact */
-                    .explanation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 4px 0; }
-                    .explanation-item { padding: 4px 6px; background: #f8fafc; border-radius: 3px; border-left: 2px solid #3b82f6; }
-                    .explanation-label { font-size: 7px; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 2px; }
-                    .explanation-content { font-size: 8px; color: #374151; line-height: 1.3; }
+                    .explanation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin: 3px 0; }
+                    .explanation-item { padding: 3px 5px; background-color: #f8fafc; border-radius: 2px; border-left: 2px solid #3b82f6; }
+                    .explanation-label { font-size: 6px; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 1px; }
+                    .explanation-content { font-size: 7px; color: #374151; line-height: 1.25; }
 
-                    /* Category header - compact */
-                    .category-header { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; padding: 8px 12px; border-radius: 4px; margin: 12px 0 8px 0; }
-                    .category-header h2 { color: white; border: none; margin: 0; padding: 0; font-size: 13px; }
+                    /* Category header */
+                    .category-header { background-color: #3b82f6; color: white; padding: 6px 10px; border-radius: 3px; margin: 8px 0 6px 0; page-break-after: avoid; }
+                    .category-header h2 { color: white; border: none; margin: 0; padding: 0; font-size: 11px; }
 
-                    .alt-problem { margin-left: 12px; border-left-color: #94a3b8; padding: 6px 8px; }
+                    .alt-problem { margin-left: 10px; border-left-color: #94a3b8; padding: 4px 6px; background-color: #f1f5f9; }
                     .page-break { page-break-before: always; }
-                    hr { border: none; border-top: 1px dashed #e2e8f0; margin: 8px 0; }
+                    hr { border: none; border-top: 1px dashed #e2e8f0; margin: 6px 0; }
                 </style>
             </head>
             <body>
                 <h1>200 Must Solve Problems</h1>
-                <p style="color:#64748b;font-size:9px;margin:0 0 10px 0;">Comprehensive problem collection with solutions and explanations</p>
+                <p style="color:#64748b;font-size:8px;margin:0 0 8px 0;">Comprehensive problem collection with solutions and explanations</p>
         `;
 
         for (var i = 0; i < categories.length; i++) {
@@ -11953,14 +11955,16 @@
             // Add description (truncated)
             if (problemData.description) {
                 var desc = problemData.description;
-                if (desc.length > 250) desc = desc.substring(0, 250) + '...';
+                if (desc.length > 200) desc = desc.substring(0, 200) + '...';
                 html += '<div class="desc">' + escapeHtml(desc) + '</div>';
             }
 
-            // Add all examples with I/O (compact format, truncate long ones to 300 chars)
+            // Add max 3 examples with I/O (compact format, truncate long ones to 300 chars)
             if (problemData.examples && problemData.examples.length > 0) {
                 html += '<div class="examples-container">';
-                problemData.examples.forEach(function(ex, idx) {
+                var maxExamples = Math.min(problemData.examples.length, 3);
+                for (var idx = 0; idx < maxExamples; idx++) {
+                    var ex = problemData.examples[idx];
                     var inputStr = typeof ex.input === 'object' ? JSON.stringify(ex.input) : String(ex.input);
                     var outputStr = typeof ex.output === 'object' ? JSON.stringify(ex.output) : String(ex.output);
 
@@ -11974,7 +11978,7 @@
                     html += ' <span class="io-arrow">→</span> ';
                     html += '<span class="io-label">Out:</span> <code>' + escapeHtml(outputStr) + '</code>';
                     html += '</div>';
-                });
+                }
                 html += '</div>';
             }
 
@@ -11989,6 +11993,9 @@
                 }
                 html += '</div>';
             }
+        } else if (isAlt) {
+            // For similar/alt problems without JS data, show a note
+            html += '<div class="desc" style="font-style:italic;color:#64748b;">Similar problem - solve after mastering the main problem</div>';
         }
 
         html += '</div>';
