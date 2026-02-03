@@ -2,12 +2,26 @@
     .fw-section { background: var(--bg-secondary, #f8fafc); padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color, #e2e8f0); }
     .fw-section h2 { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-primary, #3b82f6); }
     .fw-section h3 { font-size: 1.2rem; margin-top: 20px; margin-bottom: 12px; color: var(--accent-secondary, #8b5cf6); }
-    .diagram-container { background: var(--bg-tertiary, #f1f5f9); padding: 20px; border-radius: 10px; margin: 20px 0; overflow-x: auto; }
     .code-example { background: #1e293b; border-radius: 8px; padding: 16px; margin: 16px 0; overflow-x: auto; }
-    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; white-space: pre-wrap; word-wrap: break-word; }
     .concept-card { background: var(--bg-tertiary); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--accent-secondary); }
     .concept-card h4 { color: var(--accent-secondary); margin-bottom: 10px; }
     .highlight-box { background: rgba(59, 130, 246, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-primary); margin: 16px 0; }
+
+    /* Flow Diagram Styles */
+    .flow-diagram { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; }
+    .flow-vertical { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .flow-step { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 500px; }
+    .flow-num { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+    .flow-content { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 14px; flex: 1; }
+    .flow-content.blue { border-left: 3px solid #3b82f6; }
+    .flow-content.green { border-left: 3px solid #10b981; }
+    .flow-content.purple { border-left: 3px solid #8b5cf6; }
+    .flow-content.orange { border-left: 3px solid #f59e0b; }
+    .flow-content.cyan { border-left: 3px solid #06b6d4; }
+    .flow-title { color: #f8fafc; font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
+    .flow-desc { color: #94a3b8; font-size: 0.75rem; }
+    .flow-arrow { color: #475569; font-size: 1.2rem; }
 </style>
 
 <div class="page-layout">
@@ -19,45 +33,72 @@
 
         <div class="fw-section">
             <h2>Request Flow: Input to Output</h2>
-            <div class="diagram-container">
-                <pre class="mermaid">
-flowchart TB
-    subgraph Input["1. HTTP Request"]
-        REQ["POST /api/users\n{name: 'John'}"]
-    end
+            <p>How Gin processes a request through all layers:</p>
 
-    subgraph Server["2. Gin Engine"]
-        E["gin.Default()\nCreate router with default middleware"]
-    end
+            <div class="flow-diagram">
+                <div class="flow-vertical">
+                    <div class="flow-step">
+                        <div class="flow-num">1</div>
+                        <div class="flow-content blue">
+                            <div class="flow-title">HTTP Request</div>
+                            <div class="flow-desc">POST /api/users {name: 'John'}</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph Middleware["3. Middleware Chain"]
-        M1["Logger()\nLog request"]
-        M2["Recovery()\nPanic recovery"]
-        M3["AuthMiddleware()\nJWT validation"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">2</div>
+                        <div class="flow-content">
+                            <div class="flow-title">net/http Server</div>
+                            <div class="flow-desc">Go's built-in HTTP server handles connections</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph Router["4. RadixTree Router"]
-        R1["Match /api/users\nO(n) where n = URL length"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">3</div>
+                        <div class="flow-content purple">
+                            <div class="flow-title">Middleware Chain</div>
+                            <div class="flow-desc">Logger() → Recovery() → AuthMiddleware()</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph Binding["5. Request Binding"]
-        B1["c.ShouldBindJSON(&user)\nValidate struct tags"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">4</div>
+                        <div class="flow-content orange">
+                            <div class="flow-title">Router Matching</div>
+                            <div class="flow-desc">RadixTree router matches /api/users - O(n) lookup</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph Handler["6. Handler Function"]
-        H1["func CreateUser(c *gin.Context)\nBusiness logic"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">5</div>
+                        <div class="flow-content cyan">
+                            <div class="flow-title">Handler Function</div>
+                            <div class="flow-desc">func CreateUser(c *gin.Context) - Business Logic</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph Response["7. Response"]
-        RES["c.JSON(201, user)\nSerialized response"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">6</div>
+                        <div class="flow-content">
+                            <div class="flow-title">Database (GORM)</div>
+                            <div class="flow-desc">db.Create(&user) - ORM handles SQL</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    REQ --> E --> M1 --> M2 --> M3 --> R1 --> B1 --> H1 --> RES
-
-    style REQ fill:#3b82f6,color:#fff
-    style RES fill:#10b981,color:#fff
-    style B1 fill:#8b5cf6,color:#fff
-                </pre>
+                    <div class="flow-step">
+                        <div class="flow-num">7</div>
+                        <div class="flow-content green">
+                            <div class="flow-title">Response with c.JSON()</div>
+                            <div class="flow-desc">c.JSON(201, user) - Serialized JSON response</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -273,6 +314,3 @@ func createUser(c *gin.Context) {
         </div>
     </aside>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>

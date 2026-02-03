@@ -364,18 +364,39 @@ button:focus-visible,
    AI Awareness, WWW Flow, Network Protocols, Frameworks
    ============================================ */
 
+/* Global mobile text wrapping fix */
 @media screen and (max-width: 768px) {
+    /* Force text wrapping everywhere */
+    body, .main, .page-main, .page-layout {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+    }
+
+    * {
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        hyphens: auto !important;
+    }
+
+    p, li, span, div, h1, h2, h3, h4, h5, h6 {
+        max-width: 100% !important;
+    }
+
     /* === PAGE LAYOUT - MOBILE === */
     .page-layout {
         display: flex !important;
         flex-direction: column !important;
         gap: 16px;
+        padding: 0 12px !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
     }
 
     .page-layout .page-main {
         width: 100% !important;
         max-width: 100% !important;
         order: 1;
+        overflow-x: hidden !important;
     }
 
     .page-layout .page-sidebar,
@@ -387,37 +408,40 @@ button:focus-visible,
 
     /* === ARCHITECTURE DIAGRAMS (WWW-FLOW) === */
     .arch-diagram {
-        padding: 16px !important;
+        padding: 12px !important;
         margin: 12px 0 !important;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+        overflow-x: hidden !important;
+        max-width: 100% !important;
     }
 
     .arch-row {
         flex-direction: column !important;
         align-items: stretch !important;
-        gap: 12px !important;
+        gap: 8px !important;
     }
 
     .arch-layer {
         width: 100% !important;
         max-width: 100% !important;
         min-width: auto !important;
-        padding: 12px !important;
+        padding: 10px !important;
+        box-sizing: border-box !important;
     }
 
     .arch-layer > div {
         flex-wrap: wrap !important;
-        gap: 8px !important;
+        gap: 6px !important;
         justify-content: center !important;
     }
 
     .arch-box {
-        padding: 8px 12px !important;
-        font-size: 0.75rem !important;
+        padding: 6px 10px !important;
+        font-size: 0.7rem !important;
         min-width: auto !important;
-        flex: 1 1 auto !important;
+        flex: 0 1 auto !important;
         text-align: center;
+        white-space: normal !important;
+        word-break: break-word !important;
     }
 
     .arch-arrow {
@@ -425,38 +449,41 @@ button:focus-visible,
     }
 
     .arch-arrow-down {
-        font-size: 1.2rem !important;
+        font-size: 1rem !important;
         margin: 4px 0 !important;
     }
 
     .arch-layer-title {
-        font-size: 0.65rem !important;
-        margin-bottom: 8px !important;
+        font-size: 0.6rem !important;
+        margin-bottom: 6px !important;
     }
 
     /* === FLOW DIAGRAMS === */
     .flow-diagram {
-        padding: 16px !important;
-        margin: 12px 0 !important;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+        padding: 12px !important;
+        margin: 10px 0 !important;
+        overflow-x: hidden !important;
+        max-width: 100% !important;
     }
 
     .flow-row {
         flex-wrap: wrap !important;
-        gap: 6px !important;
+        gap: 4px !important;
         justify-content: flex-start !important;
     }
 
     .flow-box {
-        padding: 6px 10px !important;
-        font-size: 0.7rem !important;
+        padding: 5px 8px !important;
+        font-size: 0.65rem !important;
         min-width: auto !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+        max-width: 100% !important;
     }
 
     .flow-arrow {
-        font-size: 0.8rem !important;
-        padding: 0 4px !important;
+        font-size: 0.7rem !important;
+        padding: 0 2px !important;
     }
 
     .flow-label {

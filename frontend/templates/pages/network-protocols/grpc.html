@@ -4,7 +4,7 @@
     .protocol-section h3 { font-size: 1.2rem; margin-top: 20px; margin-bottom: 12px; color: var(--accent-secondary, #8b5cf6); }
     .diagram-container { background: var(--bg-tertiary, #f1f5f9); padding: 20px; border-radius: 10px; margin: 20px 0; overflow-x: auto; }
     .code-example { background: #1e293b; border-radius: 8px; padding: 16px; margin: 16px 0; overflow-x: auto; }
-    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; white-space: pre-wrap; word-wrap: break-word; }
     .highlight-box { background: rgba(59, 130, 246, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-primary); margin: 16px 0; }
     .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
     .pros, .cons { padding: 16px; border-radius: 8px; }
@@ -16,6 +16,27 @@
     .comparison-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
     .comparison-table th, .comparison-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
     .comparison-table th { background: var(--bg-tertiary); }
+
+    /* Flow Diagram Styles */
+    .flow-diagram { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; }
+    .flow-vertical { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .flow-step { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 600px; }
+    .flow-num { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+    .flow-content { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 14px; flex: 1; }
+    .flow-content.blue { border-left: 3px solid #3b82f6; }
+    .flow-content.green { border-left: 3px solid #10b981; }
+    .flow-content.purple { border-left: 3px solid #8b5cf6; }
+    .flow-content.orange { border-left: 3px solid #f59e0b; }
+    .flow-content.cyan { border-left: 3px solid #06b6d4; }
+    .flow-title { color: #f8fafc; font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
+    .flow-desc { color: #94a3b8; font-size: 0.75rem; }
+    .flow-arrow { color: #475569; font-size: 1.2rem; }
+    .flow-row { display: flex; align-items: center; justify-content: flex-start; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+    .flow-box { background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.4); color: #93c5fd; padding: 8px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 500; }
+    .flow-box.active { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border-color: #3b82f6; }
+    .flow-box.success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-color: #10b981; }
+    .flow-box.purple { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border-color: #8b5cf6; }
+    .flow-note { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fcd34d; padding: 6px 12px; border-radius: 6px; font-size: 0.7rem; margin: 8px 0; }
 </style>
 
 <div class="page-layout">
@@ -30,26 +51,70 @@
             <p>gRPC (Google Remote Procedure Call) is a high-performance RPC framework that uses Protocol Buffers for serialization and HTTP/2 for transport. It enables efficient communication between services with features like bidirectional streaming and automatic code generation.</p>
 
             <h3>Request-Response Flow</h3>
-            <div class="diagram-container">
-                <pre class="mermaid">
-sequenceDiagram
-    participant Client
-    participant Stub as Client Stub
-    participant Server as gRPC Server
-    participant Handler
+            <div class="flow-diagram">
+                <div class="flow-vertical">
+                    <div class="flow-step">
+                        <div class="flow-num">1</div>
+                        <div class="flow-content blue">
+                            <div class="flow-title">Client</div>
+                            <div class="flow-desc">Call GetUser(id: 123)</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    Client->>Stub: Call GetUser(id: 123)
-    Stub->>Stub: Serialize to Protobuf (binary)
-    Stub->>Server: HTTP/2 POST /UserService/GetUser
-    Note over Stub,Server: Binary payload (~10x smaller than JSON)
-    Server->>Handler: Deserialize & execute
-    Handler->>Handler: Business logic
-    Handler-->>Server: Return User object
-    Server->>Server: Serialize to Protobuf
-    Server-->>Stub: HTTP/2 Response
-    Stub->>Stub: Deserialize to typed object
-    Stub-->>Client: User {id: 123, name: "John"}
-                </pre>
+                    <div class="flow-step">
+                        <div class="flow-num">2</div>
+                        <div class="flow-content purple">
+                            <div class="flow-title">Client Stub</div>
+                            <div class="flow-desc">Serialize to Protobuf (binary)</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+
+                    <div class="flow-step">
+                        <div class="flow-num">3</div>
+                        <div class="flow-content orange">
+                            <div class="flow-title">HTTP/2 Transport</div>
+                            <div class="flow-desc">POST /UserService/GetUser - Binary payload (~10x smaller than JSON)</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+
+                    <div class="flow-step">
+                        <div class="flow-num">4</div>
+                        <div class="flow-content cyan">
+                            <div class="flow-title">gRPC Server</div>
+                            <div class="flow-desc">Deserialize request, route to handler</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+
+                    <div class="flow-step">
+                        <div class="flow-num">5</div>
+                        <div class="flow-content green">
+                            <div class="flow-title">Handler</div>
+                            <div class="flow-desc">Execute business logic, return User object</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+
+                    <div class="flow-step">
+                        <div class="flow-num">6</div>
+                        <div class="flow-content purple">
+                            <div class="flow-title">Serialize Response</div>
+                            <div class="flow-desc">Convert to Protobuf, send via HTTP/2</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
+
+                    <div class="flow-step">
+                        <div class="flow-num">7</div>
+                        <div class="flow-content blue">
+                            <div class="flow-title">Client Receives</div>
+                            <div class="flow-desc">Deserialize to typed object: User {id: 123, name: "John"}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <h3>Key Features</h3>
@@ -127,27 +192,65 @@ service UserService {
             <div class="streaming-card">
                 <h4>1. Unary RPC (Request-Response)</h4>
                 <p>Standard single request, single response. Like REST.</p>
-                <div class="diagram-container" style="margin: 10px 0;">
-                    <pre class="mermaid">
-sequenceDiagram
-    Client->>Server: GetUser(id: 123)
-    Server-->>Client: User {name: "John"}
-                    </pre>
+                <div class="flow-diagram" style="padding: 16px;">
+                    <div class="flow-row" style="justify-content: center;">
+                        <div class="flow-box active">Client</div>
+                        <span class="flow-arrow">→</span>
+                        <span style="color: #94a3b8; font-size: 0.75rem;">GetUser(id: 123)</span>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-box purple">Server</div>
+                    </div>
+                    <div class="flow-row" style="justify-content: center;">
+                        <div class="flow-box active">Client</div>
+                        <span class="flow-arrow">←</span>
+                        <span style="color: #94a3b8; font-size: 0.75rem;">User {name: "John"}</span>
+                        <span class="flow-arrow">←</span>
+                        <div class="flow-box purple">Server</div>
+                    </div>
                 </div>
             </div>
 
             <div class="streaming-card">
                 <h4>2. Server Streaming</h4>
                 <p>Client sends one request, server streams multiple responses.</p>
-                <div class="diagram-container" style="margin: 10px 0;">
-                    <pre class="mermaid">
-sequenceDiagram
-    Client->>Server: ListUsers(page: 1)
-    Server-->>Client: User 1
-    Server-->>Client: User 2
-    Server-->>Client: User 3
-    Server-->>Client: Stream complete
-                    </pre>
+                <div class="flow-diagram" style="padding: 16px;">
+                    <div class="flow-row" style="justify-content: center;">
+                        <div class="flow-box active">Client</div>
+                        <span class="flow-arrow">→</span>
+                        <span style="color: #94a3b8; font-size: 0.75rem;">ListUsers(page: 1)</span>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-box purple">Server</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 12px;">
+                        <div class="flow-row" style="justify-content: center;">
+                            <div class="flow-box active">Client</div>
+                            <span class="flow-arrow">←</span>
+                            <div class="flow-box success">User 1</div>
+                            <span class="flow-arrow">←</span>
+                            <div class="flow-box purple">Server</div>
+                        </div>
+                        <div class="flow-row" style="justify-content: center;">
+                            <div class="flow-box active">Client</div>
+                            <span class="flow-arrow">←</span>
+                            <div class="flow-box success">User 2</div>
+                            <span class="flow-arrow">←</span>
+                            <div class="flow-box purple">Server</div>
+                        </div>
+                        <div class="flow-row" style="justify-content: center;">
+                            <div class="flow-box active">Client</div>
+                            <span class="flow-arrow">←</span>
+                            <div class="flow-box success">User 3</div>
+                            <span class="flow-arrow">←</span>
+                            <div class="flow-box purple">Server</div>
+                        </div>
+                        <div class="flow-row" style="justify-content: center;">
+                            <div class="flow-box active">Client</div>
+                            <span class="flow-arrow">←</span>
+                            <span style="color: #10b981; font-size: 0.75rem;">Stream complete ✓</span>
+                            <span class="flow-arrow">←</span>
+                            <div class="flow-box purple">Server</div>
+                        </div>
+                    </div>
                 </div>
                 <p><strong>Use case:</strong> Large data downloads, real-time feeds, log streaming</p>
             </div>
@@ -155,15 +258,44 @@ sequenceDiagram
             <div class="streaming-card">
                 <h4>3. Client Streaming</h4>
                 <p>Client streams multiple requests, server sends one response.</p>
-                <div class="diagram-container" style="margin: 10px 0;">
-                    <pre class="mermaid">
-sequenceDiagram
-    Client->>Server: User 1
-    Client->>Server: User 2
-    Client->>Server: User 3
-    Client->>Server: Stream complete
-    Server-->>Client: ImportResult {count: 3}
-                    </pre>
+                <div class="flow-diagram" style="padding: 16px;">
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <div class="flow-row" style="justify-content: center;">
+                            <div class="flow-box active">Client</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box">User 1</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box purple">Server</div>
+                        </div>
+                        <div class="flow-row" style="justify-content: center;">
+                            <div class="flow-box active">Client</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box">User 2</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box purple">Server</div>
+                        </div>
+                        <div class="flow-row" style="justify-content: center;">
+                            <div class="flow-box active">Client</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box">User 3</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box purple">Server</div>
+                        </div>
+                        <div class="flow-row" style="justify-content: center;">
+                            <div class="flow-box active">Client</div>
+                            <span class="flow-arrow">→</span>
+                            <span style="color: #f59e0b; font-size: 0.75rem;">Stream complete</span>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box purple">Server</div>
+                        </div>
+                    </div>
+                    <div class="flow-row" style="justify-content: center; margin-top: 12px;">
+                        <div class="flow-box active">Client</div>
+                        <span class="flow-arrow">←</span>
+                        <div class="flow-box success">ImportResult {count: 3}</div>
+                        <span class="flow-arrow">←</span>
+                        <div class="flow-box purple">Server</div>
+                    </div>
                 </div>
                 <p><strong>Use case:</strong> File uploads, batch imports, sensor data collection</p>
             </div>
@@ -171,17 +303,40 @@ sequenceDiagram
             <div class="streaming-card">
                 <h4>4. Bidirectional Streaming</h4>
                 <p>Both client and server stream simultaneously.</p>
-                <div class="diagram-container" style="margin: 10px 0;">
-                    <pre class="mermaid">
-sequenceDiagram
-    par Client to Server
-        Client->>Server: Message A
-        Client->>Server: Message B
-    and Server to Client
-        Server-->>Client: Response X
-        Server-->>Client: Response Y
-    end
-                    </pre>
+                <div class="flow-diagram" style="padding: 16px;">
+                    <div style="display: flex; gap: 30px; flex-wrap: wrap; justify-content: center;">
+                        <div style="text-align: center;">
+                            <div style="color: #94a3b8; font-size: 0.7rem; margin-bottom: 8px;">Client to Server</div>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <div class="flow-row">
+                                    <div class="flow-box active">Client</div>
+                                    <span class="flow-arrow">→</span>
+                                    <div class="flow-box">Message A</div>
+                                </div>
+                                <div class="flow-row">
+                                    <div class="flow-box active">Client</div>
+                                    <span class="flow-arrow">→</span>
+                                    <div class="flow-box">Message B</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="color: #94a3b8; font-size: 0.7rem; margin-bottom: 8px;">Server to Client</div>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <div class="flow-row">
+                                    <div class="flow-box success">Response X</div>
+                                    <span class="flow-arrow">←</span>
+                                    <div class="flow-box purple">Server</div>
+                                </div>
+                                <div class="flow-row">
+                                    <div class="flow-box success">Response Y</div>
+                                    <span class="flow-arrow">←</span>
+                                    <div class="flow-box purple">Server</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flow-note" style="text-align: center; margin-top: 12px;">Both streams operate independently and simultaneously</div>
                 </div>
                 <p><strong>Use case:</strong> Chat applications, gaming, real-time collaboration</p>
             </div>
@@ -380,6 +535,3 @@ for user in stub.ListUsers(user_pb2.ListUsersRequest()):
         </div>
     </aside>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>

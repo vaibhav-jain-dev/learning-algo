@@ -4,7 +4,7 @@
     .protocol-section h3 { font-size: 1.2rem; margin-top: 20px; margin-bottom: 12px; color: var(--accent-secondary, #8b5cf6); }
     .diagram-container { background: var(--bg-tertiary, #f1f5f9); padding: 20px; border-radius: 10px; margin: 20px 0; overflow-x: auto; }
     .code-example { background: #1e293b; border-radius: 8px; padding: 16px; margin: 16px 0; overflow-x: auto; }
-    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; white-space: pre-wrap; word-wrap: break-word; }
     .highlight-box { background: rgba(59, 130, 246, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-primary, #3b82f6); margin: 16px 0; }
     .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
     .pros, .cons { padding: 16px; border-radius: 8px; }
@@ -13,6 +13,36 @@
     .pros h4 { color: #10b981; } .cons h4 { color: #ef4444; }
     @media (max-width: 768px) { .pros-cons { grid-template-columns: 1fr; } }
     .concept-card { background: var(--bg-tertiary); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--accent-secondary); }
+
+    /* Flow Diagram Styles */
+    .flow-diagram { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; }
+    .flow-vertical { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .flow-step { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 500px; }
+    .flow-num { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+    .flow-content { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 14px; flex: 1; }
+    .flow-content.blue { border-left: 3px solid #3b82f6; }
+    .flow-content.green { border-left: 3px solid #10b981; }
+    .flow-content.purple { border-left: 3px solid #8b5cf6; }
+    .flow-content.orange { border-left: 3px solid #f59e0b; }
+    .flow-content.cyan { border-left: 3px solid #06b6d4; }
+    .flow-title { color: #f8fafc; font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
+    .flow-desc { color: #94a3b8; font-size: 0.75rem; }
+    .flow-arrow { color: #475569; font-size: 1.2rem; }
+
+    /* Comparison Box Styles */
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0; }
+    @media (max-width: 768px) { .compare-grid { grid-template-columns: 1fr; } }
+    .compare-box { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); }
+    .compare-box h4 { color: #f8fafc; font-size: 1rem; margin-bottom: 16px; text-align: center; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .compare-item { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+    .compare-item .flow-box { background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.4); color: #93c5fd; padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; }
+    .compare-item .flow-box.success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-color: #10b981; }
+    .compare-item .flow-box.error { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border-color: #ef4444; }
+    .compare-arrow { color: #64748b; font-size: 0.9rem; }
+    .compare-result { text-align: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .result-badge { display: inline-block; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; }
+    .result-badge.bad { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+    .result-badge.good { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
 </style>
 
 <div class="page-layout">
@@ -27,25 +57,61 @@
             <p>GraphQL is a query language and runtime for APIs. Unlike REST where the server defines what data you get, GraphQL lets clients specify exactly what data they need in a single request.</p>
 
             <h3>Request-Response Flow</h3>
-            <div class="diagram-container">
-                <pre class="mermaid">
-sequenceDiagram
-    participant Client
-    participant GraphQL as GraphQL Server
-    participant Resolver
-    participant DB as Database
+            <div class="flow-diagram">
+                <div class="flow-vertical">
+                    <div class="flow-step">
+                        <div class="flow-num">1</div>
+                        <div class="flow-content blue">
+                            <div class="flow-title">Client</div>
+                            <div class="flow-desc">POST /graphql {query}</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">&#8595;</div>
 
-    Client->>GraphQL: POST /graphql {query}
-    Note over GraphQL: Parse & Validate Query
-    GraphQL->>Resolver: Execute user resolver
-    Resolver->>DB: SELECT id, name FROM users
-    DB-->>Resolver: User data
-    GraphQL->>Resolver: Execute posts resolver
-    Resolver->>DB: SELECT * FROM posts WHERE user_id=?
-    DB-->>Resolver: Posts data
-    Resolver-->>GraphQL: Combined result
-    GraphQL-->>Client: JSON with exact fields requested
-                </pre>
+                    <div class="flow-step">
+                        <div class="flow-num">2</div>
+                        <div class="flow-content purple">
+                            <div class="flow-title">GraphQL Server</div>
+                            <div class="flow-desc">Parse & Validate Query</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">&#8595;</div>
+
+                    <div class="flow-step">
+                        <div class="flow-num">3</div>
+                        <div class="flow-content orange">
+                            <div class="flow-title">Execute User Resolver</div>
+                            <div class="flow-desc">Resolver -> DB: SELECT id, name FROM users</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">&#8595;</div>
+
+                    <div class="flow-step">
+                        <div class="flow-num">4</div>
+                        <div class="flow-content orange">
+                            <div class="flow-title">Execute Posts Resolver</div>
+                            <div class="flow-desc">Resolver -> DB: SELECT * FROM posts WHERE user_id=?</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">&#8595;</div>
+
+                    <div class="flow-step">
+                        <div class="flow-num">5</div>
+                        <div class="flow-content cyan">
+                            <div class="flow-title">Combine Results</div>
+                            <div class="flow-desc">Merge user data with posts data</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">&#8595;</div>
+
+                    <div class="flow-step">
+                        <div class="flow-num">6</div>
+                        <div class="flow-content green">
+                            <div class="flow-title">JSON Response</div>
+                            <div class="flow-desc">Return exact fields requested by client</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -220,29 +286,46 @@ app = GraphQL(schema, debug=True)
 
         <div class="protocol-section">
             <h2>REST vs GraphQL Comparison</h2>
-            <div class="diagram-container">
-                <pre class="mermaid">
-flowchart TB
-    subgraph REST["REST Approach"]
-        R1[GET /users/123] --> R2[User data]
-        R3[GET /users/123/posts] --> R4[Posts data]
-        R5[GET /posts/1/comments] --> R6[Comments]
-        R7[3 HTTP Requests]
-    end
+            <div class="flow-diagram">
+                <div class="compare-grid">
+                    <div class="compare-box">
+                        <h4>REST Approach</h4>
+                        <div class="compare-item">
+                            <span class="flow-box">GET /users/123</span>
+                            <span class="compare-arrow">&#8594;</span>
+                            <span class="flow-box">User data</span>
+                        </div>
+                        <div class="compare-item">
+                            <span class="flow-box">GET /users/123/posts</span>
+                            <span class="compare-arrow">&#8594;</span>
+                            <span class="flow-box">Posts data</span>
+                        </div>
+                        <div class="compare-item">
+                            <span class="flow-box">GET /posts/1/comments</span>
+                            <span class="compare-arrow">&#8594;</span>
+                            <span class="flow-box">Comments</span>
+                        </div>
+                        <div class="compare-result">
+                            <span class="result-badge bad">3 HTTP Requests</span>
+                        </div>
+                    </div>
 
-    subgraph GraphQL["GraphQL Approach"]
-        G1["POST /graphql
-        {user(id:123) {
-          name
-          posts { title, comments { text }}
-        }}"]
-        G1 --> G2["All data in
-        1 request"]
-    end
-
-    style R7 fill:#ef4444,color:#fff
-    style G2 fill:#10b981,color:#fff
-                </pre>
+                    <div class="compare-box">
+                        <h4>GraphQL Approach</h4>
+                        <div class="compare-item" style="flex-direction: column; align-items: flex-start;">
+                            <span class="flow-box" style="width: 100%; text-align: left;">POST /graphql</span>
+                            <div style="color: #94a3b8; font-size: 0.75rem; margin: 8px 0; padding-left: 8px;">
+                                {user(id:123) {<br>
+                                &nbsp;&nbsp;name<br>
+                                &nbsp;&nbsp;posts { title, comments { text }}<br>
+                                }}
+                            </div>
+                        </div>
+                        <div class="compare-result">
+                            <span class="result-badge good">1 Request - All Data</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -310,6 +393,3 @@ flowchart TB
         </div>
     </aside>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>
