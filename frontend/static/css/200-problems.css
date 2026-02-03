@@ -2357,96 +2357,152 @@ li.CodeMirror-hint-active {
     font-size: inherit;
 }
 
-/* Light Theme Syntax Highlighting */
-.approach-code .hljs-keyword {
-    color: #7c3aed;
-    font-weight: 600;
+/* Light Theme Syntax Highlighting - with !important to override global styles */
+.approach-code .hljs-keyword,
+.solutions-content pre code .hljs-keyword,
+.solution-tab-panel pre code .hljs-keyword {
+    color: #7c3aed !important;
+    font-weight: 600 !important;
 }
 
-.approach-code .hljs-built_in {
-    color: #0369a1;
-    font-weight: 500;
+.approach-code .hljs-built_in,
+.solutions-content pre code .hljs-built_in,
+.solution-tab-panel pre code .hljs-built_in {
+    color: #0369a1 !important;
+    font-weight: 500 !important;
 }
 
-.approach-code .hljs-type {
-    color: #0d9488;
-    font-weight: 500;
+.approach-code .hljs-type,
+.solutions-content pre code .hljs-type,
+.solution-tab-panel pre code .hljs-type {
+    color: #0f766e !important;
+    font-weight: 600 !important;
 }
 
 .approach-code .hljs-literal,
-.approach-code .hljs-number {
-    color: #c2410c;
+.approach-code .hljs-number,
+.solutions-content pre code .hljs-literal,
+.solutions-content pre code .hljs-number,
+.solution-tab-panel pre code .hljs-literal,
+.solution-tab-panel pre code .hljs-number {
+    color: #c2410c !important;
 }
 
-.approach-code .hljs-string {
-    color: #15803d;
+.approach-code .hljs-string,
+.solutions-content pre code .hljs-string,
+.solution-tab-panel pre code .hljs-string {
+    color: #166534 !important;
 }
 
-.approach-code .hljs-comment {
-    color: #6b7280;
-    font-style: italic;
+.approach-code .hljs-comment,
+.solutions-content pre code .hljs-comment,
+.solution-tab-panel pre code .hljs-comment {
+    color: #4b5563 !important;
+    font-style: italic !important;
 }
 
 .approach-code .hljs-function,
-.approach-code .hljs-title {
-    color: #1d4ed8;
-    font-weight: 600;
+.approach-code .hljs-title,
+.solutions-content pre code .hljs-function,
+.solutions-content pre code .hljs-title,
+.solution-tab-panel pre code .hljs-function,
+.solution-tab-panel pre code .hljs-title {
+    color: #1d4ed8 !important;
+    font-weight: 600 !important;
 }
 
-.approach-code .hljs-params {
-    color: #1e293b;
-    font-weight: 500;
+.approach-code .hljs-params,
+.solutions-content pre code .hljs-params,
+.solution-tab-panel pre code .hljs-params {
+    color: #0f172a !important;
+    font-weight: 500 !important;
 }
 
-.approach-code .hljs-variable {
-    color: #b91c1c;
+.approach-code .hljs-variable,
+.solutions-content pre code .hljs-variable,
+.solution-tab-panel pre code .hljs-variable {
+    color: #b91c1c !important;
 }
 
-.approach-code .hljs-attr {
-    color: #a16207;
+.approach-code .hljs-attr,
+.solutions-content pre code .hljs-attr,
+.solution-tab-panel pre code .hljs-attr {
+    color: #92400e !important;
 }
 
 /* Additional Python/Go highlighting */
-.approach-code .hljs-meta {
-    color: #6366f1;
+.approach-code .hljs-meta,
+.solutions-content pre code .hljs-meta,
+.solution-tab-panel pre code .hljs-meta {
+    color: #6366f1 !important;
 }
 
-.approach-code .hljs-class .hljs-title {
-    color: #0891b2;
-    font-weight: 600;
+.approach-code .hljs-class .hljs-title,
+.solutions-content pre code .hljs-class .hljs-title,
+.solution-tab-panel pre code .hljs-class .hljs-title {
+    color: #0e7490 !important;
+    font-weight: 600 !important;
 }
 
-.approach-code .hljs-title.function_ {
-    color: #1d4ed8;
+.approach-code .hljs-title.function_,
+.solutions-content pre code .hljs-title.function_,
+.solution-tab-panel pre code .hljs-title.function_ {
+    color: #1d4ed8 !important;
 }
 
-.approach-code .hljs-title.class_ {
-    color: #0891b2;
+.approach-code .hljs-title.class_,
+.solutions-content pre code .hljs-title.class_,
+.solution-tab-panel pre code .hljs-title.class_ {
+    color: #0e7490 !important;
 }
 
-.approach-code .hljs-property {
-    color: #7c2d12;
+.approach-code .hljs-property,
+.solutions-content pre code .hljs-property,
+.solution-tab-panel pre code .hljs-property {
+    color: #7c2d12 !important;
 }
 
-.approach-code .hljs-punctuation {
-    color: #334155;
+.approach-code .hljs-punctuation,
+.solutions-content pre code .hljs-punctuation,
+.solution-tab-panel pre code .hljs-punctuation {
+    color: #1e293b !important;
 }
 
-.approach-code .hljs-operator {
-    color: #be185d;
+.approach-code .hljs-operator,
+.solutions-content pre code .hljs-operator,
+.solution-tab-panel pre code .hljs-operator {
+    color: #be185d !important;
 }
 
-.approach-code .hljs-name {
-    color: #1e40af;
+.approach-code .hljs-name,
+.solutions-content pre code .hljs-name,
+.solution-tab-panel pre code .hljs-name {
+    color: #1e40af !important;
 }
 
-.approach-code .hljs-symbol {
-    color: #7c3aed;
+.approach-code .hljs-symbol,
+.solutions-content pre code .hljs-symbol,
+.solution-tab-panel pre code .hljs-symbol {
+    color: #7c3aed !important;
 }
 
-.approach-code .hljs-doctag {
-    color: #059669;
-    font-weight: 500;
+.approach-code .hljs-doctag,
+.solutions-content pre code .hljs-doctag,
+.solution-tab-panel pre code .hljs-doctag {
+    color: #047857 !important;
+    font-weight: 500 !important;
+}
+
+/* Force better base colors for code in solutions area */
+.solutions-content pre,
+.solution-tab-panel pre {
+    background: #f8fafc !important;
+    color: #1e293b !important;
+}
+
+.solutions-content pre code,
+.solution-tab-panel pre code {
+    color: #1e293b !important;
 }
 
 /* No solutions message */

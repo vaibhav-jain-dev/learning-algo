@@ -4449,7 +4449,7 @@
                     }
 
                     var cardClass = 'problem-card' + (p.isRead ? ' is-read' : '');
-                    html += '<div class="' + cardClass + '" style="background: white; border-radius: 8px; padding: 0.75rem; border: 1px solid ' + config.border + '; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.boxShadow=\'0 2px 8px rgba(0,0,0,0.1)\';this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'">';
+                    html += '<div class="' + cardClass + '" data-problem-id="' + p.id + '" style="background: white; border-radius: 8px; padding: 0.75rem; border: 1px solid ' + config.border + '; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.boxShadow=\'0 2px 8px rgba(0,0,0,0.1)\';this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'">';
                     html += '<div style="display: flex; align-items: center; gap: 0.5rem;" onclick="window.openProblem(\'' + category + '\', \'' + p.id + '\')">';
 
                     // Read status checkmark
@@ -4458,12 +4458,24 @@
                     }
 
                     html += '<span style="color: ' + config.color + '; font-weight: 700; font-size: 0.8rem; min-width: 24px;">' + p.originalIndex + '</span>';
-                    html += '<span style="color: #1f2937; font-weight: 500; font-size: 0.9rem; flex: 1;">' + p.name + '</span>';
+                    html += '<span style="color: #1f2937; font-weight: 600; font-size: 0.9rem; flex: 1;">' + p.name + '</span>';
                     if (hasSimilar) {
                         var similarBadgeText = readSimilarCount > 0 ? readSimilarCount + '/' + totalSimilar : totalSimilar;
                         html += '<span onclick="event.stopPropagation(); toggleSimilarInList(\'' + p.id + '\')" id="similar-btn-' + p.id + '" style="background: ' + config.color + '; color: white; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; cursor: pointer;">−' + similarBadgeText + '</span>';
                     }
                     html += '</div>';
+
+                    // Tags row
+                    if (p.tags && p.tags.length > 0) {
+                        html += '<div style="display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.4rem;">';
+                        p.tags.forEach(function(tag) {
+                            html += '<span style="background: #f1f5f9; color: #475569; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-weight: 500;">' + tag + '</span>';
+                        });
+                        html += '</div>';
+                    }
+
+                    // Description and I/O placeholder (will be loaded async)
+                    html += '<div class="problem-desc" id="desc-' + p.id + '" style="margin-top: 0.5rem; font-size: 0.8rem; color: #6b7280; line-height: 1.4; display: none;"></div>';
 
                     // Similar problems (shown by default as nested tabs)
                     if (hasSimilar) {
@@ -4501,7 +4513,68 @@
         html += '</div>';
         content.innerHTML = html;
         panel.classList.add('active');
+
+        // Load descriptions asynchronously
+        loadProblemDescriptions(category, problems);
     };
+
+    // Load problem descriptions and I/O examples
+    async function loadProblemDescriptions(category, problems) {
+        for (var i = 0; i < problems.length; i++) {
+            var p = problems[i];
+            var descEl = document.getElementById('desc-' + p.id);
+            if (!descEl) continue;
+
+            try {
+                var basePath = '/problems/200-must-solve/' + category + '/' + p.id;
+                var response = await fetch(basePath + '/problem.md');
+                if (response.ok) {
+                    var mdContent = await response.text();
+                    var desc = extractProblemDescription(mdContent);
+                    var examples = extractExamplesFromMd(mdContent);
+
+                    var descHtml = '';
+                    if (desc) {
+                        descHtml += '<div style="color: #374151; margin-bottom: 0.4rem;">' + escapeHtml(desc.substring(0, 150)) + (desc.length > 150 ? '...' : '') + '</div>';
+                    }
+                    if (examples.length > 0) {
+                        descHtml += '<div style="background: #f8fafc; padding: 0.4rem 0.6rem; border-radius: 4px; font-family: monospace; font-size: 0.75rem;">';
+                        descHtml += '<strong>I/O:</strong> ' + escapeHtml(examples[0].input.substring(0, 50)) + ' → ' + escapeHtml(examples[0].output.substring(0, 30));
+                        descHtml += '</div>';
+                    }
+
+                    if (descHtml) {
+                        descEl.innerHTML = descHtml;
+                        descEl.style.display = 'block';
+                    }
+                }
+            } catch (e) {
+                // Skip on error
+            }
+        }
+    }
+
+    // Extract problem description from markdown
+    function extractProblemDescription(mdContent) {
+        // Look for description after the title
+        var lines = mdContent.split('\n');
+        var description = '';
+        var foundTitle = false;
+
+        for (var i = 0; i < lines.length && i < 20; i++) {
+            var line = lines[i].trim();
+            if (line.startsWith('#')) {
+                foundTitle = true;
+                continue;
+            }
+            if (foundTitle && line && !line.startsWith('**') && !line.startsWith('```') && !line.startsWith('##')) {
+                description = line;
+                break;
+            }
+        }
+
+        return description;
+    }
 
     // Toggle similar problems in the category list
     window.toggleSimilarInList = function(problemId) {
