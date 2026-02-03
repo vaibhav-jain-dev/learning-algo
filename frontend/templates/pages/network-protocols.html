@@ -1,0 +1,127 @@
+<div class="page-layout">
+    <div class="page-main">
+        <h1>Network Protocols & Interfaces</h1>
+        <p class="text-muted mb-6">Master API communication patterns - REST, GraphQL, gRPC, HTTP versions and when to use each</p>
+
+        <div class="card mb-6">
+            <h3 class="panel-header">What You'll Learn</h3>
+            <ul>
+                <li>How each protocol works internally with request/response flows</li>
+                <li>Real-world use cases and when to choose each</li>
+                <li>Performance characteristics and trade-offs</li>
+                <li>Code examples in Python, Go, and JavaScript</li>
+            </ul>
+        </div>
+
+        <h2 class="mt-6 mb-4">API Communication Protocols</h2>
+        <div class="topic-grid">
+            <a href="/network-protocols/rest" class="topic-card">
+                <div class="topic-card-icon">REST</div>
+                <h3>REST API</h3>
+                <p>Resource-based architecture with HTTP verbs. The most common API pattern for web services.</p>
+                <div class="tags"><span class="tag">HTTP</span><span class="tag">CRUD</span><span class="tag">Stateless</span></div>
+            </a>
+            <a href="/network-protocols/graphql" class="topic-card">
+                <div class="topic-card-icon">GQL</div>
+                <h3>GraphQL</h3>
+                <p>Query language for APIs. Request exactly what you need, nothing more. Single endpoint for all data.</p>
+                <div class="tags"><span class="tag">Query</span><span class="tag">Schema</span><span class="tag">Flexible</span></div>
+            </a>
+            <a href="/network-protocols/grpc" class="topic-card">
+                <div class="topic-card-icon">gRPC</div>
+                <h3>gRPC</h3>
+                <p>High-performance RPC framework using Protocol Buffers. Binary protocol with streaming support.</p>
+                <div class="tags"><span class="tag">Protobuf</span><span class="tag">Binary</span><span class="tag">Streaming</span></div>
+            </a>
+        </div>
+
+        <h2 class="mt-6 mb-4">HTTP Protocol Versions</h2>
+        <div class="topic-grid">
+            <a href="/network-protocols/http" class="topic-card">
+                <div class="topic-card-icon">HTTP</div>
+                <h3>HTTP/1.1, HTTP/2, HTTP/3 & HTTPS</h3>
+                <p>Evolution of HTTP protocols. Understand multiplexing, QUIC, TLS, and performance improvements.</p>
+                <div class="tags"><span class="tag">HTTP/2</span><span class="tag">HTTP/3</span><span class="tag">QUIC</span><span class="tag">TLS</span></div>
+            </a>
+        </div>
+
+        <h2 class="mt-6 mb-4">Comparisons & Decision Guide</h2>
+        <div class="topic-grid">
+            <a href="/network-protocols/comparison" class="topic-card">
+                <div class="topic-card-icon">VS</div>
+                <h3>Protocol Comparison</h3>
+                <p>REST vs GraphQL vs gRPC - when to use each, performance benchmarks, and migration strategies.</p>
+                <div class="tags"><span class="tag">Decision</span><span class="tag">Trade-offs</span><span class="tag">Benchmarks</span></div>
+            </a>
+        </div>
+
+        <!-- Quick Comparison Table -->
+        <div class="card mt-6">
+            <h3 class="panel-header">Quick Comparison</h3>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="background: var(--bg-tertiary);">
+                            <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color);">Feature</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color);">REST</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color);">GraphQL</th>
+                            <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--border-color);">gRPC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);"><strong>Format</strong></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">JSON/XML</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">JSON</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Protobuf (binary)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);"><strong>Protocol</strong></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">HTTP/1.1+</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">HTTP/1.1+</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">HTTP/2</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);"><strong>Streaming</strong></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">SSE only</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Subscriptions</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Bidirectional</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);"><strong>Browser Support</strong></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Native</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Native</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">gRPC-Web only</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);"><strong>Best For</strong></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Public APIs, CRUD</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Mobile, complex queries</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Microservices, ML</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <aside class="page-sidebar">
+        <div class="panel">
+            <div class="panel-header">When to Use</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">REST</span><span class="quick-ref-value">Public APIs, CRUD ops</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">GraphQL</span><span class="quick-ref-value">Mobile apps, complex data</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">gRPC</span><span class="quick-ref-value">Internal services, ML</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Performance</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">REST</span><span class="quick-ref-value">~50-200ms</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">GraphQL</span><span class="quick-ref-value">~30-150ms</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">gRPC</span><span class="quick-ref-value">~5-50ms</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Related</div>
+            <a href="/www-flow" class="quick-ref-item" style="display:block;text-decoration:none;">How the Web Works</a>
+            <a href="/frameworks" class="quick-ref-item" style="display:block;text-decoration:none;">Web Frameworks</a>
+        </div>
+    </aside>
+</div>

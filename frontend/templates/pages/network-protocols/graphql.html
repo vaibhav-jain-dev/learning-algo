@@ -1,0 +1,315 @@
+<style>
+    .protocol-section { background: var(--bg-secondary, #f8fafc); padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color, #e2e8f0); }
+    .protocol-section h2 { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-primary, #3b82f6); }
+    .protocol-section h3 { font-size: 1.2rem; margin-top: 20px; margin-bottom: 12px; color: var(--accent-secondary, #8b5cf6); }
+    .diagram-container { background: var(--bg-tertiary, #f1f5f9); padding: 20px; border-radius: 10px; margin: 20px 0; overflow-x: auto; }
+    .code-example { background: #1e293b; border-radius: 8px; padding: 16px; margin: 16px 0; overflow-x: auto; }
+    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+    .highlight-box { background: rgba(59, 130, 246, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-primary, #3b82f6); margin: 16px 0; }
+    .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .pros, .cons { padding: 16px; border-radius: 8px; }
+    .pros { background: rgba(16, 185, 129, 0.1); border-left: 4px solid #10b981; }
+    .cons { background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; }
+    .pros h4 { color: #10b981; } .cons h4 { color: #ef4444; }
+    @media (max-width: 768px) { .pros-cons { grid-template-columns: 1fr; } }
+    .concept-card { background: var(--bg-tertiary); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--accent-secondary); }
+</style>
+
+<div class="page-layout">
+    <div class="page-main">
+        <nav style="margin-bottom: 16px;"><a href="/network-protocols" style="color: var(--accent-primary);">&larr; Back to Network Protocols</a></nav>
+
+        <h1>GraphQL</h1>
+        <p class="text-muted mb-4">A query language for APIs - request exactly what you need, nothing more</p>
+
+        <div class="protocol-section">
+            <h2>What is GraphQL?</h2>
+            <p>GraphQL is a query language and runtime for APIs. Unlike REST where the server defines what data you get, GraphQL lets clients specify exactly what data they need in a single request.</p>
+
+            <h3>Request-Response Flow</h3>
+            <div class="diagram-container">
+                <pre class="mermaid">
+sequenceDiagram
+    participant Client
+    participant GraphQL as GraphQL Server
+    participant Resolver
+    participant DB as Database
+
+    Client->>GraphQL: POST /graphql {query}
+    Note over GraphQL: Parse & Validate Query
+    GraphQL->>Resolver: Execute user resolver
+    Resolver->>DB: SELECT id, name FROM users
+    DB-->>Resolver: User data
+    GraphQL->>Resolver: Execute posts resolver
+    Resolver->>DB: SELECT * FROM posts WHERE user_id=?
+    DB-->>Resolver: Posts data
+    Resolver-->>GraphQL: Combined result
+    GraphQL-->>Client: JSON with exact fields requested
+                </pre>
+            </div>
+        </div>
+
+        <div class="protocol-section">
+            <h2>Core Concepts</h2>
+
+            <div class="concept-card">
+                <h4>Schema & Types</h4>
+                <p>GraphQL uses a strongly-typed schema to define what data is available.</p>
+                <div class="code-example">
+                    <pre><code># Schema Definition Language (SDL)
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  posts: [Post!]!
+}
+
+type Post {
+  id: ID!
+  title: String!
+  content: String
+  author: User!
+}
+
+type Query {
+  user(id: ID!): User
+  users: [User!]!
+  post(id: ID!): Post
+}
+
+type Mutation {
+  createUser(name: String!, email: String!): User!
+  createPost(title: String!, content: String, authorId: ID!): Post!
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>Queries - Reading Data</h4>
+                <p>Request exactly the fields you need. No over-fetching or under-fetching.</p>
+                <div class="code-example">
+                    <pre><code># Query
+query GetUserWithPosts {
+  user(id: "123") {
+    name
+    email
+    posts {
+      title
+      content
+    }
+  }
+}
+
+# Response
+{
+  "data": {
+    "user": {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "posts": [
+        { "title": "GraphQL Basics", "content": "..." },
+        { "title": "Advanced Patterns", "content": "..." }
+      ]
+    }
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>Mutations - Writing Data</h4>
+                <p>Create, update, or delete data with a single request.</p>
+                <div class="code-example">
+                    <pre><code># Mutation
+mutation CreateUser {
+  createUser(name: "Jane", email: "jane@example.com") {
+    id
+    name
+    email
+  }
+}
+
+# Response
+{
+  "data": {
+    "createUser": {
+      "id": "456",
+      "name": "Jane",
+      "email": "jane@example.com"
+    }
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>Subscriptions - Real-time Updates</h4>
+                <p>WebSocket-based real-time data streaming.</p>
+                <div class="code-example">
+                    <pre><code># Subscription
+subscription OnPostCreated {
+  postCreated {
+    id
+    title
+    author {
+      name
+    }
+  }
+}
+
+# Server pushes updates when new posts are created</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="protocol-section">
+            <h2>Server Implementation (Python)</h2>
+            <div class="code-example">
+                <pre><code class="language-python">from ariadne import QueryType, MutationType, make_executable_schema
+from ariadne.asgi import GraphQL
+
+# Type definitions
+type_defs = """
+    type Query {
+        users: [User!]!
+        user(id: ID!): User
+    }
+
+    type Mutation {
+        createUser(name: String!, email: String!): User!
+    }
+
+    type User {
+        id: ID!
+        name: String!
+        email: String!
+    }
+"""
+
+# In-memory storage
+users_db = {}
+next_id = 1
+
+# Resolvers
+query = QueryType()
+mutation = MutationType()
+
+@query.field("users")
+def resolve_users(*_):
+    return list(users_db.values())
+
+@query.field("user")
+def resolve_user(*_, id):
+    return users_db.get(int(id))
+
+@mutation.field("createUser")
+def resolve_create_user(*_, name, email):
+    global next_id
+    user = {"id": str(next_id), "name": name, "email": email}
+    users_db[next_id] = user
+    next_id += 1
+    return user
+
+# Create schema and app
+schema = make_executable_schema(type_defs, query, mutation)
+app = GraphQL(schema, debug=True)
+
+# Run with: uvicorn main:app</code></pre>
+            </div>
+        </div>
+
+        <div class="protocol-section">
+            <h2>REST vs GraphQL Comparison</h2>
+            <div class="diagram-container">
+                <pre class="mermaid">
+flowchart TB
+    subgraph REST["REST Approach"]
+        R1[GET /users/123] --> R2[User data]
+        R3[GET /users/123/posts] --> R4[Posts data]
+        R5[GET /posts/1/comments] --> R6[Comments]
+        R7[3 HTTP Requests]
+    end
+
+    subgraph GraphQL["GraphQL Approach"]
+        G1["POST /graphql
+        {user(id:123) {
+          name
+          posts { title, comments { text }}
+        }}"]
+        G1 --> G2["All data in
+        1 request"]
+    end
+
+    style R7 fill:#ef4444,color:#fff
+    style G2 fill:#10b981,color:#fff
+                </pre>
+            </div>
+        </div>
+
+        <div class="protocol-section">
+            <h2>When to Use GraphQL</h2>
+
+            <div class="pros-cons">
+                <div class="pros">
+                    <h4>Advantages</h4>
+                    <ul>
+                        <li>No over-fetching or under-fetching</li>
+                        <li>Single endpoint for all operations</li>
+                        <li>Strongly typed schema</li>
+                        <li>Built-in documentation (introspection)</li>
+                        <li>Great for mobile (bandwidth-sensitive)</li>
+                        <li>Flexible for frontend needs</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4>Disadvantages</h4>
+                    <ul>
+                        <li>Caching is more complex</li>
+                        <li>Learning curve for teams</li>
+                        <li>N+1 query problems if not careful</li>
+                        <li>File uploads require workarounds</li>
+                        <li>Rate limiting is harder</li>
+                        <li>Can expose entire schema to attackers</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Best For:</strong> Mobile apps with varying data needs, complex UIs with nested data, rapid frontend iteration, when you have multiple client types (web, mobile, TV).
+            </div>
+        </div>
+
+        <div class="protocol-section">
+            <h2>Real-World Examples</h2>
+            <ul>
+                <li><strong>GitHub API v4:</strong> Entire API is GraphQL - fetch repo data, issues, PRs in one query</li>
+                <li><strong>Shopify Storefront API:</strong> E-commerce with complex product/variant/inventory queries</li>
+                <li><strong>Netflix:</strong> Uses GraphQL Federation for their microservices</li>
+                <li><strong>Airbnb:</strong> Unified data layer across web and mobile</li>
+            </ul>
+        </div>
+    </div>
+
+    <aside class="page-sidebar">
+        <div class="panel">
+            <div class="panel-header">Operations</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Query</span><span class="quick-ref-value">Read data</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Mutation</span><span class="quick-ref-value">Write data</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Subscription</span><span class="quick-ref-value">Real-time</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Tools</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Apollo</span><span class="quick-ref-value">Full-stack solution</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Relay</span><span class="quick-ref-value">Facebook's client</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Hasura</span><span class="quick-ref-value">Auto-generated</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Related</div>
+            <a href="/network-protocols/rest" class="quick-ref-item" style="display:block;text-decoration:none;">REST API</a>
+            <a href="/network-protocols/comparison" class="quick-ref-item" style="display:block;text-decoration:none;">Comparison</a>
+        </div>
+    </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>

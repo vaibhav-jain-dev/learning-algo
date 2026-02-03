@@ -1,0 +1,342 @@
+<style>
+    .protocol-section { background: var(--bg-secondary, #f8fafc); padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color, #e2e8f0); }
+    .protocol-section h2 { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-primary, #3b82f6); }
+    .protocol-section h3 { font-size: 1.2rem; margin-top: 20px; margin-bottom: 12px; color: var(--accent-secondary, #8b5cf6); }
+    .diagram-container { background: var(--bg-tertiary, #f1f5f9); padding: 20px; border-radius: 10px; margin: 20px 0; overflow-x: auto; }
+    .version-card { background: var(--bg-tertiary); padding: 20px; border-radius: 10px; margin-bottom: 16px; border-left: 4px solid var(--accent-primary); }
+    .version-card h4 { color: var(--accent-primary); margin-bottom: 12px; font-size: 1.2rem; }
+    .comparison-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+    .comparison-table th, .comparison-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
+    .comparison-table th { background: var(--bg-tertiary); }
+    .feature-yes { color: #10b981; font-weight: 600; }
+    .feature-no { color: #ef4444; }
+    .feature-partial { color: #f59e0b; }
+    .highlight-box { background: rgba(59, 130, 246, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-primary); margin: 16px 0; }
+    .timeline { position: relative; padding-left: 30px; }
+    .timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: var(--accent-primary); }
+    .timeline-item { position: relative; margin-bottom: 24px; }
+    .timeline-item::before { content: ''; position: absolute; left: -25px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent-primary); }
+    .timeline-year { font-weight: 700; color: var(--accent-primary); }
+</style>
+
+<div class="page-layout">
+    <div class="page-main">
+        <nav style="margin-bottom: 16px;"><a href="/network-protocols" style="color: var(--accent-primary);">&larr; Back to Network Protocols</a></nav>
+
+        <h1>HTTP Protocol Versions & HTTPS</h1>
+        <p class="text-muted mb-4">Evolution of HTTP from 1.0 to HTTP/3 - understanding the improvements and when to use each</p>
+
+        <!-- Timeline -->
+        <div class="protocol-section">
+            <h2>HTTP Evolution Timeline</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <span class="timeline-year">1996 - HTTP/1.0</span>
+                    <p>One request per TCP connection. Connection closed after each response.</p>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-year">1997 - HTTP/1.1</span>
+                    <p>Keep-alive connections, chunked transfer, host header. Still dominant today.</p>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-year">2015 - HTTP/2</span>
+                    <p>Multiplexing, header compression, server push. Major performance upgrade.</p>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-year">2022 - HTTP/3</span>
+                    <p>QUIC protocol (UDP-based), eliminates head-of-line blocking. The future.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- HTTP/1.1 -->
+        <div class="protocol-section">
+            <h2>HTTP/1.1 - The Workhorse</h2>
+
+            <div class="diagram-container">
+                <pre class="mermaid">
+sequenceDiagram
+    participant Client
+    participant Server
+
+    Note over Client,Server: HTTP/1.1 with Keep-Alive
+    Client->>Server: TCP Handshake (SYN)
+    Server-->>Client: SYN-ACK
+    Client->>Server: ACK
+
+    Client->>Server: GET /index.html
+    Server-->>Client: 200 OK (HTML)
+
+    Client->>Server: GET /style.css
+    Server-->>Client: 200 OK (CSS)
+
+    Client->>Server: GET /app.js
+    Server-->>Client: 200 OK (JS)
+
+    Note over Client,Server: Requests are SEQUENTIAL
+    Note over Client,Server: One request waits for previous
+                </pre>
+            </div>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Keep-Alive:</strong> Reuse TCP connection for multiple requests</li>
+                <li><strong>Chunked Transfer:</strong> Stream response before knowing total size</li>
+                <li><strong>Host Header:</strong> Multiple domains on same IP (virtual hosting)</li>
+                <li><strong>Pipelining:</strong> Send multiple requests without waiting (rarely used)</li>
+            </ul>
+
+            <h3>Problems</h3>
+            <ul>
+                <li><strong>Head-of-Line Blocking:</strong> One slow request blocks all following requests</li>
+                <li><strong>Redundant Headers:</strong> Same headers sent with every request (cookies, user-agent)</li>
+                <li><strong>No Prioritization:</strong> Can't prioritize CSS over images</li>
+            </ul>
+        </div>
+
+        <!-- HTTP/2 -->
+        <div class="protocol-section">
+            <h2>HTTP/2 - Multiplexing Revolution</h2>
+
+            <div class="diagram-container">
+                <pre class="mermaid">
+sequenceDiagram
+    participant Client
+    participant Server
+
+    Note over Client,Server: HTTP/2 Multiplexing
+    Client->>Server: TCP + TLS Handshake
+
+    par Parallel Streams
+        Client->>Server: Stream 1: GET /index.html
+        Client->>Server: Stream 3: GET /style.css
+        Client->>Server: Stream 5: GET /app.js
+    end
+
+    par Parallel Responses
+        Server-->>Client: Stream 1: HTML (priority 1)
+        Server-->>Client: Stream 3: CSS (priority 2)
+        Server-->>Client: Stream 5: JS (priority 3)
+    end
+
+    Note over Client,Server: ALL requests/responses PARALLEL
+    Note over Client,Server: No head-of-line blocking at HTTP layer
+                </pre>
+            </div>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Multiplexing:</strong> Multiple requests/responses over single connection simultaneously</li>
+                <li><strong>Header Compression (HPACK):</strong> Reduce header size by 85-90%</li>
+                <li><strong>Server Push:</strong> Server can send resources before client requests them</li>
+                <li><strong>Stream Prioritization:</strong> Tell server which resources are more important</li>
+                <li><strong>Binary Protocol:</strong> More efficient parsing than text-based HTTP/1.1</li>
+            </ul>
+
+            <h3>Limitations</h3>
+            <ul>
+                <li><strong>TCP Head-of-Line Blocking:</strong> Packet loss still blocks all streams</li>
+                <li><strong>TLS Required:</strong> Browsers only support HTTP/2 over HTTPS</li>
+                <li><strong>Server Push Complexity:</strong> Hard to know what to push, often disabled</li>
+            </ul>
+        </div>
+
+        <!-- HTTP/3 -->
+        <div class="protocol-section">
+            <h2>HTTP/3 - The Future (QUIC)</h2>
+
+            <div class="diagram-container">
+                <pre class="mermaid">
+flowchart TB
+    subgraph HTTP2["HTTP/2 Stack"]
+        H2[HTTP/2]
+        TLS2[TLS 1.2/1.3]
+        TCP[TCP]
+        IP2[IP]
+    end
+
+    subgraph HTTP3["HTTP/3 Stack"]
+        H3[HTTP/3]
+        QUIC[QUIC]
+        UDP[UDP]
+        IP3[IP]
+    end
+
+    Note1[TCP Handshake: 1-2 RTT<br/>TLS Handshake: 1-2 RTT<br/>Total: 2-4 RTT]
+    Note2[QUIC + TLS: 0-1 RTT<br/>Connection migration<br/>No HoL blocking]
+
+    HTTP2 --> Note1
+    HTTP3 --> Note2
+
+    style QUIC fill:#10b981,color:#fff
+    style H3 fill:#3b82f6,color:#fff
+                </pre>
+            </div>
+
+            <h3>QUIC Protocol Advantages</h3>
+            <ul>
+                <li><strong>0-RTT Connection:</strong> Reconnect instantly (for returning visitors)</li>
+                <li><strong>No TCP Head-of-Line Blocking:</strong> Each stream independent at transport layer</li>
+                <li><strong>Connection Migration:</strong> Switch networks (WiFi to 4G) without reconnecting</li>
+                <li><strong>Built-in Encryption:</strong> TLS 1.3 mandatory, always encrypted</li>
+                <li><strong>Improved Loss Recovery:</strong> Better congestion control</li>
+            </ul>
+
+            <h3>Adoption Status (2024)</h3>
+            <ul>
+                <li><strong>Google:</strong> YouTube, Search - 100% HTTP/3</li>
+                <li><strong>Cloudflare:</strong> Default for all customers</li>
+                <li><strong>Facebook/Meta:</strong> All apps use HTTP/3</li>
+                <li><strong>Browser Support:</strong> Chrome, Firefox, Safari, Edge all support</li>
+            </ul>
+        </div>
+
+        <!-- HTTPS / TLS -->
+        <div class="protocol-section">
+            <h2>HTTPS & TLS</h2>
+
+            <div class="diagram-container">
+                <pre class="mermaid">
+sequenceDiagram
+    participant Client
+    participant Server
+
+    Note over Client,Server: TLS 1.3 Handshake (1-RTT)
+    Client->>Server: ClientHello + KeyShare
+    Server-->>Client: ServerHello + KeyShare + Certificate + Finished
+    Client->>Server: Finished + [Encrypted Data]
+
+    Note over Client,Server: Connection now encrypted
+    Note over Client,Server: All HTTP traffic protected
+                </pre>
+            </div>
+
+            <h3>Why HTTPS Matters</h3>
+            <ul>
+                <li><strong>Encryption:</strong> Data can't be read by intermediaries</li>
+                <li><strong>Authentication:</strong> Server proves its identity via certificate</li>
+                <li><strong>Integrity:</strong> Data can't be modified in transit</li>
+                <li><strong>SEO:</strong> Google ranks HTTPS sites higher</li>
+                <li><strong>Modern Features:</strong> HTTP/2, Service Workers require HTTPS</li>
+            </ul>
+
+            <h3>TLS Versions</h3>
+            <table class="comparison-table">
+                <tr><th>Version</th><th>Status</th><th>Notes</th></tr>
+                <tr><td>TLS 1.0/1.1</td><td class="feature-no">Deprecated</td><td>Security vulnerabilities</td></tr>
+                <tr><td>TLS 1.2</td><td class="feature-partial">Supported</td><td>Still widely used</td></tr>
+                <tr><td>TLS 1.3</td><td class="feature-yes">Recommended</td><td>Faster, more secure</td></tr>
+            </table>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="protocol-section">
+            <h2>Version Comparison</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>HTTP/1.1</th>
+                        <th>HTTP/2</th>
+                        <th>HTTP/3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Year</td>
+                        <td>1997</td>
+                        <td>2015</td>
+                        <td>2022</td>
+                    </tr>
+                    <tr>
+                        <td>Transport</td>
+                        <td>TCP</td>
+                        <td>TCP</td>
+                        <td>QUIC (UDP)</td>
+                    </tr>
+                    <tr>
+                        <td>Multiplexing</td>
+                        <td class="feature-no">No</td>
+                        <td class="feature-yes">Yes</td>
+                        <td class="feature-yes">Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Header Compression</td>
+                        <td class="feature-no">No</td>
+                        <td class="feature-yes">HPACK</td>
+                        <td class="feature-yes">QPACK</td>
+                    </tr>
+                    <tr>
+                        <td>Server Push</td>
+                        <td class="feature-no">No</td>
+                        <td class="feature-yes">Yes</td>
+                        <td class="feature-yes">Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Connection Setup</td>
+                        <td>2-4 RTT</td>
+                        <td>2-3 RTT</td>
+                        <td>0-1 RTT</td>
+                    </tr>
+                    <tr>
+                        <td>HoL Blocking</td>
+                        <td class="feature-no">HTTP + TCP</td>
+                        <td class="feature-partial">TCP only</td>
+                        <td class="feature-yes">None</td>
+                    </tr>
+                    <tr>
+                        <td>TLS Required</td>
+                        <td class="feature-no">Optional</td>
+                        <td class="feature-partial">De facto</td>
+                        <td class="feature-yes">Mandatory</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- When to Use -->
+        <div class="protocol-section">
+            <h2>Which Version to Use?</h2>
+
+            <div class="highlight-box">
+                <strong>2024 Recommendation:</strong>
+                <ul style="margin-top: 8px;">
+                    <li><strong>Default:</strong> HTTP/2 over TLS 1.3 - supported everywhere, significant improvements</li>
+                    <li><strong>High-performance:</strong> HTTP/3 if your CDN/server supports it (Cloudflare, Google Cloud)</li>
+                    <li><strong>Legacy:</strong> HTTP/1.1 only for old client compatibility or debugging</li>
+                </ul>
+            </div>
+
+            <h3>Server Configuration</h3>
+            <p>Most servers auto-negotiate the best protocol. Enable HTTP/2 and HTTP/3 in your server config:</p>
+            <ul>
+                <li><strong>Nginx:</strong> <code>listen 443 ssl http2;</code></li>
+                <li><strong>Cloudflare:</strong> HTTP/3 enabled by default</li>
+                <li><strong>AWS ALB:</strong> HTTP/2 supported, HTTP/3 via CloudFront</li>
+            </ul>
+        </div>
+    </div>
+
+    <aside class="page-sidebar">
+        <div class="panel">
+            <div class="panel-header">Quick Facts</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">HTTP/2</span><span class="quick-ref-value">97% browser support</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">HTTP/3</span><span class="quick-ref-value">75% browser support</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">TLS 1.3</span><span class="quick-ref-value">0.5 RTT faster</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Performance Gains</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">HTTP/2</span><span class="quick-ref-value">30-50% faster</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">HTTP/3</span><span class="quick-ref-value">10-15% vs HTTP/2</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Related</div>
+            <a href="/network-protocols/rest" class="quick-ref-item" style="display:block;text-decoration:none;">REST API</a>
+            <a href="/network-protocols/grpc" class="quick-ref-item" style="display:block;text-decoration:none;">gRPC</a>
+        </div>
+    </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>

@@ -1,0 +1,218 @@
+<style>
+    .fw-section { background: var(--bg-secondary, #f8fafc); padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color, #e2e8f0); }
+    .fw-section h2 { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-primary, #3b82f6); }
+    .fw-section h3 { font-size: 1.2rem; margin-top: 20px; margin-bottom: 12px; color: var(--accent-secondary, #8b5cf6); }
+    .diagram-container { background: var(--bg-tertiary, #f1f5f9); padding: 20px; border-radius: 10px; margin: 20px 0; overflow-x: auto; }
+    .code-example { background: #1e293b; border-radius: 8px; padding: 16px; margin: 16px 0; overflow-x: auto; }
+    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+    .concept-card { background: var(--bg-tertiary); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--accent-secondary); }
+    .concept-card h4 { color: var(--accent-secondary); margin-bottom: 10px; }
+    .highlight-box { background: rgba(59, 130, 246, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-primary); margin: 16px 0; }
+</style>
+
+<div class="page-layout">
+    <div class="page-main">
+        <nav style="margin-bottom: 16px;"><a href="/frameworks" style="color: var(--accent-primary);">&larr; Back to Frameworks</a></nav>
+
+        <h1>Flask</h1>
+        <p class="text-muted mb-4">Lightweight micro-framework for Python - simple, flexible, perfect for small to medium apps</p>
+
+        <div class="fw-section">
+            <h2>Request Flow: Input to Output</h2>
+            <div class="diagram-container">
+                <pre class="mermaid">
+flowchart TB
+    subgraph Input["1. HTTP Request"]
+        REQ["GET /users/123"]
+    end
+
+    subgraph WSGI["2. WSGI Server (Gunicorn)"]
+        W["Create WSGI environ dict"]
+    end
+
+    subgraph BeforeReq["3. Before Request Hooks"]
+        B1["@before_request\nAuth check, logging"]
+    end
+
+    subgraph Routing["4. URL Routing"]
+        R1["Match route rule\n@app.route('/users/<id>')"]
+    end
+
+    subgraph Handler["5. View Function"]
+        H1["def get_user(id):\n    return jsonify(user)"]
+    end
+
+    subgraph AfterReq["6. After Request Hooks"]
+        A1["@after_request\nAdd headers, logging"]
+    end
+
+    subgraph Response["7. Response"]
+        RES["JSON Response\n200 OK"]
+    end
+
+    REQ --> W --> B1 --> R1 --> H1 --> A1 --> RES
+
+    style REQ fill:#3b82f6,color:#fff
+    style RES fill:#10b981,color:#fff
+                </pre>
+            </div>
+        </div>
+
+        <div class="fw-section">
+            <h2>Key Concepts</h2>
+
+            <div class="concept-card">
+                <h4>1. Routes & View Functions</h4>
+                <div class="code-example">
+                    <pre><code class="language-python">from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+# Basic route
+@app.route('/')
+def index():
+    return 'Hello, World!'
+
+# Route with methods and path parameters
+@app.route('/users/<int:user_id>', methods=['GET', 'PUT', 'DELETE'])
+def user(user_id):
+    if request.method == 'GET':
+        user = get_user_from_db(user_id)
+        return jsonify(user)
+    elif request.method == 'PUT':
+        data = request.get_json()
+        updated = update_user(user_id, data)
+        return jsonify(updated)
+    elif request.method == 'DELETE':
+        delete_user(user_id)
+        return '', 204
+
+# Query parameters
+@app.route('/search')
+def search():
+    query = request.args.get('q', '')
+    page = request.args.get('page', 1, type=int)
+    return jsonify(search_results(query, page))</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>2. Request Hooks (Middleware Pattern)</h4>
+                <div class="code-example">
+                    <pre><code class="language-python">from flask import g, request
+import time
+
+# Run before every request
+@app.before_request
+def before_request():
+    g.start_time = time.time()
+    g.request_id = str(uuid.uuid4())
+
+    # Authentication check
+    token = request.headers.get('Authorization')
+    if token:
+        g.user = verify_token(token)
+
+# Run after every request
+@app.after_request
+def after_request(response):
+    duration = time.time() - g.start_time
+    response.headers['X-Request-ID'] = g.request_id
+    response.headers['X-Process-Time'] = str(duration)
+    return response
+
+# Error handlers
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({'error': 'Not found'}), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return jsonify({'error': 'Internal server error'}), 500</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>3. Blueprints (Modular Routes)</h4>
+                <div class="code-example">
+                    <pre><code class="language-python"># blueprints/users.py
+from flask import Blueprint, jsonify
+
+users_bp = Blueprint('users', __name__, url_prefix='/api/users')
+
+@users_bp.route('/')
+def list_users():
+    return jsonify(get_all_users())
+
+@users_bp.route('/<int:id>')
+def get_user(id):
+    return jsonify(get_user_by_id(id))
+
+# app.py
+from blueprints.users import users_bp
+from blueprints.posts import posts_bp
+
+app = Flask(__name__)
+app.register_blueprint(users_bp)
+app.register_blueprint(posts_bp)</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>4. Database with Flask-SQLAlchemy</h4>
+                <div class="code-example">
+                    <pre><code class="language-python">from flask_sqlalchemy import SQLAlchemy
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/mydb'
+db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+@app.route('/users', methods=['POST'])
+def create_user():
+    data = request.get_json()
+    user = User(name=data['name'], email=data['email'])
+    db.session.add(user)
+    db.session.commit()
+    return jsonify({'id': user.id}), 201</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="fw-section">
+            <h2>When to Use Flask</h2>
+            <div class="highlight-box">
+                <strong>Best For:</strong>
+                <ul style="margin-top: 8px;">
+                    <li>Small to medium APIs and web apps</li>
+                    <li>Prototyping and MVPs</li>
+                    <li>Microservices</li>
+                    <li>When you want control over architecture</li>
+                    <li>Learning web development</li>
+                </ul>
+            </div>
+            <p><strong>Choose FastAPI instead if:</strong> You need async, automatic docs, or type validation.</p>
+            <p><strong>Choose Django instead if:</strong> You need admin panel, ORM, auth out of the box.</p>
+        </div>
+    </div>
+
+    <aside class="page-sidebar">
+        <div class="panel">
+            <div class="panel-header">Key Features</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Type</span><span class="quick-ref-value">Micro framework</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">WSGI</span><span class="quick-ref-value">Werkzeug</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Template</span><span class="quick-ref-value">Jinja2</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Related</div>
+            <a href="/frameworks/fastapi" class="quick-ref-item" style="display:block;text-decoration:none;">FastAPI</a>
+            <a href="/frameworks/django" class="quick-ref-item" style="display:block;text-decoration:none;">Django</a>
+        </div>
+    </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>

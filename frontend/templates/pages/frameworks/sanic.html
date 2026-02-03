@@ -1,0 +1,487 @@
+<style>
+    .fw-section { background: var(--bg-secondary, #f8fafc); padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color, #e2e8f0); }
+    .fw-section h2 { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-primary, #3b82f6); }
+    .fw-section h3 { font-size: 1.2rem; margin-top: 20px; margin-bottom: 12px; color: var(--accent-secondary, #8b5cf6); }
+    .diagram-container { background: var(--bg-tertiary, #f1f5f9); padding: 20px; border-radius: 10px; margin: 20px 0; overflow-x: auto; }
+    .code-example { background: #1e293b; border-radius: 8px; padding: 16px; margin: 16px 0; overflow-x: auto; }
+    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+    .concept-card { background: var(--bg-tertiary); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--accent-secondary); }
+    .concept-card h4 { color: var(--accent-secondary); margin-bottom: 10px; }
+    .highlight-box { background: rgba(59, 130, 246, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-primary); margin: 16px 0; }
+    .comparison-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+    .comparison-table th, .comparison-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
+    .comparison-table th { background: var(--bg-tertiary); }
+</style>
+
+<div class="page-layout">
+    <div class="page-main">
+        <nav style="margin-bottom: 16px;"><a href="/frameworks" style="color: var(--accent-primary);">&larr; Back to Frameworks</a></nav>
+
+        <h1>Sanic</h1>
+        <p class="text-muted mb-4">Async Python web framework built for speed - write async/await code with Flask-like simplicity</p>
+
+        <div class="fw-section">
+            <h2>Request Flow: Input to Output</h2>
+            <div class="diagram-container">
+                <pre class="mermaid">
+flowchart TB
+    subgraph Input["1. HTTP Request"]
+        REQ["GET /users/123"]
+    end
+
+    subgraph Server["2. Async Server"]
+        UV["uvloop Event Loop\n(faster than asyncio)"]
+    end
+
+    subgraph Middleware["3. Middleware Chain (Async)"]
+        M1["@app.on_request\nAuthentication"]
+        M2["Request middleware"]
+    end
+
+    subgraph Route["4. Route Matching"]
+        R["@app.get('/users/<id:int>')"]
+    end
+
+    subgraph Handler["5. Async Handler"]
+        H["async def get_user(request, id):\n    user = await db.get(id)\n    return json(user)"]
+    end
+
+    subgraph DB["6. Async I/O"]
+        D1["await database.fetch()"]
+        D2["await redis.get()"]
+        D3["await http_client.get()"]
+    end
+
+    subgraph ResponseMW["7. Response Middleware"]
+        RM["@app.on_response\nAdd headers, logging"]
+    end
+
+    subgraph Output["8. Response"]
+        RES["JSON Response\n200 OK"]
+    end
+
+    REQ --> UV --> M1 --> M2 --> R --> H
+    H --> D1 & D2 & D3
+    D1 & D2 & D3 --> RM --> RES
+
+    style REQ fill:#3b82f6,color:#fff
+    style RES fill:#10b981,color:#fff
+    style H fill:#8b5cf6,color:#fff
+    style UV fill:#f59e0b,color:#fff
+                </pre>
+            </div>
+            <div class="highlight-box">
+                <strong>Key Advantage:</strong> Sanic uses uvloop (a fast, drop-in replacement for asyncio) and can handle many concurrent connections efficiently. All I/O operations are non-blocking.
+            </div>
+        </div>
+
+        <div class="fw-section">
+            <h2>Key Concepts</h2>
+
+            <div class="concept-card">
+                <h4>1. Basic Application & Routes</h4>
+                <div class="code-example">
+                    <pre><code class="language-python">from sanic import Sanic
+from sanic.response import json, text, html
+
+app = Sanic("MyApp")
+
+# Basic route
+@app.get("/")
+async def index(request):
+    return text("Hello, World!")
+
+# Route with parameters
+@app.get("/users/<user_id:int>")
+async def get_user(request, user_id):
+    user = await fetch_user(user_id)
+    return json({"user": user})
+
+# Multiple methods
+@app.route("/items", methods=["GET", "POST"])
+async def items(request):
+    if request.method == "GET":
+        return json(await get_items())
+    else:
+        item = await create_item(request.json)
+        return json(item, status=201)
+
+# Route parameters with regex
+@app.get("/files/<path:path>")  # Matches any path
+@app.get(r"/id/<id:[A-z]{4}>")  # Regex pattern
+
+# Blueprints for modular routes
+from sanic import Blueprint
+
+api = Blueprint("api", url_prefix="/api/v1")
+
+@api.get("/users")
+async def api_users(request):
+    return json({"users": []})
+
+app.blueprint(api)
+
+# Run the app
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000, workers=4, auto_reload=True)</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>2. Request & Response Objects</h4>
+                <div class="code-example">
+                    <pre><code class="language-python">from sanic.response import json, text, html, file, redirect, stream
+
+@app.post("/data")
+async def handle_data(request):
+    # Request attributes
+    body = request.body           # Raw bytes
+    data = request.json           # Parsed JSON
+    form = request.form           # Form data
+    files = request.files         # Uploaded files
+    args = request.args           # Query parameters: ?page=1&limit=10
+    headers = request.headers     # Request headers
+    cookies = request.cookies     # Cookies
+    ip = request.ip               # Client IP
+
+    # Query params
+    page = request.args.get("page", 1)
+    tags = request.args.getlist("tag")  # Multiple values
+
+    # JSON body
+    name = request.json.get("name")
+
+    return json({"received": name})
+
+# Different response types
+@app.get("/html")
+async def html_response(request):
+    return html("<h1>Hello</h1>")
+
+@app.get("/file")
+async def file_response(request):
+    return await file("/path/to/file.pdf")
+
+@app.get("/redirect")
+async def redirect_response(request):
+    return redirect("/new-location")
+
+# Streaming response
+@app.get("/stream")
+async def stream_response(request):
+    async def streaming_fn(response):
+        for i in range(10):
+            await response.write(f"data: {i}\n")
+            await asyncio.sleep(1)
+    return stream(streaming_fn, content_type="text/event-stream")
+
+# Custom headers and status
+@app.get("/custom")
+async def custom_response(request):
+    response = json({"status": "created"}, status=201)
+    response.headers["X-Custom-Header"] = "value"
+    response.cookies["session"] = "abc123"
+    return response</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>3. Middleware</h4>
+                <div class="code-example">
+                    <pre><code class="language-python">import time
+
+# Request middleware (runs before handler)
+@app.on_request
+async def before_request(request):
+    request.ctx.start_time = time.time()
+
+    # Check authentication
+    token = request.headers.get("Authorization")
+    if not token:
+        return json({"error": "Unauthorized"}, status=401)
+
+    request.ctx.user = await verify_token(token)
+
+# Response middleware (runs after handler)
+@app.on_response
+async def after_response(request, response):
+    duration = time.time() - request.ctx.start_time
+    response.headers["X-Response-Time"] = str(duration)
+
+# Middleware for specific blueprints
+@api.middleware("request")
+async def api_auth(request):
+    # Only applies to routes in 'api' blueprint
+    pass
+
+# Named middleware with priority
+@app.middleware("request", priority=1)  # Higher priority runs first
+async def high_priority_middleware(request):
+    pass
+
+# Middleware class pattern
+class AuthMiddleware:
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, request):
+        # Custom logic
+        pass
+
+app.register_middleware(AuthMiddleware(app), "request")</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>4. Async Database & External Services</h4>
+                <div class="code-example">
+                    <pre><code class="language-python">import asyncpg
+import aioredis
+import httpx
+
+# App lifecycle events
+@app.before_server_start
+async def setup_db(app, loop):
+    app.ctx.db = await asyncpg.create_pool(
+        "postgresql://user:pass@localhost/db",
+        min_size=5,
+        max_size=20
+    )
+    app.ctx.redis = await aioredis.from_url("redis://localhost")
+    app.ctx.http = httpx.AsyncClient()
+
+@app.after_server_stop
+async def cleanup(app, loop):
+    await app.ctx.db.close()
+    await app.ctx.redis.close()
+    await app.ctx.http.aclose()
+
+# Using in handlers
+@app.get("/users/<user_id:int>")
+async def get_user(request, user_id):
+    # Check cache first
+    cached = await request.app.ctx.redis.get(f"user:{user_id}")
+    if cached:
+        return json(json.loads(cached))
+
+    # Query database
+    async with request.app.ctx.db.acquire() as conn:
+        user = await conn.fetchrow(
+            "SELECT * FROM users WHERE id = $1", user_id
+        )
+
+    if not user:
+        return json({"error": "Not found"}, status=404)
+
+    # Cache for 5 minutes
+    await request.app.ctx.redis.setex(
+        f"user:{user_id}", 300, json.dumps(dict(user))
+    )
+
+    return json(dict(user))
+
+# Parallel async calls
+@app.get("/dashboard")
+async def dashboard(request):
+    # Run all queries concurrently
+    user, posts, notifications = await asyncio.gather(
+        fetch_user(request.ctx.user_id),
+        fetch_user_posts(request.ctx.user_id),
+        fetch_notifications(request.ctx.user_id)
+    )
+    return json({
+        "user": user,
+        "posts": posts,
+        "notifications": notifications
+    })</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>5. WebSockets</h4>
+                <div class="code-example">
+                    <pre><code class="language-python">from sanic import Websocket
+
+@app.websocket("/ws")
+async def websocket_handler(request, ws: Websocket):
+    # Connection established
+    await ws.send("Connected!")
+
+    try:
+        while True:
+            message = await ws.recv()
+            # Echo back
+            await ws.send(f"You said: {message}")
+    except Exception:
+        # Connection closed
+        pass
+
+# WebSocket with authentication
+@app.websocket("/ws/chat")
+async def chat(request, ws):
+    # Authenticate via query param or first message
+    token = request.args.get("token")
+    user = await verify_token(token)
+
+    if not user:
+        await ws.close(code=4001, reason="Unauthorized")
+        return
+
+    # Add to room
+    room = request.args.get("room", "general")
+    await chat_rooms[room].add(ws, user)
+
+    try:
+        async for message in ws:
+            await chat_rooms[room].broadcast(f"{user.name}: {message}")
+    finally:
+        await chat_rooms[room].remove(ws)</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>6. Error Handling & Validation</h4>
+                <div class="code-example">
+                    <pre><code class="language-python">from sanic.exceptions import SanicException, NotFound, Unauthorized
+
+# Custom exceptions
+class ValidationError(SanicException):
+    status_code = 400
+    message = "Validation failed"
+
+# Global error handler
+@app.exception(Exception)
+async def handle_exception(request, exception):
+    return json({
+        "error": str(exception),
+        "status": getattr(exception, "status_code", 500)
+    }, status=getattr(exception, "status_code", 500))
+
+# Specific exception handler
+@app.exception(NotFound)
+async def handle_not_found(request, exception):
+    return json({"error": "Resource not found"}, status=404)
+
+# Request validation with pydantic
+from pydantic import BaseModel, validator
+
+class CreateUserRequest(BaseModel):
+    username: str
+    email: str
+    age: int
+
+    @validator("age")
+    def age_must_be_positive(cls, v):
+        if v < 0:
+            raise ValueError("Age must be positive")
+        return v
+
+@app.post("/users")
+async def create_user(request):
+    try:
+        data = CreateUserRequest(**request.json)
+    except Exception as e:
+        raise ValidationError(str(e))
+
+    user = await create_user_in_db(data.dict())
+    return json(user, status=201)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="fw-section">
+            <h2>Sanic vs Other Frameworks</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Sanic</th>
+                        <th>FastAPI</th>
+                        <th>Flask</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Async Native</td>
+                        <td>Yes (uvloop)</td>
+                        <td>Yes (anyio)</td>
+                        <td>No (sync)</td>
+                    </tr>
+                    <tr>
+                        <td>Performance</td>
+                        <td>Very High</td>
+                        <td>High</td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td>Type Hints</td>
+                        <td>Optional</td>
+                        <td>Required</td>
+                        <td>Optional</td>
+                    </tr>
+                    <tr>
+                        <td>Auto Docs</td>
+                        <td>Plugin</td>
+                        <td>Built-in</td>
+                        <td>Plugin</td>
+                    </tr>
+                    <tr>
+                        <td>WebSockets</td>
+                        <td>Built-in</td>
+                        <td>Built-in</td>
+                        <td>Extension</td>
+                    </tr>
+                    <tr>
+                        <td>Learning Curve</td>
+                        <td>Low</td>
+                        <td>Medium</td>
+                        <td>Very Low</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="fw-section">
+            <h2>When to Use Sanic</h2>
+            <div class="highlight-box">
+                <strong>Best For:</strong>
+                <ul style="margin-top: 8px;">
+                    <li>High-performance async APIs</li>
+                    <li>Real-time applications (WebSockets, SSE)</li>
+                    <li>Microservices with many I/O operations</li>
+                    <li>When you want Flask-like simplicity with async support</li>
+                    <li>Projects that need to handle many concurrent connections</li>
+                </ul>
+            </div>
+            <p><strong>Consider alternatives when:</strong></p>
+            <ul>
+                <li>You need automatic API documentation - consider FastAPI</li>
+                <li>You need a full-stack framework with ORM, admin - consider Django</li>
+                <li>Your team is more comfortable with sync code - consider Flask</li>
+            </ul>
+        </div>
+    </div>
+
+    <aside class="page-sidebar">
+        <div class="panel">
+            <div class="panel-header">Key Features</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">uvloop</span><span class="quick-ref-value">Fast event loop</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">async/await</span><span class="quick-ref-value">Native support</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">WebSockets</span><span class="quick-ref-value">Built-in</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Blueprints</span><span class="quick-ref-value">Modular routes</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Performance</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Requests/sec</span><span class="quick-ref-value">~100k+</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Latency</span><span class="quick-ref-value">Sub-ms</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Related</div>
+            <a href="/frameworks/fastapi" class="quick-ref-item" style="display:block;text-decoration:none;">FastAPI</a>
+            <a href="/frameworks/flask" class="quick-ref-item" style="display:block;text-decoration:none;">Flask</a>
+        </div>
+    </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>

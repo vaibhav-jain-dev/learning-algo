@@ -1,0 +1,737 @@
+<style>
+    .www-section {
+        background: var(--bg-secondary, #f8fafc);
+        padding: 24px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        border: 1px solid var(--border-color, #e2e8f0);
+    }
+    .www-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 12px;
+        color: var(--accent-primary, #3b82f6);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .www-section h3 {
+        font-size: 1.2rem;
+        margin-top: 20px;
+        margin-bottom: 12px;
+        color: var(--accent-secondary, #8b5cf6);
+    }
+    .component-card {
+        background: var(--bg-tertiary, #f1f5f9);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 16px;
+        border-left: 4px solid var(--accent-primary, #3b82f6);
+    }
+    .component-card h4 {
+        color: var(--accent-primary, #3b82f6);
+        margin-bottom: 12px;
+        font-size: 1.1rem;
+    }
+    .component-card .what, .component-card .why, .component-card .if-missing,
+    .component-card .alternatives, .component-card .best-now, .component-card .future {
+        margin-bottom: 10px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+    }
+    .component-card .what {
+        background: rgba(59, 130, 246, 0.1);
+        border-left: 3px solid #3b82f6;
+    }
+    .component-card .why {
+        background: rgba(16, 185, 129, 0.1);
+        border-left: 3px solid #10b981;
+    }
+    .component-card .if-missing {
+        background: rgba(239, 68, 68, 0.1);
+        border-left: 3px solid #ef4444;
+    }
+    .component-card .alternatives {
+        background: rgba(139, 92, 246, 0.1);
+        border-left: 3px solid #8b5cf6;
+    }
+    .component-card .best-now {
+        background: rgba(245, 158, 11, 0.1);
+        border-left: 3px solid #f59e0b;
+    }
+    .component-card .future {
+        background: rgba(6, 182, 212, 0.1);
+        border-left: 3px solid #06b6d4;
+    }
+    .component-card .label {
+        font-weight: 600;
+        color: var(--text-primary);
+        display: inline-block;
+        min-width: 100px;
+    }
+    .diagram-container {
+        background: var(--bg-tertiary, #f1f5f9);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+        overflow-x: auto;
+    }
+    .mermaid {
+        display: flex;
+        justify-content: center;
+    }
+    .real-example {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.04) 100%);
+        padding: 16px;
+        border-radius: 8px;
+        margin: 12px 0;
+        border-left: 4px solid #10b981;
+    }
+    .real-example h5 {
+        color: #10b981;
+        margin-bottom: 8px;
+    }
+    .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+    }
+    .tech-tag {
+        background: rgba(139, 92, 246, 0.12);
+        color: var(--accent-secondary, #8b5cf6);
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        border: 1px solid rgba(139, 92, 246, 0.25);
+    }
+    .flow-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 20px;
+        padding: 16px;
+        background: var(--bg-tertiary, #f1f5f9);
+        border-radius: 10px;
+    }
+    .flow-step-number {
+        background: var(--accent-primary, #3b82f6);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+    .flow-step-content h4 {
+        color: var(--accent-primary, #3b82f6);
+        margin-bottom: 8px;
+    }
+    .collapsible-btn {
+        background: var(--bg-tertiary, #f1f5f9);
+        color: var(--text-primary, #0f172a);
+        cursor: pointer;
+        padding: 12px;
+        width: 100%;
+        border: 1px solid var(--border-color, #e2e8f0);
+        text-align: left;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        margin-top: 10px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .collapsible-btn:hover, .collapsible-btn.active {
+        background: var(--accent-primary, #3b82f6);
+        color: white;
+    }
+    .collapsible-btn::after {
+        content: '\25BC';
+        font-size: 0.75rem;
+        transition: transform 0.2s ease;
+    }
+    .collapsible-btn.active::after {
+        transform: rotate(180deg);
+    }
+    .collapsible-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        background: var(--bg-secondary, #f8fafc);
+        border: 1px solid var(--border-color, #e2e8f0);
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+    }
+    .collapsible-content .inner {
+        padding: 16px;
+    }
+</style>
+
+<div class="page-layout">
+    <div class="page-main">
+        <h1>How the Web Works</h1>
+        <p class="text-muted mb-4">Complete request journey from browser to backend and back - with real-world examples</p>
+
+        <div class="card mb-4">
+            <h3 class="panel-header">What You'll Learn</h3>
+            <ul>
+                <li>Complete request flow from typing URL to seeing the page</li>
+                <li>Each component's role: DNS, CDN, Load Balancer, API Gateway, etc.</li>
+                <li>What happens if each component is missing</li>
+                <li>Real-world examples from companies like Blinkit, Swiggy</li>
+            </ul>
+        </div>
+
+        <!-- Complete Architecture Overview -->
+        <div class="www-section">
+            <h2>Complete Web Architecture (Single View)</h2>
+            <p>Every request flows through these components. Understanding each is key to building scalable systems.</p>
+
+            <div class="diagram-container">
+                <pre class="mermaid">
+flowchart LR
+    subgraph Client
+        U[User Browser/App]
+    end
+
+    subgraph Edge["Edge Layer"]
+        DNS[DNS Resolver]
+        CDN[CDN/Edge Cache]
+        LB[Load Balancer]
+        APIGW[API Gateway]
+    end
+
+    subgraph Frontend
+        FE[Web/Mobile Frontend]
+    end
+
+    subgraph Backend["Backend Microservices"]
+        AUTH[Auth Service]
+        CATALOG[Catalog Service]
+        ORDER[Order Service]
+        PAYMENT[Payment Service]
+        NOTIF[Notification Service]
+    end
+
+    subgraph Data["State & Storage"]
+        DB[(Primary DB)]
+        CACHE[[Redis Cache]]
+        MQ((Message Queue))
+    end
+
+    subgraph Async["Async & Infra"]
+        WORKER[Background Workers]
+        OBS[Monitoring/Logging]
+    end
+
+    U -->|blinkit.com| DNS
+    DNS --> CDN
+    CDN --> LB
+    LB --> APIGW
+    APIGW --> FE
+
+    FE -->|HTTPS API| AUTH
+    FE --> CATALOG
+    FE --> ORDER
+    FE --> PAYMENT
+
+    AUTH --> CACHE
+    AUTH --> DB
+    CATALOG --> CACHE
+    CATALOG --> DB
+    ORDER --> DB
+    ORDER --> MQ
+    PAYMENT --> MQ
+    NOTIF --> MQ
+
+    MQ --> WORKER
+    WORKER --> DB
+    WORKER --> CACHE
+    WORKER --> NOTIF
+
+    LB --> OBS
+    APIGW --> OBS
+                </pre>
+            </div>
+        </div>
+
+        <!-- Step by Step Request Flow -->
+        <div class="www-section">
+            <h2>Request Journey: Step by Step</h2>
+            <p>What happens when you type "blinkit.com" and press Enter?</p>
+
+            <div class="flow-step">
+                <div class="flow-step-number">1</div>
+                <div class="flow-step-content">
+                    <h4>DNS Resolution</h4>
+                    <p>Your browser asks "What's the IP address of blinkit.com?"</p>
+                    <div class="diagram-container" style="margin: 10px 0;">
+                        <pre class="mermaid">
+sequenceDiagram
+    participant Browser
+    participant Stub as Stub Resolver (Device)
+    participant Recursive as Recursive (ISP/1.1.1.1)
+    participant Root as Root Server
+    participant TLD as .com TLD Server
+    participant Auth as Blinkit's NS
+
+    Browser->>Stub: blinkit.com?
+    Stub->>Recursive: blinkit.com?
+    Recursive->>Root: blinkit.com?
+    Root-->>Recursive: Ask .com TLD
+    Recursive->>TLD: blinkit.com?
+    TLD-->>Recursive: Ask ns1.blinkit.com
+    Recursive->>Auth: blinkit.com?
+    Auth-->>Recursive: 104.21.XX.XX
+    Recursive-->>Stub: 104.21.XX.XX (cached 5min)
+    Stub-->>Browser: 104.21.XX.XX
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="flow-step-number">2</div>
+                <div class="flow-step-content">
+                    <h4>CDN / Edge</h4>
+                    <p>Request hits the nearest edge server (maybe in Mumbai instead of US)</p>
+                    <div class="diagram-container" style="margin: 10px 0;">
+                        <pre class="mermaid">
+flowchart LR
+    subgraph User_Location["User in Delhi"]
+        U[User]
+    end
+
+    subgraph CDN_Network["Cloudflare CDN"]
+        E1[Delhi Edge]
+        E2[Mumbai Edge]
+        E3[Singapore Edge]
+    end
+
+    subgraph Origin["Origin Server (AWS Mumbai)"]
+        O[Backend]
+    end
+
+    U -->|Routed to nearest| E1
+    E1 -->|Cache HIT| U
+    E1 -.->|Cache MISS| O
+    O -.-> E1
+
+    style E1 fill:#10b981,color:#fff
+                        </pre>
+                    </div>
+                    <p><strong>Cache HIT:</strong> Static assets (JS, CSS, images) served instantly from edge<br/>
+                    <strong>Cache MISS:</strong> Dynamic content fetched from origin, then cached</p>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="flow-step-number">3</div>
+                <div class="flow-step-content">
+                    <h4>Load Balancer</h4>
+                    <p>Distributes traffic across multiple backend instances</p>
+                    <div class="diagram-container" style="margin: 10px 0;">
+                        <pre class="mermaid">
+flowchart TB
+    LB[Load Balancer]
+
+    subgraph Healthy["Healthy Instances"]
+        S1[Server 1 - 30%]
+        S2[Server 2 - 35%]
+        S3[Server 3 - 35%]
+    end
+
+    subgraph Unhealthy["Unhealthy (Removed)"]
+        S4[Server 4 - Health Check Failed]
+    end
+
+    LB -->|Round Robin| S1
+    LB -->|Round Robin| S2
+    LB -->|Round Robin| S3
+    LB -.->|Excluded| S4
+
+    style S4 fill:#ef4444,color:#fff
+    style LB fill:#3b82f6,color:#fff
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="flow-step-number">4</div>
+                <div class="flow-step-content">
+                    <h4>API Gateway</h4>
+                    <p>Single entry point handling auth, rate limiting, routing</p>
+                    <div class="diagram-container" style="margin: 10px 0;">
+                        <pre class="mermaid">
+flowchart LR
+    REQ[Request] --> AUTH[Authentication]
+    AUTH --> RATE[Rate Limiting]
+    RATE --> ROUTE[Route Matching]
+    ROUTE --> LOG[Logging/Metrics]
+    LOG --> SVC[Backend Service]
+
+    AUTH -.->|Invalid Token| R1[401 Unauthorized]
+    RATE -.->|Limit Exceeded| R2[429 Too Many Requests]
+
+    style R1 fill:#ef4444,color:#fff
+    style R2 fill:#f59e0b,color:#fff
+    style SVC fill:#10b981,color:#fff
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="flow-step-number">5</div>
+                <div class="flow-step-content">
+                    <h4>Backend Services</h4>
+                    <p>Microservices process the request with caching and database</p>
+                    <div class="diagram-container" style="margin: 10px 0;">
+                        <pre class="mermaid">
+sequenceDiagram
+    participant API as API Gateway
+    participant Catalog as Catalog Service
+    participant Cache as Redis
+    participant DB as PostgreSQL
+
+    API->>Catalog: GET /products?category=dairy
+    Catalog->>Cache: Check cache
+    Cache-->>Catalog: MISS
+    Catalog->>DB: SELECT * FROM products
+    DB-->>Catalog: Product data
+    Catalog->>Cache: SET (TTL: 5min)
+    Catalog-->>API: JSON Response
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="flow-step-number">6</div>
+                <div class="flow-step-content">
+                    <h4>Async Processing</h4>
+                    <p>Background workers handle long-running tasks</p>
+                    <div class="diagram-container" style="margin: 10px 0;">
+                        <pre class="mermaid">
+flowchart LR
+    subgraph Sync["Sync (User waits)"]
+        API[API] --> DB[(Database)]
+    end
+
+    subgraph Async["Async (Background)"]
+        API --> MQ[Message Queue]
+        MQ --> W1[Worker: Send Email]
+        MQ --> W2[Worker: Process Payment]
+        MQ --> W3[Worker: Update Inventory]
+    end
+
+    API -->|202 Accepted| User[User gets response immediately]
+
+    style User fill:#10b981,color:#fff
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Component Deep Dives -->
+        <div class="www-section">
+            <h2>Component Deep Dives</h2>
+
+            <div class="component-card">
+                <h4>1. DNS Resolver</h4>
+                <div class="what"><span class="label">What:</span> Translates domain names (blinkit.com) to IP addresses</div>
+                <div class="why"><span class="label">Why:</span> Human-readable domains, traffic steering, failover capabilities</div>
+                <div class="if-missing"><span class="label">If Missing:</span> Users must type raw IPs; no domain-based routing; impossible to rotate infrastructure</div>
+                <div class="alternatives"><span class="label">Alternatives:</span> Route53, Cloudflare DNS, NS1, Google Cloud DNS</div>
+                <div class="best-now"><span class="label">Best Now:</span> Cloudflare + Route53 combo for speed + infrastructure-as-code</div>
+                <div class="future"><span class="label">Future:</span> More geo/latency-aware routing, DNSSEC everywhere, tighter service discovery integration</div>
+
+                <button class="collapsible-btn">Sub-components Details</button>
+                <div class="collapsible-content">
+                    <div class="inner">
+                        <ul>
+                            <li><strong>Stub Resolver:</strong> On your device - first stop for DNS queries</li>
+                            <li><strong>Recursive Resolver:</strong> ISP or public (1.1.1.1, 8.8.8.8) - does the heavy lifting</li>
+                            <li><strong>Root Servers:</strong> 13 clusters worldwide - point to TLD servers</li>
+                            <li><strong>TLD Servers:</strong> Handle .com, .org, .io etc.</li>
+                            <li><strong>Authoritative NS:</strong> Your domain's actual DNS records</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="real-example">
+                    <h5>Real Example: Swiggy</h5>
+                    <p>Swiggy uses Route53 with latency-based routing. Users in Mumbai get directed to AWS Mumbai, users in Bangalore to AWS Bangalore. DNS TTL is 60 seconds for quick failover during outages.</p>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h4>2. CDN / Edge</h4>
+                <div class="what"><span class="label">What:</span> Edge network caching static assets and sometimes API responses near users</div>
+                <div class="why"><span class="label">Why:</span> Lower latency, offload origin servers, DDoS protection</div>
+                <div class="if-missing"><span class="label">If Missing:</span> Higher TTFB, origin server overload during traffic spikes</div>
+                <div class="alternatives"><span class="label">Alternatives:</span> Cloudflare, Akamai, Fastly, CloudFront</div>
+                <div class="best-now"><span class="label">Best Now:</span> Cloudflare/Fastly for dynamic sites; Akamai for very large enterprises</div>
+                <div class="future"><span class="label">Future:</span> More edge compute, AI-driven cache policies, HTTP/3+ protocol upgrades</div>
+
+                <div class="tech-stack">
+                    <span class="tech-tag">Cloudflare</span>
+                    <span class="tech-tag">CloudFront</span>
+                    <span class="tech-tag">Fastly</span>
+                    <span class="tech-tag">Akamai</span>
+                </div>
+
+                <div class="real-example">
+                    <h5>Real Example: Blinkit</h5>
+                    <p>Blinkit uses Cloudflare CDN with 200+ PoPs globally. Product images are cached at edge with 24-hour TTL. Their cache hit ratio is 85%+, reducing origin load by 6x during Diwali sales.</p>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h4>3. Load Balancer</h4>
+                <div class="what"><span class="label">What:</span> Distributes incoming traffic across multiple backend instances</div>
+                <div class="why"><span class="label">Why:</span> Horizontal scalability, zero-downtime deploys, health checks</div>
+                <div class="if-missing"><span class="label">If Missing:</span> Single instance bottleneck, no rolling upgrades, single point of failure</div>
+                <div class="alternatives"><span class="label">Alternatives:</span> AWS ALB/NLB, GCP LB, NGINX, HAProxy, Envoy</div>
+                <div class="best-now"><span class="label">Best Now:</span> Managed LBs (ALB) externally + NGINX/Envoy inside Kubernetes clusters</div>
+                <div class="future"><span class="label">Future:</span> Smarter routing (per-user, cost-aware), more L7 security built-in</div>
+
+                <button class="collapsible-btn">Load Balancing Algorithms</button>
+                <div class="collapsible-content">
+                    <div class="inner">
+                        <ul>
+                            <li><strong>Round Robin:</strong> Rotate through servers sequentially</li>
+                            <li><strong>Least Connections:</strong> Send to server with fewest active connections</li>
+                            <li><strong>Weighted:</strong> Distribute based on server capacity</li>
+                            <li><strong>IP Hash:</strong> Same client IP always goes to same server (sticky sessions)</li>
+                            <li><strong>Least Response Time:</strong> Send to fastest responding server</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tech-stack">
+                    <span class="tech-tag">AWS ALB</span>
+                    <span class="tech-tag">NGINX</span>
+                    <span class="tech-tag">HAProxy</span>
+                    <span class="tech-tag">Envoy</span>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h4>4. API Gateway</h4>
+                <div class="what"><span class="label">What:</span> Single entry point for APIs: routing, auth, rate limits, observability</div>
+                <div class="why"><span class="label">Why:</span> Avoid duplicating cross-cutting logic across microservices</div>
+                <div class="if-missing"><span class="label">If Missing:</span> Every service reimplements auth, throttling, logging, CORS</div>
+                <div class="alternatives"><span class="label">Alternatives:</span> Kong, Apigee, AWS API Gateway, Traefik, Istio Ingress</div>
+                <div class="best-now"><span class="label">Best Now:</span> Kong/Envoy-based gateways + service mesh for large microservices</div>
+                <div class="future"><span class="label">Future:</span> Policy-as-code, AI-assisted API governance, unified API catalogs</div>
+
+                <div class="real-example">
+                    <h5>Real Example: Grofers/Blinkit</h5>
+                    <p>Blinkit uses Kong API Gateway handling 50K+ requests/second. Their gateway handles JWT validation, rate limiting (100 req/min for anonymous, 1000 for logged-in), request transformation, and metrics collection. All configured via Terraform.</p>
+                </div>
+
+                <div class="tech-stack">
+                    <span class="tech-tag">Kong</span>
+                    <span class="tech-tag">AWS API Gateway</span>
+                    <span class="tech-tag">Apigee</span>
+                    <span class="tech-tag">Traefik</span>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h4>5. Backend Microservices</h4>
+                <div class="what"><span class="label">What:</span> Individual services handling specific domains (Auth, Catalog, Orders, etc.)</div>
+                <div class="why"><span class="label">Why:</span> Independent scaling, team ownership, technology flexibility, resilience</div>
+                <div class="if-missing"><span class="label">If Missing:</span> Monolith grows too large; deployment and scaling become painful</div>
+                <div class="alternatives"><span class="label">Alternatives:</span> Monolith, modular monolith, microservices, serverless</div>
+                <div class="best-now"><span class="label">Best Now:</span> Microservices/modular monolith with clear bounded contexts</div>
+                <div class="future"><span class="label">Future:</span> More event-driven designs (Kafka), function-level scaling (serverless)</div>
+
+                <div class="tech-stack">
+                    <span class="tech-tag">FastAPI</span>
+                    <span class="tech-tag">Go Gin</span>
+                    <span class="tech-tag">Spring Boot</span>
+                    <span class="tech-tag">Node.js</span>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h4>6. Database</h4>
+                <div class="what"><span class="label">What:</span> Systems of record - user profiles, catalog, orders, transactions</div>
+                <div class="why"><span class="label">Why:</span> Consistent, durable storage with ACID guarantees</div>
+                <div class="if-missing"><span class="label">If Missing:</span> No persistence, can't reconcile orders/payments, data loss</div>
+                <div class="alternatives"><span class="label">Alternatives:</span> PostgreSQL, MySQL, MongoDB, Cassandra, DynamoDB</div>
+                <div class="best-now"><span class="label">Best Now:</span> PostgreSQL for transactional data, MongoDB for flexible documents</div>
+                <div class="future"><span class="label">Future:</span> Serverless DBs, better multi-region consistency, HTAP systems</div>
+
+                <button class="collapsible-btn">Database Patterns</button>
+                <div class="collapsible-content">
+                    <div class="inner">
+                        <ul>
+                            <li><strong>Primary-Replica:</strong> One write node, multiple read replicas</li>
+                            <li><strong>Sharding:</strong> Horizontal partition data by key (user_id, region)</li>
+                            <li><strong>Read/Write Splitting:</strong> Route reads to replicas, writes to primary</li>
+                            <li><strong>Connection Pooling:</strong> PgBouncer, ProxySQL to manage connections</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tech-stack">
+                    <span class="tech-tag">PostgreSQL</span>
+                    <span class="tech-tag">MySQL</span>
+                    <span class="tech-tag">MongoDB</span>
+                    <span class="tech-tag">DynamoDB</span>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h4>7. Cache (Redis)</h4>
+                <div class="what"><span class="label">What:</span> In-memory store for hot data (catalog, sessions, rate limit counters)</div>
+                <div class="why"><span class="label">Why:</span> Reduce DB load, sub-millisecond latency for frequent reads</div>
+                <div class="if-missing"><span class="label">If Missing:</span> Database hot spots, higher latency for high-traffic flows</div>
+                <div class="alternatives"><span class="label">Alternatives:</span> Redis, Memcached, in-process caches (Caffeine, Guava)</div>
+                <div class="best-now"><span class="label">Best Now:</span> Redis for most web apps (data structures, persistence options)</div>
+                <div class="future"><span class="label">Future:</span> Redis-compatible high-performance engines (Dragonfly), serverless cache</div>
+
+                <button class="collapsible-btn">Caching Patterns</button>
+                <div class="collapsible-content">
+                    <div class="inner">
+                        <ul>
+                            <li><strong>Cache-Aside:</strong> App checks cache, if miss reads DB and populates cache</li>
+                            <li><strong>Write-Through:</strong> Writes go to cache AND DB synchronously</li>
+                            <li><strong>Write-Behind:</strong> Writes go to cache, async write to DB later</li>
+                            <li><strong>Read-Through:</strong> Cache fetches from DB on miss automatically</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tech-stack">
+                    <span class="tech-tag">Redis</span>
+                    <span class="tech-tag">Memcached</span>
+                    <span class="tech-tag">ElastiCache</span>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h4>8. Message Queue</h4>
+                <div class="what"><span class="label">What:</span> Durable async pipeline for events (order placed, payment processed)</div>
+                <div class="why"><span class="label">Why:</span> Decouple producers/consumers, handle traffic spikes, ensure delivery</div>
+                <div class="if-missing"><span class="label">If Missing:</span> Synchronous flows everywhere, user-facing latency spikes, lost events</div>
+                <div class="alternatives"><span class="label">Alternatives:</span> RabbitMQ, Kafka, SQS, Redis Streams</div>
+                <div class="best-now"><span class="label">Best Now:</span> Kafka for high-throughput event streams, RabbitMQ/SQS for task queues</div>
+                <div class="future"><span class="label">Future:</span> Unified event mesh, more exactly-once semantics, better observability</div>
+
+                <div class="real-example">
+                    <h5>Real Example: Swiggy Order Flow</h5>
+                    <p>When you place an order, Swiggy publishes to Kafka. Restaurant service, delivery service, notification service all consume independently. If notification service is slow, orders still process. Kafka handles 100K+ events/second during peak hours.</p>
+                </div>
+
+                <div class="tech-stack">
+                    <span class="tech-tag">Kafka</span>
+                    <span class="tech-tag">RabbitMQ</span>
+                    <span class="tech-tag">SQS</span>
+                    <span class="tech-tag">Redis Streams</span>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h4>9. Background Workers</h4>
+                <div class="what"><span class="label">What:</span> Processes that consume queue jobs: send emails, process payments, update inventory</div>
+                <div class="why"><span class="label">Why:</span> Keep request/response fast; handle retries and backoffs gracefully</div>
+                <div class="if-missing"><span class="label">If Missing:</span> You'd block user requests doing slow work, poor user experience</div>
+                <div class="alternatives"><span class="label">Alternatives:</span> Celery, Sidekiq, custom consumers, Lambda triggered from queues</div>
+                <div class="best-now"><span class="label">Best Now:</span> Language-native workers (Celery for Python, Sidekiq for Ruby) + managed queues</div>
+                <div class="future"><span class="label">Future:</span> More serverless event handlers, autoscaling based on queue lag</div>
+
+                <div class="tech-stack">
+                    <span class="tech-tag">Celery</span>
+                    <span class="tech-tag">Sidekiq</span>
+                    <span class="tech-tag">Bull</span>
+                    <span class="tech-tag">Lambda</span>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <h4>10. Observability</h4>
+                <div class="what"><span class="label">What:</span> Metrics (Prometheus), Logs (ELK), Traces (Jaeger) - the three pillars</div>
+                <div class="why"><span class="label">Why:</span> Debug production issues, capacity planning, SLO tracking</div>
+                <div class="if-missing"><span class="label">If Missing:</span> Blind in production, MTTR explodes, can't identify bottlenecks</div>
+                <div class="alternatives"><span class="label">Alternatives:</span> Datadog, New Relic, OpenTelemetry stack, Grafana Cloud</div>
+                <div class="best-now"><span class="label">Best Now:</span> OpenTelemetry + managed observability (Datadog/Grafana Cloud)</div>
+                <div class="future"><span class="label">Future:</span> AI-assisted incident detection, automated remediation playbooks</div>
+
+                <div class="tech-stack">
+                    <span class="tech-tag">Prometheus</span>
+                    <span class="tech-tag">Grafana</span>
+                    <span class="tech-tag">Jaeger</span>
+                    <span class="tech-tag">ELK Stack</span>
+                    <span class="tech-tag">Datadog</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <aside class="page-sidebar">
+        <div class="panel">
+            <div class="panel-header">Key Latencies</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">DNS</span><span class="quick-ref-value">~50ms (cached: 0ms)</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">CDN Hit</span><span class="quick-ref-value">~10-50ms</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">LB</span><span class="quick-ref-value">~1-5ms</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">API Gateway</span><span class="quick-ref-value">~5-20ms</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">Redis</span><span class="quick-ref-value">~0.5-2ms</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">PostgreSQL</span><span class="quick-ref-value">~5-50ms</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Failure Modes</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">DNS</span><span class="quick-ref-value">Site unreachable</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">CDN</span><span class="quick-ref-value">Slow, origin overload</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">LB</span><span class="quick-ref-value">Single point failure</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">DB</span><span class="quick-ref-value">Data loss, downtime</span></div>
+        </div>
+        <div class="panel mt-4">
+            <div class="panel-header">Quick Links</div>
+            <a href="/network-protocols" class="quick-ref-item" style="display:block;text-decoration:none;">Network Protocols</a>
+            <a href="/system-design" class="quick-ref-item" style="display:block;text-decoration:none;">System Design</a>
+        </div>
+    </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+            primaryColor: '#3b82f6',
+            primaryTextColor: '#1e293b',
+            primaryBorderColor: '#3b82f6',
+            lineColor: '#475569',
+            secondaryColor: '#8b5cf6',
+            tertiaryColor: '#10b981',
+            fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+            fontSize: '13px'
+        }
+    });
+
+    // Collapsible functionality
+    document.querySelectorAll('.collapsible-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const content = this.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + 'px';
+            }
+        });
+    });
+</script>
