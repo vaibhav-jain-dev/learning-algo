@@ -2,12 +2,35 @@
     .fw-section { background: var(--bg-secondary, #f8fafc); padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color, #e2e8f0); }
     .fw-section h2 { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-primary, #3b82f6); }
     .fw-section h3 { font-size: 1.2rem; margin-top: 20px; margin-bottom: 12px; color: var(--accent-secondary, #8b5cf6); }
-    .diagram-container { background: var(--bg-tertiary, #f1f5f9); padding: 20px; border-radius: 10px; margin: 20px 0; overflow-x: auto; }
     .code-example { background: #1e293b; border-radius: 8px; padding: 16px; margin: 16px 0; overflow-x: auto; }
-    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; white-space: pre-wrap; word-wrap: break-word; }
     .concept-card { background: var(--bg-tertiary); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--accent-secondary); }
     .concept-card h4 { color: var(--accent-secondary); margin-bottom: 10px; }
     .highlight-box { background: rgba(59, 130, 246, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-primary); margin: 16px 0; }
+    .warning-box { background: rgba(245, 158, 11, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 16px 0; }
+    .tip-box { background: rgba(16, 185, 129, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid #10b981; margin: 16px 0; }
+
+    /* Flow Diagram Styles */
+    .flow-diagram { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; }
+    .flow-vertical { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .flow-step { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 500px; }
+    .flow-num { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+    .flow-content { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 14px; flex: 1; }
+    .flow-content.blue { border-left: 3px solid #3b82f6; }
+    .flow-content.green { border-left: 3px solid #10b981; }
+    .flow-content.purple { border-left: 3px solid #8b5cf6; }
+    .flow-content.orange { border-left: 3px solid #f59e0b; }
+    .flow-content.cyan { border-left: 3px solid #06b6d4; }
+    .flow-content.red { border-left: 3px solid #ef4444; }
+    .flow-title { color: #f8fafc; font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
+    .flow-desc { color: #94a3b8; font-size: 0.75rem; }
+    .flow-arrow { color: #475569; font-size: 1.2rem; }
+
+    .serializer-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin: 16px 0; }
+    .serializer-type { background: var(--bg-tertiary); padding: 16px; border-radius: 8px; border-top: 3px solid var(--accent-primary); }
+    .serializer-type h5 { color: var(--accent-primary); margin-bottom: 8px; }
+    .serializer-type p { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px; }
+    .serializer-type code { background: rgba(59, 130, 246, 0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; }
 </style>
 
 <div class="page-layout">
@@ -19,110 +42,334 @@
 
         <div class="fw-section">
             <h2>DRF Request Flow</h2>
-            <div class="diagram-container">
-                <pre class="mermaid">
-flowchart TB
-    subgraph Input["1. HTTP Request"]
-        REQ["POST /api/users/"]
-    end
+            <p>Understanding how a request flows through DRF is crucial for debugging and optimization:</p>
 
-    subgraph Router["2. Router"]
-        R["DefaultRouter\nURL pattern matching"]
-    end
+            <div class="flow-diagram">
+                <div class="flow-vertical">
+                    <div class="flow-step">
+                        <div class="flow-num">1</div>
+                        <div class="flow-content blue">
+                            <div class="flow-title">HTTP Request</div>
+                            <div class="flow-desc">POST /api/users/ with JSON body</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph Auth["3. Authentication"]
-        A1["TokenAuthentication"]
-        A2["SessionAuthentication"]
-        A3["JWTAuthentication"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">2</div>
+                        <div class="flow-content">
+                            <div class="flow-title">Router URL Matching</div>
+                            <div class="flow-desc">DefaultRouter maps /users/ → UserViewSet</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph Perm["4. Permissions"]
-        P1["IsAuthenticated"]
-        P2["IsAdminUser"]
-        P3["Custom permissions"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">3</div>
+                        <div class="flow-content orange">
+                            <div class="flow-title">Authentication</div>
+                            <div class="flow-desc">TokenAuth / JWTAuth / SessionAuth</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph Throttle["5. Throttling"]
-        T["Rate limiting\n100/day, 1000/hour"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">4</div>
+                        <div class="flow-content red">
+                            <div class="flow-title">Permissions Check</div>
+                            <div class="flow-desc">IsAuthenticated, IsOwner, Custom perms</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph View["6. ViewSet / APIView"]
-        V["ModelViewSet.create()\nor custom action"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">5</div>
+                        <div class="flow-content">
+                            <div class="flow-title">Throttling</div>
+                            <div class="flow-desc">Rate limiting: 100/day, 1000/hour</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph Serial["7. Serializer"]
-        S1["Validate input data"]
-        S2["Deserialize to model"]
-        S3["Serialize response"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">6</div>
+                        <div class="flow-content cyan">
+                            <div class="flow-title">ViewSet / APIView</div>
+                            <div class="flow-desc">ModelViewSet.create() or custom action</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph DB["8. Database"]
-        D["Model.objects.create()"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">7</div>
+                        <div class="flow-content purple">
+                            <div class="flow-title">Serializer Validation</div>
+                            <div class="flow-desc">is_valid() → field + object validation</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph Response["9. Response"]
-        RES["JSON Response\n201 Created"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">8</div>
+                        <div class="flow-content">
+                            <div class="flow-title">Database Operation</div>
+                            <div class="flow-desc">serializer.save() → Model.objects.create()</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    REQ --> R --> A1 --> P1 --> T --> V --> S1 --> S2 --> D --> S3 --> RES
-
-    style REQ fill:#3b82f6,color:#fff
-    style RES fill:#10b981,color:#fff
-    style Serial fill:#8b5cf6,color:#fff
-                </pre>
+                    <div class="flow-step">
+                        <div class="flow-num">9</div>
+                        <div class="flow-content green">
+                            <div class="flow-title">Response</div>
+                            <div class="flow-desc">Serialize output → JSON Response 201</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
+        <!-- COMPREHENSIVE SERIALIZERS SECTION -->
         <div class="fw-section">
-            <h2>Core Concepts</h2>
+            <h2>Serializers - Complete Guide</h2>
+            <p>Serializers are the heart of DRF. They handle data transformation, validation, and relationship management.</p>
+
+            <h3>Serializer Types</h3>
+            <div class="serializer-types">
+                <div class="serializer-type">
+                    <h5>Serializer</h5>
+                    <p>Base class - full control, no model binding</p>
+                    <code>serializers.Serializer</code>
+                </div>
+                <div class="serializer-type">
+                    <h5>ModelSerializer</h5>
+                    <p>Auto-generates fields from model</p>
+                    <code>serializers.ModelSerializer</code>
+                </div>
+                <div class="serializer-type">
+                    <h5>HyperlinkedModelSerializer</h5>
+                    <p>Uses URLs instead of PKs for relations</p>
+                    <code>serializers.HyperlinkedModelSerializer</code>
+                </div>
+                <div class="serializer-type">
+                    <h5>ListSerializer</h5>
+                    <p>For bulk create/update operations</p>
+                    <code>serializers.ListSerializer</code>
+                </div>
+            </div>
 
             <div class="concept-card">
-                <h4>1. Serializers - Data Transformation</h4>
-                <p>Convert complex data (querysets, model instances) to Python primitives for JSON rendering, and vice versa.</p>
+                <h4>1. Basic ModelSerializer</h4>
+                <p>Auto-generates fields based on model. Most common choice for CRUD APIs.</p>
                 <div class="code-example">
                     <pre><code class="language-python">from rest_framework import serializers
-from .models import User, Post
+from .models import User, Profile, Post
 
 class UserSerializer(serializers.ModelSerializer):
-    # Computed field
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'date_joined']  # Explicit fields
+        # OR: fields = '__all__'  # All model fields
+        # OR: exclude = ['password']  # All except these
+
+        read_only_fields = ['id', 'date_joined']  # Can't be set via API
+
+        extra_kwargs = {
+            'password': {'write_only': True, 'min_length': 8},
+            'email': {'required': True},
+            'username': {'validators': [UniqueValidator(queryset=User.objects.all())]}
+        }</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>2. Field Types & Options</h4>
+                <p>DRF provides many field types for different data formats:</p>
+                <div class="code-example">
+                    <pre><code class="language-python">class ProductSerializer(serializers.ModelSerializer):
+    # String fields
+    name = serializers.CharField(max_length=200, trim_whitespace=True)
+    slug = serializers.SlugField(allow_unicode=True)
+    description = serializers.CharField(allow_blank=True, default='')
+
+    # Numeric fields
+    price = serializers.DecimalField(max_digits=10, decimal_places=2, min_value=0)
+    quantity = serializers.IntegerField(min_value=0, max_value=10000)
+    rating = serializers.FloatField(min_value=0, max_value=5)
+
+    # Boolean & Choice fields
+    is_active = serializers.BooleanField(default=True)
+    status = serializers.ChoiceField(choices=['draft', 'published', 'archived'])
+
+    # Date/Time fields
+    created_at = serializers.DateTimeField(read_only=True)
+    publish_date = serializers.DateField(input_formats=['%Y-%m-%d', '%d/%m/%Y'])
+    duration = serializers.DurationField()  # e.g., "1 day, 2:30:00"
+
+    # File fields
+    image = serializers.ImageField(max_length=None, use_url=True)
+    document = serializers.FileField(allow_empty_file=False)
+
+    # Special fields
+    uuid = serializers.UUIDField(format='hex_verbose')
+    url = serializers.URLField()
+    email = serializers.EmailField()
+    ip_address = serializers.IPAddressField(protocol='both')
+    json_data = serializers.JSONField()  # Accepts dict/list
+
+    # Relationship fields
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    tags = serializers.SlugRelatedField(many=True, slug_field='name', read_only=True)</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>3. Computed & Method Fields</h4>
+                <p>Add custom computed properties that don't exist on the model:</p>
+                <div class="code-example">
+                    <pre><code class="language-python">class UserSerializer(serializers.ModelSerializer):
+    # SerializerMethodField - read-only computed field
     full_name = serializers.SerializerMethodField()
-    # Nested relationship
-    posts = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    post_count = serializers.SerializerMethodField()
+    is_premium = serializers.SerializerMethodField()
+    profile_url = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'full_name', 'posts']
-        read_only_fields = ['id']
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
+        fields = ['id', 'username', 'full_name', 'post_count', 'is_premium', 'profile_url']
 
     def get_full_name(self, obj):
-        return f"{obj.first_name} {obj.last_name}"
+        """Concatenate first and last name"""
+        return f"{obj.first_name} {obj.last_name}".strip()
+
+    def get_post_count(self, obj):
+        """Count related posts - WATCH OUT: N+1 query issue!"""
+        return obj.posts.count()
+
+    def get_is_premium(self, obj):
+        """Check if user has premium subscription"""
+        return hasattr(obj, 'subscription') and obj.subscription.is_active
+
+    def get_profile_url(self, obj):
+        """Build absolute URL using request context"""
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(f'/users/{obj.id}/')
+        return f'/users/{obj.id}/'</code></pre>
+                </div>
+
+                <div class="warning-box">
+                    <strong>N+1 Query Warning:</strong> SerializerMethodField that accesses related objects causes N+1 queries. Use <code>prefetch_related()</code> or <code>select_related()</code> in your queryset, or annotate counts in the view.
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>4. Validation - Field Level</h4>
+                <p>Validate individual fields with custom methods:</p>
+                <div class="code-example">
+                    <pre><code class="language-python">class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password', 'age']
+
+    def validate_username(self, value):
+        """Field-level validation for username"""
+        if len(value) < 3:
+            raise serializers.ValidationError("Username must be at least 3 characters")
+        if not value.isalnum():
+            raise serializers.ValidationError("Username must be alphanumeric")
+        if User.objects.filter(username__iexact=value).exists():
+            raise serializers.ValidationError("Username already taken")
+        return value.lower()  # Normalize to lowercase
 
     def validate_email(self, value):
-        """Field-level validation"""
-        if 'spam' in value:
-            raise serializers.ValidationError("Invalid email")
+        """Block disposable email domains"""
+        blocked_domains = ['tempmail.com', 'throwaway.com', 'mailinator.com']
+        domain = value.split('@')[1].lower()
+        if domain in blocked_domains:
+            raise serializers.ValidationError("Disposable emails not allowed")
         return value
 
+    def validate_password(self, value):
+        """Enforce password strength"""
+        import re
+        if not re.search(r'[A-Z]', value):
+            raise serializers.ValidationError("Password must contain uppercase letter")
+        if not re.search(r'[0-9]', value):
+            raise serializers.ValidationError("Password must contain a number")
+        if not re.search(r'[!@#$%^&*]', value):
+            raise serializers.ValidationError("Password must contain special character")
+        return value
+
+    def validate_age(self, value):
+        """Age must be within valid range"""
+        if value < 13:
+            raise serializers.ValidationError("Must be 13 or older")
+        if value > 120:
+            raise serializers.ValidationError("Invalid age")
+        return value</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>5. Validation - Object Level</h4>
+                <p>Validate across multiple fields together:</p>
+                <div class="code-example">
+                    <pre><code class="language-python">class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['name', 'start_date', 'end_date', 'start_time', 'end_time', 'capacity', 'registered_count']
+
     def validate(self, data):
-        """Object-level validation"""
-        if data.get('start_date') > data.get('end_date'):
-            raise serializers.ValidationError("End must be after start")
-        return data
+        """Object-level validation - check relationships between fields"""
+        errors = {}
 
-    def create(self, validated_data):
-        """Custom create logic"""
-        password = validated_data.pop('password')
-        user = User(**validated_data)
-        user.set_password(password)
-        user.save()
-        return user
+        # Date validation
+        if data.get('start_date') and data.get('end_date'):
+            if data['start_date'] > data['end_date']:
+                errors['end_date'] = "End date must be after start date"
 
-# Nested Serializer
+        # Same-day time validation
+        if data.get('start_date') == data.get('end_date'):
+            if data.get('start_time') and data.get('end_time'):
+                if data['start_time'] >= data['end_time']:
+                    errors['end_time'] = "End time must be after start time on same day"
+
+        # Capacity check
+        if data.get('capacity') and data.get('registered_count'):
+            if data['registered_count'] > data['capacity']:
+                errors['registered_count'] = "Cannot exceed capacity"
+
+        # No past events
+        from django.utils import timezone
+        if data.get('start_date') and data['start_date'] < timezone.now().date():
+            errors['start_date'] = "Cannot create events in the past"
+
+        if errors:
+            raise serializers.ValidationError(errors)
+
+        return data</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>6. Nested Serializers & Relationships</h4>
+                <p>Handle related objects - one-to-many, many-to-many, and nested writes:</p>
+                <div class="code-example">
+                    <pre><code class="language-python"># READ: Nested representation (shows full related object)
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'text', 'created_at']
+
 class PostSerializer(serializers.ModelSerializer):
-    author = UserSerializer(read_only=True)  # Nested representation
+    # Nested read-only (shows full comment objects)
+    comments = CommentSerializer(many=True, read_only=True)
+
+    # Author as nested object on read
+    author = UserSerializer(read_only=True)
+
+    # Author ID for write operations
     author_id = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(),
         source='author',
@@ -131,26 +378,258 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'author', 'author_id', 'created_at']</code></pre>
+        fields = ['id', 'title', 'content', 'author', 'author_id', 'comments']
+
+# WRITE: Handle nested creates
+class PostWithCommentsSerializer(serializers.ModelSerializer):
+    comments = CommentSerializer(many=True)  # Writable nested
+
+    class Meta:
+        model = Post
+        fields = ['id', 'title', 'content', 'comments']
+
+    def create(self, validated_data):
+        comments_data = validated_data.pop('comments', [])
+        post = Post.objects.create(**validated_data)
+        for comment_data in comments_data:
+            Comment.objects.create(post=post, **comment_data)
+        return post
+
+    def update(self, instance, validated_data):
+        comments_data = validated_data.pop('comments', None)
+
+        # Update post fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # Replace comments if provided
+        if comments_data is not None:
+            instance.comments.all().delete()
+            for comment_data in comments_data:
+                Comment.objects.create(post=instance, **comment_data)
+
+        return instance
+
+# MANY-TO-MANY relationships
+class ArticleSerializer(serializers.ModelSerializer):
+    # Read: show tag names
+    tags = serializers.SlugRelatedField(many=True, slug_field='name', read_only=True)
+
+    # Write: accept tag IDs
+    tag_ids = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Tag.objects.all(),
+        source='tags',
+        write_only=True
+    )
+
+    class Meta:
+        model = Article
+        fields = ['id', 'title', 'tags', 'tag_ids']</code></pre>
                 </div>
             </div>
 
             <div class="concept-card">
-                <h4>2. ViewSets & Routers</h4>
-                <p>ViewSets combine related views into a single class. Routers automatically generate URL patterns.</p>
+                <h4>7. Custom Create & Update</h4>
+                <p>Override save behavior for complex business logic:</p>
                 <div class="code-example">
-                    <pre><code class="language-python"># views.py
-from rest_framework import viewsets, status
+                    <pre><code class="language-python">class UserRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, min_length=8)
+    password_confirm = serializers.CharField(write_only=True)
+    referral_code = serializers.CharField(required=False, write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password', 'password_confirm', 'referral_code']
+
+    def validate(self, data):
+        if data['password'] != data['password_confirm']:
+            raise serializers.ValidationError({'password_confirm': "Passwords don't match"})
+        return data
+
+    def create(self, validated_data):
+        # Remove non-model fields
+        validated_data.pop('password_confirm')
+        referral_code = validated_data.pop('referral_code', None)
+        password = validated_data.pop('password')
+
+        # Create user with hashed password
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+
+        # Create related profile
+        Profile.objects.create(user=user)
+
+        # Handle referral
+        if referral_code:
+            try:
+                referrer = User.objects.get(referral_code=referral_code)
+                Referral.objects.create(referrer=referrer, referred=user)
+                referrer.add_referral_bonus()
+            except User.DoesNotExist:
+                pass  # Ignore invalid referral codes
+
+        # Send welcome email
+        from .tasks import send_welcome_email
+        send_welcome_email.delay(user.id)
+
+        return user
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        validated_data.pop('password_confirm', None)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        if password:
+            instance.set_password(password)
+
+        instance.save()
+        return instance</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>8. Partial Updates (PATCH)</h4>
+                <p>Allow updating only some fields without requiring all fields:</p>
+                <div class="code-example">
+                    <pre><code class="language-python">class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name', 'bio']
+        # All fields optional for PATCH
+        extra_kwargs = {field: {'required': False} for field in fields}
+
+# In ViewSet
+class UserViewSet(viewsets.ModelViewSet):
+    def partial_update(self, request, *args, **kwargs):
+        """PATCH /api/users/{id}/ - partial update"""
+        instance = self.get_object()
+        serializer = self.get_serializer(
+            instance,
+            data=request.data,
+            partial=True  # Key: allows missing fields
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+# Or use UpdateModelMixin which handles this automatically
+# PATCH /api/users/1/ with {"bio": "New bio"} - only updates bio</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>9. Bulk Operations</h4>
+                <p>Create or update multiple objects at once:</p>
+                <div class="code-example">
+                    <pre><code class="language-python">class BulkUserSerializer(serializers.ListSerializer):
+    def create(self, validated_data):
+        users = [User(**item) for item in validated_data]
+        return User.objects.bulk_create(users)
+
+    def update(self, instances, validated_data):
+        # Map id to instance for quick lookup
+        instance_mapping = {user.id: user for user in instances}
+
+        result = []
+        for item in validated_data:
+            instance = instance_mapping.get(item['id'])
+            if instance:
+                for attr, value in item.items():
+                    setattr(instance, attr, value)
+                result.append(instance)
+
+        User.objects.bulk_update(result, ['username', 'email', 'is_active'])
+        return result
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'is_active']
+        list_serializer_class = BulkUserSerializer
+
+# Usage in view
+@action(detail=False, methods=['post'])
+def bulk_create(self, request):
+    serializer = UserSerializer(data=request.data, many=True)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(serializer.data, status=201)</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h4>10. Context & Dynamic Behavior</h4>
+                <p>Pass additional data to serializer via context:</p>
+                <div class="code-example">
+                    <pre><code class="language-python">class PostSerializer(serializers.ModelSerializer):
+    is_liked = serializers.SerializerMethodField()
+    can_edit = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Post
+        fields = ['id', 'title', 'content', 'is_liked', 'can_edit']
+
+    def get_is_liked(self, obj):
+        """Check if current user liked this post"""
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return obj.likes.filter(user=request.user).exists()
+        return False
+
+    def get_can_edit(self, obj):
+        """Check if current user can edit"""
+        request = self.context.get('request')
+        if request:
+            return obj.author == request.user or request.user.is_staff
+        return False
+
+    def create(self, validated_data):
+        """Auto-assign author from request"""
+        request = self.context.get('request')
+        validated_data['author'] = request.user
+        return super().create(validated_data)
+
+# Pass context in view
+class PostViewSet(viewsets.ModelViewSet):
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['show_private_fields'] = self.request.user.is_staff
+        return context</code></pre>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <strong>Performance Tips:</strong>
+                <ul style="margin-top: 8px; margin-bottom: 0;">
+                    <li>Use <code>select_related()</code> for ForeignKey fields in nested serializers</li>
+                    <li>Use <code>prefetch_related()</code> for reverse ForeignKey and ManyToMany</li>
+                    <li>Annotate counts instead of using SerializerMethodField with <code>.count()</code></li>
+                    <li>Use <code>only()</code> or <code>defer()</code> to limit loaded fields</li>
+                    <li>Consider <code>@cached_property</code> for expensive computed fields</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ViewSets Section -->
+        <div class="fw-section">
+            <h2>ViewSets & Routers</h2>
+            <div class="concept-card">
+                <h4>ViewSets - Combine Related Views</h4>
+                <div class="code-example">
+                    <pre><code class="language-python">from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 class UserViewSet(viewsets.ModelViewSet):
     """
-    A ViewSet for viewing and editing users.
-
     Provides: list, create, retrieve, update, partial_update, destroy
     """
-    queryset = User.objects.all()
+    queryset = User.objects.select_related('profile').prefetch_related('posts')
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
     filterset_fields = ['is_active', 'role']
@@ -158,207 +637,86 @@ class UserViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created_at', 'username']
 
     def get_queryset(self):
-        """Filter queryset based on user"""
+        """Dynamic queryset based on user"""
         if self.request.user.is_staff:
             return User.objects.all()
         return User.objects.filter(id=self.request.user.id)
 
     def get_serializer_class(self):
-        """Different serializer for different actions"""
+        """Different serializers for different actions"""
         if self.action == 'list':
             return UserListSerializer
+        if self.action in ['create', 'update']:
+            return UserWriteSerializer
         return UserSerializer
 
     @action(detail=True, methods=['post'])
     def activate(self, request, pk=None):
-        """Custom action: POST /api/users/{id}/activate/"""
+        """POST /api/users/{id}/activate/"""
         user = self.get_object()
         user.is_active = True
         user.save()
-        return Response({'status': 'user activated'})
+        return Response({'status': 'activated'})
 
     @action(detail=False, methods=['get'])
     def me(self, request):
-        """Custom action: GET /api/users/me/"""
+        """GET /api/users/me/"""
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
 # urls.py
 from rest_framework.routers import DefaultRouter
-
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
-router.register(r'posts', PostViewSet, basename='post')
 
-urlpatterns = [
-    path('api/', include(router.urls)),
-]
-# Creates: /api/users/, /api/users/{pk}/, /api/users/{pk}/activate/, etc.</code></pre>
+urlpatterns = [path('api/', include(router.urls))]
+# Creates: /api/users/, /api/users/{pk}/, /api/users/{pk}/activate/, /api/users/me/</code></pre>
                 </div>
             </div>
+        </div>
 
-            <div class="concept-card">
-                <h4>3. Authentication & Permissions</h4>
-                <div class="code-example">
-                    <pre><code class="language-python"># settings.py
+        <!-- Authentication Section -->
+        <div class="fw-section">
+            <h2>Authentication & Permissions</h2>
+            <div class="code-example">
+                <pre><code class="language-python"># settings.py
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle'
-    ],
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '100/day',
-        'user': '1000/day'
-    }
+    'DEFAULT_THROTTLE_RATES': {'anon': '100/day', 'user': '1000/day'}
 }
 
 # Custom Permission
 from rest_framework.permissions import BasePermission
 
 class IsOwnerOrReadOnly(BasePermission):
-    """Only owners can edit, anyone can read"""
-
     def has_object_permission(self, request, view, obj):
-        # Read permissions for any request
         if request.method in ['GET', 'HEAD', 'OPTIONS']:
             return True
-        # Write permissions only to owner
-        return obj.owner == request.user
-
-# Using in view
-class PostViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)</code></pre>
-                </div>
-            </div>
-
-            <div class="concept-card">
-                <h4>4. Filtering, Search & Pagination</h4>
-                <div class="code-example">
-                    <pre><code class="language-python"># settings.py
-REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': [
-        'django_filters.rest_framework.DjangoFilterBackend',
-        'rest_framework.filters.SearchFilter',
-        'rest_framework.filters.OrderingFilter',
-    ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20
-}
-
-# Custom Pagination
-from rest_framework.pagination import CursorPagination
-
-class PostCursorPagination(CursorPagination):
-    page_size = 50
-    ordering = '-created_at'
-    cursor_query_param = 'cursor'
-
-# Custom Filter
-import django_filters
-
-class PostFilter(django_filters.FilterSet):
-    title = django_filters.CharFilter(lookup_expr='icontains')
-    created_after = django_filters.DateTimeFilter(field_name='created_at', lookup_expr='gte')
-
-    class Meta:
-        model = Post
-        fields = ['author', 'status', 'title', 'created_after']
-
-class PostViewSet(viewsets.ModelViewSet):
-    filterset_class = PostFilter
-    search_fields = ['title', 'content', 'author__username']
-    ordering_fields = ['created_at', 'title', 'views_count']
-    pagination_class = PostCursorPagination
-
-# GET /api/posts/?title=django&created_after=2024-01-01&search=tutorial&ordering=-created_at</code></pre>
-                </div>
-            </div>
-
-            <div class="concept-card">
-                <h4>5. Generic Views & Mixins</h4>
-                <div class="code-example">
-                    <pre><code class="language-python">from rest_framework import generics, mixins
-
-# Simple API views
-class UserList(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-# Using Mixins for custom combinations
-class CreateListRetrieveViewSet(
-    mixins.CreateModelMixin,
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet
-):
-    """ViewSet that allows create, list, and retrieve (no update/delete)"""
-    pass
-
-# Low-level APIView
-from rest_framework.views import APIView
-
-class UserAPIView(APIView):
-    def get(self, request, pk):
-        user = get_object_or_404(User, pk=pk)
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
-
-    def put(self, request, pk):
-        user = get_object_or_404(User, pk=pk)
-        serializer = UserSerializer(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)</code></pre>
-                </div>
-            </div>
-        </div>
-
-        <div class="fw-section">
-            <h2>Best Practices</h2>
-            <div class="highlight-box">
-                <ul style="margin: 0;">
-                    <li><strong>Use ViewSets</strong> for CRUD operations - less code, automatic URL routing</li>
-                    <li><strong>Nest serializers wisely</strong> - use depth or explicit nesting for reads, separate serializers for writes</li>
-                    <li><strong>Always paginate</strong> list endpoints to prevent large responses</li>
-                    <li><strong>Use select_related/prefetch_related</strong> in get_queryset to avoid N+1 queries</li>
-                    <li><strong>Version your API</strong> - use URL versioning (/api/v1/) or Accept header</li>
-                    <li><strong>Return proper status codes</strong> - 201 for create, 204 for delete, 400 for validation errors</li>
-                </ul>
+        return obj.owner == request.user</code></pre>
             </div>
         </div>
     </div>
 
     <aside class="page-sidebar">
         <div class="panel">
-            <div class="panel-header">DRF Components</div>
-            <div class="quick-ref-item"><span class="quick-ref-key">Serializers</span><span class="quick-ref-value">Data transform</span></div>
-            <div class="quick-ref-item"><span class="quick-ref-key">ViewSets</span><span class="quick-ref-value">CRUD logic</span></div>
-            <div class="quick-ref-item"><span class="quick-ref-key">Routers</span><span class="quick-ref-value">Auto URLs</span></div>
-            <div class="quick-ref-item"><span class="quick-ref-key">Permissions</span><span class="quick-ref-value">Access control</span></div>
+            <div class="panel-header">Serializer Cheatsheet</div>
+            <div class="quick-ref-item"><span class="quick-ref-key">fields</span><span class="quick-ref-value">Which to include</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">read_only_fields</span><span class="quick-ref-value">Output only</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">write_only</span><span class="quick-ref-value">Input only</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">extra_kwargs</span><span class="quick-ref-value">Field overrides</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">validate_X</span><span class="quick-ref-value">Field validation</span></div>
+            <div class="quick-ref-item"><span class="quick-ref-key">validate</span><span class="quick-ref-value">Object validation</span></div>
         </div>
         <div class="panel mt-4">
             <div class="panel-header">Related</div>
-            <a href="/frameworks/django" class="quick-ref-item" style="display:block;text-decoration:none;">Django Basics</a>
+            <a href="/frameworks/django" class="quick-ref-item" style="display:block;text-decoration:none;">Django</a>
             <a href="/frameworks/django-orm" class="quick-ref-item" style="display:block;text-decoration:none;">Django ORM</a>
-            <a href="/network-protocols/rest" class="quick-ref-item" style="display:block;text-decoration:none;">REST API Design</a>
         </div>
     </aside>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>

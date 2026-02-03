@@ -17,6 +17,58 @@
     .timeline-item { position: relative; margin-bottom: 24px; }
     .timeline-item::before { content: ''; position: absolute; left: -25px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent-primary); }
     .timeline-year { font-weight: 700; color: var(--accent-primary); }
+
+    /* Flow Diagram Styles */
+    .flow-diagram { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; }
+    .flow-vertical { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .flow-step { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 600px; }
+    .flow-num { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+    .flow-content { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 14px; flex: 1; }
+    .flow-content.blue { border-color: rgba(59, 130, 246, 0.4); background: rgba(59, 130, 246, 0.15); }
+    .flow-content.green { border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.15); }
+    .flow-content.purple { border-color: rgba(139, 92, 246, 0.4); background: rgba(139, 92, 246, 0.15); }
+    .flow-content.orange { border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.15); }
+    .flow-content.cyan { border-color: rgba(6, 182, 212, 0.4); background: rgba(6, 182, 212, 0.15); }
+    .flow-title { color: #f1f5f9; font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; }
+    .flow-desc { color: #94a3b8; font-size: 0.75rem; }
+    .flow-arrow-down { text-align: center; color: #64748b; font-size: 1.2rem; margin: 4px 0; }
+    .flow-note { background: rgba(245, 158, 11, 0.1); border: 1px dashed rgba(245, 158, 11, 0.4); border-radius: 6px; padding: 8px 12px; margin: 8px 0; color: #fbbf24; font-size: 0.75rem; text-align: center; }
+    .flow-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; margin: 8px 0; }
+    .flow-box { background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.4); color: #93c5fd; padding: 8px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 500; }
+    .flow-box.active { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border-color: #3b82f6; }
+    .flow-box.success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-color: #10b981; }
+    .flow-box.purple { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border-color: #8b5cf6; }
+    .flow-box.orange { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border-color: #f59e0b; }
+    .flow-box.cyan { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: white; border-color: #06b6d4; }
+    .flow-arrow { color: #475569; font-size: 1rem; }
+    .flow-label { color: #64748b; font-size: 0.7rem; margin-top: 4px; }
+
+    /* Stack Comparison */
+    .stack-comparison { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; }
+    .stack-column { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 140px; }
+    .stack-header { color: #94a3b8; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .stack-box { width: 100%; padding: 10px 16px; border-radius: 6px; text-align: center; font-size: 0.8rem; font-weight: 500; }
+    .stack-box.http2 { background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.4); color: #93c5fd; }
+    .stack-box.http3 { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #6ee7b7; }
+    .stack-box.highlight { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; }
+    .stack-box.highlight-blue { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; }
+    .stack-note { margin-top: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 6px; font-size: 0.7rem; color: #94a3b8; text-align: left; max-width: 160px; }
+
+    /* Sequence Diagram */
+    .seq-diagram { display: flex; flex-direction: column; gap: 12px; }
+    .seq-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+    .seq-actor { min-width: 80px; text-align: center; }
+    .seq-actor-label { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+    .seq-actor-label.server { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+    .seq-message { flex: 1; display: flex; align-items: center; gap: 8px; }
+    .seq-arrow-right { flex: 1; height: 2px; background: #10b981; position: relative; }
+    .seq-arrow-right::after { content: ''; position: absolute; right: 0; top: -4px; border: 5px solid transparent; border-left-color: #10b981; }
+    .seq-arrow-left { flex: 1; height: 2px; background: #06b6d4; position: relative; }
+    .seq-arrow-left::before { content: ''; position: absolute; left: 0; top: -4px; border: 5px solid transparent; border-right-color: #06b6d4; }
+    .seq-label { background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; color: #e2e8f0; white-space: pre-wrap; word-wrap: break-word; }
+
+    /* Mobile code compatibility */
+    code { white-space: pre-wrap; word-wrap: break-word; }
 </style>
 
 <div class="page-layout">
@@ -53,29 +105,42 @@
         <div class="protocol-section">
             <h2>HTTP/1.1 - The Workhorse</h2>
 
-            <div class="diagram-container">
-                <pre class="mermaid">
-sequenceDiagram
-    participant Client
-    participant Server
-
-    Note over Client,Server: HTTP/1.1 with Keep-Alive
-    Client->>Server: TCP Handshake (SYN)
-    Server-->>Client: SYN-ACK
-    Client->>Server: ACK
-
-    Client->>Server: GET /index.html
-    Server-->>Client: 200 OK (HTML)
-
-    Client->>Server: GET /style.css
-    Server-->>Client: 200 OK (CSS)
-
-    Client->>Server: GET /app.js
-    Server-->>Client: 200 OK (JS)
-
-    Note over Client,Server: Requests are SEQUENTIAL
-    Note over Client,Server: One request waits for previous
-                </pre>
+            <div class="flow-diagram">
+                <div style="color: #94a3b8; font-size: 0.75rem; text-align: center; margin-bottom: 16px;">HTTP/1.1 with Keep-Alive</div>
+                <div class="flow-vertical">
+                    <div class="flow-step">
+                        <div class="flow-num">1</div>
+                        <div class="flow-content blue">
+                            <div class="flow-title">TCP Handshake</div>
+                            <div class="flow-desc">Client &rarr; SYN &rarr; Server &rarr; SYN-ACK &rarr; Client &rarr; ACK</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow-down">&darr;</div>
+                    <div class="flow-step">
+                        <div class="flow-num">2</div>
+                        <div class="flow-content green">
+                            <div class="flow-title">GET /index.html</div>
+                            <div class="flow-desc">Client sends request &rarr; Server responds with 200 OK (HTML)</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow-down">&darr;</div>
+                    <div class="flow-step">
+                        <div class="flow-num">3</div>
+                        <div class="flow-content green">
+                            <div class="flow-title">GET /style.css</div>
+                            <div class="flow-desc">Client sends request &rarr; Server responds with 200 OK (CSS)</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow-down">&darr;</div>
+                    <div class="flow-step">
+                        <div class="flow-num">4</div>
+                        <div class="flow-content green">
+                            <div class="flow-title">GET /app.js</div>
+                            <div class="flow-desc">Client sends request &rarr; Server responds with 200 OK (JS)</div>
+                        </div>
+                    </div>
+                    <div class="flow-note">Requests are SEQUENTIAL - One request waits for previous response</div>
+                </div>
             </div>
 
             <h3>Key Features</h3>
@@ -98,30 +163,54 @@ sequenceDiagram
         <div class="protocol-section">
             <h2>HTTP/2 - Multiplexing Revolution</h2>
 
-            <div class="diagram-container">
-                <pre class="mermaid">
-sequenceDiagram
-    participant Client
-    participant Server
-
-    Note over Client,Server: HTTP/2 Multiplexing
-    Client->>Server: TCP + TLS Handshake
-
-    par Parallel Streams
-        Client->>Server: Stream 1: GET /index.html
-        Client->>Server: Stream 3: GET /style.css
-        Client->>Server: Stream 5: GET /app.js
-    end
-
-    par Parallel Responses
-        Server-->>Client: Stream 1: HTML (priority 1)
-        Server-->>Client: Stream 3: CSS (priority 2)
-        Server-->>Client: Stream 5: JS (priority 3)
-    end
-
-    Note over Client,Server: ALL requests/responses PARALLEL
-    Note over Client,Server: No head-of-line blocking at HTTP layer
-                </pre>
+            <div class="flow-diagram">
+                <div style="color: #94a3b8; font-size: 0.75rem; text-align: center; margin-bottom: 16px;">HTTP/2 Multiplexing</div>
+                <div class="flow-vertical">
+                    <div class="flow-step">
+                        <div class="flow-num">1</div>
+                        <div class="flow-content blue">
+                            <div class="flow-title">TCP + TLS Handshake</div>
+                            <div class="flow-desc">Single connection established with encryption</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow-down">&darr;</div>
+                    <div style="width: 100%; max-width: 600px;">
+                        <div style="color: #10b981; font-size: 0.7rem; margin-bottom: 8px; text-align: center;">PARALLEL STREAMS (All at once!)</div>
+                        <div class="flow-row" style="justify-content: space-between;">
+                            <div class="flow-content purple" style="flex: 1; margin: 4px;">
+                                <div class="flow-title">Stream 1</div>
+                                <div class="flow-desc">GET /index.html<br>Priority: HIGH</div>
+                            </div>
+                            <div class="flow-content purple" style="flex: 1; margin: 4px;">
+                                <div class="flow-title">Stream 3</div>
+                                <div class="flow-desc">GET /style.css<br>Priority: MED</div>
+                            </div>
+                            <div class="flow-content purple" style="flex: 1; margin: 4px;">
+                                <div class="flow-title">Stream 5</div>
+                                <div class="flow-desc">GET /app.js<br>Priority: LOW</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow-down">&darr;</div>
+                    <div style="width: 100%; max-width: 600px;">
+                        <div style="color: #06b6d4; font-size: 0.7rem; margin-bottom: 8px; text-align: center;">PARALLEL RESPONSES</div>
+                        <div class="flow-row" style="justify-content: space-between;">
+                            <div class="flow-content cyan" style="flex: 1; margin: 4px;">
+                                <div class="flow-title">HTML Response</div>
+                                <div class="flow-desc">Delivered first</div>
+                            </div>
+                            <div class="flow-content cyan" style="flex: 1; margin: 4px;">
+                                <div class="flow-title">CSS Response</div>
+                                <div class="flow-desc">Interleaved</div>
+                            </div>
+                            <div class="flow-content cyan" style="flex: 1; margin: 4px;">
+                                <div class="flow-title">JS Response</div>
+                                <div class="flow-desc">Interleaved</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flow-note">ALL requests/responses PARALLEL - No head-of-line blocking at HTTP layer</div>
+                </div>
             </div>
 
             <h3>Key Features</h3>
@@ -145,32 +234,34 @@ sequenceDiagram
         <div class="protocol-section">
             <h2>HTTP/3 - The Future (QUIC)</h2>
 
-            <div class="diagram-container">
-                <pre class="mermaid">
-flowchart TB
-    subgraph HTTP2["HTTP/2 Stack"]
-        H2[HTTP/2]
-        TLS2[TLS 1.2/1.3]
-        TCP[TCP]
-        IP2[IP]
-    end
-
-    subgraph HTTP3["HTTP/3 Stack"]
-        H3[HTTP/3]
-        QUIC[QUIC]
-        UDP[UDP]
-        IP3[IP]
-    end
-
-    Note1[TCP Handshake: 1-2 RTT<br/>TLS Handshake: 1-2 RTT<br/>Total: 2-4 RTT]
-    Note2[QUIC + TLS: 0-1 RTT<br/>Connection migration<br/>No HoL blocking]
-
-    HTTP2 --> Note1
-    HTTP3 --> Note2
-
-    style QUIC fill:#10b981,color:#fff
-    style H3 fill:#3b82f6,color:#fff
-                </pre>
+            <div class="flow-diagram">
+                <div style="color: #94a3b8; font-size: 0.75rem; text-align: center; margin-bottom: 16px;">Protocol Stack Comparison</div>
+                <div class="stack-comparison">
+                    <div class="stack-column">
+                        <div class="stack-header">HTTP/2 Stack</div>
+                        <div class="stack-box http2">HTTP/2</div>
+                        <div class="stack-box http2">TLS 1.2/1.3</div>
+                        <div class="stack-box http2">TCP</div>
+                        <div class="stack-box http2">IP</div>
+                        <div class="stack-note">
+                            TCP Handshake: 1-2 RTT<br>
+                            TLS Handshake: 1-2 RTT<br>
+                            <strong>Total: 2-4 RTT</strong>
+                        </div>
+                    </div>
+                    <div class="stack-column">
+                        <div class="stack-header">HTTP/3 Stack</div>
+                        <div class="stack-box highlight-blue">HTTP/3</div>
+                        <div class="stack-box highlight">QUIC (includes TLS 1.3)</div>
+                        <div class="stack-box http3">UDP</div>
+                        <div class="stack-box http3">IP</div>
+                        <div class="stack-note">
+                            QUIC + TLS: 0-1 RTT<br>
+                            Connection migration<br>
+                            <strong>No HoL blocking!</strong>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <h3>QUIC Protocol Advantages</h3>
@@ -195,20 +286,41 @@ flowchart TB
         <div class="protocol-section">
             <h2>HTTPS & TLS</h2>
 
-            <div class="diagram-container">
-                <pre class="mermaid">
-sequenceDiagram
-    participant Client
-    participant Server
-
-    Note over Client,Server: TLS 1.3 Handshake (1-RTT)
-    Client->>Server: ClientHello + KeyShare
-    Server-->>Client: ServerHello + KeyShare + Certificate + Finished
-    Client->>Server: Finished + [Encrypted Data]
-
-    Note over Client,Server: Connection now encrypted
-    Note over Client,Server: All HTTP traffic protected
-                </pre>
+            <div class="flow-diagram">
+                <div style="color: #94a3b8; font-size: 0.75rem; text-align: center; margin-bottom: 16px;">TLS 1.3 Handshake (1-RTT)</div>
+                <div class="seq-diagram">
+                    <div class="seq-row">
+                        <div class="seq-actor"><div class="seq-actor-label">Client</div></div>
+                        <div class="seq-message">
+                            <div class="seq-arrow-right"></div>
+                        </div>
+                        <div class="seq-actor"><div class="seq-actor-label server">Server</div></div>
+                    </div>
+                    <div style="text-align: center; margin: -8px 0 8px 0;">
+                        <span class="seq-label">ClientHello + KeyShare</span>
+                    </div>
+                    <div class="seq-row">
+                        <div class="seq-actor"></div>
+                        <div class="seq-message">
+                            <div class="seq-arrow-left"></div>
+                        </div>
+                        <div class="seq-actor"></div>
+                    </div>
+                    <div style="text-align: center; margin: -8px 0 8px 0;">
+                        <span class="seq-label">ServerHello + KeyShare + Certificate + Finished</span>
+                    </div>
+                    <div class="seq-row">
+                        <div class="seq-actor"></div>
+                        <div class="seq-message">
+                            <div class="seq-arrow-right"></div>
+                        </div>
+                        <div class="seq-actor"></div>
+                    </div>
+                    <div style="text-align: center; margin: -8px 0 8px 0;">
+                        <span class="seq-label">Finished + [Encrypted Data]</span>
+                    </div>
+                    <div class="flow-note" style="margin-top: 16px;">Connection now encrypted - All HTTP traffic protected</div>
+                </div>
             </div>
 
             <h3>Why HTTPS Matters</h3>
@@ -337,6 +449,3 @@ sequenceDiagram
         </div>
     </aside>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>

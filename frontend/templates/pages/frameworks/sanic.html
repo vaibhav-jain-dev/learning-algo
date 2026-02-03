@@ -4,13 +4,28 @@
     .fw-section h3 { font-size: 1.2rem; margin-top: 20px; margin-bottom: 12px; color: var(--accent-secondary, #8b5cf6); }
     .diagram-container { background: var(--bg-tertiary, #f1f5f9); padding: 20px; border-radius: 10px; margin: 20px 0; overflow-x: auto; }
     .code-example { background: #1e293b; border-radius: 8px; padding: 16px; margin: 16px 0; overflow-x: auto; }
-    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+    .code-example pre { margin: 0; color: #e2e8f0; font-family: 'Fira Code', monospace; font-size: 0.9rem; white-space: pre-wrap; word-wrap: break-word; }
     .concept-card { background: var(--bg-tertiary); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--accent-secondary); }
     .concept-card h4 { color: var(--accent-secondary); margin-bottom: 10px; }
     .highlight-box { background: rgba(59, 130, 246, 0.08); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-primary); margin: 16px 0; }
     .comparison-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
     .comparison-table th, .comparison-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
     .comparison-table th { background: var(--bg-tertiary); }
+
+    /* Flow Diagram Styles */
+    .flow-diagram { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; }
+    .flow-vertical { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .flow-step { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 500px; }
+    .flow-num { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+    .flow-content { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 14px; flex: 1; }
+    .flow-content.blue { border-left: 3px solid #3b82f6; }
+    .flow-content.green { border-left: 3px solid #10b981; }
+    .flow-content.purple { border-left: 3px solid #8b5cf6; }
+    .flow-content.orange { border-left: 3px solid #f59e0b; }
+    .flow-content.cyan { border-left: 3px solid #06b6d4; }
+    .flow-title { color: #f8fafc; font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
+    .flow-desc { color: #94a3b8; font-size: 0.75rem; }
+    .flow-arrow { color: #475569; font-size: 1.2rem; }
 </style>
 
 <div class="page-layout">
@@ -22,54 +37,82 @@
 
         <div class="fw-section">
             <h2>Request Flow: Input to Output</h2>
-            <div class="diagram-container">
-                <pre class="mermaid">
-flowchart TB
-    subgraph Input["1. HTTP Request"]
-        REQ["GET /users/123"]
-    end
 
-    subgraph Server["2. Async Server"]
-        UV["uvloop Event Loop\n(faster than asyncio)"]
-    end
+            <div class="flow-diagram">
+                <div class="flow-vertical">
+                    <div class="flow-step">
+                        <div class="flow-num">1</div>
+                        <div class="flow-content blue">
+                            <div class="flow-title">HTTP Request</div>
+                            <div class="flow-desc">GET /users/123 arrives at server</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph Middleware["3. Middleware Chain (Async)"]
-        M1["@app.on_request\nAuthentication"]
-        M2["Request middleware"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">2</div>
+                        <div class="flow-content orange">
+                            <div class="flow-title">uvloop Event Loop</div>
+                            <div class="flow-desc">Fast drop-in replacement for asyncio</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph Route["4. Route Matching"]
-        R["@app.get('/users/<id:int>')"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">3</div>
+                        <div class="flow-content purple">
+                            <div class="flow-title">@app.on_request middleware</div>
+                            <div class="flow-desc">Authentication, logging, request validation</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph Handler["5. Async Handler"]
-        H["async def get_user(request, id):\n    user = await db.get(id)\n    return json(user)"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">4</div>
+                        <div class="flow-content">
+                            <div class="flow-title">Route Matching</div>
+                            <div class="flow-desc">@app.get('/users/&lt;id:int&gt;') → handler</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph DB["6. Async I/O"]
-        D1["await database.fetch()"]
-        D2["await redis.get()"]
-        D3["await http_client.get()"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">5</div>
+                        <div class="flow-content cyan">
+                            <div class="flow-title">Async Handler</div>
+                            <div class="flow-desc">async def get_user(request, id): ...</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph ResponseMW["7. Response Middleware"]
-        RM["@app.on_response\nAdd headers, logging"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">6</div>
+                        <div class="flow-content">
+                            <div class="flow-title">Async Database I/O</div>
+                            <div class="flow-desc">await db.fetch(), redis.get(), http_client.get()</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    subgraph Output["8. Response"]
-        RES["JSON Response\n200 OK"]
-    end
+                    <div class="flow-step">
+                        <div class="flow-num">7</div>
+                        <div class="flow-content purple">
+                            <div class="flow-title">@app.on_response middleware</div>
+                            <div class="flow-desc">Add headers, logging, response transformation</div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow">↓</div>
 
-    REQ --> UV --> M1 --> M2 --> R --> H
-    H --> D1 & D2 & D3
-    D1 & D2 & D3 --> RM --> RES
-
-    style REQ fill:#3b82f6,color:#fff
-    style RES fill:#10b981,color:#fff
-    style H fill:#8b5cf6,color:#fff
-    style UV fill:#f59e0b,color:#fff
-                </pre>
+                    <div class="flow-step">
+                        <div class="flow-num">8</div>
+                        <div class="flow-content green">
+                            <div class="flow-title">Response</div>
+                            <div class="flow-desc">JSON Response 200 OK</div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
             <div class="highlight-box">
                 <strong>Key Advantage:</strong> Sanic uses uvloop (a fast, drop-in replacement for asyncio) and can handle many concurrent connections efficiently. All I/O operations are non-blocking.
             </div>
@@ -482,6 +525,3 @@ async def create_user(request):
         </div>
     </aside>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>
