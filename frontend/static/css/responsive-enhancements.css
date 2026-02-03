@@ -360,6 +360,469 @@ button:focus-visible,
 }
 
 /* ============================================
+   NEW PAGES MOBILE STYLES
+   AI Awareness, WWW Flow, Network Protocols, Frameworks
+   ============================================ */
+
+@media screen and (max-width: 768px) {
+    /* === PAGE LAYOUT - MOBILE === */
+    .page-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px;
+    }
+
+    .page-layout .page-main {
+        width: 100% !important;
+        max-width: 100% !important;
+        order: 1;
+    }
+
+    .page-layout .page-sidebar,
+    .page-layout aside {
+        width: 100% !important;
+        max-width: 100% !important;
+        order: 2;
+    }
+
+    /* === ARCHITECTURE DIAGRAMS (WWW-FLOW) === */
+    .arch-diagram {
+        padding: 16px !important;
+        margin: 12px 0 !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .arch-row {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+
+    .arch-layer {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: auto !important;
+        padding: 12px !important;
+    }
+
+    .arch-layer > div {
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+        justify-content: center !important;
+    }
+
+    .arch-box {
+        padding: 8px 12px !important;
+        font-size: 0.75rem !important;
+        min-width: auto !important;
+        flex: 1 1 auto !important;
+        text-align: center;
+    }
+
+    .arch-arrow {
+        display: none !important;
+    }
+
+    .arch-arrow-down {
+        font-size: 1.2rem !important;
+        margin: 4px 0 !important;
+    }
+
+    .arch-layer-title {
+        font-size: 0.65rem !important;
+        margin-bottom: 8px !important;
+    }
+
+    /* === FLOW DIAGRAMS === */
+    .flow-diagram {
+        padding: 16px !important;
+        margin: 12px 0 !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .flow-row {
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        justify-content: flex-start !important;
+    }
+
+    .flow-box {
+        padding: 6px 10px !important;
+        font-size: 0.7rem !important;
+        min-width: auto !important;
+    }
+
+    .flow-arrow {
+        font-size: 0.8rem !important;
+        padding: 0 4px !important;
+    }
+
+    .flow-label {
+        font-size: 0.6rem !important;
+    }
+
+    /* === FLOW STEPS === */
+    .flow-step {
+        flex-direction: column !important;
+        gap: 12px !important;
+        padding: 16px !important;
+    }
+
+    .flow-step-number {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 1rem !important;
+    }
+
+    .flow-step-content h4 {
+        font-size: 1rem !important;
+    }
+
+    /* === COMPONENT CARDS === */
+    .component-card {
+        padding: 14px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .component-card h4 {
+        font-size: 1rem !important;
+    }
+
+    .component-card .info-row {
+        padding: 6px 10px !important;
+        font-size: 0.8rem !important;
+        margin-bottom: 8px !important;
+    }
+
+    .component-card .label {
+        display: block !important;
+        min-width: auto !important;
+        margin-bottom: 4px !important;
+    }
+
+    .tech-stack {
+        gap: 6px !important;
+    }
+
+    .tech-tag {
+        padding: 4px 10px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .real-example {
+        padding: 12px !important;
+    }
+
+    .real-example h5 {
+        font-size: 0.85rem !important;
+    }
+
+    /* === WWW SECTIONS === */
+    .www-section {
+        padding: 16px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .www-section h2 {
+        font-size: 1.2rem !important;
+    }
+
+    .www-section h3 {
+        font-size: 1rem !important;
+    }
+
+    /* === FRAMEWORK SECTIONS === */
+    .fw-section {
+        padding: 16px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .fw-section h2 {
+        font-size: 1.2rem !important;
+    }
+
+    .fw-section h3 {
+        font-size: 1rem !important;
+    }
+
+    /* === CONCEPT CARDS === */
+    .concept-card {
+        padding: 14px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .concept-card h4 {
+        font-size: 1rem !important;
+    }
+
+    /* === CODE EXAMPLES === */
+    .code-example {
+        margin: 12px 0 !important;
+        padding: 12px !important;
+        border-radius: 6px !important;
+    }
+
+    .code-example pre {
+        font-size: 0.65rem !important;
+        line-height: 1.4 !important;
+        padding: 0 !important;
+        overflow-x: auto;
+    }
+
+    .code-example code {
+        font-size: 0.65rem !important;
+    }
+
+    /* === HIGHLIGHT BOXES === */
+    .highlight-box {
+        padding: 12px !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* === COMPARISON TABLES === */
+    .comparison-table {
+        font-size: 0.75rem !important;
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+        padding: 8px !important;
+        white-space: nowrap;
+    }
+
+    /* === TABS (AI AWARENESS) === */
+    .tabs-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tab-buttons {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        gap: 4px !important;
+        padding-bottom: 8px;
+        min-width: max-content;
+    }
+
+    .tab-btn {
+        padding: 8px 12px !important;
+        font-size: 0.75rem !important;
+        white-space: nowrap !important;
+        flex-shrink: 0;
+    }
+
+    .tab-content {
+        padding: 16px !important;
+    }
+
+    /* === AI AWARENESS SPECIFIC === */
+    .ai-section {
+        padding: 16px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .ai-section h2 {
+        font-size: 1.2rem !important;
+    }
+
+    .ai-card {
+        padding: 14px !important;
+    }
+
+    .ai-diagram {
+        padding: 16px !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* === NETWORK PROTOCOLS SPECIFIC === */
+    .protocol-section {
+        padding: 16px !important;
+    }
+
+    .protocol-card {
+        padding: 14px !important;
+    }
+
+    .method-grid,
+    .status-grid {
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+    }
+
+    .method-card,
+    .status-card {
+        padding: 12px !important;
+    }
+
+    /* === PANELS AND SIDEBARS === */
+    .panel {
+        padding: 12px !important;
+    }
+
+    .panel-header {
+        font-size: 0.85rem !important;
+        margin-bottom: 12px !important;
+    }
+
+    .quick-ref-item {
+        flex-direction: column !important;
+        gap: 2px !important;
+        padding: 6px 0 !important;
+    }
+
+    .quick-ref-key,
+    .quick-ref-value {
+        font-size: 0.8rem !important;
+        text-align: left !important;
+    }
+
+    /* === COLLAPSIBLE BUTTONS === */
+    .collapsible-btn {
+        padding: 10px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .collapsible-content .inner {
+        padding: 12px !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* === SUB-NAVIGATION GRIDS === */
+    .sub-nav-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    .sub-nav-card {
+        padding: 16px !important;
+    }
+
+    .sub-nav-card h3 {
+        font-size: 1rem !important;
+    }
+
+    .sub-nav-card p {
+        font-size: 0.85rem !important;
+    }
+}
+
+/* === iPhone 15 Pro (393px) specific fixes === */
+@media screen and (max-width: 430px) {
+    /* Even smaller adjustments for diagrams */
+    .arch-box {
+        padding: 6px 10px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .flow-box {
+        padding: 5px 8px !important;
+        font-size: 0.65rem !important;
+    }
+
+    .flow-step-number {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .component-card .info-row {
+        font-size: 0.75rem !important;
+    }
+
+    .tech-tag {
+        padding: 3px 8px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .tab-btn {
+        padding: 6px 10px !important;
+        font-size: 0.7rem !important;
+    }
+
+    /* Smaller headings */
+    .www-section h2,
+    .fw-section h2,
+    .ai-section h2 {
+        font-size: 1.1rem !important;
+    }
+
+    .www-section h3,
+    .fw-section h3 {
+        font-size: 0.95rem !important;
+    }
+
+    /* Code even smaller */
+    .code-example pre,
+    .code-example code {
+        font-size: 0.6rem !important;
+    }
+}
+
+/* === Small phones (375px and below) === */
+@media screen and (max-width: 375px) {
+    .arch-diagram,
+    .flow-diagram {
+        padding: 12px !important;
+    }
+
+    .arch-box {
+        padding: 5px 8px !important;
+        font-size: 0.65rem !important;
+    }
+
+    .flow-box {
+        padding: 4px 6px !important;
+        font-size: 0.6rem !important;
+    }
+
+    .flow-step {
+        padding: 12px !important;
+    }
+
+    .flow-step-number {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .component-card {
+        padding: 10px !important;
+    }
+
+    .component-card .info-row {
+        font-size: 0.7rem !important;
+        padding: 5px 8px !important;
+    }
+
+    .tab-btn {
+        padding: 5px 8px !important;
+        font-size: 0.65rem !important;
+    }
+
+    .www-section,
+    .fw-section,
+    .ai-section {
+        padding: 12px !important;
+    }
+
+    .www-section h2,
+    .fw-section h2 {
+        font-size: 1rem !important;
+    }
+
+    .code-example pre,
+    .code-example code {
+        font-size: 0.55rem !important;
+    }
+}
+
+/* ============================================
    iPHONE 15 SPECIFIC BREAKPOINTS
    iPhone 15 Pro Max: 430px
    iPhone 15 Pro: 393px
