@@ -10,9 +10,6 @@
         font-size: 1.5rem;
         margin-bottom: 12px;
         color: var(--accent-primary, #3b82f6);
-        display: flex;
-        align-items: center;
-        gap: 10px;
     }
     .www-section h3 {
         font-size: 1.2rem;
@@ -20,6 +17,180 @@
         margin-bottom: 12px;
         color: var(--accent-secondary, #8b5cf6);
     }
+
+    /* Architecture Diagram Styles */
+    .arch-diagram {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border-radius: 16px;
+        padding: 30px;
+        margin: 20px 0;
+        overflow-x: auto;
+    }
+    .arch-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    .arch-layer {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 16px;
+        min-width: 120px;
+    }
+    .arch-layer-title {
+        color: #94a3b8;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+        text-align: center;
+    }
+    .arch-box {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-align: center;
+        margin: 6px 0;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    .arch-box.green { background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+    .arch-box.purple { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3); }
+    .arch-box.orange { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
+    .arch-box.red { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+    .arch-box.cyan { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3); }
+    .arch-arrow {
+        color: #64748b;
+        font-size: 1.5rem;
+        padding: 0 8px;
+    }
+    .arch-arrow-down {
+        display: flex;
+        justify-content: center;
+        color: #64748b;
+        font-size: 1.5rem;
+        margin: 8px 0;
+    }
+
+    /* Flow Diagram */
+    .flow-diagram {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border-radius: 16px;
+        padding: 24px;
+        margin: 16px 0;
+    }
+    .flow-row {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 8px;
+        margin: 12px 0;
+        flex-wrap: wrap;
+    }
+    .flow-box {
+        background: rgba(59, 130, 246, 0.15);
+        border: 1px solid rgba(59, 130, 246, 0.4);
+        color: #93c5fd;
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    .flow-box.active {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        border-color: #3b82f6;
+    }
+    .flow-box.success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-color: #10b981; }
+    .flow-box.error { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border-color: #ef4444; }
+    .flow-box.warning { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border-color: #f59e0b; }
+    .flow-arrow {
+        color: #475569;
+        font-size: 1rem;
+    }
+    .flow-label {
+        color: #64748b;
+        font-size: 0.7rem;
+        margin-top: 4px;
+    }
+
+    /* Sequence Diagram */
+    .seq-diagram {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border-radius: 16px;
+        padding: 24px;
+        margin: 16px 0;
+        overflow-x: auto;
+    }
+    .seq-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        gap: 20px;
+    }
+    .seq-actor {
+        text-align: center;
+        flex: 1;
+        min-width: 80px;
+    }
+    .seq-actor-box {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        display: inline-block;
+    }
+    .seq-actor-line {
+        width: 2px;
+        background: #334155;
+        margin: 0 auto;
+        height: 300px;
+    }
+    .seq-messages {
+        position: relative;
+        margin-top: -280px;
+    }
+    .seq-msg {
+        display: flex;
+        align-items: center;
+        margin: 16px 0;
+        padding-left: 10%;
+    }
+    .seq-msg-arrow {
+        flex: 1;
+        height: 2px;
+        background: #10b981;
+        position: relative;
+    }
+    .seq-msg-arrow::after {
+        content: '→';
+        position: absolute;
+        right: -8px;
+        top: -10px;
+        color: #10b981;
+    }
+    .seq-msg-text {
+        position: absolute;
+        top: -18px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1e293b;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        color: #94a3b8;
+        white-space: nowrap;
+    }
+
+    /* Component Cards */
     .component-card {
         background: var(--bg-tertiary, #f1f5f9);
         padding: 20px;
@@ -32,54 +203,25 @@
         margin-bottom: 12px;
         font-size: 1.1rem;
     }
-    .component-card .what, .component-card .why, .component-card .if-missing,
-    .component-card .alternatives, .component-card .best-now, .component-card .future {
+    .component-card .info-row {
         margin-bottom: 10px;
         padding: 8px 12px;
         border-radius: 6px;
         font-size: 0.9rem;
     }
-    .component-card .what {
-        background: rgba(59, 130, 246, 0.1);
-        border-left: 3px solid #3b82f6;
-    }
-    .component-card .why {
-        background: rgba(16, 185, 129, 0.1);
-        border-left: 3px solid #10b981;
-    }
-    .component-card .if-missing {
-        background: rgba(239, 68, 68, 0.1);
-        border-left: 3px solid #ef4444;
-    }
-    .component-card .alternatives {
-        background: rgba(139, 92, 246, 0.1);
-        border-left: 3px solid #8b5cf6;
-    }
-    .component-card .best-now {
-        background: rgba(245, 158, 11, 0.1);
-        border-left: 3px solid #f59e0b;
-    }
-    .component-card .future {
-        background: rgba(6, 182, 212, 0.1);
-        border-left: 3px solid #06b6d4;
-    }
+    .component-card .what { background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; }
+    .component-card .why { background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10b981; }
+    .component-card .if-missing { background: rgba(239, 68, 68, 0.1); border-left: 3px solid #ef4444; }
+    .component-card .alternatives { background: rgba(139, 92, 246, 0.1); border-left: 3px solid #8b5cf6; }
+    .component-card .best-now { background: rgba(245, 158, 11, 0.1); border-left: 3px solid #f59e0b; }
+    .component-card .future { background: rgba(6, 182, 212, 0.1); border-left: 3px solid #06b6d4; }
     .component-card .label {
         font-weight: 600;
         color: var(--text-primary);
         display: inline-block;
         min-width: 100px;
     }
-    .diagram-container {
-        background: var(--bg-tertiary, #f1f5f9);
-        padding: 20px;
-        border-radius: 10px;
-        margin: 20px 0;
-        overflow-x: auto;
-    }
-    .mermaid {
-        display: flex;
-        justify-content: center;
-    }
+
     .real-example {
         background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.04) 100%);
         padding: 16px;
@@ -91,6 +233,7 @@
         color: #10b981;
         margin-bottom: 8px;
     }
+
     .tech-stack {
         display: flex;
         flex-wrap: wrap;
@@ -105,31 +248,35 @@
         font-size: 0.85rem;
         border: 1px solid rgba(139, 92, 246, 0.25);
     }
+
     .flow-step {
         display: flex;
         align-items: flex-start;
         gap: 16px;
-        margin-bottom: 20px;
-        padding: 16px;
+        margin-bottom: 24px;
+        padding: 20px;
         background: var(--bg-tertiary, #f1f5f9);
-        border-radius: 10px;
+        border-radius: 12px;
     }
     .flow-step-number {
-        background: var(--accent-primary, #3b82f6);
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
         color: white;
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 700;
         flex-shrink: 0;
+        font-size: 1.1rem;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
     }
     .flow-step-content h4 {
         color: var(--accent-primary, #3b82f6);
         margin-bottom: 8px;
     }
+
     .collapsible-btn {
         background: var(--bg-tertiary, #f1f5f9);
         color: var(--text-primary, #0f172a);
@@ -193,71 +340,79 @@
             <h2>Complete Web Architecture (Single View)</h2>
             <p>Every request flows through these components. Understanding each is key to building scalable systems.</p>
 
-            <div class="diagram-container">
-                <pre class="mermaid">
-flowchart LR
-    subgraph Client
-        U[User Browser/App]
-    end
+            <div class="arch-diagram">
+                <!-- Client Layer -->
+                <div class="arch-row">
+                    <div class="arch-layer" style="border-color: #3b82f6;">
+                        <div class="arch-layer-title">Client</div>
+                        <div class="arch-box">User Browser/App</div>
+                    </div>
+                </div>
 
-    subgraph Edge["Edge Layer"]
-        DNS[DNS Resolver]
-        CDN[CDN/Edge Cache]
-        LB[Load Balancer]
-        APIGW[API Gateway]
-    end
+                <div class="arch-arrow-down">↓</div>
 
-    subgraph Frontend
-        FE[Web/Mobile Frontend]
-    end
+                <!-- Edge Layer -->
+                <div class="arch-row">
+                    <div class="arch-layer" style="border-color: #f59e0b; flex: 1; max-width: 600px;">
+                        <div class="arch-layer-title">Edge Layer</div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                            <div class="arch-box orange">DNS Resolver</div>
+                            <span class="arch-arrow">→</span>
+                            <div class="arch-box orange">CDN/Edge Cache</div>
+                            <span class="arch-arrow">→</span>
+                            <div class="arch-box orange">Load Balancer</div>
+                            <span class="arch-arrow">→</span>
+                            <div class="arch-box orange">API Gateway</div>
+                        </div>
+                    </div>
+                </div>
 
-    subgraph Backend["Backend Microservices"]
-        AUTH[Auth Service]
-        CATALOG[Catalog Service]
-        ORDER[Order Service]
-        PAYMENT[Payment Service]
-        NOTIF[Notification Service]
-    end
+                <div class="arch-arrow-down">↓</div>
 
-    subgraph Data["State & Storage"]
-        DB[(Primary DB)]
-        CACHE[[Redis Cache]]
-        MQ((Message Queue))
-    end
+                <!-- Frontend -->
+                <div class="arch-row">
+                    <div class="arch-layer" style="border-color: #8b5cf6;">
+                        <div class="arch-layer-title">Frontend</div>
+                        <div class="arch-box purple">Web/Mobile Frontend</div>
+                    </div>
+                </div>
 
-    subgraph Async["Async & Infra"]
-        WORKER[Background Workers]
-        OBS[Monitoring/Logging]
-    end
+                <div class="arch-arrow-down">↓</div>
 
-    U -->|blinkit.com| DNS
-    DNS --> CDN
-    CDN --> LB
-    LB --> APIGW
-    APIGW --> FE
+                <!-- Backend Microservices -->
+                <div class="arch-row">
+                    <div class="arch-layer" style="border-color: #10b981; flex: 1; max-width: 700px;">
+                        <div class="arch-layer-title">Backend Microservices</div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                            <div class="arch-box green">Auth Service</div>
+                            <div class="arch-box green">Catalog Service</div>
+                            <div class="arch-box green">Order Service</div>
+                            <div class="arch-box green">Payment Service</div>
+                            <div class="arch-box green">Notification</div>
+                        </div>
+                    </div>
+                </div>
 
-    FE -->|HTTPS API| AUTH
-    FE --> CATALOG
-    FE --> ORDER
-    FE --> PAYMENT
+                <div class="arch-arrow-down">↓</div>
 
-    AUTH --> CACHE
-    AUTH --> DB
-    CATALOG --> CACHE
-    CATALOG --> DB
-    ORDER --> DB
-    ORDER --> MQ
-    PAYMENT --> MQ
-    NOTIF --> MQ
-
-    MQ --> WORKER
-    WORKER --> DB
-    WORKER --> CACHE
-    WORKER --> NOTIF
-
-    LB --> OBS
-    APIGW --> OBS
-                </pre>
+                <!-- Data Layer -->
+                <div class="arch-row">
+                    <div class="arch-layer" style="border-color: #06b6d4;">
+                        <div class="arch-layer-title">State & Storage</div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                            <div class="arch-box cyan">PostgreSQL</div>
+                            <div class="arch-box cyan">Redis Cache</div>
+                            <div class="arch-box cyan">Message Queue</div>
+                        </div>
+                    </div>
+                    <div class="arch-layer" style="border-color: #ef4444;">
+                        <div class="arch-layer-title">Async & Infra</div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                            <div class="arch-box red">Background Workers</div>
+                            <div class="arch-box red">Monitoring/Logs</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -271,27 +426,28 @@ flowchart LR
                 <div class="flow-step-content">
                     <h4>DNS Resolution</h4>
                     <p>Your browser asks "What's the IP address of blinkit.com?"</p>
-                    <div class="diagram-container" style="margin: 10px 0;">
-                        <pre class="mermaid">
-sequenceDiagram
-    participant Browser
-    participant Stub as Stub Resolver (Device)
-    participant Recursive as Recursive (ISP/1.1.1.1)
-    participant Root as Root Server
-    participant TLD as .com TLD Server
-    participant Auth as Blinkit's NS
 
-    Browser->>Stub: blinkit.com?
-    Stub->>Recursive: blinkit.com?
-    Recursive->>Root: blinkit.com?
-    Root-->>Recursive: Ask .com TLD
-    Recursive->>TLD: blinkit.com?
-    TLD-->>Recursive: Ask ns1.blinkit.com
-    Recursive->>Auth: blinkit.com?
-    Auth-->>Recursive: 104.21.XX.XX
-    Recursive-->>Stub: 104.21.XX.XX (cached 5min)
-    Stub-->>Browser: 104.21.XX.XX
-                        </pre>
+                    <div class="flow-diagram">
+                        <div class="flow-row">
+                            <div class="flow-box active">Browser</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box">Stub Resolver</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box">Recursive (ISP)</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box">Root Server</div>
+                        </div>
+                        <div class="flow-label" style="color: #64748b; margin-left: 40px;">↓ "Ask .com TLD"</div>
+                        <div class="flow-row">
+                            <div class="flow-box">Recursive</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box">.com TLD Server</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box">Blinkit's NS</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box success">104.21.XX.XX</div>
+                        </div>
+                        <div class="flow-label" style="color: #10b981; margin-left: 40px;">✓ Cached for 5 minutes</div>
                     </div>
                 </div>
             </div>
@@ -301,32 +457,27 @@ sequenceDiagram
                 <div class="flow-step-content">
                     <h4>CDN / Edge</h4>
                     <p>Request hits the nearest edge server (maybe in Mumbai instead of US)</p>
-                    <div class="diagram-container" style="margin: 10px 0;">
-                        <pre class="mermaid">
-flowchart LR
-    subgraph User_Location["User in Delhi"]
-        U[User]
-    end
 
-    subgraph CDN_Network["Cloudflare CDN"]
-        E1[Delhi Edge]
-        E2[Mumbai Edge]
-        E3[Singapore Edge]
-    end
-
-    subgraph Origin["Origin Server (AWS Mumbai)"]
-        O[Backend]
-    end
-
-    U -->|Routed to nearest| E1
-    E1 -->|Cache HIT| U
-    E1 -.->|Cache MISS| O
-    O -.-> E1
-
-    style E1 fill:#10b981,color:#fff
-                        </pre>
+                    <div class="flow-diagram">
+                        <div style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap;">
+                            <div style="text-align: center;">
+                                <div class="flow-box active" style="margin-bottom: 8px;">User in Delhi</div>
+                            </div>
+                            <div style="color: #64748b; padding-top: 10px;">→</div>
+                            <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 16px;">
+                                <div style="color: #94a3b8; font-size: 0.7rem; margin-bottom: 8px;">CDN Network</div>
+                                <div class="flow-box success" style="margin-bottom: 6px;">Delhi Edge ✓</div>
+                                <div class="flow-box" style="opacity: 0.5; margin-bottom: 6px;">Mumbai Edge</div>
+                                <div class="flow-box" style="opacity: 0.5;">Singapore Edge</div>
+                            </div>
+                            <div style="color: #64748b; padding-top: 10px;">→</div>
+                            <div style="text-align: center;">
+                                <div class="flow-box" style="opacity: 0.5; margin-bottom: 8px;">Origin Server</div>
+                                <div style="color: #64748b; font-size: 0.7rem;">Only on cache MISS</div>
+                            </div>
+                        </div>
                     </div>
-                    <p><strong>Cache HIT:</strong> Static assets (JS, CSS, images) served instantly from edge<br/>
+                    <p style="margin-top: 12px;"><strong>Cache HIT:</strong> Static assets (JS, CSS, images) served instantly from edge<br/>
                     <strong>Cache MISS:</strong> Dynamic content fetched from origin, then cached</p>
                 </div>
             </div>
@@ -336,29 +487,29 @@ flowchart LR
                 <div class="flow-step-content">
                     <h4>Load Balancer</h4>
                     <p>Distributes traffic across multiple backend instances</p>
-                    <div class="diagram-container" style="margin: 10px 0;">
-                        <pre class="mermaid">
-flowchart TB
-    LB[Load Balancer]
 
-    subgraph Healthy["Healthy Instances"]
-        S1[Server 1 - 30%]
-        S2[Server 2 - 35%]
-        S3[Server 3 - 35%]
-    end
-
-    subgraph Unhealthy["Unhealthy (Removed)"]
-        S4[Server 4 - Health Check Failed]
-    end
-
-    LB -->|Round Robin| S1
-    LB -->|Round Robin| S2
-    LB -->|Round Robin| S3
-    LB -.->|Excluded| S4
-
-    style S4 fill:#ef4444,color:#fff
-    style LB fill:#3b82f6,color:#fff
-                        </pre>
+                    <div class="flow-diagram">
+                        <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+                            <div class="flow-box active">Load Balancer</div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="flow-arrow">→</span>
+                                    <div class="flow-box success">Server 1 - 30%</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="flow-arrow">→</span>
+                                    <div class="flow-box success">Server 2 - 35%</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="flow-arrow">→</span>
+                                    <div class="flow-box success">Server 3 - 35%</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="flow-arrow" style="opacity: 0.3;">→</span>
+                                    <div class="flow-box error" style="opacity: 0.5;">Server 4 - ✗ Health Failed</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -368,22 +519,31 @@ flowchart TB
                 <div class="flow-step-content">
                     <h4>API Gateway</h4>
                     <p>Single entry point handling auth, rate limiting, routing</p>
-                    <div class="diagram-container" style="margin: 10px 0;">
-                        <pre class="mermaid">
-flowchart LR
-    REQ[Request] --> AUTH[Authentication]
-    AUTH --> RATE[Rate Limiting]
-    RATE --> ROUTE[Route Matching]
-    ROUTE --> LOG[Logging/Metrics]
-    LOG --> SVC[Backend Service]
 
-    AUTH -.->|Invalid Token| R1[401 Unauthorized]
-    RATE -.->|Limit Exceeded| R2[429 Too Many Requests]
-
-    style R1 fill:#ef4444,color:#fff
-    style R2 fill:#f59e0b,color:#fff
-    style SVC fill:#10b981,color:#fff
-                        </pre>
+                    <div class="flow-diagram">
+                        <div class="flow-row">
+                            <div class="flow-box">Request</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box active">Authentication</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box active">Rate Limiting</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box active">Route Match</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box active">Logging</div>
+                            <span class="flow-arrow">→</span>
+                            <div class="flow-box success">Backend</div>
+                        </div>
+                        <div style="margin-top: 16px; display: flex; gap: 20px; flex-wrap: wrap;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="color: #64748b; font-size: 0.8rem;">Invalid Token:</span>
+                                <div class="flow-box error">401 Unauthorized</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="color: #64748b; font-size: 0.8rem;">Rate Exceeded:</span>
+                                <div class="flow-box warning">429 Too Many</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -393,22 +553,32 @@ flowchart LR
                 <div class="flow-step-content">
                     <h4>Backend Services</h4>
                     <p>Microservices process the request with caching and database</p>
-                    <div class="diagram-container" style="margin: 10px 0;">
-                        <pre class="mermaid">
-sequenceDiagram
-    participant API as API Gateway
-    participant Catalog as Catalog Service
-    participant Cache as Redis
-    participant DB as PostgreSQL
 
-    API->>Catalog: GET /products?category=dairy
-    Catalog->>Cache: Check cache
-    Cache-->>Catalog: MISS
-    Catalog->>DB: SELECT * FROM products
-    DB-->>Catalog: Product data
-    Catalog->>Cache: SET (TTL: 5min)
-    Catalog-->>API: JSON Response
-                        </pre>
+                    <div class="flow-diagram">
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div class="flow-row">
+                                <div class="flow-box">API Gateway</div>
+                                <span class="flow-arrow">→</span>
+                                <div class="flow-box active">Catalog Service</div>
+                                <span style="color: #64748b; font-size: 0.75rem; padding: 0 8px;">GET /products?category=dairy</span>
+                            </div>
+                            <div class="flow-row" style="padding-left: 40px;">
+                                <span class="flow-arrow">→</span>
+                                <div class="flow-box warning">Redis Cache</div>
+                                <span style="color: #f59e0b; font-size: 0.75rem; padding: 0 8px;">MISS</span>
+                            </div>
+                            <div class="flow-row" style="padding-left: 40px;">
+                                <span class="flow-arrow">→</span>
+                                <div class="flow-box purple" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white;">PostgreSQL</div>
+                                <span style="color: #64748b; font-size: 0.75rem; padding: 0 8px;">SELECT * FROM products</span>
+                            </div>
+                            <div class="flow-row" style="padding-left: 40px;">
+                                <span class="flow-arrow">→</span>
+                                <div class="flow-box success">Cache SET (TTL: 5min)</div>
+                                <span class="flow-arrow">→</span>
+                                <div class="flow-box success">JSON Response</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -418,24 +588,39 @@ sequenceDiagram
                 <div class="flow-step-content">
                     <h4>Async Processing</h4>
                     <p>Background workers handle long-running tasks</p>
-                    <div class="diagram-container" style="margin: 10px 0;">
-                        <pre class="mermaid">
-flowchart LR
-    subgraph Sync["Sync (User waits)"]
-        API[API] --> DB[(Database)]
-    end
 
-    subgraph Async["Async (Background)"]
-        API --> MQ[Message Queue]
-        MQ --> W1[Worker: Send Email]
-        MQ --> W2[Worker: Process Payment]
-        MQ --> W3[Worker: Update Inventory]
-    end
-
-    API -->|202 Accepted| User[User gets response immediately]
-
-    style User fill:#10b981,color:#fff
-                        </pre>
+                    <div class="flow-diagram">
+                        <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                            <div>
+                                <div style="color: #94a3b8; font-size: 0.7rem; margin-bottom: 8px;">Sync (User waits)</div>
+                                <div class="flow-row">
+                                    <div class="flow-box active">API</div>
+                                    <span class="flow-arrow">→</span>
+                                    <div class="flow-box">Database</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="color: #94a3b8; font-size: 0.7rem; margin-bottom: 8px;">Async (Background)</div>
+                                <div style="display: flex; flex-direction: column; gap: 6px;">
+                                    <div class="flow-row">
+                                        <div class="flow-box warning">Message Queue</div>
+                                        <span class="flow-arrow">→</span>
+                                        <div class="flow-box">Send Email</div>
+                                    </div>
+                                    <div class="flow-row" style="padding-left: 110px;">
+                                        <span class="flow-arrow">→</span>
+                                        <div class="flow-box">Process Payment</div>
+                                    </div>
+                                    <div class="flow-row" style="padding-left: 110px;">
+                                        <span class="flow-arrow">→</span>
+                                        <div class="flow-box">Update Inventory</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 16px;">
+                            <div class="flow-box success" style="display: inline-block;">User gets 202 Accepted immediately ✓</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -447,12 +632,12 @@ flowchart LR
 
             <div class="component-card">
                 <h4>1. DNS Resolver</h4>
-                <div class="what"><span class="label">What:</span> Translates domain names (blinkit.com) to IP addresses</div>
-                <div class="why"><span class="label">Why:</span> Human-readable domains, traffic steering, failover capabilities</div>
-                <div class="if-missing"><span class="label">If Missing:</span> Users must type raw IPs; no domain-based routing; impossible to rotate infrastructure</div>
-                <div class="alternatives"><span class="label">Alternatives:</span> Route53, Cloudflare DNS, NS1, Google Cloud DNS</div>
-                <div class="best-now"><span class="label">Best Now:</span> Cloudflare + Route53 combo for speed + infrastructure-as-code</div>
-                <div class="future"><span class="label">Future:</span> More geo/latency-aware routing, DNSSEC everywhere, tighter service discovery integration</div>
+                <div class="info-row what"><span class="label">What:</span> Translates domain names (blinkit.com) to IP addresses</div>
+                <div class="info-row why"><span class="label">Why:</span> Human-readable domains, traffic steering, failover capabilities</div>
+                <div class="info-row if-missing"><span class="label">If Missing:</span> Users must type raw IPs; no domain-based routing; impossible to rotate infrastructure</div>
+                <div class="info-row alternatives"><span class="label">Alternatives:</span> Route53, Cloudflare DNS, NS1, Google Cloud DNS</div>
+                <div class="info-row best-now"><span class="label">Best Now:</span> Cloudflare + Route53 combo for speed + infrastructure-as-code</div>
+                <div class="info-row future"><span class="label">Future:</span> More geo/latency-aware routing, DNSSEC everywhere, tighter service discovery</div>
 
                 <button class="collapsible-btn">Sub-components Details</button>
                 <div class="collapsible-content">
@@ -475,12 +660,12 @@ flowchart LR
 
             <div class="component-card">
                 <h4>2. CDN / Edge</h4>
-                <div class="what"><span class="label">What:</span> Edge network caching static assets and sometimes API responses near users</div>
-                <div class="why"><span class="label">Why:</span> Lower latency, offload origin servers, DDoS protection</div>
-                <div class="if-missing"><span class="label">If Missing:</span> Higher TTFB, origin server overload during traffic spikes</div>
-                <div class="alternatives"><span class="label">Alternatives:</span> Cloudflare, Akamai, Fastly, CloudFront</div>
-                <div class="best-now"><span class="label">Best Now:</span> Cloudflare/Fastly for dynamic sites; Akamai for very large enterprises</div>
-                <div class="future"><span class="label">Future:</span> More edge compute, AI-driven cache policies, HTTP/3+ protocol upgrades</div>
+                <div class="info-row what"><span class="label">What:</span> Edge network caching static assets and sometimes API responses near users</div>
+                <div class="info-row why"><span class="label">Why:</span> Lower latency, offload origin servers, DDoS protection</div>
+                <div class="info-row if-missing"><span class="label">If Missing:</span> Higher TTFB, origin server overload during traffic spikes</div>
+                <div class="info-row alternatives"><span class="label">Alternatives:</span> Cloudflare, Akamai, Fastly, CloudFront</div>
+                <div class="info-row best-now"><span class="label">Best Now:</span> Cloudflare/Fastly for dynamic sites; Akamai for very large enterprises</div>
+                <div class="info-row future"><span class="label">Future:</span> More edge compute, AI-driven cache policies, HTTP/3+ protocol upgrades</div>
 
                 <div class="tech-stack">
                     <span class="tech-tag">Cloudflare</span>
@@ -497,12 +682,12 @@ flowchart LR
 
             <div class="component-card">
                 <h4>3. Load Balancer</h4>
-                <div class="what"><span class="label">What:</span> Distributes incoming traffic across multiple backend instances</div>
-                <div class="why"><span class="label">Why:</span> Horizontal scalability, zero-downtime deploys, health checks</div>
-                <div class="if-missing"><span class="label">If Missing:</span> Single instance bottleneck, no rolling upgrades, single point of failure</div>
-                <div class="alternatives"><span class="label">Alternatives:</span> AWS ALB/NLB, GCP LB, NGINX, HAProxy, Envoy</div>
-                <div class="best-now"><span class="label">Best Now:</span> Managed LBs (ALB) externally + NGINX/Envoy inside Kubernetes clusters</div>
-                <div class="future"><span class="label">Future:</span> Smarter routing (per-user, cost-aware), more L7 security built-in</div>
+                <div class="info-row what"><span class="label">What:</span> Distributes incoming traffic across multiple backend instances</div>
+                <div class="info-row why"><span class="label">Why:</span> Horizontal scalability, zero-downtime deploys, health checks</div>
+                <div class="info-row if-missing"><span class="label">If Missing:</span> Single instance bottleneck, no rolling upgrades, single point of failure</div>
+                <div class="info-row alternatives"><span class="label">Alternatives:</span> AWS ALB/NLB, GCP LB, NGINX, HAProxy, Envoy</div>
+                <div class="info-row best-now"><span class="label">Best Now:</span> Managed LBs (ALB) externally + NGINX/Envoy inside Kubernetes</div>
+                <div class="info-row future"><span class="label">Future:</span> Smarter routing (per-user, cost-aware), more L7 security built-in</div>
 
                 <button class="collapsible-btn">Load Balancing Algorithms</button>
                 <div class="collapsible-content">
@@ -527,16 +712,16 @@ flowchart LR
 
             <div class="component-card">
                 <h4>4. API Gateway</h4>
-                <div class="what"><span class="label">What:</span> Single entry point for APIs: routing, auth, rate limits, observability</div>
-                <div class="why"><span class="label">Why:</span> Avoid duplicating cross-cutting logic across microservices</div>
-                <div class="if-missing"><span class="label">If Missing:</span> Every service reimplements auth, throttling, logging, CORS</div>
-                <div class="alternatives"><span class="label">Alternatives:</span> Kong, Apigee, AWS API Gateway, Traefik, Istio Ingress</div>
-                <div class="best-now"><span class="label">Best Now:</span> Kong/Envoy-based gateways + service mesh for large microservices</div>
-                <div class="future"><span class="label">Future:</span> Policy-as-code, AI-assisted API governance, unified API catalogs</div>
+                <div class="info-row what"><span class="label">What:</span> Single entry point for APIs: routing, auth, rate limits, observability</div>
+                <div class="info-row why"><span class="label">Why:</span> Avoid duplicating cross-cutting logic across microservices</div>
+                <div class="info-row if-missing"><span class="label">If Missing:</span> Every service reimplements auth, throttling, logging, CORS</div>
+                <div class="info-row alternatives"><span class="label">Alternatives:</span> Kong, Apigee, AWS API Gateway, Traefik, Istio Ingress</div>
+                <div class="info-row best-now"><span class="label">Best Now:</span> Kong/Envoy-based gateways + service mesh for large microservices</div>
+                <div class="info-row future"><span class="label">Future:</span> Policy-as-code, AI-assisted API governance, unified API catalogs</div>
 
                 <div class="real-example">
                     <h5>Real Example: Grofers/Blinkit</h5>
-                    <p>Blinkit uses Kong API Gateway handling 50K+ requests/second. Their gateway handles JWT validation, rate limiting (100 req/min for anonymous, 1000 for logged-in), request transformation, and metrics collection. All configured via Terraform.</p>
+                    <p>Blinkit uses Kong API Gateway handling 50K+ requests/second. Their gateway handles JWT validation, rate limiting (100 req/min for anonymous, 1000 for logged-in), request transformation, and metrics collection.</p>
                 </div>
 
                 <div class="tech-stack">
@@ -549,12 +734,12 @@ flowchart LR
 
             <div class="component-card">
                 <h4>5. Backend Microservices</h4>
-                <div class="what"><span class="label">What:</span> Individual services handling specific domains (Auth, Catalog, Orders, etc.)</div>
-                <div class="why"><span class="label">Why:</span> Independent scaling, team ownership, technology flexibility, resilience</div>
-                <div class="if-missing"><span class="label">If Missing:</span> Monolith grows too large; deployment and scaling become painful</div>
-                <div class="alternatives"><span class="label">Alternatives:</span> Monolith, modular monolith, microservices, serverless</div>
-                <div class="best-now"><span class="label">Best Now:</span> Microservices/modular monolith with clear bounded contexts</div>
-                <div class="future"><span class="label">Future:</span> More event-driven designs (Kafka), function-level scaling (serverless)</div>
+                <div class="info-row what"><span class="label">What:</span> Individual services handling specific domains (Auth, Catalog, Orders, etc.)</div>
+                <div class="info-row why"><span class="label">Why:</span> Independent scaling, team ownership, technology flexibility, resilience</div>
+                <div class="info-row if-missing"><span class="label">If Missing:</span> Monolith grows too large; deployment and scaling become painful</div>
+                <div class="info-row alternatives"><span class="label">Alternatives:</span> Monolith, modular monolith, microservices, serverless</div>
+                <div class="info-row best-now"><span class="label">Best Now:</span> Microservices/modular monolith with clear bounded contexts</div>
+                <div class="info-row future"><span class="label">Future:</span> More event-driven designs (Kafka), function-level scaling (serverless)</div>
 
                 <div class="tech-stack">
                     <span class="tech-tag">FastAPI</span>
@@ -566,12 +751,12 @@ flowchart LR
 
             <div class="component-card">
                 <h4>6. Database</h4>
-                <div class="what"><span class="label">What:</span> Systems of record - user profiles, catalog, orders, transactions</div>
-                <div class="why"><span class="label">Why:</span> Consistent, durable storage with ACID guarantees</div>
-                <div class="if-missing"><span class="label">If Missing:</span> No persistence, can't reconcile orders/payments, data loss</div>
-                <div class="alternatives"><span class="label">Alternatives:</span> PostgreSQL, MySQL, MongoDB, Cassandra, DynamoDB</div>
-                <div class="best-now"><span class="label">Best Now:</span> PostgreSQL for transactional data, MongoDB for flexible documents</div>
-                <div class="future"><span class="label">Future:</span> Serverless DBs, better multi-region consistency, HTAP systems</div>
+                <div class="info-row what"><span class="label">What:</span> Systems of record - user profiles, catalog, orders, transactions</div>
+                <div class="info-row why"><span class="label">Why:</span> Consistent, durable storage with ACID guarantees</div>
+                <div class="info-row if-missing"><span class="label">If Missing:</span> No persistence, can't reconcile orders/payments, data loss</div>
+                <div class="info-row alternatives"><span class="label">Alternatives:</span> PostgreSQL, MySQL, MongoDB, Cassandra, DynamoDB</div>
+                <div class="info-row best-now"><span class="label">Best Now:</span> PostgreSQL for transactional data, MongoDB for flexible documents</div>
+                <div class="info-row future"><span class="label">Future:</span> Serverless DBs, better multi-region consistency, HTAP systems</div>
 
                 <button class="collapsible-btn">Database Patterns</button>
                 <div class="collapsible-content">
@@ -595,12 +780,12 @@ flowchart LR
 
             <div class="component-card">
                 <h4>7. Cache (Redis)</h4>
-                <div class="what"><span class="label">What:</span> In-memory store for hot data (catalog, sessions, rate limit counters)</div>
-                <div class="why"><span class="label">Why:</span> Reduce DB load, sub-millisecond latency for frequent reads</div>
-                <div class="if-missing"><span class="label">If Missing:</span> Database hot spots, higher latency for high-traffic flows</div>
-                <div class="alternatives"><span class="label">Alternatives:</span> Redis, Memcached, in-process caches (Caffeine, Guava)</div>
-                <div class="best-now"><span class="label">Best Now:</span> Redis for most web apps (data structures, persistence options)</div>
-                <div class="future"><span class="label">Future:</span> Redis-compatible high-performance engines (Dragonfly), serverless cache</div>
+                <div class="info-row what"><span class="label">What:</span> In-memory store for hot data (catalog, sessions, rate limit counters)</div>
+                <div class="info-row why"><span class="label">Why:</span> Reduce DB load, sub-millisecond latency for frequent reads</div>
+                <div class="info-row if-missing"><span class="label">If Missing:</span> Database hot spots, higher latency for high-traffic flows</div>
+                <div class="info-row alternatives"><span class="label">Alternatives:</span> Redis, Memcached, in-process caches (Caffeine, Guava)</div>
+                <div class="info-row best-now"><span class="label">Best Now:</span> Redis for most web apps (data structures, persistence options)</div>
+                <div class="info-row future"><span class="label">Future:</span> Redis-compatible high-performance engines (Dragonfly), serverless cache</div>
 
                 <button class="collapsible-btn">Caching Patterns</button>
                 <div class="collapsible-content">
@@ -623,12 +808,12 @@ flowchart LR
 
             <div class="component-card">
                 <h4>8. Message Queue</h4>
-                <div class="what"><span class="label">What:</span> Durable async pipeline for events (order placed, payment processed)</div>
-                <div class="why"><span class="label">Why:</span> Decouple producers/consumers, handle traffic spikes, ensure delivery</div>
-                <div class="if-missing"><span class="label">If Missing:</span> Synchronous flows everywhere, user-facing latency spikes, lost events</div>
-                <div class="alternatives"><span class="label">Alternatives:</span> RabbitMQ, Kafka, SQS, Redis Streams</div>
-                <div class="best-now"><span class="label">Best Now:</span> Kafka for high-throughput event streams, RabbitMQ/SQS for task queues</div>
-                <div class="future"><span class="label">Future:</span> Unified event mesh, more exactly-once semantics, better observability</div>
+                <div class="info-row what"><span class="label">What:</span> Durable async pipeline for events (order placed, payment processed)</div>
+                <div class="info-row why"><span class="label">Why:</span> Decouple producers/consumers, handle traffic spikes, ensure delivery</div>
+                <div class="info-row if-missing"><span class="label">If Missing:</span> Synchronous flows everywhere, user-facing latency spikes, lost events</div>
+                <div class="info-row alternatives"><span class="label">Alternatives:</span> RabbitMQ, Kafka, SQS, Redis Streams</div>
+                <div class="info-row best-now"><span class="label">Best Now:</span> Kafka for high-throughput event streams, RabbitMQ/SQS for task queues</div>
+                <div class="info-row future"><span class="label">Future:</span> Unified event mesh, more exactly-once semantics, better observability</div>
 
                 <div class="real-example">
                     <h5>Real Example: Swiggy Order Flow</h5>
@@ -645,12 +830,12 @@ flowchart LR
 
             <div class="component-card">
                 <h4>9. Background Workers</h4>
-                <div class="what"><span class="label">What:</span> Processes that consume queue jobs: send emails, process payments, update inventory</div>
-                <div class="why"><span class="label">Why:</span> Keep request/response fast; handle retries and backoffs gracefully</div>
-                <div class="if-missing"><span class="label">If Missing:</span> You'd block user requests doing slow work, poor user experience</div>
-                <div class="alternatives"><span class="label">Alternatives:</span> Celery, Sidekiq, custom consumers, Lambda triggered from queues</div>
-                <div class="best-now"><span class="label">Best Now:</span> Language-native workers (Celery for Python, Sidekiq for Ruby) + managed queues</div>
-                <div class="future"><span class="label">Future:</span> More serverless event handlers, autoscaling based on queue lag</div>
+                <div class="info-row what"><span class="label">What:</span> Processes that consume queue jobs: send emails, process payments, update inventory</div>
+                <div class="info-row why"><span class="label">Why:</span> Keep request/response fast; handle retries and backoffs gracefully</div>
+                <div class="info-row if-missing"><span class="label">If Missing:</span> You'd block user requests doing slow work, poor user experience</div>
+                <div class="info-row alternatives"><span class="label">Alternatives:</span> Celery, Sidekiq, custom consumers, Lambda triggered from queues</div>
+                <div class="info-row best-now"><span class="label">Best Now:</span> Language-native workers (Celery for Python, Sidekiq for Ruby) + managed queues</div>
+                <div class="info-row future"><span class="label">Future:</span> More serverless event handlers, autoscaling based on queue lag</div>
 
                 <div class="tech-stack">
                     <span class="tech-tag">Celery</span>
@@ -662,12 +847,12 @@ flowchart LR
 
             <div class="component-card">
                 <h4>10. Observability</h4>
-                <div class="what"><span class="label">What:</span> Metrics (Prometheus), Logs (ELK), Traces (Jaeger) - the three pillars</div>
-                <div class="why"><span class="label">Why:</span> Debug production issues, capacity planning, SLO tracking</div>
-                <div class="if-missing"><span class="label">If Missing:</span> Blind in production, MTTR explodes, can't identify bottlenecks</div>
-                <div class="alternatives"><span class="label">Alternatives:</span> Datadog, New Relic, OpenTelemetry stack, Grafana Cloud</div>
-                <div class="best-now"><span class="label">Best Now:</span> OpenTelemetry + managed observability (Datadog/Grafana Cloud)</div>
-                <div class="future"><span class="label">Future:</span> AI-assisted incident detection, automated remediation playbooks</div>
+                <div class="info-row what"><span class="label">What:</span> Metrics (Prometheus), Logs (ELK), Traces (Jaeger) - the three pillars</div>
+                <div class="info-row why"><span class="label">Why:</span> Debug production issues, capacity planning, SLO tracking</div>
+                <div class="info-row if-missing"><span class="label">If Missing:</span> Blind in production, MTTR explodes, can't identify bottlenecks</div>
+                <div class="info-row alternatives"><span class="label">Alternatives:</span> Datadog, New Relic, OpenTelemetry stack, Grafana Cloud</div>
+                <div class="info-row best-now"><span class="label">Best Now:</span> OpenTelemetry + managed observability (Datadog/Grafana Cloud)</div>
+                <div class="info-row future"><span class="label">Future:</span> AI-assisted incident detection, automated remediation playbooks</div>
 
                 <div class="tech-stack">
                     <span class="tech-tag">Prometheus</span>
@@ -705,23 +890,7 @@ flowchart LR
     </aside>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <script>
-    mermaid.initialize({
-        startOnLoad: true,
-        theme: 'base',
-        themeVariables: {
-            primaryColor: '#3b82f6',
-            primaryTextColor: '#1e293b',
-            primaryBorderColor: '#3b82f6',
-            lineColor: '#475569',
-            secondaryColor: '#8b5cf6',
-            tertiaryColor: '#10b981',
-            fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
-            fontSize: '13px'
-        }
-    });
-
     // Collapsible functionality
     document.querySelectorAll('.collapsible-btn').forEach(btn => {
         btn.addEventListener('click', function() {
