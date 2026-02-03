@@ -256,8 +256,7 @@ services:
     image: dsalgo-learn-platform:dev
     container_name: dsalgo-learn-dev
     labels:
-      - "cloudflare:learn.arvaibhav.cloud:8080"
-      - "cloudflare:learn-api.arvaibhav.cloud:8080"
+      - "cloudflare.hostname: learn.arvaibhav.cloud"
     # No dependencies - app starts immediately and handles service connections gracefully
     # Services (Postgres, Redis, Elasticsearch) are available but app doesn't wait for them
     ports:
