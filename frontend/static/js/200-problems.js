@@ -11785,10 +11785,43 @@
             });
         });
 
-        // Wait for all scripts to load
+        // Wait for main problem scripts to load
         if (loadPromises.length > 0) {
             await Promise.all(loadPromises);
-            // Small delay to ensure scripts execute
+            await new Promise(function(r) { setTimeout(r, 100); });
+        }
+
+        // Second pass: load similar problem JS files
+        var similarPromises = [];
+        if (window.ProblemRenderer && window.ProblemRenderer._problems) {
+            Object.keys(window.ProblemRenderer._problems).forEach(function(key) {
+                var problemData = window.ProblemRenderer._problems[key];
+                if (problemData.similar && problemData.similar.length > 0) {
+                    var parts = key.split('/');
+                    var cat = parts[0];
+                    problemData.similar.forEach(function(sim) {
+                        if (!sim.id) return;
+                        var simKey = cat + '/' + sim.id;
+                        // Skip if already loaded
+                        if (window.ProblemRenderer._problems[simKey]) return;
+
+                        var promise = new Promise(function(resolve) {
+                            var script = document.createElement('script');
+                            // Similar problems are in subfolders: /static/js/problems/category/parent-id/similar-id.js
+                            script.src = '/static/js/problems/' + cat + '/' + sim.id + '.js';
+                            script.onload = function() { resolve(); };
+                            script.onerror = function() { resolve(); };
+                            document.head.appendChild(script);
+                        });
+                        similarPromises.push(promise);
+                    });
+                }
+            });
+        }
+
+        // Wait for similar problem scripts to load
+        if (similarPromises.length > 0) {
+            await Promise.all(similarPromises);
             await new Promise(function(r) { setTimeout(r, 100); });
         }
     }
@@ -11883,7 +11916,23 @@
                     if (fullProblemData && fullProblemData.similar && fullProblemData.similar.length > 0) {
                         for (var k = 0; k < fullProblemData.similar.length; k++) {
                             var sim = fullProblemData.similar[k];
-                            content += renderProblemClean(sim, null, qNum, k + 1, true);
+                            // Try to get full data for similar problem too
+                            var simFullData = null;
+                            if (sim.id && window.ProblemRenderer && window.ProblemRenderer._problems) {
+                                // Try same category first
+                                simFullData = window.ProblemRenderer._problems[cat + '/' + sim.id];
+                                // If not found, search all categories
+                                if (!simFullData) {
+                                    var allKeys = Object.keys(window.ProblemRenderer._problems);
+                                    for (var m = 0; m < allKeys.length; m++) {
+                                        if (allKeys[m].endsWith('/' + sim.id)) {
+                                            simFullData = window.ProblemRenderer._problems[allKeys[m]];
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            content += renderProblemClean(sim, simFullData, qNum, k + 1, true);
                         }
                     }
                 }
@@ -11918,34 +11967,41 @@
         }
         html += '</div>';
 
-        // Description and I/O from fullData (if available)
-        if (fullData) {
-            if (fullData.description) {
-                var desc = fullData.description;
-                if (desc.length > 180) desc = desc.substring(0, 180) + '...';
-                html += '<div class="p-desc">' + escapeHtml(desc) + '</div>';
-            }
+        // Description and I/O - check fullData first, then problem object itself
+        var dataSource = fullData || problem;
+        var hasContent = false;
 
-            if (fullData.examples && fullData.examples.length > 0) {
-                var maxEx = Math.min(fullData.examples.length, 3);
-                for (var i = 0; i < maxEx; i++) {
-                    var ex = fullData.examples[i];
-                    var inp = typeof ex.input === 'object' ? JSON.stringify(ex.input) : String(ex.input);
-                    var out = typeof ex.output === 'object' ? JSON.stringify(ex.output) : String(ex.output);
-                    if (inp.length > 100) inp = inp.substring(0, 100) + '...';
-                    if (out.length > 60) out = out.substring(0, 60) + '...';
-                    html += '<div class="io"><b>' + (i+1) + '.</b> In: <code>' + escapeHtml(inp) + '</code> → Out: <code>' + escapeHtml(out) + '</code></div>';
-                }
-            }
+        if (dataSource.description) {
+            var desc = dataSource.description;
+            if (desc.length > 180) desc = desc.substring(0, 180) + '...';
+            html += '<div class="p-desc">' + escapeHtml(desc) + '</div>';
+            hasContent = true;
+        }
 
-            if (fullData.complexity) {
-                html += '<div class="complex">';
-                if (fullData.complexity.time) html += 'Time: ' + fullData.complexity.time + ' ';
-                if (fullData.complexity.space) html += 'Space: ' + fullData.complexity.space;
-                html += '</div>';
+        if (dataSource.examples && dataSource.examples.length > 0) {
+            var maxEx = Math.min(dataSource.examples.length, 3);
+            for (var i = 0; i < maxEx; i++) {
+                var ex = dataSource.examples[i];
+                var inp = typeof ex.input === 'object' ? JSON.stringify(ex.input) : String(ex.input);
+                var out = typeof ex.output === 'object' ? JSON.stringify(ex.output) : String(ex.output);
+                if (inp.length > 100) inp = inp.substring(0, 100) + '...';
+                if (out.length > 60) out = out.substring(0, 60) + '...';
+                html += '<div class="io"><b>' + (i+1) + '.</b> In: <code>' + escapeHtml(inp) + '</code> → Out: <code>' + escapeHtml(out) + '</code></div>';
             }
-        } else if (isSimilar) {
-            html += '<div class="p-desc" style="color:#666;font-style:italic;">Practice problem (harder variant)</div>';
+            hasContent = true;
+        }
+
+        if (dataSource.complexity) {
+            html += '<div class="complex">';
+            if (dataSource.complexity.time) html += 'Time: ' + dataSource.complexity.time + ' ';
+            if (dataSource.complexity.space) html += 'Space: ' + dataSource.complexity.space;
+            html += '</div>';
+            hasContent = true;
+        }
+
+        // Only show fallback for similar problems with no data
+        if (!hasContent && isSimilar) {
+            html += '<div class="p-desc" style="color:#666;font-style:italic;">Related practice problem</div>';
         }
 
         html += '</div>';
@@ -11989,11 +12045,9 @@
                     }
                     html += '</div></div>';
 
-                    // Code - light background
+                    // Code - light background (full code, no truncation)
                     if (approach.code) {
-                        var code = approach.code;
-                        if (code.length > 800) code = code.substring(0, 800) + '\n// ... truncated';
-                        html += '<pre>' + escapeHtml(code) + '</pre>';
+                        html += '<pre>' + escapeHtml(approach.code) + '</pre>';
                     }
 
                     html += '</div>';
