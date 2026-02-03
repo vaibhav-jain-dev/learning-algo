@@ -636,30 +636,67 @@ step_start "Health Check"
 
 print_substep "start" "Verifying container health"
 
-# Wait a bit for containers to fully start
-sleep 5
+# Health check with retry logic for containers that are still starting
+MAX_ATTEMPTS=3
+ATTEMPT=1
+HEALTH_CHECK_PASSED=false
 
-HEALTH_OUTPUT=$(run_ssh "cd $PROJECT_PATH; echo 'CONTAINERS:'; docker compose ps --format 'table {{.Name}}\t{{.Status}}\t{{.Health}}' 2>/dev/null; UNHEALTHY=\$(docker compose ps --format '{{.Health}}' 2>/dev/null | grep -c 'unhealthy' || echo '0'); RUNNING=\$(docker compose ps --format '{{.Status}}' 2>/dev/null | grep -c 'running\|Up' || echo '0'); TOTAL=\$(docker compose ps -q 2>/dev/null | wc -l); echo 'STATS:'\$RUNNING/\$TOTAL' running, '\$UNHEALTHY' unhealthy'" 2>&1)
+while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+    if [ $ATTEMPT -gt 1 ]; then
+        echo ""
+        print_substep "info" "Waiting for containers to initialize (attempt $ATTEMPT/$MAX_ATTEMPTS)..."
+        sleep 10
+    else
+        # Initial wait for containers to start
+        sleep 5
+    fi
 
-# Display container status table
-echo ""
-echo "$HEALTH_OUTPUT" | grep -A100 "^CONTAINERS:" | tail -n +2 | head -10 | while read line; do
-    if [ -n "$line" ]; then
-        echo -e "     ${DIM}$line${NC}"
+    HEALTH_OUTPUT=$(run_ssh "cd $PROJECT_PATH; echo 'CONTAINERS:'; docker compose ps --format 'table {{.Name}}\t{{.Status}}\t{{.Health}}' 2>/dev/null; UNHEALTHY=\$(docker compose ps --format '{{.Health}}' 2>/dev/null | grep -c 'unhealthy' || echo '0'); STARTING=\$(docker compose ps --format '{{.Health}}' 2>/dev/null | grep -c 'starting' || echo '0'); RUNNING=\$(docker compose ps --format '{{.Status}}' 2>/dev/null | grep -c 'running\|Up' || echo '0'); TOTAL=\$(docker compose ps -q 2>/dev/null | wc -l); echo 'STATS:'\$RUNNING/\$TOTAL' running, '\$UNHEALTHY' unhealthy, '\$STARTING' starting'" 2>&1)
+
+    # Display container status table
+    echo ""
+    echo "$HEALTH_OUTPUT" | grep -A100 "^CONTAINERS:" | tail -n +2 | head -10 | while read line; do
+        if [ -n "$line" ]; then
+            echo -e "     ${DIM}$line${NC}"
+        fi
+    done
+    echo ""
+
+    STATS=$(echo "$HEALTH_OUTPUT" | grep "^STATS:" | cut -d: -f2)
+    print_substep "info" "Status: $STATS"
+
+    # Check for explicitly unhealthy containers
+    UNHEALTHY_COUNT=$(echo "$HEALTH_OUTPUT" | grep "^STATS:" | sed 's/.*\([0-9]\+\) unhealthy.*/\1/')
+    STARTING_COUNT=$(echo "$HEALTH_OUTPUT" | grep "^STATS:" | sed 's/.*\([0-9]\+\) starting.*/\1/')
+
+    if [ "$UNHEALTHY_COUNT" = "0" ]; then
+        if [ "$STARTING_COUNT" = "0" ]; then
+            # All containers are healthy
+            print_substep "done" "All containers healthy"
+            HEALTH_CHECK_PASSED=true
+            break
+        else
+            # Some containers still starting
+            if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+                # Last attempt - proceed anyway if no unhealthy containers
+                print_substep "done" "Containers initialized (some still starting)"
+                HEALTH_CHECK_PASSED=true
+                break
+            fi
+            # Retry for starting containers
+            ATTEMPT=$((ATTEMPT + 1))
+        fi
+    else
+        # Explicitly unhealthy containers found
+        print_substep "error" "Some containers unhealthy"
+        break
     fi
 done
-echo ""
 
-STATS=$(echo "$HEALTH_OUTPUT" | grep "^STATS:" | cut -d: -f2)
-print_substep "info" "Status: $STATS"
-
-# Check if all healthy
-if echo "$HEALTH_OUTPUT" | grep -q "unhealthy"; then
-    print_substep "error" "Some containers unhealthy"
-    step_end "Health Check" "failed"
-else
-    print_substep "done" "All containers healthy"
+if [ "$HEALTH_CHECK_PASSED" = "true" ]; then
     step_end "Health Check" "success"
+else
+    step_end "Health Check" "failed"
 fi
 
 # Print final metrics summary
