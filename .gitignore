@@ -2,3 +2,4 @@
 
 # Local deployment configuration (contains secrets)
 .env.deploy
+.env.override

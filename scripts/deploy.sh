@@ -549,22 +549,61 @@ fi
 
 print_substep "start" "Synchronizing repository"
 
-# Simple git clone/update logic
-# Remove directory completely and clone fresh, or just update if git exists
-SYNC_OUTPUT=$(run_ssh "cd /projects && if [ ! -d learning-algo/.git ]; then rm -rf learning-algo 2>/dev/null; mkdir -p learning-algo; cd learning-algo; git clone $REPO_URL . 2>&1; else cd learning-algo && git fetch origin 2>&1 && git checkout $CURRENT_BRANCH 2>&1 && git reset --hard origin/$CURRENT_BRANCH 2>&1; fi; echo 'COMMIT:'\$(git rev-parse --short HEAD 2>/dev/null || echo 'unknown'); echo 'MSG:'\$(git log -1 --pretty=%B 2>/dev/null | head -1 || echo 'No message')" 2>&1)
+# Extract parent directory and repo name from PROJECT_PATH
+PROJECT_PARENT=$(dirname "$PROJECT_PATH")
+PROJECT_NAME=$(basename "$PROJECT_PATH")
 
-if echo "$SYNC_OUTPUT" | grep -q "COMMIT:"; then
+# Simple git clone/update logic
+# Clone fresh if .git doesn't exist, otherwise fetch and reset
+SYNC_OUTPUT=$(run_ssh "
+    # Ensure parent directory exists
+    mkdir -p $PROJECT_PARENT
+    cd $PROJECT_PARENT
+
+    if [ ! -d $PROJECT_NAME/.git ]; then
+        echo 'STATUS: No git repository found, cloning...'
+        rm -rf $PROJECT_NAME 2>/dev/null
+        git clone $REPO_URL $PROJECT_NAME 2>&1
+        cd $PROJECT_NAME
+    else
+        echo 'STATUS: Repository exists, updating...'
+        cd $PROJECT_NAME
+        git fetch origin 2>&1
+        git checkout $CURRENT_BRANCH 2>&1
+        git reset --hard origin/$CURRENT_BRANCH 2>&1
+    fi
+
+    # Output commit info
+    echo 'COMMIT:'\$(git rev-parse --short HEAD 2>/dev/null || echo 'unknown')
+    echo 'MSG:'\$(git log -1 --pretty=%B 2>/dev/null | head -1 || echo 'No message')
+" 2>&1)
+
+# Check sync status
+if echo "$SYNC_OUTPUT" | grep -qi "fatal\|error: "; then
+    # Show error and fail
+    echo ""
+    echo -e "     ${RED}Git sync errors:${NC}"
+    echo "$SYNC_OUTPUT" | grep -i "fatal\|error" | head -3 | while read line; do
+        echo -e "     ${DIM}$line${NC}"
+    done
+    echo ""
+    print_substep "error" "Repository sync failed"
+    step_end "Sync Code" "failed"
+    print_metrics_summary
+    exit 1
+elif echo "$SYNC_OUTPUT" | grep -q "COMMIT:"; then
     print_substep "done" "Repository synchronized"
 else
-    # Don't fail, just warn and skip
     print_substep "skip" "Repository sync skipped (will retry next deployment)"
 fi
 
-COMMIT_HASH=$(echo "$SYNC_OUTPUT" | grep "^COMMIT:" | cut -d: -f2 | head -1)
+# Extract commit info
+COMMIT_HASH=$(echo "$SYNC_OUTPUT" | grep "^COMMIT:" | cut -d: -f2 | head -1 | tr -d ' ')
 COMMIT_MSG=$(echo "$SYNC_OUTPUT" | grep "^MSG:" | cut -d: -f2- | head -1)
 
 if [ -n "$COMMIT_HASH" ] && [ "$COMMIT_HASH" != "unknown" ]; then
     print_substep "info" "Commit: $COMMIT_HASH ${COMMIT_MSG:0:50}"
+    print_substep "info" "Path: $PROJECT_PATH"
 fi
 step_end "Sync Code" "success"
 
@@ -592,7 +631,7 @@ fi
 
 step_end "Configure Env" "success"
 
-# Docker operations (Step 5) - with parallel pull/build
+# Docker operations (Step 5) - with separate progress steps
 print_step 5 $TOTAL_STEPS "Docker Operations"
 step_start "Docker Operations"
 
@@ -608,25 +647,44 @@ if [ -n "$BEFORE_STATUS" ]; then
     done
 fi
 
-DOCKER_OUTPUT=$(run_ssh "cd $PROJECT_PATH; ([ '$FORCE_RESTART' = 'true' ] && (echo 'STEP:teardown'; docker compose down --remove-orphans --timeout 30 2>&1 || true)) || true; echo 'STEP:parallel_start'; docker compose pull --ignore-pull-failures 2>&1 || true; echo 'STEP:pull_done'; echo 'STEP:up_start'; docker compose up -d --build --remove-orphans 2>&1; sleep 3; echo 'STEP:up_done'; echo 'SERVICES:'\$(docker compose ps -q 2>/dev/null | wc -l)" 2>&1)
-
-# Parse docker output and show progress
-if echo "$DOCKER_OUTPUT" | grep -q "STEP:teardown"; then
-    print_substep "done" "Containers torn down (force restart)"
+# Force restart if requested
+if [ "$FORCE_RESTART" = "true" ]; then
+    print_substep "start" "Tearing down containers"
+    run_ssh "cd $PROJECT_PATH && docker compose down --remove-orphans --timeout 30 2>&1" >/dev/null 2>&1 || true
+    print_substep "done" "Containers torn down"
 fi
 
-if echo "$DOCKER_OUTPUT" | grep -q "STEP:parallel_start"; then
-    print_substep "parallel" "Pulling images + Building containers"
+# Pull images (show progress)
+print_substep "start" "Pulling latest images"
+PULL_OUTPUT=$(run_ssh "cd $PROJECT_PATH && timeout 300 docker compose pull --ignore-pull-failures 2>&1 | tail -10" 2>&1 || echo "Pull completed with warnings")
+print_substep "done" "Images pulled"
+
+# Build and start containers (show progress)
+print_substep "start" "Building and starting containers"
+echo -e "     ${DIM}This may take a few minutes...${NC}"
+
+BUILD_OUTPUT=$(run_ssh "cd $PROJECT_PATH && timeout 600 docker compose up -d --build --remove-orphans 2>&1" 2>&1)
+
+# Check if build succeeded
+if echo "$BUILD_OUTPUT" | grep -qi "error\|failed"; then
+    # Show error details
+    echo ""
+    echo -e "     ${RED}Build errors detected:${NC}"
+    echo "$BUILD_OUTPUT" | grep -i "error\|failed" | head -5 | while read line; do
+        echo -e "     ${DIM}$line${NC}"
+    done
+    echo ""
+    print_substep "error" "Build completed with errors (continuing anyway)"
+else
+    print_substep "done" "Containers started"
 fi
 
-if echo "$DOCKER_OUTPUT" | grep -q "STEP:pull_done"; then
-    print_substep "done" "Images pulled"
-fi
+# Wait a moment for containers to initialize
+sleep 3
 
-if echo "$DOCKER_OUTPUT" | grep -q "STEP:up_done"; then
-    SERVICE_COUNT=$(echo "$DOCKER_OUTPUT" | grep "^SERVICES:" | cut -d: -f2)
-    print_substep "done" "$SERVICE_COUNT container(s) started"
-fi
+# Count running services
+SERVICE_COUNT=$(run_ssh "cd $PROJECT_PATH && docker compose ps -q 2>/dev/null | wc -l" 2>/dev/null | tr -d ' ')
+print_substep "info" "$SERVICE_COUNT service(s) running"
 
 step_end "Docker Operations" "success"
 
