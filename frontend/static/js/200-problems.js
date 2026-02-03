@@ -11799,98 +11799,98 @@
             <head>
                 <title>200 Must Solve Problems</title>
                 <style>
-                    @page { size: A4; margin: 10mm; }
-                    @media print {
-                        * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
-                    }
-                    * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 9px; line-height: 1.35; color: #1e293b; margin: 0; padding: 0; }
-                    h1 { font-size: 16px; color: #0f172a; border-bottom: 2px solid #3b82f6; padding-bottom: 4px; margin: 0 0 6px 0; }
-                    h2 { font-size: 12px; color: #1e40af; margin: 8px 0 6px 0; page-break-after: avoid; }
+                    @page { size: A4; margin: 12mm 10mm; }
+                    * { box-sizing: border-box; margin: 0; padding: 0; }
+                    body { font-family: Arial, Helvetica, sans-serif; font-size: 9pt; line-height: 1.4; color: #000; }
 
-                    /* Compact problem card */
-                    .problem { margin-bottom: 6px; padding: 5px 8px; background-color: #f8fafc; border-radius: 3px; border-left: 3px solid #3b82f6; page-break-inside: avoid; }
-                    .problem-header { display: flex; align-items: center; gap: 5px; margin-bottom: 3px; flex-wrap: wrap; }
-                    .q-num { font-size: 9px; font-weight: 700; color: #1e40af; background-color: #dbeafe; padding: 1px 5px; border-radius: 2px; }
-                    .a-num { font-size: 9px; font-weight: 700; color: #166534; background-color: #dcfce7; padding: 1px 5px; border-radius: 2px; }
-                    .problem-title { font-size: 9px; font-weight: 600; color: #1e293b; }
-                    .difficulty { font-size: 7px; padding: 1px 4px; border-radius: 2px; font-weight: 600; text-transform: uppercase; }
-                    .easy { background-color: #dcfce7; color: #166534; }
-                    .medium { background-color: #fef3c7; color: #a16207; }
-                    .hard { background-color: #fee2e2; color: #b91c1c; }
-                    .very-hard { background-color: #fae8ff; color: #86198f; }
-                    .tags { font-size: 7px; color: #64748b; }
+                    /* Title */
+                    .main-title { font-size: 14pt; font-weight: bold; margin-bottom: 4px; }
+                    .subtitle { font-size: 8pt; color: #666; margin-bottom: 10px; }
 
-                    /* Description */
-                    .desc { font-size: 8px; color: #475569; margin: 3px 0; line-height: 1.3; }
+                    /* Category */
+                    .category { font-size: 11pt; font-weight: bold; color: #1a56db; border-bottom: 1px solid #1a56db; padding: 4px 0; margin: 12px 0 8px 0; page-break-after: avoid; }
 
-                    /* Compact I/O boxes */
-                    .examples-container { margin: 3px 0; }
-                    .io-box { background-color: #ffffff; padding: 2px 5px; border-radius: 2px; font-size: 7px; margin: 1px 0; border: 1px solid #e2e8f0; }
-                    .io-num { font-weight: 700; color: #3b82f6; }
-                    .io-label { font-weight: 600; color: #64748b; }
-                    .io-arrow { color: #3b82f6; font-weight: bold; }
-                    .io-box code { background-color: #f1f5f9; padding: 0px 2px; border-radius: 1px; font-family: 'SF Mono', Consolas, monospace; font-size: 7px; }
+                    /* Problem */
+                    .problem { margin: 6px 0; padding: 4px 0; border-bottom: 1px dotted #ccc; page-break-inside: avoid; }
+                    .problem:last-child { border-bottom: none; }
+                    .p-header { margin-bottom: 3px; }
+                    .p-num { font-weight: bold; color: #1a56db; }
+                    .p-title { font-weight: 600; }
+                    .p-diff { font-size: 7pt; padding: 1px 4px; border-radius: 2px; margin-left: 4px; }
+                    .p-diff.easy { background: #d1fae5; color: #065f46; }
+                    .p-diff.medium { background: #fef3c7; color: #92400e; }
+                    .p-diff.hard { background: #fee2e2; color: #991b1b; }
+                    .p-tags { font-size: 7pt; color: #666; margin-left: 6px; }
+                    .p-desc { font-size: 8pt; color: #333; margin: 2px 0; }
 
-                    /* Complexity inline */
-                    .complexity { font-size: 7px; color: #64748b; display: flex; gap: 8px; margin-top: 2px; }
-                    .complexity span { background-color: #f1f5f9; padding: 1px 3px; border-radius: 2px; }
+                    /* I/O Examples */
+                    .io { font-size: 7pt; margin: 2px 0; padding: 2px 4px; background: #f9fafb; border-left: 2px solid #ddd; }
+                    .io code { font-family: Consolas, monospace; font-size: 7pt; }
 
-                    /* Solutions - with page break */
-                    .solution-section { margin: 4px 0; page-break-before: auto; }
-                    .solution-header { display: flex; align-items: center; gap: 5px; margin-bottom: 3px; page-break-after: avoid; }
-                    .solution-title { font-size: 9px; font-weight: 600; color: #374151; }
-                    .approach { margin: 3px 0; padding: 4px 6px; background-color: #ffffff; border-radius: 3px; border: 1px solid #e2e8f0; page-break-inside: avoid; }
-                    .approach-title { font-size: 8px; font-weight: 600; color: #1e293b; margin-bottom: 2px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-                    .approach-badge { font-size: 6px; padding: 1px 3px; border-radius: 2px; background-color: #dcfce7; color: #166534; }
-                    pre { background-color: #1e293b; color: #e2e8f0; padding: 4px; border-radius: 2px; font-family: 'SF Mono', Consolas, monospace; font-size: 7px; overflow-x: auto; white-space: pre-wrap; margin: 3px 0; }
+                    /* Complexity */
+                    .complex { font-size: 7pt; color: #666; }
 
-                    /* Explanation grid - compact */
-                    .explanation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin: 3px 0; }
-                    .explanation-item { padding: 3px 5px; background-color: #f8fafc; border-radius: 2px; border-left: 2px solid #3b82f6; }
-                    .explanation-label { font-size: 6px; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 1px; }
-                    .explanation-content { font-size: 7px; color: #374151; line-height: 1.25; }
+                    /* Similar problems */
+                    .similar { margin-left: 12px; padding: 3px 0; }
+                    .similar .p-num { color: #6b7280; }
 
-                    /* Category header */
-                    .category-header { background-color: #3b82f6; color: white; padding: 6px 10px; border-radius: 3px; margin: 8px 0 6px 0; page-break-after: avoid; }
-                    .category-header h2 { color: white; border: none; margin: 0; padding: 0; font-size: 11px; }
+                    /* Solutions */
+                    .sol-section { margin: 8px 0; page-break-inside: avoid; }
+                    .sol-header { font-weight: bold; color: #059669; margin-bottom: 4px; }
+                    .approach { margin: 4px 0; padding: 4px; border: 1px solid #e5e7eb; border-radius: 3px; page-break-inside: avoid; }
+                    .app-title { font-weight: 600; font-size: 8pt; margin-bottom: 2px; }
+                    .app-badge { font-size: 6pt; background: #d1fae5; color: #065f46; padding: 0 3px; border-radius: 2px; }
 
-                    .alt-problem { margin-left: 10px; border-left-color: #94a3b8; padding: 4px 6px; background-color: #f1f5f9; }
+                    /* Explanation boxes - 2 column */
+                    .exp-grid { display: table; width: 100%; margin: 3px 0; }
+                    .exp-row { display: table-row; }
+                    .exp-item { display: table-cell; width: 50%; padding: 2px 4px; font-size: 7pt; vertical-align: top; border-left: 2px solid #ddd; }
+                    .exp-label { font-weight: bold; font-size: 6pt; color: #666; text-transform: uppercase; }
+                    .exp-content { color: #333; }
+
+                    /* Code - light background for printing */
+                    pre { font-family: Consolas, monospace; font-size: 7pt; background: #f8f9fa; border: 1px solid #e5e7eb; padding: 4px; margin: 3px 0; white-space: pre-wrap; word-wrap: break-word; }
+
                     .page-break { page-break-before: always; }
-                    hr { border: none; border-top: 1px dashed #e2e8f0; margin: 6px 0; }
                 </style>
             </head>
             <body>
-                <h1>200 Must Solve Problems</h1>
-                <p style="color:#64748b;font-size:8px;margin:0 0 8px 0;">Comprehensive problem collection with solutions and explanations</p>
+                <div class="main-title">200 Must Solve Problems</div>
+                <div class="subtitle">Algorithm problems with solutions and explanations</div>
         `;
 
         for (var i = 0; i < categories.length; i++) {
             var cat = categories[i];
             var problems = problemsData[cat];
 
-            content += `<div class="category-header"><h2>${formatCategoryName(cat)}</h2></div>`;
+            content += '<div class="category">' + formatCategoryName(cat) + '</div>';
 
             for (var j = 0; j < problems.length; j++) {
                 var problem = problems[j];
-                var qNum = j + 1; // Q1, Q2, Q3...
+                var qNum = j + 1;
+
+                // Get full problem data from ProblemRenderer (includes similar)
+                var problemKey = cat + '/' + problem.id;
+                var fullProblemData = null;
+                if (window.ProblemRenderer && window.ProblemRenderer._problems) {
+                    fullProblemData = window.ProblemRenderer._problems[problemKey];
+                }
 
                 if (includeProblems) {
-                    content += await renderProblemForPDF(cat, problem, false, null, qNum, null);
+                    content += renderProblemClean(problem, fullProblemData, qNum, null, false);
 
-                    // Include similar/alternative problems (Q1.1, Q1.2, Q1.3...)
-                    if (problem.similar && problem.similar.length > 0) {
-                        for (var k = 0; k < problem.similar.length; k++) {
-                            content += await renderProblemForPDF(cat, problem, true, k, qNum, k + 1);
+                    // Include similar problems from ProblemRenderer data
+                    if (fullProblemData && fullProblemData.similar && fullProblemData.similar.length > 0) {
+                        for (var k = 0; k < fullProblemData.similar.length; k++) {
+                            var sim = fullProblemData.similar[k];
+                            content += renderProblemClean(sim, null, qNum, k + 1, true);
                         }
                     }
                 }
 
                 if (includeSolutions) {
-                    content += await renderSolutionForPDF(cat, problem, qNum);
+                    content += await renderSolutionClean(cat, problem, qNum);
                 }
-
-                content += '<hr style="border:none;border-top:1px dashed #e2e8f0;margin:8px 0;">';
             }
 
             if (i < categories.length - 1) {
@@ -11900,6 +11900,111 @@
 
         content += '</body></html>';
         return content;
+    }
+
+    // Clean problem renderer for PDF
+    function renderProblemClean(problem, fullData, qNum, subNum, isSimilar) {
+        var qLabel = 'Q' + qNum + (subNum ? '.' + subNum : '');
+        var html = '<div class="problem' + (isSimilar ? ' similar' : '') + '">';
+
+        // Header: Q1 Problem Name [EASY] Tags
+        html += '<div class="p-header">';
+        html += '<span class="p-num">' + qLabel + '</span> ';
+        html += '<span class="p-title">' + escapeHtml(problem.name) + '</span>';
+        var diff = problem.difficulty || 'medium';
+        html += '<span class="p-diff ' + diff.toLowerCase() + '">' + diff.toUpperCase() + '</span>';
+        if (problem.tags && !isSimilar) {
+            html += '<span class="p-tags">' + problem.tags.join(', ') + '</span>';
+        }
+        html += '</div>';
+
+        // Description and I/O from fullData (if available)
+        if (fullData) {
+            if (fullData.description) {
+                var desc = fullData.description;
+                if (desc.length > 180) desc = desc.substring(0, 180) + '...';
+                html += '<div class="p-desc">' + escapeHtml(desc) + '</div>';
+            }
+
+            if (fullData.examples && fullData.examples.length > 0) {
+                var maxEx = Math.min(fullData.examples.length, 3);
+                for (var i = 0; i < maxEx; i++) {
+                    var ex = fullData.examples[i];
+                    var inp = typeof ex.input === 'object' ? JSON.stringify(ex.input) : String(ex.input);
+                    var out = typeof ex.output === 'object' ? JSON.stringify(ex.output) : String(ex.output);
+                    if (inp.length > 100) inp = inp.substring(0, 100) + '...';
+                    if (out.length > 60) out = out.substring(0, 60) + '...';
+                    html += '<div class="io"><b>' + (i+1) + '.</b> In: <code>' + escapeHtml(inp) + '</code> → Out: <code>' + escapeHtml(out) + '</code></div>';
+                }
+            }
+
+            if (fullData.complexity) {
+                html += '<div class="complex">';
+                if (fullData.complexity.time) html += 'Time: ' + fullData.complexity.time + ' ';
+                if (fullData.complexity.space) html += 'Space: ' + fullData.complexity.space;
+                html += '</div>';
+            }
+        } else if (isSimilar) {
+            html += '<div class="p-desc" style="color:#666;font-style:italic;">Practice problem (harder variant)</div>';
+        }
+
+        html += '</div>';
+        return html;
+    }
+
+    // Clean solution renderer for PDF
+    async function renderSolutionClean(category, problem, qNum) {
+        var aLabel = 'A' + qNum;
+        var html = '<div class="sol-section">';
+        html += '<div class="sol-header">' + aLabel + ' Solutions: ' + escapeHtml(problem.name) + '</div>';
+
+        try {
+            var basePath = '/problems/200-must-solve/' + category + '/' + problem.id;
+            var pyResponse = await fetch(basePath + '/python_code.py');
+            var pythonCode = pyResponse.ok ? await pyResponse.text() : '';
+
+            if (pythonCode) {
+                var approaches = parseApproaches(pythonCode, 'python');
+
+                for (var idx = 0; idx < approaches.length; idx++) {
+                    var approach = approaches[idx];
+                    var appLabel = aLabel + '.' + String.fromCharCode(97 + idx);  // a, b, c, etc.
+
+                    html += '<div class="approach">';
+                    html += '<div class="app-title">';
+                    html += '<span>' + appLabel + ' ' + escapeHtml(approach.title) + '</span>';
+                    if (approach.isRecommended) {
+                        html += ' <span class="app-badge">BEST</span>';
+                    }
+                    html += '</div>';
+
+                    // 2-column explanations
+                    html += '<div class="exp-grid">';
+                    html += '<div class="exp-row">';
+                    if (approach.timeComplexity) {
+                        html += '<div class="exp-item"><div class="exp-label">Time</div><div class="exp-content">' + escapeHtml(approach.timeComplexity) + '</div></div>';
+                    }
+                    if (approach.spaceComplexity) {
+                        html += '<div class="exp-item"><div class="exp-label">Space</div><div class="exp-content">' + escapeHtml(approach.spaceComplexity) + '</div></div>';
+                    }
+                    html += '</div></div>';
+
+                    // Code - light background
+                    if (approach.code) {
+                        var code = approach.code;
+                        if (code.length > 800) code = code.substring(0, 800) + '\n// ... truncated';
+                        html += '<pre>' + escapeHtml(code) + '</pre>';
+                    }
+
+                    html += '</div>';
+                }
+            }
+        } catch (e) {
+            html += '<div style="color:#666;font-size:7pt;">Solution not available</div>';
+        }
+
+        html += '</div>';
+        return html;
     }
 
     function formatCategoryName(cat) {
@@ -12017,7 +12122,7 @@
 
                 if (approaches.length > 0) {
                     approaches.forEach(function(approach, idx) {
-                        var approachLabel = aLabel + '.' + (idx + 1);
+                        var approachLabel = aLabel + '.' + String.fromCharCode(97 + idx);  // a, b, c, etc.
                         html += '<div class="approach">';
                         html += '<div class="approach-title">';
                         html += '<span class="a-num" style="font-size:8px;padding:1px 4px;">' + approachLabel + '</span>';
