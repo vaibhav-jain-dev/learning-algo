@@ -367,7 +367,7 @@ button:focus-visible,
 /* Global mobile text wrapping fix */
 @media screen and (max-width: 768px) {
     /* Force text wrapping everywhere */
-    html, body, .main, .page-main, .page-layout {
+    html, body, .main, .page-main, .page-layout, .detail-layout, .detail-main, .topic-content {
         overflow-x: hidden !important;
         max-width: 100vw !important;
         width: 100% !important;
@@ -395,6 +395,36 @@ button:focus-visible,
     li {
         word-break: break-word !important;
         white-space: normal !important;
+    }
+
+    /* === FORCE ALL GRIDS TO SINGLE COLUMN === */
+    .topic-content [style*="grid-template-columns"],
+    .topic-content [style*="display: grid"],
+    .topic-content [style*="display:grid"],
+    .detail-main [style*="grid-template-columns"],
+    [style*="grid-template-columns: 1fr 1fr"],
+    [style*="grid-template-columns: repeat"],
+    [style*="grid-template-columns:1fr 1fr"],
+    [style*="grid-template-columns:repeat"] {
+        display: block !important;
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Force flex containers to wrap and stack */
+    .topic-content [style*="display: flex"],
+    .topic-content [style*="display:flex"],
+    .detail-main [style*="display: flex"],
+    .detail-main [style*="display:flex"] {
+        flex-direction: column !important;
+        flex-wrap: wrap !important;
+    }
+
+    /* Make all children full width */
+    .topic-content > div,
+    .topic-content > div > div,
+    .detail-main > div > div {
+        width: 100% !important;
+        max-width: 100% !important;
     }
 
     /* === PAGE LAYOUT - MOBILE === */
