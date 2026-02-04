@@ -141,30 +141,15 @@ jobs:
     runs-on: ubuntu-latest
     needs: validate
     if: needs.validate.outputs.validation_passed == 'true'
-    env:
-      SSH_HOST: ${{ secrets.SSH_HOST || vars.SSH_HOST }}
-      SSH_USERNAME: ${{ secrets.SSH_USERNAME || vars.SSH_USERNAME }}
-      SSH_PORT: ${{ secrets.SSH_PORT || vars.SSH_PORT || '22' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Prepare ENV_VARS (base64 encode for safety)
-        id: env_vars
-        run: |
-          if [ -n "${{ secrets.ENV_VARS }}" ]; then
-            echo "ENV_VARS_B64=$(printf '%s' '${{ secrets.ENV_VARS }}' | base64 -w0)" >> $GITHUB_ENV
-            echo "has_env_vars=true" >> $GITHUB_OUTPUT
-          else
-            echo "has_env_vars=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Setup SSH
+      - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -p $SSH_PORT -H $SSH_HOST >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: Determine project path
         id: project
@@ -177,66 +162,27 @@ jobs:
           echo "path=$PROJECT_PATH" >> $GITHUB_OUTPUT
           echo "Project will be deployed to: $PROJECT_PATH"
 
-      - name: Ensure project directory exists
-        run: |
-          ssh -o BatchMode=yes \
-              -o StrictHostKeyChecking=no \
-              -i ~/.ssh/deploy_key \
-              -p $SSH_PORT \
-              $SSH_USERNAME@$SSH_HOST \
-              "mkdir -p '${{ steps.project.outputs.path }}'"
-
-      - name: Deploy ENV_FILE if present
-        if: needs.validate.outputs.has_env_file == 'true'
-        run: |
-          scp -o StrictHostKeyChecking=no \
-              -i ~/.ssh/deploy_key \
-              -P $SSH_PORT \
-              "${{ secrets.ENV_FILE }}" \
-              $SSH_USERNAME@$SSH_HOST:${{ steps.project.outputs.path }}/.env 2>/dev/null || {
-            echo "WARNING: Failed to SCP ENV_FILE to server"
-            exit 0
-          }
-
-      - name: Deploy to server via deploy.sh (single SSH session)
+      - name: Run deploy.sh locally (deploys to remote server via SSH)
         env:
+          SSH_HOST: ${{ secrets.SSH_HOST || vars.SSH_HOST }}
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME || vars.SSH_USERNAME }}
+          SSH_PORT: ${{ secrets.SSH_PORT || vars.SSH_PORT || '22' }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           PROJECT_PATH: ${{ steps.project.outputs.path }}
-          REPO_BRANCH: ${{ github.ref_name }}
           FORCE_RESTART: ${{ inputs.force_restart || 'false' }}
-          ENV_VARS_B64: ${{ env.ENV_VARS_B64 }}
+          ENV_VARS_B64: ${{ secrets.ENV_VARS }}
         run: |
-          ssh -o BatchMode=yes \
-              -o StrictHostKeyChecking=no \
-              -i ~/.ssh/deploy_key \
-              -p "$SSH_PORT" \
-              "$SSH_USERNAME@$SSH_HOST" << DEPLOY_SESSION
+          # Encode ENV_VARS to base64 if present
+          if [ -n "$ENV_VARS_B64" ]; then
+            export ENV_VARS_B64=$(printf '%s' "$ENV_VARS_B64" | base64 -w0)
+          fi
 
-          set -e
+          # Use the SSH key we created
+          export SSH_PRIVATE_KEY="$HOME/.ssh/deploy_key"
 
-          echo "=========================================="
-          echo "  GitHub Actions Deployment"
-          echo "  \$(date)"
-          echo "=========================================="
-
-          cd "$PROJECT_PATH"
-
-          # Call deploy.sh (single source of truth for ALL deployment logic)
+          # Make deploy.sh executable and run it
           chmod +x scripts/deploy.sh
-
-          echo ""
-          echo "Invoking deploy.sh (single source of truth)..."
-          echo "=========================================="
-
-          # Export SSH variables for deploy.sh to use
-          export SSH_HOST="$SSH_HOST"
-          export SSH_USERNAME="$SSH_USERNAME"
-          export SSH_PORT="$SSH_PORT"
-          export FORCE_RESTART="$FORCE_RESTART"
-          export ENV_VARS_B64="$ENV_VARS_B64"
-
           ./scripts/deploy.sh
-
-          DEPLOY_SESSION
 
       - name: Cleanup SSH key
         if: always()
