@@ -15,7 +15,7 @@
 #   - ENV_VARS: Environment variables (optional, base64 encoded for safety)
 
 name: Deploy Docker Compose
-run-name: "Deploy: ${{ github.event.head_commit.message }}"
+run-name: "Deploy ${{ github.ref_name }}"
 
 on:
   # Automatic deployment on push to master
@@ -187,6 +187,16 @@ jobs:
           # Run deploy.sh and capture output
           ./scripts/deploy.sh | tee /tmp/deploy_output.txt
 
+          # Get the actual feature commit message (skip merge commits)
+          COMMIT_MSG=$(git log -1 --no-merges --pretty=format:"%s")
+          COMMIT_SHA=$(git log -1 --no-merges --pretty=format:"%h")
+
+          # Write to job summary
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`$COMMIT_SHA\` - $COMMIT_MSG" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
           # Extract metrics and write to job summary
           echo "## Deployment Metrics" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -198,9 +208,14 @@ jobs:
 
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Extract deployment info
-          DEPLOYED_INFO=$(grep "Deployed:" /tmp/deploy_output.txt | sed 's/\x1b\[[0-9;]*m//g')
-          echo "$DEPLOYED_INFO" >> $GITHUB_STEP_SUMMARY
+          # Extract application URLs if present
+          if grep -q "Application URLs:" /tmp/deploy_output.txt; then
+            echo "## Application URLs" >> $GITHUB_STEP_SUMMARY
+            sed -n '/Application URLs:/,/Deployed:/p' /tmp/deploy_output.txt | \
+              grep "https://" | \
+              sed 's/\x1b\[[0-9;]*m//g' >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
 
       - name: Cleanup SSH key
         if: always()
