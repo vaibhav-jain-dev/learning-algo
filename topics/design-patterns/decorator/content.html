@@ -661,34 +661,6 @@ return self._cached_result
 <p>See also: <a href="/topic/design-patterns/composite">[Composite Pattern]</a> for flattening hierarchies.</p>
 <hr />
 <h2 id="section-3-io-streams---the-classic-decorator-application">Section 3: I/O Streams - The Classic Decorator Application</h2>
-<h3 id="javas-io-design-philosophy">Java's I/O Design Philosophy</h3>
-<p>Java's <code>java.io</code> package is the canonical real-world Decorator implementation. The design enables mixing and matching stream behaviors:</p>
-<div style="display: flex; flex-direction: column; gap: 0.5rem; margin: 2rem 0; font-family: monospace; font-size: 0.9rem">
-<div style="display: flex; align-items: center; gap: 1rem">
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 0.75rem 1.5rem; border-radius: 8px; color: white; min-width: 200px; text-align: center">InputStream</div>
-<div style="color: #888; flex: 1">Abstract component - defines read(), close(), available()</div>
-</div>
-<div style="display: flex; align-items: center; gap: 1rem; padding-left: 2rem">
-<div style="width: 2px; height: 20px; background: #667eea"></div>
-</div>
-<div style="display: flex; align-items: center; gap: 1rem; padding-left: 2rem">
-<div style="background: #1e3a5f;padding: 0.75rem 1.5rem; border-radius: 8px; color: #4ecdc4; min-width: 200px; text-align: center">FileInputStream</div>
-<div style="color: #888; flex: 1">Concrete component - reads from file</div>
-</div>
-<div style="display: flex; align-items: center; gap: 1rem; padding-left: 2rem">
-<div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 0.75rem 1.5rem; border-radius: 8px; color: white; min-width: 200px; text-align: center">FilterInputStream</div>
-<div style="color: #888; flex: 1">Abstract decorator base - wraps any InputStream</div>
-</div>
-<div style="display: flex; align-items: center; gap: 1rem; padding-left: 4rem">
-<div style="width: 2px; height: 20px; background: #38ef7d"></div>
-</div>
-<div style="display: flex; flex-wrap: wrap; gap: 0.75rem; padding-left: 4rem">
-<div style="background: #1a1a2e;padding: 0.5rem 1rem; border-radius: 6px; color: #f093fb">BufferedInputStream</div>
-<div style="background: #1a1a2e;padding: 0.5rem 1rem; border-radius: 6px; color: #ffd93d">DataInputStream</div>
-<div style="background: #1a1a2e;padding: 0.5rem 1rem; border-radius: 6px; color: #74b9ff">GZIPInputStream</div>
-<div style="background: #1a1a2e;padding: 0.5rem 1rem; border-radius: 6px; color: #a29bfe">CipherInputStream</div>
-</div>
-</div>
 <h3 id="python-implementation-with-real-world-concerns">Python Implementation with Real-World Concerns</h3>
 <pre><code class="language-python">from abc import ABC, abstractmethod
 from typing import Optional, Iterator
@@ -1014,17 +986,17 @@ return progress, hashing
 # print(f&quot;\nFile hash: {hasher.get_hash()}&quot;)</code></pre>
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
 <h4 style="color: #e94560; margin: 0 0 0.75rem 0">Resource Management Warning</h4>
-<p style="color: #eee; margin: 0; line-height: 1.6">Stream decorators MUST propagate <code>close()</code> calls down the chain. Failure to do so causes resource leaks (file handles, network connections). In languages without deterministic destruction, always use try-finally or context managers. Java's try-with-resources and Python's context managers are designed specifically for this pattern.</p>
+<p style="color: #eee; margin: 0; line-height: 1.6">Stream decorators MUST propagate <code>close()</code> calls down the chain. Failure to do so causes resource leaks (file handles, network connections). In languages without deterministic destruction, always use try-finally or context managers. Python's context managers and Go's defer are designed specifically for this pattern.</p>
 </div>
 <h3 id="interview-questions---level-1-foundation-2">Interview Questions - Level 1 (Foundation)</h3>
-<p><strong>Q1.1: Why does Java use <code>FilterInputStream</code> as the decorator base instead of just extending <code>InputStream</code>?</strong></p>
-<p><em>Expected Answer:</em> <code>FilterInputStream</code> provides default delegation behavior, reducing boilerplate. Each concrete decorator only overrides methods it modifies. Without it, every decorator would need to implement all ~10 InputStream methods with delegation code.</p>
-<p><strong>Q1.2: What happens if you forget to close a BufferedOutputStream in Java?</strong></p>
-<p><em>Expected Answer:</em> Data remaining in the buffer is lost. The buffer may not be flushed to the underlying stream, causing incomplete writes. This is why <code>flush()</code> must be called before <code>close()</code>, and why try-with-resources is essential.</p>
+<p><strong>Q1.1: Why do stream decorators need a base decorator class instead of just extending the component interface?</strong></p>
+<p><em>Expected Answer:</em> A base decorator class provides default delegation behavior, reducing boilerplate. Each concrete decorator only overrides methods it modifies. Without it, every decorator would need to implement all interface methods with delegation code, which is error-prone and verbose.</p>
+<p><strong>Q1.2: What happens if you forget to close a buffered output stream?</strong></p>
+<p><em>Expected Answer:</em> Data remaining in the buffer is lost. The buffer may not be flushed to the underlying stream, causing incomplete writes. This is why <code>flush()</code> must be called before <code>close()</code>, and why using context managers (Python's <code>with</code> statement) or defer (Go) is essential.</p>
 <h3 id="interview-questions---level-2-mechanics-2">Interview Questions - Level 2 (Mechanics)</h3>
-<p><strong>Q2.1: How does <code>BufferedInputStream.mark()</code> and <code>reset()</code> work with decorator chaining?</strong></p>
-<p><em>Expected Answer:</em> <code>BufferedInputStream</code> overrides <code>mark()</code> to remember position in its buffer and <code>reset()</code> to return to that position. However, it can only reset within the buffer bounds. If you read past the <code>markLimit</code>, the mark becomes invalid.</p>
-<p>The complexity: if another decorator wraps BufferedInputStream, mark/reset semantics depend entirely on BufferedInputStream's buffer - outer decorators can't extend the mark capability.</p>
+<p><strong>Q2.1: How does buffered stream <code>mark()</code> and <code>reset()</code> work with decorator chaining?</strong></p>
+<p><em>Expected Answer:</em> A buffered stream decorator overrides <code>mark()</code> to remember position in its buffer and <code>reset()</code> to return to that position. However, it can only reset within the buffer bounds. If you read past the <code>markLimit</code>, the mark becomes invalid.</p>
+<p>The complexity: if another decorator wraps the buffered stream, mark/reset semantics depend entirely on the buffer decorator's buffer - outer decorators can't extend the mark capability.</p>
 <p><strong>Q2.2: Design a decorator that limits total bytes read (quota enforcement). What edge cases must you handle?</strong></p>
 <p><em>Expected Answer:</em><br />
 ```python<br />
@@ -1436,7 +1408,7 @@ next(); // Continue to next middleware
 <p><strong>Q1.1: What's the difference between middleware and filters?</strong></p>
 <p><em>Expected Answer:</em> Functionally similar, naming varies by framework:<br />
 - <strong>Middleware</strong> (Express, Koa, Go): Wraps handlers, controls whether to call next<br />
-- <strong>Filters</strong> (Java Servlet, Spring): Same concept, filter chain pattern<br />
+- <strong>Filters</strong> (Django, Flask): Same concept, filter chain pattern<br />
 - <strong>Interceptors</strong> (Angular, NestJS): Often split into pre/post phases explicitly</p>
 <p>All implement the Decorator pattern for HTTP request/response processing.</p>
 <p><strong>Q1.2: Why do most frameworks apply middleware in definition order but decorators wrap inside-out?</strong></p>
@@ -1450,7 +1422,7 @@ next(); // Continue to next middleware
 <ol>
 <li><strong>Context (Go)</strong>: <code>context.WithValue()</code> - type-safe, immutable chain</li>
 <li><strong>Locals (Express)</strong>: <code>res.locals</code> - mutable, scoped to request</li>
-<li><strong>Request attributes (Java)</strong>: <code>request.setAttribute()</code> - standard servlet API</li>
+<li><strong>Request context (Python/Django)</strong>: <code>request.META</code> or custom attributes</li>
 <li><strong>AsyncLocalStorage (Node.js)</strong>: Thread-local-like storage for async</li>
 </ol>
 <p>Go's context is considered cleanest due to immutability and explicit propagation.</p>
