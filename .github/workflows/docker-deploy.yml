@@ -15,6 +15,7 @@
 #   - ENV_VARS: Environment variables (optional, base64 encoded for safety)
 
 name: Deploy Docker Compose
+run-name: Deploy to ${{ github.ref_name }} by @${{ github.actor }}
 
 on:
   # Automatic deployment on push to master
