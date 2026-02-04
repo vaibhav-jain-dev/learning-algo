@@ -733,7 +733,7 @@ while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
         sleep 5
     fi
 
-    HEALTH_OUTPUT=$(run_ssh "cd $PROJECT_PATH; echo 'CONTAINERS:'; docker compose ps --format 'table {{.Name}}\t{{.Status}}\t{{.Health}}' 2>/dev/null; UNHEALTHY=\$(docker compose ps --format '{{.Health}}' 2>/dev/null | grep -c 'unhealthy' || echo '0'); STARTING=\$(docker compose ps --format '{{.Health}}' 2>/dev/null | grep -c 'starting' || echo '0'); RUNNING=\$(docker compose ps --format '{{.Status}}' 2>/dev/null | grep -c 'running\|Up' || echo '0'); TOTAL=\$(docker compose ps -q 2>/dev/null | wc -l); echo 'STATS:'\$RUNNING/\$TOTAL' running, '\$UNHEALTHY' unhealthy, '\$STARTING' starting'" 2>&1)
+    HEALTH_OUTPUT=$(run_ssh "cd $PROJECT_PATH; echo 'CONTAINERS:'; docker compose ps --format 'table {{.Name}}\t{{.Status}}\t{{.Health}}' 2>/dev/null; UNHEALTHY=\$(docker compose ps --format '{{.Health}}' 2>/dev/null | grep -c 'unhealthy' || echo '0'); STARTING=\$(docker compose ps --format '{{.Health}}' 2>/dev/null | grep -c 'starting' || echo '0'); RUNNING=\$(docker compose ps --format '{{.Status}}' 2>/dev/null | grep -c 'running\|Up' || echo '0'); TOTAL=\$(docker compose ps -q 2>/dev/null | wc -l); echo 'STATS:'\$RUNNING/\$TOTAL' running, '\$UNHEALTHY' unhealthy, '\$STARTING' starting'; echo 'CONTAINER_STATUS_JSON:'; docker compose ps --format json 2>/dev/null" 2>&1)
 
     # Display container status table
     echo ""
