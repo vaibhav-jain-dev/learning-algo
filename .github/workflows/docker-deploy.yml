@@ -17,14 +17,13 @@
 name: Deploy Docker Compose
 
 on:
-  # Automatic deployment on push (currently disabled)
-  # Uncomment to enable automatic deployment on push to main/master
-  # push:
-  #   branches:
-  #     - main
-  #     - master
+  # Automatic deployment on push to master
+  push:
+    branches:
+      - master
+      - main
 
-  # Manual trigger only
+  # Manual trigger also available
   workflow_dispatch:
     inputs:
       force_restart:
