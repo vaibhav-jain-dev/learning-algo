@@ -240,6 +240,51 @@ jobs:
 
           echo "" >> $GITHUB_STEP_SUMMARY
 
+          # Extract and display container status
+          if grep -q "CONTAINER_STATUS_JSON:" /tmp/deploy_output.txt; then
+            echo "## 🐳 Container Status" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Container | Status | Health |" >> $GITHUB_STEP_SUMMARY
+            echo "|-----------|--------|--------|" >> $GITHUB_STEP_SUMMARY
+
+            # Parse container status JSON
+            sed -n '/CONTAINER_STATUS_JSON:/,/^[^{]/p' /tmp/deploy_output.txt | \
+              grep '^{' | \
+              while read -r json_line; do
+                # Extract name, state, and health using grep and sed
+                NAME=$(echo "$json_line" | grep -oP '"Name":"[^"]*"' | cut -d'"' -f4)
+                STATE=$(echo "$json_line" | grep -oP '"State":"[^"]*"' | cut -d'"' -f4)
+                STATUS=$(echo "$json_line" | grep -oP '"Status":"[^"]*"' | cut -d'"' -f4)
+                HEALTH=$(echo "$json_line" | grep -oP '"Health":"[^"]*"' | cut -d'"' -f4)
+
+                # Determine status emoji and color
+                if [ "$STATE" = "running" ]; then
+                  STATE_EMOJI="✅"
+                elif [ "$STATE" = "exited" ]; then
+                  STATE_EMOJI="❌"
+                else
+                  STATE_EMOJI="⚠️"
+                fi
+
+                # Determine health status
+                if [ -z "$HEALTH" ] || [ "$HEALTH" = "null" ]; then
+                  HEALTH_STATUS="—"
+                elif [ "$HEALTH" = "healthy" ]; then
+                  HEALTH_STATUS="💚 Healthy"
+                elif [ "$HEALTH" = "unhealthy" ]; then
+                  HEALTH_STATUS="💔 Unhealthy"
+                elif [ "$HEALTH" = "starting" ]; then
+                  HEALTH_STATUS="🔄 Starting"
+                else
+                  HEALTH_STATUS="$HEALTH"
+                fi
+
+                echo "| \`$NAME\` | $STATE_EMOJI $STATUS | $HEALTH_STATUS |" >> $GITHUB_STEP_SUMMARY
+              done
+
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+
           # Extract application URLs if present
           if grep -q "Application URLs:" /tmp/deploy_output.txt; then
             echo "## 🌐 Application URLs" >> $GITHUB_STEP_SUMMARY
