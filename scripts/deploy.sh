@@ -1007,14 +1007,58 @@ else
     step_end "Cloudflare Configuration" "skipped"
 fi
 
-# Print final metrics summary
-print_metrics_summary
-
 # Final success banner
+echo ""
 echo -e "${GREEN}${BOLD}═══════════════════════════════════════════════════════${NC}"
 echo -e "${GREEN}${BOLD}  Deployment Complete!${NC}"
 echo -e "${GREEN}${BOLD}═══════════════════════════════════════════════════════${NC}"
 echo ""
+
+# Calculate total time for display
+TOTAL_DURATION=$(($(date +%s) - DEPLOY_START_TIME))
+
+# Print metrics (informational only)
+echo -e "${BOLD}Deployment Metrics:${NC}"
+echo ""
+printf "  ${DIM}%-30s %10s %10s${NC}\n" "Step" "Duration" "Status"
+echo -e "  ${DIM}$(printf '─%.0s' {1..52})${NC}"
+
+# Print each step with its metrics
+for i in "${!STEP_NAMES[@]}"; do
+    local step="${STEP_NAMES[$i]}"
+    local duration=${STEP_DURATIONS[$i]:-0}
+    local status=${STEP_STATUSES[$i]:-"pending"}
+    local status_icon
+    local status_color
+
+    case "$status" in
+        "success")
+            status_icon="✔"
+            status_color="${GREEN}"
+            ;;
+        "failed")
+            status_icon="✖"
+            status_color="${RED}"
+            ;;
+        "skipped")
+            status_icon="⊖"
+            status_color="${YELLOW}"
+            ;;
+        *)
+            status_icon="○"
+            status_color="${DIM}"
+            ;;
+    esac
+
+    if [ "$duration" -gt 0 ]; then
+        printf "  %-30s %10s ${status_color}%10s${NC}\n" "$step" "$(format_duration $duration)" "$status_icon $status"
+    fi
+done
+
+echo -e "  ${DIM}$(printf '─%.0s' {1..52})${NC}"
+printf "  ${BOLD}%-30s %10s${NC}\n" "Total" "$(format_duration $TOTAL_DURATION)"
+echo ""
+
 echo -e "${BOLD}Application URLs:${NC}"
 echo "  https://learn.arvaibhav.cloud"
 echo "  https://learn-api.arvaibhav.cloud"
