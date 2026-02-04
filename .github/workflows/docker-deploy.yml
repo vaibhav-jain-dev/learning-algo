@@ -45,9 +45,6 @@ jobs:
     name: Validate Configuration
     runs-on: ubuntu-latest
     outputs:
-      ssh_host: ${{ steps.check.outputs.ssh_host }}
-      ssh_username: ${{ steps.check.outputs.ssh_username }}
-      ssh_port: ${{ steps.check.outputs.ssh_port }}
       has_env_file: ${{ steps.check.outputs.has_env_file }}
       has_env_vars: ${{ steps.check.outputs.has_env_vars }}
       validation_passed: ${{ steps.check.outputs.validation_passed }}
@@ -65,12 +62,8 @@ jobs:
 
           # Check SSH_HOST (can be secret or variable)
           echo "[Checking] SSH_HOST..."
-          if [ -n "${{ secrets.SSH_HOST }}" ]; then
-            echo "  ✓ SSH_HOST: Present (from Secrets)"
-            echo "ssh_host=${{ secrets.SSH_HOST }}" >> $GITHUB_OUTPUT
-          elif [ -n "${{ vars.SSH_HOST }}" ]; then
-            echo "  ✓ SSH_HOST: Present (from Variables)"
-            echo "ssh_host=${{ vars.SSH_HOST }}" >> $GITHUB_OUTPUT
+          if [ -n "${{ secrets.SSH_HOST }}" ] || [ -n "${{ vars.SSH_HOST }}" ]; then
+            echo "  ✓ SSH_HOST: Present"
           else
             echo "  ✗ SSH_HOST: MISSING"
             MISSING_KEYS="${MISSING_KEYS}\n  - SSH_HOST (Add to Secrets or Variables)"
@@ -79,12 +72,8 @@ jobs:
 
           # Check SSH_USERNAME (can be secret or variable)
           echo "[Checking] SSH_USERNAME..."
-          if [ -n "${{ secrets.SSH_USERNAME }}" ]; then
-            echo "  ✓ SSH_USERNAME: Present (from Secrets)"
-            echo "ssh_username=${{ secrets.SSH_USERNAME }}" >> $GITHUB_OUTPUT
-          elif [ -n "${{ vars.SSH_USERNAME }}" ]; then
-            echo "  ✓ SSH_USERNAME: Present (from Variables)"
-            echo "ssh_username=${{ vars.SSH_USERNAME }}" >> $GITHUB_OUTPUT
+          if [ -n "${{ secrets.SSH_USERNAME }}" ] || [ -n "${{ vars.SSH_USERNAME }}" ]; then
+            echo "  ✓ SSH_USERNAME: Present"
           else
             echo "  ✗ SSH_USERNAME: MISSING"
             MISSING_KEYS="${MISSING_KEYS}\n  - SSH_USERNAME (Add to Secrets or Variables)"
@@ -103,25 +92,10 @@ jobs:
 
           # Check SSH_PORT (optional, can be secret or variable)
           echo "[Checking] SSH_PORT..."
-          if [ -n "${{ secrets.SSH_PORT }}" ]; then
-            echo "  ✓ SSH_PORT: Present (from Secrets)"
-            echo "ssh_port=${{ secrets.SSH_PORT }}" >> $GITHUB_OUTPUT
-          elif [ -n "${{ vars.SSH_PORT }}" ]; then
-            echo "  ✓ SSH_PORT: Present (from Variables)"
-            echo "ssh_port=${{ vars.SSH_PORT }}" >> $GITHUB_OUTPUT
+          if [ -n "${{ secrets.SSH_PORT }}" ] || [ -n "${{ vars.SSH_PORT }}" ]; then
+            echo "  ✓ SSH_PORT: Present"
           else
             echo "  ○ SSH_PORT: Not set (will use default: 22)"
-            echo "ssh_port=22" >> $GITHUB_OUTPUT
-          fi
-
-          # Check SSH_USE_CLOUDFLARE_TUNNEL (optional)
-          echo "[Checking] SSH_USE_CLOUDFLARE_TUNNEL..."
-          if [ -n "${{ secrets.SSH_USE_CLOUDFLARE_TUNNEL }}" ] || [ -n "${{ vars.SSH_USE_CLOUDFLARE_TUNNEL }}" ]; then
-            echo "  ✓ SSH_USE_CLOUDFLARE_TUNNEL: Enabled"
-            echo "ssh_use_cloudflare_tunnel=true" >> $GITHUB_OUTPUT
-          else
-            echo "  ○ SSH_USE_CLOUDFLARE_TUNNEL: Not set (will use direct SSH)"
-            echo "ssh_use_cloudflare_tunnel=false" >> $GITHUB_OUTPUT
           fi
 
           # Check ENV_FILE (optional)
@@ -168,77 +142,47 @@ jobs:
     runs-on: ubuntu-latest
     needs: validate
     if: needs.validate.outputs.validation_passed == 'true'
+    env:
+      SSH_HOST: ${{ secrets.SSH_HOST || vars.SSH_HOST }}
+      SSH_USERNAME: ${{ secrets.SSH_USERNAME || vars.SSH_USERNAME }}
+      SSH_PORT: ${{ secrets.SSH_PORT || vars.SSH_PORT || '22' }}
     steps:
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          
-          # Only scan host key if NOT using Cloudflare Tunnel
-          if [ "${{ needs.validate.outputs.ssh_use_cloudflare_tunnel }}" != "true" ]; then
-            ssh-keyscan -p ${{ needs.validate.outputs.ssh_port }} -H ${{ needs.validate.outputs.ssh_host }} >> ~/.ssh/known_hosts 2>/dev/null || true
-          fi
-
-      - name: Install cloudflared (if using Cloudflare Tunnel)
-        if: needs.validate.outputs.ssh_use_cloudflare_tunnel == 'true'
-        run: |
-          curl -L https://pkg.cloudflare.com/cloudflare-release-key.gpg | sudo apt-key add -
-          echo 'deb http://pkg.cloudflare.com/ focal main' | sudo tee /etc/apt/sources.list.d/cloudflare-main.list
-          sudo apt-get update
-          sudo apt-get install -y cloudflared
+          ssh-keyscan -p $SSH_PORT -H $SSH_HOST >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: Test SSH connection
         run: |
           echo "=========================================="
           echo "  SSH Connection Test"
           echo "=========================================="
-          echo "Host: ${{ needs.validate.outputs.ssh_host }}"
-          echo "User: ${{ needs.validate.outputs.ssh_username }}"
-          echo "Port: ${{ needs.validate.outputs.ssh_port }}"
-          echo "Cloudflare Tunnel: ${{ needs.validate.outputs.ssh_use_cloudflare_tunnel }}"
+          echo "Host: $SSH_HOST"
+          echo "User: $SSH_USERNAME"
+          echo "Port: $SSH_PORT"
           echo "=========================================="
 
-          if [ "${{ needs.validate.outputs.ssh_use_cloudflare_tunnel }}" = "true" ]; then
-            ssh -v -o BatchMode=yes \
-                -o ConnectTimeout=30 \
-                -o StrictHostKeyChecking=no \
-                -o ProxyCommand="cloudflared access ssh --hostname %h" \
-                -i ~/.ssh/deploy_key \
-                ${{ needs.validate.outputs.ssh_username }}@${{ needs.validate.outputs.ssh_host }} \
-                "echo 'SSH connection via Cloudflare Tunnel successful'; uname -a; docker --version; docker compose version" 2>&1 || {
-              echo "=========================================="
-              echo "SSH Connection FAILED (via Cloudflare Tunnel)"
-              echo ""
-              echo "Troubleshooting tips:"
-              echo "1. Verify cloudflared is installed on the runner"
-              echo "2. Verify SSH_HOST is the Cloudflare Tunnel endpoint"
-              echo "3. Verify SSH_PRIVATE_KEY matches the server's authorized_keys"
-              echo "4. Verify SSH_USERNAME is correct"
-              echo "=========================================="
-              exit 1
-            }
-          else
-            ssh -v -o BatchMode=yes \
-                -o ConnectTimeout=30 \
-                -o StrictHostKeyChecking=no \
-                -i ~/.ssh/deploy_key \
-                -p ${{ needs.validate.outputs.ssh_port }} \
-                ${{ needs.validate.outputs.ssh_username }}@${{ needs.validate.outputs.ssh_host }} \
-                "echo 'SSH connection successful'; uname -a; docker --version; docker compose version" 2>&1 || {
-              echo "=========================================="
-              echo "SSH Connection FAILED (direct)"
-              echo ""
-              echo "Troubleshooting tips:"
-              echo "1. Verify SSH_HOST is correct and reachable"
-              echo "2. Verify SSH_USERNAME has SSH access"
-              echo "3. Verify SSH_PRIVATE_KEY matches the public key on the server"
-              echo "4. Check if the server allows SSH on port ${{ needs.validate.outputs.ssh_port }}"
-              echo "5. Ensure the server's firewall allows incoming SSH connections"
-              echo "=========================================="
-              exit 1
-            }
-          fi
+          ssh -v -o BatchMode=yes \
+              -o ConnectTimeout=30 \
+              -o StrictHostKeyChecking=no \
+              -i ~/.ssh/deploy_key \
+              -p $SSH_PORT \
+              $SSH_USERNAME@$SSH_HOST \
+              "echo 'SSH connection successful'; uname -a; docker --version; docker compose version" 2>&1 || {
+            echo "=========================================="
+            echo "SSH Connection FAILED"
+            echo ""
+            echo "Troubleshooting tips:"
+            echo "1. Verify SSH_HOST is correct and reachable"
+            echo "2. Verify SSH_USERNAME has SSH access"
+            echo "3. Verify SSH_PRIVATE_KEY matches the public key on the server"
+            echo "4. Check if the server allows SSH on port $SSH_PORT"
+            echo "5. Ensure the server's firewall allows incoming SSH connections"
+            echo "=========================================="
+            exit 1
+          }
 
           echo "=========================================="
           echo "Connection test PASSED"
@@ -249,6 +193,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: [validate, test-connection]
     if: needs.validate.outputs.validation_passed == 'true'
+    env:
+      SSH_HOST: ${{ secrets.SSH_HOST || vars.SSH_HOST }}
+      SSH_USERNAME: ${{ secrets.SSH_USERNAME || vars.SSH_USERNAME }}
+      SSH_PORT: ${{ secrets.SSH_PORT || vars.SSH_PORT || '22' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -268,19 +216,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          
-          # Only scan host key if NOT using Cloudflare Tunnel
-          if [ "${{ needs.validate.outputs.ssh_use_cloudflare_tunnel }}" != "true" ]; then
-            ssh-keyscan -p ${{ needs.validate.outputs.ssh_port }} -H ${{ needs.validate.outputs.ssh_host }} >> ~/.ssh/known_hosts 2>/dev/null || true
-          fi
-
-      - name: Install cloudflared (if using Cloudflare Tunnel)
-        if: needs.validate.outputs.ssh_use_cloudflare_tunnel == 'true'
-        run: |
-          curl -L https://pkg.cloudflare.com/cloudflare-release-key.gpg | sudo apt-key add -
-          echo 'deb http://pkg.cloudflare.com/ focal main' | sudo tee /etc/apt/sources.list.d/cloudflare-main.list
-          sudo apt-get update
-          sudo apt-get install -y cloudflared
+          ssh-keyscan -p $SSH_PORT -H $SSH_HOST >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: Determine project path
         id: project
@@ -295,95 +231,61 @@ jobs:
 
       - name: Ensure project directory exists
         run: |
-          if [ "${{ needs.validate.outputs.ssh_use_cloudflare_tunnel }}" = "true" ]; then
-            ssh -o BatchMode=yes \
-                -o StrictHostKeyChecking=no \
-                -o ProxyCommand="cloudflared access ssh --hostname %h" \
-                -i ~/.ssh/deploy_key \
-                ${{ needs.validate.outputs.ssh_username }}@${{ needs.validate.outputs.ssh_host }} \
-                "mkdir -p '${{ steps.project.outputs.path }}'"
-          else
-            ssh -o BatchMode=yes \
-                -o StrictHostKeyChecking=no \
-                -i ~/.ssh/deploy_key \
-                -p ${{ needs.validate.outputs.ssh_port }} \
-                ${{ needs.validate.outputs.ssh_username }}@${{ needs.validate.outputs.ssh_host }} \
-                "mkdir -p '${{ steps.project.outputs.path }}'"
-          fi
+          ssh -o BatchMode=yes \
+              -o StrictHostKeyChecking=no \
+              -i ~/.ssh/deploy_key \
+              -p $SSH_PORT \
+              $SSH_USERNAME@$SSH_HOST \
+              "mkdir -p '${{ steps.project.outputs.path }}'"
 
       - name: Deploy ENV_FILE if present
         if: needs.validate.outputs.has_env_file == 'true'
         run: |
-          # SCP ENV_FILE to the server (directory now exists)
-          if [ "${{ needs.validate.outputs.ssh_use_cloudflare_tunnel }}" = "true" ]; then
-            scp -o StrictHostKeyChecking=no \
-                -o ProxyCommand="cloudflared access ssh --hostname %h" \
-                -i ~/.ssh/deploy_key \
-                "${{ secrets.ENV_FILE }}" \
-                ${{ needs.validate.outputs.ssh_username }}@${{ needs.validate.outputs.ssh_host }}:${{ steps.project.outputs.path }}/.env 2>/dev/null || {
-              echo "WARNING: Failed to SCP ENV_FILE to server (via Cloudflare Tunnel)"
-              exit 0
-            }
-          else
-            scp -o StrictHostKeyChecking=no \
-                -i ~/.ssh/deploy_key \
-                -P ${{ needs.validate.outputs.ssh_port }} \
-                "${{ secrets.ENV_FILE }}" \
-                ${{ needs.validate.outputs.ssh_username }}@${{ needs.validate.outputs.ssh_host }}:${{ steps.project.outputs.path }}/.env 2>/dev/null || {
-              echo "WARNING: Failed to SCP ENV_FILE to server (direct SSH)"
-              exit 0
-            }
-          fi
+          scp -o StrictHostKeyChecking=no \
+              -i ~/.ssh/deploy_key \
+              -P $SSH_PORT \
+              "${{ secrets.ENV_FILE }}" \
+              $SSH_USERNAME@$SSH_HOST:${{ steps.project.outputs.path }}/.env 2>/dev/null || {
+            echo "WARNING: Failed to SCP ENV_FILE to server"
+            exit 0
+          }
 
       - name: Deploy to server via deploy.sh (single SSH session)
         env:
-          SSH_HOST: ${{ needs.validate.outputs.ssh_host }}
-          SSH_USER: ${{ needs.validate.outputs.ssh_username }}
-          SSH_PORT: ${{ needs.validate.outputs.ssh_port }}
-          SSH_USE_CLOUDFLARE_TUNNEL: ${{ needs.validate.outputs.ssh_use_cloudflare_tunnel }}
           PROJECT_PATH: ${{ steps.project.outputs.path }}
           REPO_BRANCH: ${{ github.ref_name }}
           FORCE_RESTART: ${{ inputs.force_restart || 'false' }}
           ENV_VARS_B64: ${{ env.ENV_VARS_B64 }}
         run: |
-          if [ "$SSH_USE_CLOUDFLARE_TUNNEL" = "true" ]; then
-            ssh -o BatchMode=yes \
-                -o StrictHostKeyChecking=no \
-                -o ProxyCommand="cloudflared access ssh --hostname %h" \
-                -i ~/.ssh/deploy_key \
-                "$SSH_USER@$SSH_HOST" << 'DEPLOY_SESSION'
-          else
-            ssh -o BatchMode=yes \
-                -o StrictHostKeyChecking=no \
-                -i ~/.ssh/deploy_key \
-                -p "$SSH_PORT" \
-                "$SSH_USER@$SSH_HOST" << 'DEPLOY_SESSION'
-          fi
-          
+          ssh -o BatchMode=yes \
+              -o StrictHostKeyChecking=no \
+              -i ~/.ssh/deploy_key \
+              -p "$SSH_PORT" \
+              "$SSH_USERNAME@$SSH_HOST" << DEPLOY_SESSION
+
           set -e
 
           echo "=========================================="
           echo "  GitHub Actions Deployment"
-          echo "  $(date)"
+          echo "  \$(date)"
           echo "=========================================="
 
           cd "$PROJECT_PATH"
 
           # Call deploy.sh (single source of truth for ALL deployment logic)
           chmod +x scripts/deploy.sh
-          
+
           echo ""
           echo "Invoking deploy.sh (single source of truth)..."
           echo "=========================================="
-          
+
           # Export SSH variables for deploy.sh to use
           export SSH_HOST="$SSH_HOST"
-          export SSH_USERNAME="$SSH_USER"
+          export SSH_USERNAME="$SSH_USERNAME"
           export SSH_PORT="$SSH_PORT"
-          export SSH_USE_CLOUDFLARE_TUNNEL="$SSH_USE_CLOUDFLARE_TUNNEL"
           export FORCE_RESTART="$FORCE_RESTART"
           export ENV_VARS_B64="$ENV_VARS_B64"
-          
+
           ./scripts/deploy.sh
 
           DEPLOY_SESSION
