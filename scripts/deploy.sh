@@ -301,9 +301,10 @@ elif echo "$SSH_PRIVATE_KEY" | grep -q "BEGIN.*PRIVATE KEY"; then
     chmod 600 "$SSH_KEY_FILE"
     echo -e "  ${GREEN}✓${NC} SSH_PRIVATE_KEY: (key content, temp file created)"
 else
-    echo -e "  ${RED}✗${NC} SSH_PRIVATE_KEY: Invalid (not a file or valid key)"
-    MISSING_VARS="${MISSING_VARS}\n  - SSH_PRIVATE_KEY (file not found or invalid key content)"
-    VALIDATION_PASSED=false
+    # When running from CI/CD (like GitHub Actions), SSH may already be configured
+    # via agent forwarding or existing keys, so we make this optional
+    echo -e "  ${YELLOW}○${NC} SSH_PRIVATE_KEY: Not available (using default SSH authentication)"
+    SSH_KEY_FILE=""
 fi
 
 echo "[Checking] SSH_PORT..."
@@ -417,12 +418,16 @@ print_step 1 $TOTAL_STEPS "Testing SSH Connection"
 step_start "SSH Connection"
 
 print_substep "start" "Connecting to $SSH_HOST:$SSH_PORT"
+
+# Build SSH options
+SSH_OPTS="-o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=no"
+if [ -n "$SSH_KEY_FILE" ]; then
+    SSH_OPTS="$SSH_OPTS -i $SSH_KEY_FILE"
+fi
+
 if [ "${SSH_USE_CLOUDFLARE_TUNNEL:-false}" = "true" ]; then
-    SSH_OUTPUT=$(ssh -o BatchMode=yes \
-        -o ConnectTimeout=10 \
-        -o StrictHostKeyChecking=no \
+    SSH_OUTPUT=$(ssh $SSH_OPTS \
         -o ProxyCommand="cloudflared access ssh --hostname %h" \
-        -i "$SSH_KEY_FILE" \
         "$SSH_USERNAME@$SSH_HOST" \
         "echo 'SSH connection successful'; uname -a" 2>&1) || {
         step_end "SSH Connection" "failed"
@@ -437,10 +442,7 @@ if [ "${SSH_USE_CLOUDFLARE_TUNNEL:-false}" = "true" ]; then
         exit 1
     }
 else
-    SSH_OUTPUT=$(ssh -o BatchMode=yes \
-        -o ConnectTimeout=10 \
-        -o StrictHostKeyChecking=no \
-        -i "$SSH_KEY_FILE" \
+    SSH_OUTPUT=$(ssh $SSH_OPTS \
         -p "$SSH_PORT" \
         "$SSH_USERNAME@$SSH_HOST" \
         "echo 'SSH connection successful'; uname -a" 2>&1) || {
@@ -467,20 +469,33 @@ step_end "SSH Connection" "success"
 
 # SSH command helper
 run_ssh() {
+    # Build SSH command with optional key file
+    local ssh_opts="-o BatchMode=yes -o StrictHostKeyChecking=no"
+
     if [ "${SSH_USE_CLOUDFLARE_TUNNEL:-false}" = "true" ]; then
         # Use Cloudflare Tunnel via cloudflared
-        ssh -o BatchMode=yes \
-            -o StrictHostKeyChecking=no \
-            -o ProxyCommand="cloudflared access ssh --hostname %h" \
-            -i "$SSH_KEY_FILE" \
-            "$SSH_USERNAME@$SSH_HOST" "$@"
+        if [ -n "$SSH_KEY_FILE" ]; then
+            ssh $ssh_opts \
+                -o ProxyCommand="cloudflared access ssh --hostname %h" \
+                -i "$SSH_KEY_FILE" \
+                "$SSH_USERNAME@$SSH_HOST" "$@"
+        else
+            ssh $ssh_opts \
+                -o ProxyCommand="cloudflared access ssh --hostname %h" \
+                "$SSH_USERNAME@$SSH_HOST" "$@"
+        fi
     else
         # Direct SSH connection
-        ssh -o BatchMode=yes \
-            -o StrictHostKeyChecking=no \
-            -i "$SSH_KEY_FILE" \
-            -p "$SSH_PORT" \
-            "$SSH_USERNAME@$SSH_HOST" "$@"
+        if [ -n "$SSH_KEY_FILE" ]; then
+            ssh $ssh_opts \
+                -i "$SSH_KEY_FILE" \
+                -p "$SSH_PORT" \
+                "$SSH_USERNAME@$SSH_HOST" "$@"
+        else
+            ssh $ssh_opts \
+                -p "$SSH_PORT" \
+                "$SSH_USERNAME@$SSH_HOST" "$@"
+        fi
     fi
 }
 
@@ -494,17 +509,22 @@ print_substep "done" "Project directory ready"
 
 if [ "$HAS_ENV_FILE" = "true" ]; then
     print_substep "start" "Deploying .env file via SCP"
+
+    # Build SCP options
+    SCP_OPTS="-o StrictHostKeyChecking=no"
+    if [ -n "$SSH_KEY_FILE" ]; then
+        SCP_OPTS="$SCP_OPTS -i $SSH_KEY_FILE"
+    fi
+
     if [ "${SSH_USE_CLOUDFLARE_TUNNEL:-false}" = "true" ]; then
         # SCP via Cloudflare Tunnel (requires cloudflared 2022.12.0+)
-        scp -o StrictHostKeyChecking=no \
+        scp $SCP_OPTS \
             -o ProxyCommand="cloudflared access ssh --hostname %h" \
-            -i "$SSH_KEY_FILE" \
             "$ENV_FILE" \
             "$SSH_USERNAME@$SSH_HOST:$PROJECT_PATH/.env" 2>/dev/null
     else
         # Direct SCP
-        scp -o StrictHostKeyChecking=no \
-            -i "$SSH_KEY_FILE" \
+        scp $SCP_OPTS \
             -P "$SSH_PORT" \
             "$ENV_FILE" \
             "$SSH_USERNAME@$SSH_HOST:$PROJECT_PATH/.env" 2>/dev/null
@@ -526,23 +546,27 @@ GITHUB_KEY_LOCAL="${GITHUB_SSH_KEY_PATH:-$HOME/.ssh/github_deploy_key}"
 if [ -f "$GITHUB_KEY_LOCAL" ]; then
     print_substep "start" "Configuring GitHub SSH access"
     run_ssh "mkdir -p ~/.ssh && chmod 700 ~/.ssh" 2>/dev/null
-    
+
+    # Build SCP options
+    SCP_OPTS="-o StrictHostKeyChecking=no"
+    if [ -n "$SSH_KEY_FILE" ]; then
+        SCP_OPTS="$SCP_OPTS -i $SSH_KEY_FILE"
+    fi
+
     if [ "${SSH_USE_CLOUDFLARE_TUNNEL:-false}" = "true" ]; then
         # SCP via Cloudflare Tunnel
-        scp -o StrictHostKeyChecking=no \
+        scp $SCP_OPTS \
             -o ProxyCommand="cloudflared access ssh --hostname %h" \
-            -i "$SSH_KEY_FILE" \
             "$GITHUB_KEY_LOCAL" \
             "$SSH_USERNAME@$SSH_HOST:~/.ssh/github_deploy_key" 2>/dev/null
     else
         # Direct SCP
-        scp -o StrictHostKeyChecking=no \
-            -i "$SSH_KEY_FILE" \
+        scp $SCP_OPTS \
             -P "$SSH_PORT" \
             "$GITHUB_KEY_LOCAL" \
             "$SSH_USERNAME@$SSH_HOST:~/.ssh/github_deploy_key" 2>/dev/null
     fi
-    
+
     run_ssh "chmod 600 ~/.ssh/github_deploy_key && echo 'Host github.com' > ~/.ssh/config && echo '  HostName github.com' >> ~/.ssh/config && echo '  User git' >> ~/.ssh/config && echo '  IdentityFile ~/.ssh/github_deploy_key' >> ~/.ssh/config && echo '  StrictHostKeyChecking accept-new' >> ~/.ssh/config" 2>/dev/null
     print_substep "done" "GitHub SSH key deployed"
 fi
