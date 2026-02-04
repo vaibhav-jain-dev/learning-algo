@@ -84,11 +84,6 @@ The Singleton pattern is deceptively simple - the challenge isn't creating a sin
 <h4 style="color: #1e293b; margin-top: 0">Real-World Framework Usage</h4>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px">
 <div style="background: white; padding: 16px; border-radius: 8px">
-<div style="font-weight: 600; color: #166534; margin-bottom: 8px">Spring Framework</div>
-<div style="color: #334155; font-size: 14px">Spring beans are singletons by default. The ApplicationContext itself is a singleton that manages all bean instances.</div>
-<code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-size: 12px; color: #475569">@Scope("singleton")</code>
-</div>
-<div style="background: white; padding: 16px; border-radius: 8px">
 <div style="font-weight: 600; color: #1d4ed8; margin-bottom: 8px">Django</div>
 <div style="color: #334155; font-size: 14px">Django's settings module is a singleton. Database connections are pooled using singleton connection managers.</div>
 <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-size: 12px; color: #475569">django.conf.settings</code>
@@ -125,322 +120,8 @@ The Singleton pattern is deceptively simple - the challenge isn't creating a sin
 <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Deserializing a singleton creates a new instance. Without <code>readResolve()</code>, you get multiple instances.</p>
 </div>
 <div style="background: white; padding: 16px; border-radius: 8px">
-<strong style="color: #991b1b">4. Multiple Class Loaders</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Each class loader loads its own copy of the class. Enterprise containers (J2EE) can have multiple class loaders, creating multiple singletons.</p>
-</div>
-<div style="background: white; padding: 16px; border-radius: 8px">
 <strong style="color: #991b1b">5. Cloning</strong>
 <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">If singleton implements <code>Cloneable</code>, <code>clone()</code> can create additional instances. Must override and throw exception.</p>
-</div>
-</div>
-</div>
-<h3 id="singleton-implementation-spectrum">Singleton Implementation Spectrum</h3>
-<div style="background: #f8fafc; border-radius: 16px; padding: 2rem; margin: 2rem 0">
-<div style="font-weight: 700; font-size: 1.2rem; color: #1e293b; text-align: center; margin-bottom: 1.5rem">Implementation Approaches: Safety vs. Complexity</div>
-<div style="display: flex; flex-direction: column; gap: 1rem">
-<div style="display: flex; align-items: center; gap: 1rem">
-<div style="background: #fee2e2; color: #991b1b; padding: 8px 16px; border-radius: 8px; min-width: 160px; text-align: center; font-weight: 600">Eager Initialization</div>
-<div style="flex: 1; height: 8px; background: linear-gradient(to right, #22c55e 100%, #e2e8f0 0%); border-radius: 4px"></div>
-<span style="color: #64748b; font-size: 14px">Simple, thread-safe, may waste resources</span>
-</div>
-<div style="display: flex; align-items: center; gap: 1rem">
-<div style="background: #fef3c7; color: #92400e; padding: 8px 16px; border-radius: 8px; min-width: 160px; text-align: center; font-weight: 600">Synchronized Method</div>
-<div style="flex: 1; height: 8px; background: linear-gradient(to right, #22c55e 70%, #e2e8f0 70%); border-radius: 4px"></div>
-<span style="color: #64748b; font-size: 14px">Thread-safe, performance bottleneck</span>
-</div>
-<div style="display: flex; align-items: center; gap: 1rem">
-<div style="background: #dbeafe; color: #1e40af; padding: 8px 16px; border-radius: 8px; min-width: 160px; text-align: center; font-weight: 600">Double-Checked Locking</div>
-<div style="flex: 1; height: 8px; background: linear-gradient(to right, #22c55e 85%, #e2e8f0 85%); border-radius: 4px"></div>
-<span style="color: #64748b; font-size: 14px">Complex, requires volatile, error-prone</span>
-</div>
-<div style="display: flex; align-items: center; gap: 1rem">
-<div style="background: #dcfce7; color: #166534; padding: 8px 16px; border-radius: 8px; min-width: 160px; text-align: center; font-weight: 600">Bill Pugh / Holder</div>
-<div style="flex: 1; height: 8px; background: linear-gradient(to right, #22c55e 95%, #e2e8f0 95%); border-radius: 4px"></div>
-<span style="color: #64748b; font-size: 14px">Elegant, lazy, thread-safe by JVM</span>
-</div>
-<div style="display: flex; align-items: center; gap: 1rem">
-<div style="background: #f3e8ff; color: #7c3aed; padding: 8px 16px; border-radius: 8px; min-width: 160px; text-align: center; font-weight: 600">Enum Singleton</div>
-<div style="flex: 1; height: 8px; background: linear-gradient(to right, #22c55e 100%, #e2e8f0 0%); border-radius: 4px"></div>
-<span style="color: #64748b; font-size: 14px">Best for Java, handles all edge cases</span>
-</div>
-</div>
-</div>
-<hr />
-<h2 id="thread-safe-implementations-deep-dive">Thread-Safe Implementations Deep Dive</h2>
-<h3 id="1-eager-initialization">1. Eager Initialization</h3>
-<pre><code class="language-java">/**
- * Eager Initialization Singleton
- *
- * Thread Safety: Guaranteed by JVM class loading mechanism
- * Pros: Simple, no synchronization needed
- * Cons: Instance created even if never used (wastes resources for heavy objects)
- */
-public class EagerSingleton {
-    // Instance created at class loading time
-    private static final EagerSingleton INSTANCE = new EagerSingleton();
-
-    private EagerSingleton() {
-        // Prevent reflection attacks
-        if (INSTANCE != null) {
-            throw new IllegalStateException(&quot;Singleton already constructed&quot;);
-        }
-    }
-
-    public static EagerSingleton getInstance() {
-        return INSTANCE;
-    }
-}
-</code></pre>
-<div style="background: #f0fdf4;padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0">
-<div style="font-weight: 700; color: #166534; margin-bottom: 0.5rem">Why It's Thread-Safe</div>
-<div style="color: #14532d; font-size: 0.9rem; line-height: 1.6">
-The JVM guarantees that <span style="color: #10b981; font-weight: 600">static initialization happens exactly once</span> when the class is first loaded. The class loading mechanism uses internal locking to ensure thread safety. No explicit synchronization needed in your code.
-</div>
-</div>
-<h3 id="2-synchronized-method-naive-thread-safe">2. Synchronized Method (Naive Thread-Safe)</h3>
-<pre><code class="language-java">/**
- * Synchronized Method Singleton
- *
- * Thread Safety: Guaranteed by synchronized keyword
- * Problem: EVERY call to getInstance() acquires lock - massive performance hit
- */
-public class SynchronizedSingleton {
-    private static SynchronizedSingleton instance;
-
-    private SynchronizedSingleton() {}
-
-    // Synchronized on class lock - only one thread can enter at a time
-    public static synchronized SynchronizedSingleton getInstance() {
-        if (instance == null) {
-            instance = new SynchronizedSingleton();
-        }
-        return instance;
-    }
-}
-</code></pre>
-<div style="background: #fef3c7;padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0">
-<div style="font-weight: 700; color: #92400e; margin-bottom: 0.5rem">Performance Problem</div>
-<div style="color: #78350f; font-size: 0.9rem; line-height: 1.6">
-Synchronization is only needed during the first call when instance is created. After that, every thread contends for a lock just to return an already-created instance. In high-throughput systems, this creates a <span style="color: #dc2626; font-weight: 600">severe bottleneck</span> - threads queue up waiting for the lock.
-</div>
-</div>
-<h3 id="3-double-checked-locking-dcl">3. Double-Checked Locking (DCL)</h3>
-<div style="background: linear-gradient(135deg, #ea580c 0%, #fb923c 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white">
-<h4 style="margin-top: 0; color: white">Double-Checked Locking: The Tricky Pattern</h4>
-<p style="color: #fed7aa; margin-bottom: 16px">DCL attempts to minimize synchronization overhead by checking if the instance exists before acquiring the lock. However, it's <span style="font-weight: 700">notoriously difficult to implement correctly</span> due to memory visibility issues.</p>
-</div>
-<pre><code class="language-java">/**
- * Double-Checked Locking Singleton
- *
- * The volatile keyword is CRITICAL - without it, this pattern is BROKEN.
- *
- * Why volatile is required:
- * 1. Prevents instruction reordering during object construction
- * 2. Ensures visibility of fully constructed object across threads
- *
- * Without volatile, Thread B might see a non-null but partially
- * constructed instance (fields not initialized).
- */
-public class DCLSingleton {
-    // MUST be volatile - this is not optional!
-    private static volatile DCLSingleton instance;
-
-    private final String config;
-    private final DatabaseConnection connection;
-
-    private DCLSingleton() {
-        // Expensive initialization
-        this.config = loadConfig();
-        this.connection = createConnection();
-    }
-
-    public static DCLSingleton getInstance() {
-        // First check (no locking) - fast path for common case
-        if (instance == null) {
-            // Only synchronize when instance might need to be created
-            synchronized (DCLSingleton.class) {
-                // Second check (with lock) - another thread may have created it
-                if (instance == null) {
-                    instance = new DCLSingleton();
-                }
-            }
-        }
-        return instance;
-    }
-}
-</code></pre>
-<div style="background: #fef2f2;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #991b1b; margin-top: 0">The Memory Visibility Problem (Without volatile)</h4>
-<div style="background: white; padding: 20px; border-radius: 8px; margin-top: 16px">
-<div style="font-family: monospace; font-size: 14px; color: #334155">
-<div style="margin-bottom: 8px"><span style="color: #64748b">// What you write:</span></div>
-<div>instance = new DCLSingleton();</div>
-  <br/>
-<div style="margin-bottom: 8px"><span style="color: #64748b">// What JVM might execute (reordered):</span></div>
-<div>1. memory = allocate()           <span style="color: #64748b">// Allocate memory</span></div>
-<div>2. instance = memory             <span style="color: #dc2626; font-weight: 600">// Assign reference (non-null now!)</span></div>
-<div>3. constructor(instance)         <span style="color: #64748b">// Initialize fields</span></div>
-</div>
-</div>
-<p style="color: #7f1d1d; margin-top: 16px; font-size: 14px">
-Thread B calls <code>getInstance()</code> between steps 2 and 3. It sees <code>instance != null</code> and returns a <span style="color: #dc2626; font-weight: 600">partially constructed object</span> with uninitialized fields. This causes NullPointerExceptions or corrupt state later.
-</p>
-</div>
-<h3 id="4-bill-pugh-solution-initialization-on-demand-holder">4. Bill Pugh Solution (Initialization-on-Demand Holder)</h3>
-<div style="background: linear-gradient(135deg, #059669 0%, #34d399 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white">
-<h4 style="margin-top: 0; color: white">Bill Pugh Solution: The Elegant Approach</h4>
-<p style="color: #a7f3d0; margin-bottom: 0">This solution leverages the JVM's class loading mechanism to achieve <span style="font-weight: 700">lazy initialization</span> and <span style="font-weight: 700">thread safety</span> without any synchronization in your code. It's considered the <span style="font-weight: 700">best practice for Java singletons</span> (before Java 5 enums).</p>
-</div>
-<pre><code class="language-java">/**
- * Bill Pugh Singleton (Initialization-on-Demand Holder Idiom)
- *
- * How it works:
- * 1. Inner class is not loaded until getInstance() is called
- * 2. When inner class loads, JVM guarantees thread-safe initialization
- * 3. No synchronization overhead after initialization
- *
- * This is the RECOMMENDED approach for Java singletons.
- */
-public class BillPughSingleton {
-
-    private BillPughSingleton() {
-        // Prevent reflection attacks
-        if (SingletonHolder.INSTANCE != null) {
-            throw new IllegalStateException(&quot;Singleton already constructed&quot;);
-        }
-    }
-
-    /**
-     * Static inner class - not loaded until referenced.
-     *
-     * JLS (Java Language Specification) guarantees:
-     * - Class initialization is thread-safe
-     * - Happens-before relationship established
-     * - Instance visible to all threads after initialization
-     */
-    private static class SingletonHolder {
-        private static final BillPughSingleton INSTANCE = new BillPughSingleton();
-    }
-
-    public static BillPughSingleton getInstance() {
-        // First call triggers SingletonHolder class loading
-        // JVM handles all synchronization internally
-        return SingletonHolder.INSTANCE;
-    }
-
-    // Prevent deserialization from creating new instance
-    protected Object readResolve() {
-        return getInstance();
-    }
-}
-</code></pre>
-<div style="background: #f0f9ff;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #0369a1; margin-top: 0">Why Bill Pugh Works</h4>
-<div style="display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; gap: 12px; align-items: flex-start">
-<div style="background: #0ea5e9; color: white; border-radius: 50%; min-width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px">1</div>
-<div>
-<strong style="color: #0369a1">Lazy Loading</strong>
-<p style="color: #475569; margin: 4px 0 0 0; font-size: 14px">The <code>SingletonHolder</code> class isn't loaded until <code>getInstance()</code> is called. No instance created at class load time.</p>
-</div>
-</div>
-<div style="display: flex; gap: 12px; align-items: flex-start">
-<div style="background: #0ea5e9; color: white; border-radius: 50%; min-width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px">2</div>
-<div>
-<strong style="color: #0369a1">JVM Guarantees Thread Safety</strong>
-<p style="color: #475569; margin: 4px 0 0 0; font-size: 14px">Class initialization in Java is inherently thread-safe. The JVM acquires a lock during class initialization, ensuring only one thread initializes the class.</p>
-</div>
-</div>
-<div style="display: flex; gap: 12px; align-items: flex-start">
-<div style="background: #0ea5e9; color: white; border-radius: 50%; min-width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px">3</div>
-<div>
-<strong style="color: #0369a1">No Synchronization Overhead</strong>
-<p style="color: #475569; margin: 4px 0 0 0; font-size: 14px">After initialization, <code>getInstance()</code> is just a simple field access - no volatile reads, no locks, optimal performance.</p>
-</div>
-</div>
-</div>
-</div>
-<h3 id="5-enum-singleton-effective-java-recommendation">5. Enum Singleton (Effective Java Recommendation)</h3>
-<div style="background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white">
-<h4 style="margin-top: 0; color: white">Enum Singleton: Joshua Bloch's Recommendation</h4>
-<p style="color: #e0e7ff; margin-bottom: 0">"A single-element enum type is often the best way to implement a singleton" - <em>Effective Java, 3rd Edition</em>. Enums provide <span style="font-weight: 700">serialization safety</span>, <span style="font-weight: 700">reflection safety</span>, and <span style="font-weight: 700">thread safety</span> by design.</p>
-</div>
-<pre><code class="language-java">/**
- * Enum Singleton - The &quot;Effective Java&quot; recommended approach
- *
- * Advantages:
- * 1. Thread-safe by JVM guarantee
- * 2. Serialization handled automatically (no readResolve needed)
- * 3. Reflection cannot create new instances
- * 4. Simple and concise
- *
- * Limitations:
- * 1. Cannot extend other classes (enums implicitly extend Enum)
- * 2. Eager initialization (created when enum class loads)
- * 3. Cannot be lazily initialized
- */
-public enum EnumSingleton {
-    INSTANCE;
-
-    // Instance fields
-    private Connection connection;
-    private Map&lt;String, Object&gt; cache;
-
-    // Constructor - called once when enum is loaded
-    EnumSingleton() {
-        this.cache = new ConcurrentHashMap&lt;&gt;();
-        // Careful: Don't do heavy I/O in enum constructor
-        // It runs during class loading
-    }
-
-    // Instance methods
-    public Connection getConnection() {
-        if (connection == null) {
-            connection = createConnection();
-        }
-        return connection;
-    }
-
-    public void put(String key, Object value) {
-        cache.put(key, value);
-    }
-
-    public Object get(String key) {
-        return cache.get(key);
-    }
-
-    private Connection createConnection() {
-        // Create database connection
-        return null; // Placeholder
-    }
-}
-
-// Usage
-EnumSingleton.INSTANCE.put(&quot;config&quot;, configValue);
-Object config = EnumSingleton.INSTANCE.get(&quot;config&quot;);
-</code></pre>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Why Enum Handles All Edge Cases</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
-<div>
-<div style="background: #dcfce7; padding: 16px; border-radius: 8px; margin-bottom: 12px">
-<strong style="color: #166534">Reflection Protection</strong>
-<p style="color: #14532d; margin: 8px 0 0 0; font-size: 14px">JVM throws <code>IllegalArgumentException</code> if you try to reflectively create enum instances. Built into the language.</p>
-</div>
-<div style="background: #dbeafe; padding: 16px; border-radius: 8px">
-<strong style="color: #1e40af">Thread Safety</strong>
-<p style="color: #1e40af; margin: 8px 0 0 0; font-size: 14px">Enum initialization is guaranteed thread-safe by JLS. No synchronization needed.</p>
-</div>
-</div>
-<div>
-<div style="background: #fef3c7; padding: 16px; border-radius: 8px; margin-bottom: 12px">
-<strong style="color: #92400e">Serialization Safety</strong>
-<p style="color: #78350f; margin: 8px 0 0 0; font-size: 14px">Java serialization mechanism guarantees that enum values are not duplicated on deserialization. No <code>readResolve()</code> needed.</p>
-</div>
-<div style="background: #fce7f3; padding: 16px; border-radius: 8px">
-<strong style="color: #9d174d">Clone Protection</strong>
-<p style="color: #831843; margin: 8px 0 0 0; font-size: 14px">Enums cannot be cloned. <code>Enum.clone()</code> throws <code>CloneNotSupportedException</code>.</p>
-</div>
 </div>
 </div>
 </div>
@@ -635,63 +316,66 @@ func (c *ConfigManager) Set(key string, value interface{}) {
 </div>
 </div>
 <h3 id="solution-1-interface--dependency-injection">Solution 1: Interface + Dependency Injection</h3>
-<pre><code class="language-java">/**
- * Solution: Program to interface, inject dependency
- *
- * Instead of code calling Singleton.getInstance(),
- * inject the dependency explicitly.
- */
+<pre><code class="language-python">"""
+Solution: Program to interface, inject dependency
 
-// Interface for the singleton's behavior
-public interface ConfigService {
-    String get(String key);
-    void set(String key, String value);
-}
+Instead of code calling Singleton.get_instance(),
+inject the dependency explicitly.
+"""
 
-// Real implementation (singleton internally)
-public class ConfigServiceImpl implements ConfigService {
-    private static final ConfigServiceImpl INSTANCE = new ConfigServiceImpl();
-    private final Map&lt;String, String&gt; config = new ConcurrentHashMap&lt;&gt;();
+from abc import ABC, abstractmethod
+from typing import Optional
 
-    private ConfigServiceImpl() {}
 
-    public static ConfigService getInstance() {
-        return INSTANCE;
-    }
+class ConfigService(ABC):
+    """Interface for configuration service."""
 
-    @Override
-    public String get(String key) {
-        return config.get(key);
-    }
+    @abstractmethod
+    def get(self, key: str) -> Optional[str]:
+        pass
 
-    @Override
-    public void set(String key, String value) {
-        config.put(key, value);
-    }
-}
+    @abstractmethod
+    def set(self, key: str, value: str) -> None:
+        pass
 
-// Code that uses config - receives it via injection
-public class OrderService {
-    private final ConfigService config;
 
-    // Dependency injected via constructor
-    public OrderService(ConfigService config) {
-        this.config = config;
-    }
+class ConfigServiceImpl(ConfigService):
+    """Real implementation (singleton internally)."""
 
-    public void processOrder(Order order) {
-        String maxItems = config.get(&quot;max_items_per_order&quot;);
-        // ... use config
-    }
-}
+    _instance: Optional['ConfigServiceImpl'] = None
 
-// In production
-OrderService service = new OrderService(ConfigServiceImpl.getInstance());
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._config = {}
+        return cls._instance
 
-// In tests - inject mock
-ConfigService mockConfig = mock(ConfigService.class);
-when(mockConfig.get(&quot;max_items_per_order&quot;)).thenReturn(&quot;100&quot;);
-OrderService testService = new OrderService(mockConfig);
+    def get(self, key: str) -> Optional[str]:
+        return self._config.get(key)
+
+    def set(self, key: str, value: str) -> None:
+        self._config[key] = value
+
+
+class OrderService:
+    """Code that uses config - receives it via injection."""
+
+    def __init__(self, config: ConfigService):
+        self.config = config
+
+    def process_order(self, order):
+        max_items = self.config.get("max_items_per_order")
+        # ... use config
+
+
+# In production
+service = OrderService(ConfigServiceImpl())
+
+# In tests - inject mock
+from unittest.mock import Mock
+mock_config = Mock(spec=ConfigService)
+mock_config.get.return_value = "100"
+test_service = OrderService(mock_config)
 </code></pre>
 <h3 id="solution-2-reset-method-for-testing">Solution 2: Reset Method for Testing</h3>
 <pre><code class="language-python">&quot;&quot;&quot;
@@ -823,37 +507,13 @@ def test_something():
 <h2 id="interview-deep-dive-thread-safe-implementations">Interview Deep-Dive: Thread-Safe Implementations</h2>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: What are the main approaches to implement a thread-safe singleton?</h4>
-<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> There are five main approaches: (1) <span style="color: #10b981; font-weight: 600">Eager initialization</span> - create instance at class load time, thread-safe but not lazy. (2) <span style="color: #10b981; font-weight: 600">Synchronized method</span> - wrap getInstance() in synchronized, thread-safe but slow. (3) <span style="color: #10b981; font-weight: 600">Double-checked locking</span> - check null before and after lock, requires volatile. (4) <span style="color: #10b981; font-weight: 600">Bill Pugh/Holder pattern</span> - use static inner class, lazy and thread-safe via JVM guarantees. (5) <span style="color: #10b981; font-weight: 600">Enum singleton</span> - use single-element enum, handles serialization and reflection attacks.</p>
+<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> The main approaches depend on the language. For Python: (1) <span style="color: #10b981; font-weight: 600">Module-level singleton</span> - simplest approach, modules are cached. (2) <span style="color: #10b981; font-weight: 600">Metaclass with double-checked locking</span> - control instantiation at metaclass level with thread safety. (3) <span style="color: #10b981; font-weight: 600">Decorator pattern</span> - wrap classes with singleton behavior. For Go: Use <span style="color: #10b981; font-weight: 600">sync.Once</span> - guaranteed one-time initialization with built-in thread safety.</p>
 <div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 2: Why is the volatile keyword required in double-checked locking, and what happens without it?</h5>
-<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> Without volatile, the JVM can reorder instructions during object construction. The sequence <code>instance = new Singleton()</code> involves: (1) allocate memory, (2) initialize fields, (3) assign reference. Without volatile, the JVM might reorder to: allocate, assign reference, then initialize. Thread B could see a non-null instance with uninitialized fields, causing NullPointerExceptions or corrupt state. The volatile keyword establishes a <span style="color: #10b981; font-weight: 600">happens-before relationship</span> - all writes before the volatile write are visible to threads that read the volatile variable. This prevents seeing a partially constructed object.</p>
-<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px">
-<h6 style="color: #1e40af; margin-top: 0">Level 3: How would you implement a singleton that survives serialization, reflection attacks, and works correctly across multiple class loaders in a J2EE container?</h6>
-<p style="color: #1e293b; line-height: 1.7; font-size: 14px"><strong>Answer:</strong> The most robust solution is the <span style="color: #10b981; font-weight: 600">enum singleton</span> combined with container-managed singletons. For serialization: enums are inherently serialization-safe - the JVM ensures only the named constants exist after deserialization. For reflection: the JVM prevents reflective instantiation of enums with <code>IllegalArgumentException</code>. For multiple class loaders: this is the hardest problem - true JVM-wide singletons are nearly impossible. Solutions: (1) Place singleton class in a shared parent class loader (system classpath). (2) Use JNDI to bind the singleton and look it up from child class loaders. (3) Use a [[dependency-injection]](/topic/design-patterns/dependency-injection) container like Spring which manages singleton scope at the container level, not JVM level. (4) Accept per-classloader singletons and design accordingly. If you must have a process-wide singleton, consider using the operating system: a named pipe, shared memory segment, or network socket that only one process can bind.</p>
-</div>
-</div>
-</div>
-<hr />
-<h2 id="interview-deep-dive-bill-pugh-and-enum-solutions">Interview Deep-Dive: Bill Pugh and Enum Solutions</h2>
-<div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e40af; margin-top: 0">Level 1: Explain how the Bill Pugh singleton achieves lazy loading.</h4>
-<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> The Bill Pugh pattern uses a static inner class to hold the singleton instance. In Java, <span style="color: #10b981; font-weight: 600">inner classes are not loaded until they are referenced</span>. When you call <code>getInstance()</code>, it references the inner <code>SingletonHolder</code> class, triggering its loading. At that point, the static final INSTANCE field is initialized. Before <code>getInstance()</code> is called, the inner class doesn't exist in memory, achieving true lazy initialization without explicit synchronization.</p>
-<div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 2: When would you choose enum singleton over Bill Pugh, and vice versa?</h5>
-<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> Choose <span style="color: #10b981; font-weight: 600">enum singleton</span> when: (1) You need serialization safety without additional code. (2) You want protection against reflection attacks. (3) You don't need to extend another class. (4) Eager initialization is acceptable. Choose <span style="color: #10b981; font-weight: 600">Bill Pugh</span> when: (1) You need lazy initialization and the singleton is expensive to create. (2) You need to extend another class (enums cannot extend classes). (3) You're working with frameworks that don't handle enum singletons well. (4) You need to implement interfaces (both support this, but Bill Pugh is more natural). In modern Java, I default to enum unless I specifically need inheritance or lazy initialization.</p>
+<h5 style="color: #1e40af; margin-top: 0">Level 2: What are the thread-safety considerations when implementing singletons in Python?</h5>
+<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> Python's GIL (Global Interpreter Lock) provides some thread safety, but you still need explicit locking for singleton creation. The race condition occurs when: (1) Thread A checks if instance exists (None), (2) Thread B checks simultaneously (also None), (3) Both threads create instances. Solution: Use double-checked locking with threading.Lock - check instance without lock (fast path), acquire lock only if None, check again inside lock. This pattern minimizes lock contention while ensuring thread safety. The metaclass approach is preferred as it centralizes this logic.</p>
 <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px">
 <h6 style="color: #1e40af; margin-top: 0">Level 3: Design a singleton that can be configured with different implementations at startup (like a test mode vs production mode) while maintaining thread safety and singleton guarantees.</h6>
-<p style="color: #1e293b; line-height: 1.7; font-size: 14px"><strong>Answer:</strong> Use a configurable holder pattern with interface-based design:
-  <br/><br/>
-<code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px">public interface Service { void doWork(); }</code>
-  <br/><br/>
-  Create a holder that accepts configuration before first access:
-  <br/><br/>
-<code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px">ServiceHolder.configure(ProductionService::new);</code> // Call once at startup
-  <br/>
-<code style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px">Service svc = ServiceHolder.getInstance();</code>
-  <br/><br/>
-The holder uses <code>AtomicReference</code> for the factory and lazy initialization for the instance. The <code>configure()</code> method uses compareAndSet to ensure it's only called once - subsequent calls throw an exception. This pattern is used by logging frameworks like SLF4J where you configure the logging implementation at startup. For testing, call <code>ServiceHolder.configure(MockService::new)</code> before any code accesses the singleton. Key invariant: configuration must happen before first access, enforced by throwing if <code>getInstance()</code> is called before <code>configure()</code> or if <code>configure()</code> is called after <code>getInstance()</code>.</p>
+<p style="color: #1e293b; line-height: 1.7; font-size: 14px"><strong>Answer:</strong> Use a configurable holder pattern with interface-based design and environment detection. Create an abstract base class defining the interface, then implement concrete classes for production and test modes. Use a holder module that detects the environment (via environment variables or configuration) during first import and instantiates the appropriate implementation. For runtime configuration, implement a configure() method that must be called before first use - use threading.Lock with a _configured flag to ensure it's only called once. Store the factory function and lazily create the instance on first access. This pattern is used by logging frameworks where you configure the backend at startup. For testing, set the environment variable or call configure() with the test implementation before any code accesses the singleton.</p>
 </div>
 </div>
 </div>
@@ -869,21 +529,21 @@ The holder uses <code>AtomicReference</code> for the factory and lazy initializa
 <h6 style="color: #1e40af; margin-top: 0">Level 3: Design a testing strategy for a system where 50+ classes depend on a DatabaseConnection singleton, some of which need real database access in integration tests while unit tests need mocks.</h6>
 <p style="color: #1e293b; line-height: 1.7; font-size: 14px"><strong>Answer:</strong> Implement a <span style="color: #10b981; font-weight: 600">layered singleton with environment-aware initialization</span>:
   <br/><br/>
-(1) <strong>Interface Layer:</strong> Define <code>DatabaseConnection</code> interface with all public methods.
+(1) <strong>Interface Layer:</strong> Define abstract <code>DatabaseConnection</code> base class with all public methods.
   <br/><br/>
 (2) <strong>Provider Pattern:</strong> Create <code>DatabaseConnectionProvider</code> singleton that returns the appropriate implementation:
   <br/>
         - In production: returns the real pooled connection
   <br/>
-- In unit tests: returns a mock (detect via <code>System.getProperty("test.mode")</code> or TestNG/JUnit runner detection)
+- In unit tests: returns a mock (detect via <code>os.environ.get("TEST_MODE")</code> or pytest detection)
   <br/>
-        - In integration tests: returns a test database connection (H2 in-memory or testcontainers)
+        - In integration tests: returns a test database connection (SQLite in-memory or testcontainers)
   <br/><br/>
-(3) <strong>Scoped Instances:</strong> For unit tests, use thread-local or context-var scoped instances so parallel tests don't interfere.
+(3) <strong>Scoped Instances:</strong> For unit tests, use contextvars scoped instances so parallel tests don't interfere.
   <br/><br/>
-(4) <strong>Reset Hooks:</strong> Integration tests get a fresh database state via <code>@BeforeEach</code> that truncates tables or restores from snapshot.
+(4) <strong>Reset Hooks:</strong> Integration tests get a fresh database state via pytest fixtures that truncate tables or restore from snapshot.
   <br/><br/>
-(5) <strong>Gradual Migration:</strong> New code uses constructor injection with the provider as default. Old code continues using <code>getInstance()</code> which delegates to the provider.
+(5) <strong>Gradual Migration:</strong> New code uses constructor injection with the provider as default. Old code continues using <code>get_instance()</code> which delegates to the provider.
   <br/><br/>
 This approach lets you run: unit tests (fast, mocked), integration tests (real DB, isolated), and E2E tests (production config) - all with the same codebase and minimal changes to existing code.</p>
 </div>
@@ -916,100 +576,6 @@ This approach lets you run: unit tests (fast, mocked), integration tests (real D
 </div>
 </div>
 </div>
-<hr />
-<h2 id="real-world-implementation-connection-pool-singleton">Real-World Implementation: Connection Pool Singleton</h2>
-<pre><code class="language-java">/**
- * Production-grade database connection pool singleton.
- *
- * Demonstrates:
- * - Bill Pugh pattern for thread-safe lazy initialization
- * - Interface-based design for testability
- * - Graceful shutdown handling
- * - Configuration from environment
- */
-public interface ConnectionPool {
-    Connection getConnection() throws SQLException;
-    void releaseConnection(Connection connection);
-    PoolStats getStats();
-    void shutdown();
-}
-
-public final class HikariConnectionPool implements ConnectionPool {
-
-    private final HikariDataSource dataSource;
-    private final AtomicBoolean shutdown = new AtomicBoolean(false);
-
-    private HikariConnectionPool() {
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(System.getenv(&quot;DATABASE_URL&quot;));
-        config.setUsername(System.getenv(&quot;DATABASE_USER&quot;));
-        config.setPassword(System.getenv(&quot;DATABASE_PASSWORD&quot;));
-        config.setMaximumPoolSize(
-            Integer.parseInt(System.getenv().getOrDefault(&quot;DB_POOL_SIZE&quot;, &quot;10&quot;))
-        );
-        config.setMinimumIdle(2);
-        config.setIdleTimeout(300000);  // 5 minutes
-        config.setConnectionTimeout(10000);  // 10 seconds
-        config.setMaxLifetime(1800000);  // 30 minutes
-
-        // Add metrics
-        config.setMetricRegistry(Metrics.getRegistry());
-
-        this.dataSource = new HikariDataSource(config);
-
-        // Register shutdown hook
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
-    }
-
-    // Bill Pugh holder pattern
-    private static class PoolHolder {
-        private static final HikariConnectionPool INSTANCE = new HikariConnectionPool();
-    }
-
-    public static ConnectionPool getInstance() {
-        return PoolHolder.INSTANCE;
-    }
-
-    @Override
-    public Connection getConnection() throws SQLException {
-        if (shutdown.get()) {
-            throw new SQLException(&quot;Connection pool has been shut down&quot;);
-        }
-        return dataSource.getConnection();
-    }
-
-    @Override
-    public void releaseConnection(Connection connection) {
-        try {
-            if (connection != null &amp;&amp; !connection.isClosed()) {
-                connection.close();  // Returns to pool, doesn't actually close
-            }
-        } catch (SQLException e) {
-            // Log and continue - don't fail on cleanup
-            logger.warn(&quot;Error releasing connection&quot;, e);
-        }
-    }
-
-    @Override
-    public PoolStats getStats() {
-        HikariPoolMXBean poolMXBean = dataSource.getHikariPoolMXBean();
-        return new PoolStats(
-            poolMXBean.getTotalConnections(),
-            poolMXBean.getActiveConnections(),
-            poolMXBean.getIdleConnections(),
-            poolMXBean.getThreadsAwaitingConnection()
-        );
-    }
-
-    @Override
-    public void shutdown() {
-        if (shutdown.compareAndSet(false, true)) {
-            logger.info(&quot;Shutting down connection pool&quot;);
-            dataSource.close();
-        }
-    }
-}
-</code></pre>
 <hr />
 <h2 id="anti-patterns-and-code-smells">Anti-Patterns and Code Smells</h2>
 <div style="background: #fef2f2;border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -1061,10 +627,9 @@ public final class HikariConnectionPool implements ConnectionPool {
 <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem">Interview Checklist</div>
 <ul style="margin: 0; padding-left: 1.5rem; line-height: 1.8">
 <li><strong>Definition:</strong> Ensures exactly one instance with global access point</li>
-<li><strong>Thread Safety:</strong> Requires explicit handling - DCL (volatile), Bill Pugh (holder), or enum</li>
-<li><strong>Best Java Approach:</strong> Enum singleton (handles serialization, reflection, thread safety)</li>
-<li><strong>Best Python Approach:</strong> Module-level instance or metaclass</li>
-<li><strong>Best Go Approach:</strong> sync.Once pattern</li>
+<li><strong>Thread Safety:</strong> Requires explicit handling with locks or language-specific mechanisms</li>
+<li><strong>Best Python Approach:</strong> Module-level instance or metaclass with thread-safe initialization</li>
+<li><strong>Best Go Approach:</strong> sync.Once pattern for guaranteed one-time initialization</li>
 <li><strong>Testing Strategy:</strong> Interface + DI, or reset methods with caution</li>
 <li><strong>Common Pitfall:</strong> Using singleton for convenience instead of necessity</li>
 <li><strong>Distributed Systems:</strong> Use leader election, distributed locks, or idempotent design</li>

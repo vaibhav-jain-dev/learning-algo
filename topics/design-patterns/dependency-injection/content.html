@@ -63,7 +63,7 @@
 <p><strong>Critical Insight</strong>: DI is not merely about &quot;passing things through constructors.&quot; It represents a fundamental architectural decision that inverts the traditional control flow of object creation, moving responsibility from the consumer to an external orchestrator (often called the <strong>composition root</strong>).</p>
 <h2 id="why-this-matters-for-interviews">Why This Matters for Interviews</h2>
 <h3 id="industry-prevalence-and-expectations">Industry Prevalence and Expectations</h3>
-<p>Every major enterprise framework is built around DI: Spring (Java), ASP.NET Core (C#), Angular (TypeScript), NestJS (Node.js), and FastAPI (Python). Interviewers expect candidates to understand not just the &quot;what&quot; but the &quot;why&quot; and &quot;when not to.&quot;</p>
+<p>Every major enterprise framework is built around DI: FastAPI (Python), Django (Python), ASP.NET Core (C#), Angular (TypeScript), and NestJS (Node.js). Interviewers expect candidates to understand not just the &quot;what&quot; but the &quot;why&quot; and &quot;when not to.&quot;</p>
 <h3 id="real-world-stakes">Real-World Stakes</h3>
 <p><strong>Uber's Payment System</strong>: Uber uses DI extensively to swap payment processors per region. In India, they inject UPI implementations; in the US, credit card processors. Same business logic, different payment infrastructure.</p>
 <p><strong>Netflix's Chaos Engineering</strong>: Netflix injects fault-tolerant wrappers around services. During chaos experiments, they inject implementations that randomly fail, testing system resilience without modifying business code.</p>

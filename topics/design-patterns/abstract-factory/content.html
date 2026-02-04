@@ -232,25 +232,6 @@ The pragmatic solution for most systems is Approach 1 combined with [[Dependency
 If you create a MacButton but run it with a Windows event loop, the button will never receive click events. The event loop doesn't know how to translate Windows messages into Mac responder chain calls. <strong>This is why the factory must also provide the event loop</strong> - it's part of the family.
 </p>
 </div>
-<h3 id="24-real-implementation-java-swings-pluggable-look-and-feel">2.4 Real Implementation: Java Swing's Pluggable Look and Feel</h3>
-<pre><code class="language-java">    // Java's UIManager is an Abstract Factory in disguise
-    UIManager.setLookAndFeel(&quot;javax.swing.plaf.metal.MetalLookAndFeel&quot;);
-
-    // Under the hood:
-    // 1. MetalLookAndFeel is a factory that provides:
-    //    - MetalButtonUI (how buttons render)
-    //    - MetalScrollBarUI (how scrollbars render)
-    //    - MetalTreeUI (how trees render)
-    //    - ... 50+ UI delegate classes
-
-    // The factory creates ComponentUI instances:
-    public abstract class LookAndFeel {
-    // Factory methods for each component type
-    public abstract ButtonUI getButtonUI(JButton b);
-    public abstract ScrollBarUI getScrollBarUI(JScrollBar sb);
-    // ... etc
-    }</code></pre>
-<p><strong>Why Swing's approach is interesting</strong>: The UI delegates are created lazily and cached. The factory doesn't create widgets; it creates <em>renderers</em> for widgets. This is a variant called <strong>Abstract Factory with Flyweight</strong>.</p>
 <h3 id="interview-questions-ui-toolkit-3-levels-deep">Interview Questions: UI Toolkit (3 Levels Deep)</h3>
 <div style="background: #f8fafc;border-radius: 8px; padding: 20px; margin: 20px 0">
 <p><strong>Level 1: &quot;Why is UI toolkit development a canonical example of Abstract Factory?&quot;</strong></p>
