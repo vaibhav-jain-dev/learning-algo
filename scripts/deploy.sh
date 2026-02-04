@@ -1059,9 +1059,25 @@ echo -e "  ${DIM}$(printf '─%.0s' {1..52})${NC}"
 printf "  ${BOLD}%-30s %10s${NC}\n" "Total" "$(format_duration $TOTAL_DURATION)"
 echo ""
 
-echo -e "${BOLD}Application URLs:${NC}"
-echo "  https://learn.arvaibhav.cloud"
-echo "  https://learn-api.arvaibhav.cloud"
-echo ""
+# Show application URLs from docker-compose.yml cloudflare labels or APP_URLS env var
+if [ -n "$APP_URLS" ]; then
+    # Use APP_URLS environment variable if set (comma-separated)
+    echo -e "${BOLD}Application URLs:${NC}"
+    echo "$APP_URLS" | tr ',' '\n' | while read url; do
+        [ -n "$url" ] && echo "  https://$url"
+    done
+    echo ""
+elif [ -f "$PROJECT_ROOT/docker-compose.yml" ]; then
+    # Extract from docker-compose.yml cloudflare.hostname labels
+    HOSTNAMES=$(grep -oP 'cloudflare\.hostname:\s*\K[^\s"]+' "$PROJECT_ROOT/docker-compose.yml" 2>/dev/null | tr '\n' ' ')
+    if [ -n "$HOSTNAMES" ]; then
+        echo -e "${BOLD}Application URLs:${NC}"
+        for hostname in $HOSTNAMES; do
+            echo "  https://$hostname"
+        done
+        echo ""
+    fi
+fi
+
 echo -e "${DIM}Deployed: $CURRENT_BRANCH @ $COMMIT_HASH${NC}"
 echo ""
