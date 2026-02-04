@@ -1025,11 +1025,11 @@ echo -e "  ${DIM}$(printf '─%.0s' {1..52})${NC}"
 
 # Print each step with its metrics
 for i in "${!STEP_NAMES[@]}"; do
-    local step="${STEP_NAMES[$i]}"
-    local duration=${STEP_DURATIONS[$i]:-0}
-    local status=${STEP_STATUSES[$i]:-"pending"}
-    local status_icon
-    local status_color
+    step="${STEP_NAMES[$i]}"
+    duration=${STEP_DURATIONS[$i]:-0}
+    status=${STEP_STATUSES[$i]:-"pending"}
+    status_icon=""
+    status_color=""
 
     case "$status" in
         "success")
