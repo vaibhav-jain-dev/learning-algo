@@ -136,61 +136,10 @@ jobs:
           echo "✅ All required configuration present"
           echo "validation_passed=true" >> $GITHUB_OUTPUT
 
-  test-connection:
-    name: Test SSH Connection
-    runs-on: ubuntu-latest
-    needs: validate
-    if: needs.validate.outputs.validation_passed == 'true'
-    env:
-      SSH_HOST: ${{ secrets.SSH_HOST || vars.SSH_HOST }}
-      SSH_USERNAME: ${{ secrets.SSH_USERNAME || vars.SSH_USERNAME }}
-      SSH_PORT: ${{ secrets.SSH_PORT || vars.SSH_PORT || '22' }}
-    steps:
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -p $SSH_PORT -H $SSH_HOST >> ~/.ssh/known_hosts 2>/dev/null || true
-
-      - name: Test SSH connection
-        run: |
-          echo "=========================================="
-          echo "  SSH Connection Test"
-          echo "=========================================="
-          echo "Host: $SSH_HOST"
-          echo "User: $SSH_USERNAME"
-          echo "Port: $SSH_PORT"
-          echo "=========================================="
-
-          ssh -v -o BatchMode=yes \
-              -o ConnectTimeout=30 \
-              -o StrictHostKeyChecking=no \
-              -i ~/.ssh/deploy_key \
-              -p $SSH_PORT \
-              $SSH_USERNAME@$SSH_HOST \
-              "echo 'SSH connection successful'; uname -a; docker --version; docker compose version" 2>&1 || {
-            echo "=========================================="
-            echo "SSH Connection FAILED"
-            echo ""
-            echo "Troubleshooting tips:"
-            echo "1. Verify SSH_HOST is correct and reachable"
-            echo "2. Verify SSH_USERNAME has SSH access"
-            echo "3. Verify SSH_PRIVATE_KEY matches the public key on the server"
-            echo "4. Check if the server allows SSH on port $SSH_PORT"
-            echo "5. Ensure the server's firewall allows incoming SSH connections"
-            echo "=========================================="
-            exit 1
-          }
-
-          echo "=========================================="
-          echo "Connection test PASSED"
-          echo "=========================================="
-
   deploy:
     name: Deploy Application
     runs-on: ubuntu-latest
-    needs: [validate, test-connection]
+    needs: validate
     if: needs.validate.outputs.validation_passed == 'true'
     env:
       SSH_HOST: ${{ secrets.SSH_HOST || vars.SSH_HOST }}
