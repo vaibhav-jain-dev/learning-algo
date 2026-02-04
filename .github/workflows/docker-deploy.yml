@@ -191,31 +191,71 @@ jobs:
           COMMIT_MSG=$(git log -1 --no-merges --pretty=format:"%s")
           COMMIT_SHA=$(git log -1 --no-merges --pretty=format:"%h")
 
-          # Write to job summary
-          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          # Create styled job summary
+          cat >> $GITHUB_STEP_SUMMARY << 'EOF_SUMMARY'
+          # 🚀 Deployment Complete
+
+          ## 📦 Deployment Info
+          EOF_SUMMARY
+
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Commit:** \`$COMMIT_SHA\` - $COMMIT_MSG" >> $GITHUB_STEP_SUMMARY
+          echo "| | |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Branch** | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | [\`$COMMIT_SHA\`](https://github.com/${{ github.repository }}/commit/$COMMIT_SHA) |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Message** | $COMMIT_MSG |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Triggered by** | @${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Extract metrics and write to job summary
-          echo "## Deployment Metrics" >> $GITHUB_STEP_SUMMARY
+          # Extract and format metrics as a table
+          echo "## 📊 Deployment Metrics" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Step | Duration | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|----------|--------|" >> $GITHUB_STEP_SUMMARY
 
-          # Extract metrics table from output (between "Deployment Metrics:" and "Application URLs:")
-          sed -n '/Deployment Metrics:/,/Application URLs:/p' /tmp/deploy_output.txt | \
-            grep -v "Application URLs:" | \
-            sed 's/\x1b\[[0-9;]*m//g' >> $GITHUB_STEP_SUMMARY
+          # Parse metrics from deploy output
+          sed -n '/Deployment Metrics:/,/Application URLs:\|Deployed:/p' /tmp/deploy_output.txt | \
+            sed 's/\x1b\[[0-9;]*m//g' | \
+            grep -E "SSH Connection|Setup Directory|Sync Code|Configure Env|Docker Operations|Health Check|Cloudflare Configuration|Total" | \
+            while IFS= read -r line; do
+              # Extract step name, duration, and status
+              STEP=$(echo "$line" | awk '{print $1, $2, $3}' | sed 's/[[:space:]]*$//')
+              DURATION=$(echo "$line" | grep -oP '\d+[msh]+' | head -1)
+
+              if echo "$line" | grep -q "success"; then
+                STATUS="✅ Success"
+              elif echo "$line" | grep -q "failed"; then
+                STATUS="❌ Failed"
+              elif echo "$line" | grep -q "skipped"; then
+                STATUS="⊖ Skipped"
+              elif echo "$line" | grep -q "Total"; then
+                STEP="**Total**"
+                STATUS=""
+              else
+                STATUS="○ Pending"
+              fi
+
+              [ -n "$DURATION" ] && echo "| $STEP | \`$DURATION\` | $STATUS |" >> $GITHUB_STEP_SUMMARY
+            done
 
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # Extract application URLs if present
           if grep -q "Application URLs:" /tmp/deploy_output.txt; then
-            echo "## Application URLs" >> $GITHUB_STEP_SUMMARY
+            echo "## 🌐 Application URLs" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
             sed -n '/Application URLs:/,/Deployed:/p' /tmp/deploy_output.txt | \
               grep "https://" | \
-              sed 's/\x1b\[[0-9;]*m//g' >> $GITHUB_STEP_SUMMARY
+              sed 's/\x1b\[[0-9;]*m//g' | \
+              sed 's/^[[:space:]]*//' | \
+              while read url; do
+                echo "- 🔗 [$url]($url)" >> $GITHUB_STEP_SUMMARY
+              done
             echo "" >> $GITHUB_STEP_SUMMARY
           fi
+
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "*Deployment completed at $(date -u '+%Y-%m-%d %H:%M:%S UTC')*" >> $GITHUB_STEP_SUMMARY
 
       - name: Cleanup SSH key
         if: always()
