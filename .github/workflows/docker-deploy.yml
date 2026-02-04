@@ -241,45 +241,46 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # Extract and display container status
-          if grep -q "CONTAINER_STATUS_JSON:" /tmp/deploy_output.txt; then
+          if grep -q "CONTAINERS:" /tmp/deploy_output.txt; then
             echo "## 🐳 Container Status" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "| Container | Status | Health |" >> $GITHUB_STEP_SUMMARY
             echo "|-----------|--------|--------|" >> $GITHUB_STEP_SUMMARY
 
-            # Parse container status JSON
-            sed -n '/CONTAINER_STATUS_JSON:/,/^[^{]/p' /tmp/deploy_output.txt | \
-              grep '^{' | \
-              while read -r json_line; do
-                # Extract name, state, and health using grep and sed
-                NAME=$(echo "$json_line" | grep -oP '"Name":"[^"]*"' | cut -d'"' -f4)
-                STATE=$(echo "$json_line" | grep -oP '"State":"[^"]*"' | cut -d'"' -f4)
-                STATUS=$(echo "$json_line" | grep -oP '"Status":"[^"]*"' | cut -d'"' -f4)
-                HEALTH=$(echo "$json_line" | grep -oP '"Health":"[^"]*"' | cut -d'"' -f4)
+            # Extract container table, skip header, strip ANSI codes
+            sed -n '/^CONTAINERS:/,/^STATS:/p' /tmp/deploy_output.txt | \
+              sed 's/\x1b\[[0-9;]*m//g' | \
+              grep -v "CONTAINERS:" | \
+              grep -v "STATS:" | \
+              grep -v "^NAME" | \
+              grep -v "^$" | \
+              while IFS=$'\t' read -r name status health; do
+                # Skip empty lines
+                [ -z "$name" ] && continue
 
-                # Determine status emoji and color
-                if [ "$STATE" = "running" ]; then
-                  STATE_EMOJI="✅"
-                elif [ "$STATE" = "exited" ]; then
-                  STATE_EMOJI="❌"
+                # Determine status emoji
+                if echo "$status" | grep -qi "up\|running"; then
+                  STATUS_EMOJI="✅"
+                elif echo "$status" | grep -qi "exited"; then
+                  STATUS_EMOJI="❌"
                 else
-                  STATE_EMOJI="⚠️"
+                  STATUS_EMOJI="⚠️"
                 fi
 
-                # Determine health status
-                if [ -z "$HEALTH" ] || [ "$HEALTH" = "null" ]; then
-                  HEALTH_STATUS="—"
-                elif [ "$HEALTH" = "healthy" ]; then
-                  HEALTH_STATUS="💚 Healthy"
-                elif [ "$HEALTH" = "unhealthy" ]; then
-                  HEALTH_STATUS="💔 Unhealthy"
-                elif [ "$HEALTH" = "starting" ]; then
-                  HEALTH_STATUS="🔄 Starting"
+                # Determine health status with emoji
+                if [ -z "$health" ] || echo "$health" | grep -qi "^[[:space:]]*$"; then
+                  HEALTH_DISPLAY="—"
+                elif echo "$health" | grep -qi "healthy"; then
+                  HEALTH_DISPLAY="💚 Healthy"
+                elif echo "$health" | grep -qi "unhealthy"; then
+                  HEALTH_DISPLAY="💔 Unhealthy"
+                elif echo "$health" | grep -qi "starting"; then
+                  HEALTH_DISPLAY="🔄 Starting"
                 else
-                  HEALTH_STATUS="$HEALTH"
+                  HEALTH_DISPLAY="$health"
                 fi
 
-                echo "| \`$NAME\` | $STATE_EMOJI $STATUS | $HEALTH_STATUS |" >> $GITHUB_STEP_SUMMARY
+                echo "| \`$(echo $name | xargs)\` | $STATUS_EMOJI $(echo $status | xargs) | $HEALTH_DISPLAY |" >> $GITHUB_STEP_SUMMARY
               done
 
             echo "" >> $GITHUB_STEP_SUMMARY
