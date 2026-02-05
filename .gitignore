@@ -1,5 +1,8 @@
 *.DS_Store
 
+# Compiled Go binary
+backend/server
+
 # Local deployment configuration (contains secrets)
 .env.deploy
 .env.override
