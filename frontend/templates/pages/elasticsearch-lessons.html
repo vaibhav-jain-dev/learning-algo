@@ -508,15 +508,45 @@ packages  - Test packages (bundles of tests)</code></pre>
     min-height: calc(100vh - 60px);
 }
 
-.sidebar {
+/* Dark theme for the entire adhd-layout on this page */
+.adhd-layout {
+    background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+}
+
+.adhd-nav-panel {
     background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-    border-right: 1px solid rgba(99, 102, 241, 0.15);
-    overflow-y: auto;
+    border-right: 1px solid rgba(99, 102, 241, 0.15) !important;
+}
+
+.adhd-main-content {
+    background: transparent;
+}
+
+.adhd-quick-ref {
+    background: transparent;
+}
+
+.adhd-quick-ref .quick-ref-card {
+    background: #1e293b !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.adhd-quick-ref .quick-ref-header {
+    color: #4ecdc4;
+}
+
+.adhd-quick-ref .quick-ref-key {
+    background: #2d3748;
+    color: #4ecdc4;
+}
+
+.adhd-quick-ref .quick-ref-value {
+    color: #9ca3af;
 }
 
 .sidebar-header {
     padding: 1.5rem;
-    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.15) !important;
     background: rgba(30, 41, 59, 0.5);
 }
 
@@ -613,11 +643,7 @@ packages  - Test packages (bundles of tests)</code></pre>
     margin-left: -3px;
 }
 
-.content {
-    background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
-    padding: 2rem;
-    overflow-y: auto;
-}
+/* .content class removed - dark bg now on .adhd-layout */
 
 .lesson {
     max-width: 900px;
@@ -838,6 +864,56 @@ code {
     color: #e6edf3;
     white-space: pre-wrap;
     word-break: break-word;
+}
+
+/* Override adhd-layout nuclear border removal for Elasticsearch page elements */
+.adhd-layout .concept-box {
+    border-left: 3px solid #4ecdc4 !important;
+}
+
+.adhd-layout .lesson-link.active {
+    border-left: 3px solid #6366f1 !important;
+}
+
+.adhd-layout .sidebar-header {
+    border-bottom: 1px solid rgba(99, 102, 241, 0.15) !important;
+}
+
+.adhd-layout .adhd-nav-panel {
+    border-right: 1px solid rgba(99, 102, 241, 0.15) !important;
+}
+
+.adhd-layout .lesson-section h2 {
+    border-bottom: 1px solid #4b5563 !important;
+}
+
+.adhd-layout .lesson-nav {
+    border-top: 1px solid #333 !important;
+}
+
+.adhd-layout .summary-box {
+    border: 1px solid #4ecdc4 !important;
+}
+
+.adhd-layout .comparison-table th,
+.adhd-layout .comparison-table td {
+    border-bottom: 1px solid #4b5563 !important;
+}
+
+.adhd-layout .query-result-container {
+    border: 1px solid #30363d !important;
+}
+
+/* Ensure list item bullets are visible */
+.adhd-layout .lesson-section ul {
+    color: #ccc;
+    padding-left: 1.5rem;
+}
+
+.adhd-layout .lesson-section li {
+    color: #ccc;
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
 }
 </style>
 
@@ -2239,7 +2315,169 @@ term query "complete":
             </section>
 
             <div class="lesson-nav">
-                <a class="btn btn-outline" onclick="loadLesson('match-phrase')">&#8592; Previous</a>
+                <a class="btn btn-outline" onclick="loadLesson('query-string')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('terms-query')">Next: Terms Query &#8594;</a>
+            </div>
+        `
+    },
+    'terms-query': {
+        title: 'Terms Query',
+        category: 'Query DSL',
+        difficulty: 'Beginner',
+        content: `
+            <h1>Terms Query: Match Multiple Exact Values</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Query DSL</span>
+                <span class="difficulty">Difficulty: Beginner</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Terms Query?</h2>
+                <p>The <code>terms</code> query finds documents containing one or more <strong>exact values</strong> in a field. Think of it as the Elasticsearch equivalent of SQL's <code>IN</code> clause.</p>
+
+                <div class="concept-box">
+                    <h3>term vs terms - What's the Difference?</h3>
+                    <pre><code class="language-text">term query (singular):
+  Match ONE exact value
+  "Find tests in category 'hematology'"
+  SQL: WHERE category = 'hematology'
+
+terms query (plural):
+  Match ANY of multiple exact values
+  "Find tests in category 'hematology' OR 'biochemistry' OR 'immunology'"
+  SQL: WHERE category IN ('hematology', 'biochemistry', 'immunology')</code></pre>
+                    <p>Both queries work on <strong>exact, non-analyzed</strong> values. Use them on <code>keyword</code> fields, not <code>text</code> fields.</p>
+                </div>
+
+                <div class="info-box">
+                    <h4>&#128161; Key Insight</h4>
+                    <p>The <code>terms</code> query uses OR logic internally. A document matches if the field contains <strong>any one</strong> of the specified values. You do not need a bool/should wrapper for this.</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Basic Terms Query</h2>
+
+                <div class="example-query">
+                    <h4>Match Multiple Categories</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "terms": {
+      "category.keyword": ["hematology", "biochemistry", "immunology"]
+    }
+  }
+}</code></pre>
+                    <p>Matches any test whose category is "hematology", "biochemistry", OR "immunology"</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;terms&quot;:{&quot;category.keyword&quot;:[&quot;hematology&quot;,&quot;biochemistry&quot;,&quot;immunology&quot;]}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Match Multiple Test Names (Keyword)</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "terms": {
+      "testName.keyword": [
+        "Complete Blood Count (CBC)",
+        "Liver Function Test (LFT)",
+        "Thyroid Profile"
+      ]
+    }
+  }
+}</code></pre>
+                    <p>Exact match on multiple test names using the .keyword sub-field</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;terms&quot;:{&quot;testName.keyword&quot;:[&quot;Complete Blood Count (CBC)&quot;,&quot;Liver Function Test (LFT)&quot;,&quot;Thyroid Profile&quot;]}}}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Terms Lookup: Dynamic Value Lists</h2>
+                <p>Instead of hardcoding values, you can fetch them from another document. This is called a <strong>terms lookup</strong>.</p>
+
+                <div class="concept-box">
+                    <h3>How Terms Lookup Works</h3>
+                    <pre><code class="language-text">Step 1: You have a "favorites" index with a document:
+{
+  "userId": "user123",
+  "favoriteCategories": ["hematology", "biochemistry"]
+}
+
+Step 2: Use terms lookup to dynamically fetch those values:
+The terms query fetches "favoriteCategories" from the
+document and uses them as the filter values.
+
+This avoids hardcoding values and keeps queries dynamic!</code></pre>
+                </div>
+
+                <div class="example-query">
+                    <h4>Terms Lookup Syntax</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "terms": {
+      "category.keyword": {
+        "index": "user_preferences",
+        "id": "user123",
+        "path": "favoriteCategories"
+      }
+    }
+  }
+}</code></pre>
+                    <p>Dynamically fetches values from another index/document. The "path" field specifies which field to read values from.</p>
+                </div>
+
+                <div class="info-box">
+                    <h4>&#128161; Terms Lookup Use Cases</h4>
+                    <p><strong>Personalized search:</strong> Filter tests based on a user's saved preferences or past orders.</p>
+                    <p><strong>Access control:</strong> Filter results based on a user's allowed categories stored in a permissions index.</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Combining terms with bool</h2>
+
+                <div class="example-query">
+                    <h4>Terms in a Bool Filter</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "testName": "blood" } }
+      ],
+      "filter": [
+        { "terms": { "category.keyword": ["hematology", "biochemistry"] } },
+        { "range": { "consumerPrice": { "lte": 500 } } }
+      ]
+    }
+  }
+}</code></pre>
+                    <p>Search for "blood" tests in specific categories, priced under 500. Using filter context for terms gives caching benefits.</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;bool&quot;:{&quot;must&quot;:[{&quot;match&quot;:{&quot;testName&quot;:&quot;blood&quot;}}],&quot;filter&quot;:[{&quot;terms&quot;:{&quot;category.keyword&quot;:[&quot;hematology&quot;,&quot;biochemistry&quot;]}},{&quot;range&quot;:{&quot;consumerPrice&quot;:{&quot;lte&quot;:500}}}]}}}')">Try it</button>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; terms query matches any of multiple exact values (like SQL IN)</li>
+                        <li>&#10003; Use on keyword fields only, not analyzed text fields</li>
+                        <li>&#10003; terms lookup fetches values dynamically from another document</li>
+                        <li>&#10003; Combine with bool/filter for efficient cached filtering</li>
+                        <li>&#10003; Difference from term: term = one value, terms = multiple values</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('term-query')">&#8592; Previous</a>
                 <a class="btn btn-primary" onclick="loadLesson('range-query')">Next: Range Query &#8594;</a>
             </div>
         `
@@ -2360,7 +2598,194 @@ Examples:
             </section>
 
             <div class="lesson-nav">
-                <a class="btn btn-outline" onclick="loadLesson('term-query')">&#8592; Previous</a>
+                <a class="btn btn-outline" onclick="loadLesson('terms-query')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('exists-query')">Next: Exists Query &#8594;</a>
+            </div>
+        `
+    },
+    'exists-query': {
+        title: 'Exists Query',
+        category: 'Query DSL',
+        difficulty: 'Beginner',
+        content: `
+            <h1>Exists Query: Check Field Existence</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Query DSL</span>
+                <span class="difficulty">Difficulty: Beginner</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Exists Query?</h2>
+                <p>The <code>exists</code> query finds documents where a specific field has any non-null value. It is the Elasticsearch equivalent of SQL's <code>IS NOT NULL</code>.</p>
+
+                <div class="concept-box">
+                    <h3>When Does a Field "Exist"?</h3>
+                    <pre><code class="language-text">A field EXISTS if it has any indexable value:
+  &#10003; "testAlias": "CBC"            (string value)
+  &#10003; "consumerPrice": 0             (zero is a value)
+  &#10003; "consumerPrice": 150.50        (numeric value)
+  &#10003; "category": ["hematology"]     (array with values)
+  &#10003; "testDescription": ""          (empty string IS a value!)
+
+A field does NOT exist if:
+  &#10007; "testAlias": null              (explicit null)
+  &#10007; "testAlias": []                (empty array)
+  &#10007; Field is missing entirely from the document
+  &#10007; Field mapped with "index": false and "doc_values": false</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <h4>&#128161; Important Note About Empty Strings</h4>
+                    <p>An empty string <code>""</code> is considered a valid value in Elasticsearch. A field with value <code>""</code> <strong>does exist</strong>. This is different from SQL where empty strings and NULLs are sometimes treated similarly.</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Basic Exists Query</h2>
+
+                <div class="example-query">
+                    <h4>Find Documents Where testAlias Exists</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "exists": {
+      "field": "testAlias"
+    }
+  }
+}</code></pre>
+                    <p>Returns all tests that have a testAlias field with a non-null value</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;exists&quot;:{&quot;field&quot;:&quot;testAlias&quot;}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Check if testDescription Exists</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "exists": {
+      "field": "testDescription"
+    }
+  }
+}</code></pre>
+                    <p>Find all tests that have a description</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;exists&quot;:{&quot;field&quot;:&quot;testDescription&quot;}}}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Finding Missing Fields (NOT Exists)</h2>
+                <p>To find documents where a field is <strong>missing or null</strong>, wrap exists in a <code>bool/must_not</code> query.</p>
+
+                <div class="concept-box">
+                    <h3>SQL Comparison</h3>
+                    <pre><code class="language-text">SQL:
+  SELECT * FROM tests WHERE testAlias IS NULL;
+
+Elasticsearch:
+  Use bool/must_not with exists query
+
+SQL:
+  SELECT * FROM tests WHERE testAlias IS NOT NULL;
+
+Elasticsearch:
+  Use exists query directly</code></pre>
+                </div>
+
+                <div class="example-query">
+                    <h4>Find Tests Missing testAlias (IS NULL)</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "bool": {
+      "must_not": [
+        { "exists": { "field": "testAlias" } }
+      ]
+    }
+  }
+}</code></pre>
+                    <p>Returns tests where testAlias is null, empty array, or the field is completely missing</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;bool&quot;:{&quot;must_not&quot;:[{&quot;exists&quot;:{&quot;field&quot;:&quot;testAlias&quot;}}]}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Find Tests Missing consumerPrice</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "bool": {
+      "must_not": [
+        { "exists": { "field": "consumerPrice" } }
+      ]
+    }
+  }
+}</code></pre>
+                    <p>Find tests that do not have a price set</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;bool&quot;:{&quot;must_not&quot;:[{&quot;exists&quot;:{&quot;field&quot;:&quot;consumerPrice&quot;}}]}}}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Practical Patterns with Exists</h2>
+
+                <div class="example-query">
+                    <h4>Data Quality Check: Find Incomplete Records</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        { "bool": { "must_not": [{ "exists": { "field": "testDescription" } }] } },
+        { "bool": { "must_not": [{ "exists": { "field": "consumerPrice" } }] } },
+        { "bool": { "must_not": [{ "exists": { "field": "category" } }] } }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}</code></pre>
+                    <p>Find tests missing any of these fields - useful for data quality audits</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;bool&quot;:{&quot;should&quot;:[{&quot;bool&quot;:{&quot;must_not&quot;:[{&quot;exists&quot;:{&quot;field&quot;:&quot;testDescription&quot;}}]}},{&quot;bool&quot;:{&quot;must_not&quot;:[{&quot;exists&quot;:{&quot;field&quot;:&quot;consumerPrice&quot;}}]}},{&quot;bool&quot;:{&quot;must_not&quot;:[{&quot;exists&quot;:{&quot;field&quot;:&quot;category&quot;}}]}}],&quot;minimum_should_match&quot;:1}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Filter: Only Tests With Descriptions</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "testName": "blood" } }
+      ],
+      "filter": [
+        { "exists": { "field": "testDescription" } }
+      ]
+    }
+  }
+}</code></pre>
+                    <p>Search for "blood" tests, but only return results that have a description. Using filter context for exists is efficient and cacheable.</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;bool&quot;:{&quot;must&quot;:[{&quot;match&quot;:{&quot;testName&quot;:&quot;blood&quot;}}],&quot;filter&quot;:[{&quot;exists&quot;:{&quot;field&quot;:&quot;testDescription&quot;}}]}}}')">Try it</button>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; exists query finds documents where a field has any non-null value</li>
+                        <li>&#10003; Empty strings ("") count as existing; null and empty arrays do not</li>
+                        <li>&#10003; Use bool/must_not + exists to find missing/null fields (IS NULL equivalent)</li>
+                        <li>&#10003; Great for data quality checks and filtering incomplete records</li>
+                        <li>&#10003; Works efficiently in filter context with caching</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('range-query')">&#8592; Previous</a>
                 <a class="btn btn-primary" onclick="loadLesson('bool-query')">Next: Bool Query &#8594;</a>
             </div>
         `
@@ -2498,6 +2923,353 @@ Examples:
             <div class="lesson-nav">
                 <a class="btn btn-outline" onclick="loadLesson('exists-query')">&#8592; Previous</a>
                 <a class="btn btn-primary" onclick="loadLesson('boosting')">Next: Boosting Query &#8594;</a>
+            </div>
+        `
+    },
+    'boosting': {
+        title: 'Boosting Query',
+        category: 'Query DSL',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Boosting Query: Demote Without Excluding</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Query DSL</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is the Boosting Query?</h2>
+                <p>The <code>boosting</code> query lets you return documents matching a <strong>positive</strong> query while <strong>reducing</strong> the relevance score of documents that also match a <strong>negative</strong> query. Unlike <code>must_not</code>, it does not exclude documents -- it just pushes them down in the results.</p>
+
+                <div class="concept-box">
+                    <h3>Boosting vs Bool must_not</h3>
+                    <pre><code class="language-text">bool/must_not:
+  "Show me blood tests, but NOT expensive ones"
+  Expensive tests are COMPLETELY REMOVED from results
+  You get fewer results
+
+boosting query:
+  "Show me blood tests, but rank expensive ones lower"
+  Expensive tests STILL APPEAR, just ranked lower
+  You get ALL matching results, with better ones on top
+
+When to use boosting:
+  - You want to demote, not exclude
+  - "Prefer tests with descriptions over those without"
+  - "Show all results but rank discontinued tests lower"</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <h4>&#128161; Key Insight</h4>
+                    <p>Boosting is perfect when you want to influence ranking without losing results. The user still sees everything, but the most relevant items appear first.</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Boosting Query Structure</h2>
+
+                <div class="concept-box">
+                    <h3>Three Components</h3>
+                    <pre><code class="language-text">boosting query has three parts:
+
+1. positive (required):
+   The main query - documents MUST match this
+   These get their normal relevance score
+
+2. negative (required):
+   Documents matching this get their score reduced
+   They are NOT excluded, just demoted
+
+3. negative_boost (required):
+   A multiplier between 0 and 1.0
+   Applied to the score of documents matching the negative query
+   0.5 = halve the score, 0.1 = reduce to 10%, 0 = score becomes 0</code></pre>
+                </div>
+
+                <div class="example-query">
+                    <h4>Basic Boosting Query</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "boosting": {
+      "positive": {
+        "match": { "testName": "blood" }
+      },
+      "negative": {
+        "range": { "consumerPrice": { "gt": 500 } }
+      },
+      "negative_boost": 0.3
+    }
+  }
+}</code></pre>
+                    <p>Find all "blood" tests, but demote expensive ones (price > 500) by reducing their score to 30%</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;boosting&quot;:{&quot;positive&quot;:{&quot;match&quot;:{&quot;testName&quot;:&quot;blood&quot;}},&quot;negative&quot;:{&quot;range&quot;:{&quot;consumerPrice&quot;:{&quot;gt&quot;:500}}},&quot;negative_boost&quot;:0.3}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Demote Tests Without Descriptions</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "boosting": {
+      "positive": {
+        "match": { "testName": "test" }
+      },
+      "negative": {
+        "bool": {
+          "must_not": [
+            { "exists": { "field": "testDescription" } }
+          ]
+        }
+      },
+      "negative_boost": 0.2
+    }
+  }
+}</code></pre>
+                    <p>Find all tests matching "test", but push down results that lack a description (score reduced to 20%)</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;boosting&quot;:{&quot;positive&quot;:{&quot;match&quot;:{&quot;testName&quot;:&quot;test&quot;}},&quot;negative&quot;:{&quot;bool&quot;:{&quot;must_not&quot;:[{&quot;exists&quot;:{&quot;field&quot;:&quot;testDescription&quot;}}]}},&quot;negative_boost&quot;:0.2}}}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Understanding negative_boost Values</h2>
+
+                <div class="concept-box">
+                    <h3>Score Impact by negative_boost Value</h3>
+                    <pre><code class="language-text">Original score of matching document: 2.5
+
+negative_boost: 1.0  ->  Score: 2.5  (no change, useless)
+negative_boost: 0.5  ->  Score: 1.25 (halved - mild demotion)
+negative_boost: 0.3  ->  Score: 0.75 (moderate demotion)
+negative_boost: 0.1  ->  Score: 0.25 (strong demotion)
+negative_boost: 0.0  ->  Score: 0.0  (maximum demotion, pushed to bottom)
+
+Guidelines:
+  0.5 - 0.8  Gentle demotion (slightly less preferred)
+  0.2 - 0.5  Moderate demotion (noticeably lower)
+  0.0 - 0.2  Aggressive demotion (pushed to bottom)</code></pre>
+                </div>
+
+                <div class="example-query">
+                    <h4>Aggressive Demotion</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "boosting": {
+      "positive": {
+        "match_all": {}
+      },
+      "negative": {
+        "range": { "frequency": { "lt": 100 } }
+      },
+      "negative_boost": 0.1
+    }
+  }
+}</code></pre>
+                    <p>Return all tests but aggressively demote rarely ordered ones (frequency below 100)</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;boosting&quot;:{&quot;positive&quot;:{&quot;match_all&quot;:{}},&quot;negative&quot;:{&quot;range&quot;:{&quot;frequency&quot;:{&quot;lt&quot;:100}}},&quot;negative_boost&quot;:0.1}}}')">Try it</button>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Boosting query demotes results without excluding them</li>
+                        <li>&#10003; Three parts: positive (must match), negative (demote), negative_boost (multiplier)</li>
+                        <li>&#10003; negative_boost is a 0-1 multiplier applied to scores of negative matches</li>
+                        <li>&#10003; Use boosting when you want all results but prefer some over others</li>
+                        <li>&#10003; Use bool/must_not when you want to completely exclude results</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('bool-query')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('constant-score')">Next: Constant Score &#8594;</a>
+            </div>
+        `
+    },
+    'constant-score': {
+        title: 'Constant Score',
+        category: 'Query DSL',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Constant Score: Fixed Relevance Scoring</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Query DSL</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Constant Score?</h2>
+                <p>The <code>constant_score</code> query wraps a filter query and assigns a <strong>fixed, uniform score</strong> (the boost value) to every matching document. It skips relevance scoring entirely, making it both simpler and faster.</p>
+
+                <div class="concept-box">
+                    <h3>Why Skip Relevance Scoring?</h3>
+                    <pre><code class="language-text">Normal query (match, multi_match, etc.):
+  Each document gets a different score based on TF-IDF/BM25
+  "How relevant is this document to the search?"
+  Score: 3.21, 2.87, 1.45, 0.92...
+
+constant_score query:
+  Every matching document gets the SAME score
+  "Does this document match? Yes/No"
+  Score: 1.0, 1.0, 1.0, 1.0...
+
+When you don't need relevance scoring:
+  - Filtering by category (all matches are equally relevant)
+  - Checking if a field exists
+  - Exact value matches where rank doesn't matter
+  - Binary yes/no conditions</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <h4>&#128161; Performance Benefit</h4>
+                    <p>Because constant_score runs queries in <strong>filter context</strong>, Elasticsearch can cache the results. Cached filters are significantly faster on repeated queries. This is the same performance benefit you get from using bool/filter.</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Basic Constant Score</h2>
+
+                <div class="example-query">
+                    <h4>Simple Constant Score</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "constant_score": {
+      "filter": {
+        "term": { "category.keyword": "hematology" }
+      },
+      "boost": 1.0
+    }
+  }
+}</code></pre>
+                    <p>All hematology tests get the same score of 1.0. No relevance calculation needed.</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;constant_score&quot;:{&quot;filter&quot;:{&quot;term&quot;:{&quot;category.keyword&quot;:&quot;hematology&quot;}},&quot;boost&quot;:1.0}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>With Custom Boost Value</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "constant_score": {
+      "filter": {
+        "range": { "consumerPrice": { "lte": 200 } }
+      },
+      "boost": 2.5
+    }
+  }
+}</code></pre>
+                    <p>All affordable tests (price 200 or less) get a fixed score of 2.5</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;constant_score&quot;:{&quot;filter&quot;:{&quot;range&quot;:{&quot;consumerPrice&quot;:{&quot;lte&quot;:200}}},&quot;boost&quot;:2.5}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Constant Score with Exists</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "constant_score": {
+      "filter": {
+        "exists": { "field": "testDescription" }
+      },
+      "boost": 1.0
+    }
+  }
+}</code></pre>
+                    <p>Find all tests that have a description, each with a uniform score</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;constant_score&quot;:{&quot;filter&quot;:{&quot;exists&quot;:{&quot;field&quot;:&quot;testDescription&quot;}},&quot;boost&quot;:1.0}}}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Combining Constant Score in Bool Queries</h2>
+                <p>Constant score becomes powerful when combined with bool queries. You can use it in <code>should</code> clauses to give fixed bonus points for matching certain conditions.</p>
+
+                <div class="example-query">
+                    <h4>Tiered Scoring with Constant Score</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "testName": "blood" } }
+      ],
+      "should": [
+        {
+          "constant_score": {
+            "filter": { "range": { "consumerPrice": { "lte": 200 } } },
+            "boost": 5.0
+          }
+        },
+        {
+          "constant_score": {
+            "filter": { "exists": { "field": "testDescription" } },
+            "boost": 2.0
+          }
+        },
+        {
+          "constant_score": {
+            "filter": { "range": { "frequency": { "gte": 500 } } },
+            "boost": 3.0
+          }
+        }
+      ]
+    }
+  }
+}</code></pre>
+                    <p>Search for "blood" tests, then award bonus points: +5 for affordable, +2 for having a description, +3 for popular tests. Scores are predictable and additive.</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;bool&quot;:{&quot;must&quot;:[{&quot;match&quot;:{&quot;testName&quot;:&quot;blood&quot;}}],&quot;should&quot;:[{&quot;constant_score&quot;:{&quot;filter&quot;:{&quot;range&quot;:{&quot;consumerPrice&quot;:{&quot;lte&quot;:200}}},&quot;boost&quot;:5.0}},{&quot;constant_score&quot;:{&quot;filter&quot;:{&quot;exists&quot;:{&quot;field&quot;:&quot;testDescription&quot;}},&quot;boost&quot;:2.0}},{&quot;constant_score&quot;:{&quot;filter&quot;:{&quot;range&quot;:{&quot;frequency&quot;:{&quot;gte&quot;:500}}},&quot;boost&quot;:3.0}}]}}}')">Try it</button>
+                </div>
+
+                <div class="concept-box">
+                    <h3>constant_score vs bool/filter</h3>
+                    <pre><code class="language-text">bool/filter:
+  Runs in filter context, score is 0
+  Used when you don't want the clause to affect scoring at all
+  { "filter": [{ "term": { "category.keyword": "hematology" } }] }
+
+constant_score:
+  Runs in filter context, score = boost value
+  Used when you want a FIXED score contribution
+  { "constant_score": { "filter": {...}, "boost": 5.0 } }
+
+When to use constant_score:
+  - In bool/should to add predictable bonus points
+  - When you want uniform scoring (no TF-IDF variation)
+  - When building custom scoring without function_score</code></pre>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; constant_score wraps a filter and assigns a fixed score (the boost value)</li>
+                        <li>&#10003; Runs in filter context: cacheable and faster than scoring queries</li>
+                        <li>&#10003; Default boost is 1.0; set custom values for weighted scoring</li>
+                        <li>&#10003; Combine in bool/should for predictable, tiered bonus scoring</li>
+                        <li>&#10003; Use when relevance scoring is unnecessary or you need uniform scores</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('boosting')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('wildcard-query')">Next: Wildcard Query &#8594;</a>
             </div>
         `
     },
@@ -2701,6 +3473,1415 @@ Examples:
             <div class="lesson-nav">
                 <a class="btn btn-outline" onclick="loadLesson('suggesters')">&#8592; Previous</a>
                 <a class="btn btn-primary" onclick="loadLesson('range-agg')">Next: Range Aggregation &#8594;</a>
+            </div>
+        `
+    },
+    'range-agg': {
+        title: 'Range Aggregation',
+        category: 'Aggregations',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Range Aggregation</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Aggregations</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Range Aggregation?</h2>
+                <p>The range aggregation lets you define <strong>custom buckets</strong> based on numeric ranges. Unlike the histogram aggregation which creates fixed-width buckets, range aggregation gives you full control over where each bucket starts and ends.</p>
+
+                <div class="concept-box">
+                    <h3>Basic Range Aggregation</h3>
+                    <p>Use <code>from</code> (inclusive) and <code>to</code> (exclusive) to define each range bucket. Documents are placed into whichever bucket their field value falls into.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "price_ranges": {
+      "range": {
+        "field": "consumerPrice",
+        "ranges": [
+          { "to": 50 },
+          { "from": 50, "to": 200 },
+          { "from": 200, "to": 500 },
+          { "from": 500 }
+        ]
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>How from/to Boundaries Work</h3>
+                    <p>The <code>from</code> value is <strong>inclusive</strong> and the <code>to</code> value is <strong>exclusive</strong>. This means a document with a price of exactly 200 falls into the "200 to 500" bucket, not the "50 to 200" bucket.</p>
+                    <pre><code class="language-json">// Bucket boundaries:
+// Bucket 1: price &lt; 50        (everything below 50)
+// Bucket 2: 50 &lt;= price &lt; 200 (50 included, 200 excluded)
+// Bucket 3: 200 &lt;= price &lt; 500
+// Bucket 4: price &gt;= 500      (everything 500 and above)</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Custom Key Names</h2>
+                <p>By default, Elasticsearch generates keys like <code>"*-50.0"</code> or <code>"50.0-200.0"</code>. You can assign meaningful names using the <code>key</code> parameter.</p>
+
+                <div class="concept-box">
+                    <h3>Named Range Buckets</h3>
+                    <p>Adding a <code>key</code> to each range makes the response easier to work with programmatically and more readable in dashboards.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "price_tiers": {
+      "range": {
+        "field": "consumerPrice",
+        "keyed": true,
+        "ranges": [
+          { "key": "budget", "to": 50 },
+          { "key": "standard", "from": 50, "to": 200 },
+          { "key": "premium", "from": 200, "to": 500 },
+          { "key": "luxury", "from": 500 }
+        ]
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Range with Sub-Aggregation</h3>
+                    <p>You can nest other aggregations inside each range bucket to compute additional metrics per price tier.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "price_tiers": {
+      "range": {
+        "field": "consumerPrice",
+        "ranges": [
+          { "key": "affordable", "to": 100 },
+          { "key": "moderate", "from": 100, "to": 300 },
+          { "key": "expensive", "from": 300 }
+        ]
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": { "field": "consumerPrice" }
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Range aggregation creates custom-defined numeric buckets</li>
+                        <li>&#10003; <code>from</code> is inclusive, <code>to</code> is exclusive</li>
+                        <li>&#10003; Use <code>key</code> to assign readable names to each range bucket</li>
+                        <li>&#10003; Set <code>keyed: true</code> to return buckets as an object instead of an array</li>
+                        <li>&#10003; Nest sub-aggregations inside range buckets for per-tier metrics</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('terms-agg')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('histogram-agg')">Next: Histogram Aggregation &#8594;</a>
+            </div>
+        `
+    },
+    'histogram-agg': {
+        title: 'Histogram Aggregation',
+        category: 'Aggregations',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Histogram Aggregation</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Aggregations</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Histogram Aggregation?</h2>
+                <p>The histogram aggregation builds <strong>fixed-width buckets</strong> over a numeric field. You specify an <code>interval</code> and Elasticsearch automatically creates evenly spaced buckets spanning the data range.</p>
+
+                <div class="concept-box">
+                    <h3>Basic Histogram</h3>
+                    <p>The <code>interval</code> parameter defines the width of each bucket. For example, an interval of 100 on consumerPrice creates buckets 0-100, 100-200, 200-300, etc.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "price_histogram": {
+      "histogram": {
+        "field": "consumerPrice",
+        "interval": 100
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>How Buckets Are Calculated</h3>
+                    <p>Each document is placed into a bucket using the formula: <code>bucket_key = Math.floor(value / interval) * interval</code>. A test priced at 275 with interval 100 goes into the bucket with key 200.</p>
+                    <pre><code class="language-json">// With interval: 100
+// Price 45   -> bucket key: 0
+// Price 150  -> bucket key: 100
+// Price 275  -> bucket key: 200
+// Price 1050 -> bucket key: 1000</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Controlling Empty Buckets and Bounds</h2>
+                <p>By default, Elasticsearch only returns buckets that contain at least one document. You can change this behavior with <code>min_doc_count</code> and <code>extended_bounds</code>.</p>
+
+                <div class="concept-box">
+                    <h3>min_doc_count</h3>
+                    <p>Set <code>min_doc_count</code> to 0 to include empty buckets in the response. This is useful for creating complete charts without gaps.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "price_histogram": {
+      "histogram": {
+        "field": "consumerPrice",
+        "interval": 50,
+        "min_doc_count": 0
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>extended_bounds</h3>
+                    <p>Use <code>extended_bounds</code> to force the histogram to cover a specific range, even if no documents exist at the edges. This ensures your chart always starts and ends at consistent points.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "price_histogram": {
+      "histogram": {
+        "field": "consumerPrice",
+        "interval": 100,
+        "min_doc_count": 0,
+        "extended_bounds": {
+          "min": 0,
+          "max": 1000
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Histogram with Sub-Aggregation</h3>
+                    <p>Combine histogram buckets with metric aggregations to get statistics per bucket.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "price_histogram": {
+      "histogram": {
+        "field": "consumerPrice",
+        "interval": 100
+      },
+      "aggs": {
+        "test_count_by_category": {
+          "terms": { "field": "category" }
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Histogram creates fixed-width buckets using the <code>interval</code> parameter</li>
+                        <li>&#10003; Bucket key is computed as <code>floor(value / interval) * interval</code></li>
+                        <li>&#10003; Use <code>min_doc_count: 0</code> to include empty buckets</li>
+                        <li>&#10003; Use <code>extended_bounds</code> to force a specific min/max range</li>
+                        <li>&#10003; Nest sub-aggregations inside histogram buckets for richer analysis</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('range-agg')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('date-histogram')">Next: Date Histogram &#8594;</a>
+            </div>
+        `
+    },
+    'date-histogram': {
+        title: 'Date Histogram',
+        category: 'Aggregations',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Date Histogram Aggregation</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Aggregations</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Date Histogram?</h2>
+                <p>The date histogram aggregation is similar to the regular histogram but designed specifically for <strong>date/time fields</strong>. It groups documents into time-based buckets such as days, weeks, months, or years.</p>
+
+                <div class="concept-box">
+                    <h3>calendar_interval vs fixed_interval</h3>
+                    <p>Elasticsearch provides two interval types. <code>calendar_interval</code> respects calendar boundaries (e.g., months have varying days), while <code>fixed_interval</code> uses a strict, constant duration.</p>
+                    <pre><code class="language-json">// calendar_interval: aware of calendar irregularities
+// Supported values: minute, hour, day, week, month, quarter, year
+POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "tests_over_time": {
+      "date_histogram": {
+        "field": "createdDate",
+        "calendar_interval": "month"
+      }
+    }
+  }
+}
+
+// fixed_interval: strict duration
+// Supports: ms, s, m, h, d (e.g., "30d", "12h")
+POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "tests_over_time": {
+      "date_histogram": {
+        "field": "createdDate",
+        "fixed_interval": "7d"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>When to Use Which Interval</h3>
+                    <p>Use <code>calendar_interval</code> when you need semantically correct grouping (e.g., "monthly" where February has 28-29 days). Use <code>fixed_interval</code> when you need exact, consistent durations (e.g., every 30 days regardless of month boundaries).</p>
+                    <pre><code class="language-json">// calendar_interval: "month"
+// January bucket: Jan 1 - Jan 31 (31 days)
+// February bucket: Feb 1 - Feb 28/29 (28-29 days)
+// March bucket: Mar 1 - Mar 31 (31 days)
+
+// fixed_interval: "30d"
+// Bucket 1: Day 0 - Day 30 (exactly 30 days)
+// Bucket 2: Day 30 - Day 60 (exactly 30 days)
+// Bucket 3: Day 60 - Day 90 (exactly 30 days)</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Formatting, Time Zones, and Missing Values</h2>
+                <p>Date histogram provides several parameters to control how dates are displayed, how time zones are handled, and what happens when documents lack a date value.</p>
+
+                <div class="concept-box">
+                    <h3>Format and Time Zone</h3>
+                    <p>The <code>format</code> parameter controls how bucket keys appear in the response. The <code>time_zone</code> parameter shifts bucket boundaries to align with a specific time zone.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "monthly_tests": {
+      "date_histogram": {
+        "field": "createdDate",
+        "calendar_interval": "month",
+        "format": "yyyy-MM",
+        "time_zone": "America/New_York"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Handling Missing Values</h3>
+                    <p>Use the <code>missing</code> parameter to assign a default date for documents that do not have the date field. These documents will be bucketed according to the fallback value.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "tests_by_date": {
+      "date_histogram": {
+        "field": "createdDate",
+        "calendar_interval": "year",
+        "missing": "2020-01-01"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Date Histogram with Metrics</h3>
+                    <p>Combine date histogram with metric aggregations to track trends over time, such as average test price per month.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "monthly_stats": {
+      "date_histogram": {
+        "field": "createdDate",
+        "calendar_interval": "month",
+        "format": "yyyy-MM"
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": { "field": "consumerPrice" }
+        },
+        "test_count_by_category": {
+          "terms": { "field": "category" }
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Date histogram groups documents into time-based buckets</li>
+                        <li>&#10003; <code>calendar_interval</code> respects calendar boundaries (month, year)</li>
+                        <li>&#10003; <code>fixed_interval</code> uses strict durations (7d, 12h)</li>
+                        <li>&#10003; Use <code>format</code> to control how date keys are displayed</li>
+                        <li>&#10003; Use <code>time_zone</code> to shift bucket boundaries for locale-aware grouping</li>
+                        <li>&#10003; Use <code>missing</code> to include documents without a date field</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('histogram-agg')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('avg-sum-agg')">Next: Avg, Sum, Min, Max &#8594;</a>
+            </div>
+        `
+    },
+    'avg-sum-agg': {
+        title: 'Avg, Sum, Min, Max',
+        category: 'Aggregations',
+        difficulty: 'Beginner',
+        content: `
+            <h1>Avg, Sum, Min, Max Aggregations</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Aggregations</span>
+                <span class="difficulty">Difficulty: Beginner</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Basic Metric Aggregations</h2>
+                <p>Elasticsearch provides four fundamental single-value metric aggregations: <code>avg</code>, <code>sum</code>, <code>min</code>, and <code>max</code>. Each computes a single numeric result from a specified field across all matching documents.</p>
+
+                <div class="concept-box">
+                    <h3>Avg Aggregation</h3>
+                    <p>Calculates the arithmetic mean of a numeric field across all documents.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "average_price": {
+      "avg": {
+        "field": "consumerPrice"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Sum Aggregation</h3>
+                    <p>Computes the total sum of a numeric field. Useful for calculating total revenue, total tests ordered, etc.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "total_price": {
+      "sum": {
+        "field": "consumerPrice"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Min and Max Aggregations</h3>
+                    <p>Find the lowest and highest values of a numeric field. These are often combined to understand the range of data.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "cheapest_test": {
+      "min": {
+        "field": "consumerPrice"
+      }
+    },
+    "most_expensive_test": {
+      "max": {
+        "field": "consumerPrice"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Combining Metrics and Handling Missing Values</h2>
+                <p>You can run multiple metric aggregations in a single request and handle documents where the field is absent.</p>
+
+                <div class="concept-box">
+                    <h3>Multiple Metrics in One Query</h3>
+                    <p>Define several aggregations at the same level to compute all metrics in a single round trip.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "avg_price": { "avg": { "field": "consumerPrice" } },
+    "total_price": { "sum": { "field": "consumerPrice" } },
+    "min_price": { "min": { "field": "consumerPrice" } },
+    "max_price": { "max": { "field": "consumerPrice" } }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Handling Missing Values</h3>
+                    <p>The <code>missing</code> parameter tells Elasticsearch what value to use when a document does not have the aggregated field. Without it, documents missing the field are simply ignored.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "avg_price_with_default": {
+      "avg": {
+        "field": "consumerPrice",
+        "missing": 0
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Metrics Inside Bucket Aggregations</h3>
+                    <p>Metric aggregations are most powerful when nested inside bucket aggregations like terms, giving you per-group statistics.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "by_category": {
+      "terms": { "field": "category" },
+      "aggs": {
+        "avg_price": { "avg": { "field": "consumerPrice" } },
+        "max_price": { "max": { "field": "consumerPrice" } }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; <code>avg</code> computes the arithmetic mean of a numeric field</li>
+                        <li>&#10003; <code>sum</code> adds up all values of a numeric field</li>
+                        <li>&#10003; <code>min</code> and <code>max</code> find the lowest and highest values</li>
+                        <li>&#10003; Use <code>missing</code> to provide a default value for documents lacking the field</li>
+                        <li>&#10003; Combine multiple metric aggregations in a single query for efficiency</li>
+                        <li>&#10003; Nest metrics inside bucket aggregations for per-group statistics</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('date-histogram')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('stats-agg')">Next: Stats &amp; Extended Stats &#8594;</a>
+            </div>
+        `
+    },
+    'stats-agg': {
+        title: 'Stats &amp; Extended Stats',
+        category: 'Aggregations',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Stats &amp; Extended Stats Aggregations</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Aggregations</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Stats Aggregation</h2>
+                <p>The <code>stats</code> aggregation is a multi-value metric that computes <strong>count, min, max, avg, and sum</strong> in a single request. Instead of running five separate aggregations, you get all basic statistics at once.</p>
+
+                <div class="concept-box">
+                    <h3>Basic Stats</h3>
+                    <p>A single stats aggregation returns all five core metrics for the specified field.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "price_stats": {
+      "stats": {
+        "field": "consumerPrice"
+      }
+    }
+  }
+}
+
+// Response:
+{
+  "aggregations": {
+    "price_stats": {
+      "count": 1250,
+      "min": 5.99,
+      "max": 899.0,
+      "avg": 145.32,
+      "sum": 181650.0
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Stats per Bucket</h3>
+                    <p>Nest stats inside a bucket aggregation to get complete statistics for each group.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "by_category": {
+      "terms": { "field": "category" },
+      "aggs": {
+        "price_stats": {
+          "stats": { "field": "consumerPrice" }
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Extended Stats Aggregation</h2>
+                <p>The <code>extended_stats</code> aggregation includes everything from <code>stats</code> plus additional statistical measures: <strong>sum_of_squares</strong>, <strong>variance</strong>, <strong>std_deviation</strong>, and <strong>std_deviation_bounds</strong>.</p>
+
+                <div class="concept-box">
+                    <h3>Extended Stats Query</h3>
+                    <p>Extended stats adds variance and standard deviation calculations that are essential for understanding data distribution and identifying outliers.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "price_extended_stats": {
+      "extended_stats": {
+        "field": "consumerPrice"
+      }
+    }
+  }
+}
+
+// Response includes additional fields:
+{
+  "aggregations": {
+    "price_extended_stats": {
+      "count": 1250,
+      "min": 5.99,
+      "max": 899.0,
+      "avg": 145.32,
+      "sum": 181650.0,
+      "sum_of_squares": 4.56E7,
+      "variance": 18234.5,
+      "variance_population": 18234.5,
+      "variance_sampling": 18249.1,
+      "std_deviation": 135.03,
+      "std_deviation_population": 135.03,
+      "std_deviation_sampling": 135.09,
+      "std_deviation_bounds": {
+        "upper": 415.38,
+        "lower": -124.74,
+        "upper_population": 415.38,
+        "lower_population": -124.74,
+        "upper_sampling": 415.50,
+        "lower_sampling": -124.86
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Custom Sigma for Standard Deviation Bounds</h3>
+                    <p>By default, std_deviation_bounds uses 2 sigma (covering ~95% of data). You can customize this with the <code>sigma</code> parameter.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "price_outliers": {
+      "extended_stats": {
+        "field": "consumerPrice",
+        "sigma": 3
+      }
+    }
+  }
+}
+// sigma: 1 -> ~68% of data
+// sigma: 2 -> ~95% of data (default)
+// sigma: 3 -> ~99.7% of data</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; <code>stats</code> returns count, min, max, avg, and sum in one aggregation</li>
+                        <li>&#10003; <code>extended_stats</code> adds variance, standard deviation, and deviation bounds</li>
+                        <li>&#10003; Use <code>sigma</code> to control the standard deviation bounds range</li>
+                        <li>&#10003; Nest either aggregation inside buckets for per-group statistics</li>
+                        <li>&#10003; Prefer <code>stats</code> over multiple individual metric aggregations for efficiency</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('avg-sum-agg')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('cardinality-agg')">Next: Cardinality Aggregation &#8594;</a>
+            </div>
+        `
+    },
+    'cardinality-agg': {
+        title: 'Cardinality Aggregation',
+        category: 'Aggregations',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Cardinality Aggregation</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Aggregations</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Cardinality Aggregation?</h2>
+                <p>The cardinality aggregation calculates an <strong>approximate count of distinct values</strong> for a field - similar to SQL's <code>COUNT(DISTINCT field)</code>. It uses the <strong>HyperLogLog++ (HLL++)</strong> algorithm to provide fast, memory-efficient approximations.</p>
+
+                <div class="concept-box">
+                    <h3>Basic Cardinality</h3>
+                    <p>Count the approximate number of unique categories in the tests index.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "unique_categories": {
+      "cardinality": {
+        "field": "category"
+      }
+    }
+  }
+}
+
+// Response:
+{
+  "aggregations": {
+    "unique_categories": {
+      "value": 42
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Why Approximate?</h3>
+                    <p>Computing exact distinct counts across a distributed system is extremely expensive (requires coordinating all data). HLL++ trades a small margin of error (typically &lt; 5%) for dramatically better performance and constant memory usage regardless of data size.</p>
+                    <pre><code class="language-json">// Exact distinct count:
+//   Memory: O(n) - must store every unique value
+//   Speed: Slow on large datasets
+//
+// HyperLogLog++:
+//   Memory: O(1) - fixed ~4KB regardless of cardinality
+//   Speed: Very fast, single pass
+//   Error: Typically &lt; 2% for most datasets</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Precision Threshold</h2>
+                <p>The <code>precision_threshold</code> parameter controls the trade-off between accuracy and memory usage. Values below the threshold are counted almost exactly.</p>
+
+                <div class="concept-box">
+                    <h3>Configuring Precision</h3>
+                    <p>The <code>precision_threshold</code> accepts values from 0 to 40000. The default is 3000. When the actual cardinality is below this threshold, the count is nearly exact.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "unique_test_names": {
+      "cardinality": {
+        "field": "testName.keyword",
+        "precision_threshold": 10000
+      }
+    }
+  }
+}
+
+// precision_threshold guidelines:
+// Low (100):   Less memory, less accurate for high cardinality
+// Default (3000): Good balance for most use cases
+// High (40000): Maximum accuracy, more memory usage</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Cardinality per Bucket</h3>
+                    <p>Nest cardinality inside a bucket aggregation to count distinct values within each group.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "by_category": {
+      "terms": { "field": "category" },
+      "aggs": {
+        "unique_tests": {
+          "cardinality": {
+            "field": "testName.keyword"
+          }
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Cardinality returns an approximate count of distinct values</li>
+                        <li>&#10003; Uses the HyperLogLog++ algorithm for speed and constant memory</li>
+                        <li>&#10003; <code>precision_threshold</code> controls accuracy vs. memory (default: 3000)</li>
+                        <li>&#10003; Below the threshold, counts are nearly exact; above, expect small error</li>
+                        <li>&#10003; Nest inside bucket aggregations to count distinct values per group</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('stats-agg')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('percentiles-agg')">Next: Percentiles Aggregation &#8594;</a>
+            </div>
+        `
+    },
+    'percentiles-agg': {
+        title: 'Percentiles Aggregation',
+        category: 'Aggregations',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Percentiles Aggregation</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Aggregations</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Percentiles Aggregation?</h2>
+                <p>The percentiles aggregation calculates the values below which a given percentage of data falls. For example, the 95th percentile is the value below which 95% of data points lie. Elasticsearch uses the <strong>TDigest</strong> algorithm for approximate percentile computation.</p>
+
+                <div class="concept-box">
+                    <h3>Default Percentiles</h3>
+                    <p>By default, Elasticsearch returns percentiles at 1, 5, 25, 50, 75, 95, and 99. These cover the most commonly needed distribution breakpoints.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "price_percentiles": {
+      "percentiles": {
+        "field": "consumerPrice"
+      }
+    }
+  }
+}
+
+// Response:
+{
+  "aggregations": {
+    "price_percentiles": {
+      "values": {
+        "1.0": 8.50,
+        "5.0": 15.00,
+        "25.0": 49.99,
+        "50.0": 120.00,
+        "75.0": 250.00,
+        "95.0": 599.00,
+        "99.0": 799.00
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Custom Percentile Values</h3>
+                    <p>Specify exactly which percentiles you want using the <code>percents</code> parameter. This is useful when you only need specific breakpoints.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "price_percentiles": {
+      "percentiles": {
+        "field": "consumerPrice",
+        "percents": [10, 25, 50, 75, 90, 99.9]
+      }
+    }
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Percentile Ranks and TDigest</h2>
+                <p>While percentiles ask "what value is at the Nth percentile?", <code>percentile_ranks</code> asks the inverse: "what percentile does this value fall at?"</p>
+
+                <div class="concept-box">
+                    <h3>Percentile Ranks</h3>
+                    <p>Given specific values, percentile_ranks tells you what percentage of documents fall below each value. For example: "What percent of tests cost less than $100?"</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "price_ranks": {
+      "percentile_ranks": {
+        "field": "consumerPrice",
+        "values": [50, 100, 200, 500]
+      }
+    }
+  }
+}
+
+// Response:
+{
+  "aggregations": {
+    "price_ranks": {
+      "values": {
+        "50.0": 28.3,
+        "100.0": 45.7,
+        "200.0": 68.2,
+        "500.0": 92.1
+      }
+    }
+  }
+}
+// 45.7% of tests cost less than $100</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>TDigest Compression</h3>
+                    <p>The TDigest algorithm uses a <code>compression</code> parameter (default: 100) that controls accuracy vs. memory. Higher compression means more accurate results at the cost of more memory.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "precise_percentiles": {
+      "percentiles": {
+        "field": "consumerPrice",
+        "tdigest": {
+          "compression": 200
+        }
+      }
+    }
+  }
+}
+
+// compression: 100 (default) - good balance
+// compression: 200 - more accurate, more memory
+// compression: 50  - less accurate, less memory
+// Higher compression is more accurate at extreme percentiles (99th, 99.9th)</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Percentiles show the value below which N% of data falls</li>
+                        <li>&#10003; Default percentiles: 1, 5, 25, 50, 75, 95, 99</li>
+                        <li>&#10003; Use <code>percents</code> to specify custom percentile breakpoints</li>
+                        <li>&#10003; <code>percentile_ranks</code> is the inverse: find the percentile for a given value</li>
+                        <li>&#10003; TDigest <code>compression</code> controls accuracy vs. memory trade-off</li>
+                        <li>&#10003; Higher compression improves accuracy at extreme percentiles</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('cardinality-agg')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('avg-bucket')">Next: Avg Bucket &#8594;</a>
+            </div>
+        `
+    },
+    'avg-bucket': {
+        title: 'Avg Bucket',
+        category: 'Aggregations',
+        difficulty: 'Advanced',
+        content: `
+            <h1>Avg Bucket (Pipeline Aggregation)</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Aggregations</span>
+                <span class="difficulty">Difficulty: Advanced</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What are Pipeline Aggregations?</h2>
+                <p>Pipeline aggregations work on the <strong>output of other aggregations</strong> rather than directly on documents. They take the results produced by sibling or parent aggregations and compute additional metrics. <code>avg_bucket</code> is one of the most common pipeline aggregations.</p>
+
+                <div class="concept-box">
+                    <h3>Sibling vs Parent Pipeline Aggregations</h3>
+                    <p>There are two types of pipeline aggregations:</p>
+                    <pre><code class="language-json">// SIBLING pipeline aggs:
+// - Defined at the same level as the bucket aggregation
+// - Compute a single value from all buckets
+// - Examples: avg_bucket, max_bucket, min_bucket, sum_bucket
+//
+// PARENT pipeline aggs:
+// - Defined inside the bucket aggregation
+// - Compute a value for EACH bucket based on its parent
+// - Examples: derivative, cumulative_sum, moving_avg
+
+// Visual:
+// aggs: {
+//   my_buckets: { ... },            // bucket agg
+//   my_sibling_pipeline: {          // sibling: same level
+//     avg_bucket: { buckets_path: "my_buckets>metric" }
+//   }
+// }
+//
+// vs.
+//
+// aggs: {
+//   my_buckets: {                   // bucket agg
+//     aggs: {
+//       my_parent_pipeline: {       // parent: nested inside
+//         derivative: { buckets_path: "metric" }
+//       }
+//     }
+//   }
+// }</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Using avg_bucket</h2>
+                <p>The <code>avg_bucket</code> aggregation computes the mean of a metric across all buckets produced by a sibling bucket aggregation. The <code>buckets_path</code> parameter uses <code>&gt;</code> notation to reference nested aggregation results.</p>
+
+                <div class="concept-box">
+                    <h3>Average Price Across Categories</h3>
+                    <p>First, a terms aggregation groups tests by category and computes the average price per category. Then, <code>avg_bucket</code> calculates the overall average of those per-category averages.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "categories": {
+      "terms": {
+        "field": "category",
+        "size": 20
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": { "field": "consumerPrice" }
+        }
+      }
+    },
+    "avg_price_across_categories": {
+      "avg_bucket": {
+        "buckets_path": "categories>avg_price"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Understanding buckets_path</h3>
+                    <p>The <code>buckets_path</code> syntax uses <code>&gt;</code> to navigate through aggregation levels. It references the metric aggregation inside the bucket aggregation whose output you want to average.</p>
+                    <pre><code class="language-json">// buckets_path: "categories>avg_price"
+//
+// "categories"  -> the sibling bucket aggregation
+// ">"           -> navigate into its sub-aggregations
+// "avg_price"   -> the metric aggregation to average
+//
+// Result: average of each category's avg_price value
+
+// You can also use special paths:
+// "categories>_count"  -> average of document counts per bucket
+// "categories>avg_price.value" -> explicit .value (usually optional)</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Gap Policy</h3>
+                    <p>When buckets have missing values, the <code>gap_policy</code> parameter controls behavior. <code>skip</code> (default) ignores empty buckets; <code>insert_zeros</code> treats them as 0.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "monthly": {
+      "date_histogram": {
+        "field": "createdDate",
+        "calendar_interval": "month"
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": { "field": "consumerPrice" }
+        }
+      }
+    },
+    "overall_avg": {
+      "avg_bucket": {
+        "buckets_path": "monthly>avg_price",
+        "gap_policy": "skip"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Pipeline aggregations operate on the output of other aggregations</li>
+                        <li>&#10003; <code>avg_bucket</code> is a sibling pipeline that averages a metric across all buckets</li>
+                        <li>&#10003; Use <code>buckets_path</code> with <code>&gt;</code> notation to reference nested metrics</li>
+                        <li>&#10003; Sibling pipelines sit at the same level; parent pipelines nest inside buckets</li>
+                        <li>&#10003; Use <code>gap_policy</code> to control how empty buckets are handled</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('percentiles-agg')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('derivative-agg')">Next: Derivative Aggregation &#8594;</a>
+            </div>
+        `
+    },
+    'derivative-agg': {
+        title: 'Derivative Aggregation',
+        category: 'Aggregations',
+        difficulty: 'Advanced',
+        content: `
+            <h1>Derivative Aggregation</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Aggregations</span>
+                <span class="difficulty">Difficulty: Advanced</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is the Derivative Aggregation?</h2>
+                <p>The derivative aggregation is a <strong>parent pipeline aggregation</strong> that calculates the rate of change between consecutive buckets. It computes the difference between the current bucket's metric value and the previous bucket's metric value - essentially the first derivative.</p>
+
+                <div class="concept-box">
+                    <h3>Basic Derivative</h3>
+                    <p>This example calculates the month-over-month change in average test price. The derivative is nested inside the date_histogram because it is a parent pipeline aggregation.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "monthly": {
+      "date_histogram": {
+        "field": "createdDate",
+        "calendar_interval": "month",
+        "format": "yyyy-MM"
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": { "field": "consumerPrice" }
+        },
+        "price_change": {
+          "derivative": {
+            "buckets_path": "avg_price"
+          }
+        }
+      }
+    }
+  }
+}
+
+// Response (simplified):
+// { "key_as_string": "2024-01", "avg_price": { "value": 140 } }
+// { "key_as_string": "2024-02", "avg_price": { "value": 155 },
+//   "price_change": { "value": 15 } }       // 155 - 140 = +15
+// { "key_as_string": "2024-03", "avg_price": { "value": 148 },
+//   "price_change": { "value": -7 } }       // 148 - 155 = -7</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>How It Works</h3>
+                    <p>For each bucket, the derivative value is: <code>current_value - previous_value</code>. The first bucket has no derivative because there is no previous bucket to compare with.</p>
+                    <pre><code class="language-json">// Given buckets with values: [100, 120, 115, 130, 150]
+//
+// Derivatives:
+// Bucket 0: 100 -> no derivative (first bucket)
+// Bucket 1: 120 -> derivative = 120 - 100 = +20
+// Bucket 2: 115 -> derivative = 115 - 120 = -5
+// Bucket 3: 130 -> derivative = 130 - 115 = +15
+// Bucket 4: 150 -> derivative = 150 - 130 = +20</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Gap Handling and Units</h2>
+                <p>When buckets have missing data or irregular spacing, derivatives need special handling.</p>
+
+                <div class="concept-box">
+                    <h3>Gap Policy</h3>
+                    <p>The <code>gap_policy</code> parameter controls what happens when a bucket has no value. <code>skip</code> (default) skips empty buckets and computes the derivative from the next available value. <code>insert_zeros</code> treats empty buckets as zero.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "monthly": {
+      "date_histogram": {
+        "field": "createdDate",
+        "calendar_interval": "month"
+      },
+      "aggs": {
+        "test_count": {
+          "value_count": { "field": "testName.keyword" }
+        },
+        "count_change": {
+          "derivative": {
+            "buckets_path": "test_count",
+            "gap_policy": "insert_zeros"
+          }
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Units for Normalized Derivatives</h3>
+                    <p>When using date histograms, you can specify <code>unit</code> to normalize the derivative to a per-unit-of-time rate. This is useful when comparing rate of change across different interval sizes.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "weekly": {
+      "date_histogram": {
+        "field": "createdDate",
+        "calendar_interval": "week"
+      },
+      "aggs": {
+        "total_price": {
+          "sum": { "field": "consumerPrice" }
+        },
+        "daily_rate_change": {
+          "derivative": {
+            "buckets_path": "total_price",
+            "unit": "day"
+          }
+        }
+      }
+    }
+  }
+}
+
+// Without unit: derivative = change per bucket (per week)
+// With unit "day": derivative = change per day
+// The normalized value divides the raw derivative by the
+// number of days between bucket boundaries</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Derivative is a parent pipeline aggregation computing rate of change</li>
+                        <li>&#10003; Calculates <code>current_value - previous_value</code> for each bucket</li>
+                        <li>&#10003; The first bucket always has no derivative value</li>
+                        <li>&#10003; Use <code>gap_policy</code> to handle missing bucket values (skip or insert_zeros)</li>
+                        <li>&#10003; Use <code>unit</code> with date histograms to normalize to per-time-unit rates</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('avg-bucket')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('cumulative-sum')">Next: Cumulative Sum &#8594;</a>
+            </div>
+        `
+    },
+    'cumulative-sum': {
+        title: 'Cumulative Sum',
+        category: 'Aggregations',
+        difficulty: 'Advanced',
+        content: `
+            <h1>Cumulative Sum Aggregation</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Aggregations</span>
+                <span class="difficulty">Difficulty: Advanced</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Cumulative Sum?</h2>
+                <p>The cumulative sum aggregation is a <strong>parent pipeline aggregation</strong> that calculates a running total across ordered buckets. Each bucket's cumulative value is the sum of its own metric plus all previous buckets' metrics. This is invaluable for tracking cumulative revenue, growth, or running totals over time.</p>
+
+                <div class="concept-box">
+                    <h3>Basic Cumulative Sum</h3>
+                    <p>This example computes a running total of test prices by month. The cumulative_sum references a sibling metric aggregation via <code>buckets_path</code>.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "monthly": {
+      "date_histogram": {
+        "field": "createdDate",
+        "calendar_interval": "month",
+        "format": "yyyy-MM"
+      },
+      "aggs": {
+        "monthly_revenue": {
+          "sum": { "field": "consumerPrice" }
+        },
+        "running_total": {
+          "cumulative_sum": {
+            "buckets_path": "monthly_revenue"
+          }
+        }
+      }
+    }
+  }
+}
+
+// Response (simplified):
+// 2024-01: revenue=5000,  running_total=5000
+// 2024-02: revenue=7500,  running_total=12500  (5000+7500)
+// 2024-03: revenue=6200,  running_total=18700  (12500+6200)
+// 2024-04: revenue=8100,  running_total=26800  (18700+8100)</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>How It Works</h3>
+                    <p>For each bucket at position i, the cumulative sum equals: <code>sum(metric[0] + metric[1] + ... + metric[i])</code>. Buckets must be ordered (typically by date histogram or histogram) for the running total to be meaningful.</p>
+                    <pre><code class="language-json">// Given bucket values:  [100, 200, 150, 300, 250]
+//
+// Cumulative sums:
+// Bucket 0: 100 -> cumulative = 100
+// Bucket 1: 200 -> cumulative = 100 + 200 = 300
+// Bucket 2: 150 -> cumulative = 300 + 150 = 450
+// Bucket 3: 300 -> cumulative = 450 + 300 = 750
+// Bucket 4: 250 -> cumulative = 750 + 250 = 1000</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Practical Use Cases</h2>
+                <p>Cumulative sum is commonly combined with other aggregations and pipeline aggregations for rich analytical dashboards.</p>
+
+                <div class="concept-box">
+                    <h3>Cumulative Test Count Over Time</h3>
+                    <p>Track the total number of tests added to the system cumulatively over time using <code>value_count</code> as the base metric.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "monthly": {
+      "date_histogram": {
+        "field": "createdDate",
+        "calendar_interval": "month",
+        "format": "yyyy-MM"
+      },
+      "aggs": {
+        "new_tests": {
+          "value_count": { "field": "testName.keyword" }
+        },
+        "total_tests_to_date": {
+          "cumulative_sum": {
+            "buckets_path": "new_tests"
+          }
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Combining Cumulative Sum with Derivative</h3>
+                    <p>You can chain pipeline aggregations. Apply a derivative on top of a cumulative sum to verify the derivative brings you back to the original per-bucket values (useful for validation).</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "size": 0,
+  "aggs": {
+    "monthly": {
+      "date_histogram": {
+        "field": "createdDate",
+        "calendar_interval": "month"
+      },
+      "aggs": {
+        "revenue": {
+          "sum": { "field": "consumerPrice" }
+        },
+        "cumulative_revenue": {
+          "cumulative_sum": {
+            "buckets_path": "revenue"
+          }
+        },
+        "revenue_acceleration": {
+          "derivative": {
+            "buckets_path": "cumulative_revenue"
+          }
+        }
+      }
+    }
+  }
+}
+// revenue_acceleration derivative of cumulative_sum
+// equals the original per-bucket revenue values</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Cumulative sum computes a running total across ordered buckets</li>
+                        <li>&#10003; It is a parent pipeline aggregation nested inside a bucket aggregation</li>
+                        <li>&#10003; Uses <code>buckets_path</code> to reference the metric to accumulate</li>
+                        <li>&#10003; Requires ordered buckets (date_histogram or histogram) to be meaningful</li>
+                        <li>&#10003; Chain with other pipeline aggregations like derivative for advanced analytics</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('derivative-agg')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('relevance-scoring')">Next: Relevance Scoring &#8594;</a>
             </div>
         `
     },
@@ -3075,6 +5256,224 @@ Examples:
             <div class="lesson-nav">
                 <a class="btn btn-outline" onclick="loadLesson('match-phrase')">&#8592; Previous</a>
                 <a class="btn btn-primary" onclick="loadLesson('query-string')">Next: Query String &#8594;</a>
+            </div>
+        `
+    },
+    'query-string': {
+        title: 'Query String',
+        category: 'Query DSL',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Query String: Power User Search Syntax</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Query DSL</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Query String?</h2>
+                <p>The <code>query_string</code> query parses a query text using Lucene query syntax. It supports field operators, boolean operators, wildcards, and more in a single query string. Think of it as the "power user" search query.</p>
+
+                <div class="concept-box">
+                    <h3>query_string vs match vs multi_match</h3>
+                    <pre><code class="language-text">match query:
+  Simple text search on a single field
+  "blood count" searches in one field
+
+multi_match query:
+  Same text search across multiple fields
+  "blood count" searches in testName, testAlias, etc.
+
+query_string query:
+  Full Lucene syntax with operators
+  "testName:blood AND category:hematology"
+  Supports AND, OR, NOT, wildcards, ranges, field targeting</code></pre>
+                    <p>The <code>query_string</code> query is the most flexible but also the most error-prone if user input is not sanitized.</p>
+                </div>
+
+                <div class="info-box">
+                    <h4>&#9888; Security Warning</h4>
+                    <p>Never pass raw user input directly into a <code>query_string</code> query. Malformed syntax will throw errors. For user-facing search, prefer <code>simple_query_string</code> which never throws exceptions.</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Basic query_string Usage</h2>
+
+                <div class="example-query">
+                    <h4>Simple Query String</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "query_string": {
+      "query": "blood count",
+      "default_field": "testName"
+    }
+  }
+}</code></pre>
+                    <p>Searches for "blood" OR "count" in testName (default operator is OR)</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;query_string&quot;:{&quot;query&quot;:&quot;blood count&quot;,&quot;default_field&quot;:&quot;testName&quot;}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>With Boolean Operators</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "query_string": {
+      "query": "blood AND count",
+      "default_field": "testName"
+    }
+  }
+}</code></pre>
+                    <p>Both "blood" AND "count" must appear in testName</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;query_string&quot;:{&quot;query&quot;:&quot;blood AND count&quot;,&quot;default_field&quot;:&quot;testName&quot;}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Field-Specific Operators</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "query_string": {
+      "query": "testName:blood AND consumerPrice:[100 TO 500]"
+    }
+  }
+}</code></pre>
+                    <p>Target specific fields inline: "blood" in testName AND price between 100-500</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;query_string&quot;:{&quot;query&quot;:&quot;testName:blood AND consumerPrice:[100 TO 500]&quot;}}}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Lucene Query Syntax Reference</h2>
+
+                <div class="concept-box">
+                    <h3>Operators and Wildcards</h3>
+                    <pre><code class="language-text">Boolean Operators:
+  AND        Both terms must match        "blood AND count"
+  OR         Either term matches          "blood OR liver"
+  NOT        Exclude term                 "blood NOT glucose"
+  +          Must include                 "+blood count"
+  -          Must exclude                 "blood -glucose"
+
+Wildcards:
+  *          Any characters               "blo*"
+  ?          Single character             "te?t"
+
+Phrases:
+  "..."      Exact phrase                 "blood count"
+  "..."~N    Phrase with slop             "blood count"~2
+
+Field Targeting:
+  field:val  Search specific field        "testName:blood"
+  field:(a OR b)  Group on a field        "category:(hematology OR biochemistry)"
+
+Ranges:
+  [A TO B]   Inclusive range              "consumerPrice:[100 TO 500]"
+  {A TO B}   Exclusive range              "consumerPrice:{100 TO 500}"
+  [A TO *]   Open-ended range             "consumerPrice:[100 TO *]"
+
+Boosting:
+  term^N     Boost a term                 "blood^3 count"
+
+Grouping:
+  (...)      Group expressions            "(blood OR liver) AND test"</code></pre>
+                </div>
+
+                <div class="example-query">
+                    <h4>Wildcards in Query String</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "query_string": {
+      "query": "testName:blo* AND category:hemat*",
+      "analyze_wildcard": true
+    }
+  }
+}</code></pre>
+                    <p>Using wildcards with field targeting. Set <code>analyze_wildcard: true</code> to analyze wildcard terms.</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;query_string&quot;:{&quot;query&quot;:&quot;testName:blo*&quot;,&quot;analyze_wildcard&quot;:true}}}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Multi-Field with Default Operator</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "query_string": {
+      "query": "complete blood count",
+      "fields": ["testName^3", "testAlias", "testDescription"],
+      "default_operator": "AND"
+    }
+  }
+}</code></pre>
+                    <p>Search multiple fields with AND as default operator. testName matches boosted 3x.</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;query_string&quot;:{&quot;query&quot;:&quot;complete blood count&quot;,&quot;fields&quot;:[&quot;testName^3&quot;,&quot;testAlias&quot;,&quot;testDescription&quot;],&quot;default_operator&quot;:&quot;AND&quot;}}}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>simple_query_string: The Safe Alternative</h2>
+                <p>The <code>simple_query_string</code> query uses a simpler syntax that never throws errors on invalid input. Perfect for user-facing search boxes.</p>
+
+                <div class="concept-box">
+                    <h3>Syntax Differences</h3>
+                    <pre><code class="language-text">query_string          simple_query_string
+─────────────────────────────────────────────
+AND                   + (prefix)
+OR                    | (default)
+NOT                   - (prefix)
+"phrase"              "phrase"
+field:value           Not supported
+[range TO range]      Not supported
+Throws on errors      Never throws errors</code></pre>
+                </div>
+
+                <div class="example-query">
+                    <h4>Simple Query String</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "simple_query_string": {
+      "query": "blood + count -glucose",
+      "fields": ["testName", "testAlias"],
+      "default_operator": "AND"
+    }
+  }
+}</code></pre>
+                    <p>Must contain "blood" and "count", must not contain "glucose". Invalid syntax is silently ignored.</p>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;simple_query_string&quot;:{&quot;query&quot;:&quot;blood + count -glucose&quot;,&quot;fields&quot;:[&quot;testName&quot;,&quot;testAlias&quot;],&quot;default_operator&quot;:&quot;AND&quot;}}}')">Try it</button>
+                </div>
+
+                <div class="info-box">
+                    <h4>&#128161; When to Use Which?</h4>
+                    <p><strong>query_string:</strong> Internal tools, admin dashboards, power users who know Lucene syntax.</p>
+                    <p><strong>simple_query_string:</strong> Public search bars, user-facing applications where invalid input should not cause errors.</p>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; query_string supports full Lucene syntax: AND, OR, NOT, field:value, ranges, wildcards</li>
+                        <li>&#10003; Use default_field for single-field search or fields array for multi-field</li>
+                        <li>&#10003; Wildcards (* and ?) work inline with analyze_wildcard option</li>
+                        <li>&#10003; simple_query_string is the safe alternative that never throws parsing errors</li>
+                        <li>&#10003; Always sanitize user input before using query_string, or use simple_query_string instead</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('multi-match')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('term-query')">Next: Term Query &#8594;</a>
             </div>
         `
     },
@@ -3458,6 +5857,731 @@ Examples:
             </div>
         `
     },
+    'mapping-basics': {
+        title: 'Mapping Basics',
+        category: 'Indexing & Mappings',
+        difficulty: 'Beginner',
+        content: `
+            <h1>Mapping Basics</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Indexing &amp; Mappings</span>
+                <span class="difficulty">Difficulty: Beginner</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is a Mapping?</h2>
+                <p>A mapping defines how a document and its fields are stored and indexed. It is like a schema definition in a relational database, telling Elasticsearch the data type of each field and how it should be indexed.</p>
+
+                <div class="concept-box">
+                    <h3>Explicit vs Dynamic Mapping</h3>
+                    <p><strong>Dynamic Mapping:</strong> Elasticsearch automatically detects and adds new fields when it encounters them in a document.</p>
+                    <p><strong>Explicit Mapping:</strong> You define fields and their types upfront before indexing data. This gives you full control.</p>
+                    <pre><code class="language-json">// View the current mapping of an index
+GET /tests/_mapping</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Creating an Explicit Mapping</h2>
+                <div class="example-query">
+                    <h4>Define Mapping at Index Creation</h4>
+                    <pre><code class="language-json">PUT /my_tests
+{
+  "mappings": {
+    "properties": {
+      "testName": {
+        "type": "text",
+        "analyzer": "standard"
+      },
+      "testAlias": {
+        "type": "text"
+      },
+      "consumerPrice": {
+        "type": "float"
+      },
+      "frequency": {
+        "type": "integer"
+      },
+      "category": {
+        "type": "keyword"
+      },
+      "isActive": {
+        "type": "boolean"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>View Existing Mapping</h3>
+                    <pre><code class="language-json">GET /tests/_mapping</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'GET', '/tests/_mapping', '')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Adding Fields to Existing Mapping</h2>
+                <p>You can add new fields to an existing mapping, but you cannot change the type of an existing field. To change a field type, you must reindex your data.</p>
+                <div class="example-query">
+                    <h4>Add a New Field</h4>
+                    <pre><code class="language-json">PUT /tests/_mapping
+{
+  "properties": {
+    "newField": {
+      "type": "keyword"
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="key-points">
+                    <h3>Key Rules</h3>
+                    <ul>
+                        <li>You <strong>cannot</strong> change the mapping of an existing field</li>
+                        <li>You <strong>can</strong> add new fields to an existing mapping</li>
+                        <li>To change a field type, you must create a new index and reindex</li>
+                        <li>Mappings are defined per-index, not globally</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Mappings define field types and how data is indexed</li>
+                        <li>&#10003; Dynamic mapping auto-detects types; explicit mapping gives control</li>
+                        <li>&#10003; Existing field types cannot be changed without reindexing</li>
+                        <li>&#10003; Use GET /index/_mapping to inspect mappings</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('bulk-api')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('field-types')">Next: Field Types &#8594;</a>
+            </div>
+        `
+    },
+    'field-types': {
+        title: 'Field Types',
+        category: 'Indexing & Mappings',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Field Types in Elasticsearch</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Indexing &amp; Mappings</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Core Field Types</h2>
+
+                <div class="concept-box">
+                    <h3>text vs keyword</h3>
+                    <p><strong>text:</strong> Analyzed for full-text search. The value is broken into tokens. Use for fields users will search with natural language (e.g., testName, testDescription).</p>
+                    <p><strong>keyword:</strong> Not analyzed. Stored as-is for exact matching, sorting, and aggregations (e.g., category, status).</p>
+                    <pre><code class="language-json">{
+  "testName": { "type": "text" },
+  "category": { "type": "keyword" }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Numeric Types</h3>
+                    <p>Elasticsearch supports several numeric types optimized for different ranges:</p>
+                    <pre><code class="language-json">{
+  "frequency": { "type": "integer" },
+  "consumerPrice": { "type": "float" },
+  "totalRevenue": { "type": "long" },
+  "preciseValue": { "type": "double" },
+  "smallCount": { "type": "short" },
+  "tinyFlag": { "type": "byte" }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Other Important Types</h2>
+
+                <div class="concept-box">
+                    <h3>date</h3>
+                    <p>Stores dates internally as milliseconds since epoch. Supports multiple formats.</p>
+                    <pre><code class="language-json">{
+  "createdAt": {
+    "type": "date",
+    "format": "yyyy-MM-dd||epoch_millis"
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>boolean</h3>
+                    <p>Accepts true/false, "true"/"false", and ""(empty string = false).</p>
+                    <pre><code class="language-json">{
+  "isActive": { "type": "boolean" }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>object and nested</h3>
+                    <p><strong>object:</strong> Default for JSON objects. Fields are flattened internally, which can cause cross-object matching issues in arrays.</p>
+                    <p><strong>nested:</strong> Like object but maintains the independence of each object in an array. Requires special nested queries.</p>
+                    <pre><code class="language-json">{
+  "address": { "type": "object" },
+  "components": { "type": "nested" }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>geo_point</h3>
+                    <p>Stores latitude/longitude pairs for geo queries.</p>
+                    <pre><code class="language-json">{
+  "location": { "type": "geo_point" }
+}
+// Document: { "location": { "lat": 28.6, "lon": 77.2 } }</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; text for full-text search, keyword for exact match/sorting/aggregations</li>
+                        <li>&#10003; Use integer/float/long for numbers based on range needs</li>
+                        <li>&#10003; date fields store as epoch millis with configurable formats</li>
+                        <li>&#10003; Use nested (not object) when arrays of objects need independent querying</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('mapping-basics')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('dynamic-mapping')">Next: Dynamic Mapping &#8594;</a>
+            </div>
+        `
+    },
+    'dynamic-mapping': {
+        title: 'Dynamic Mapping',
+        category: 'Indexing & Mappings',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Dynamic Mapping</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Indexing &amp; Mappings</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>How Dynamic Mapping Works</h2>
+                <p>When you index a document with a field Elasticsearch hasn't seen before, it automatically detects the type and adds it to the mapping. This is dynamic mapping.</p>
+
+                <div class="concept-box">
+                    <h3>Type Detection Rules</h3>
+                    <pre><code class="language-text">JSON Value          Detected ES Type
+────────────────────────────────────
+true / false        boolean
+123                 long
+1.23                float
+"2024-01-15"        date (if date detection on)
+"hello world"       text + keyword sub-field
+{ "a": 1 }          object
+[1, 2, 3]           long (arrays use element type)</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Controlling Dynamic Behavior</h2>
+                <p>The <code>dynamic</code> setting controls what happens when new fields are found:</p>
+
+                <div class="concept-box">
+                    <h3>Dynamic Settings</h3>
+                    <pre><code class="language-json">PUT /strict_index
+{
+  "mappings": {
+    "dynamic": "strict",
+    "properties": {
+      "testName": { "type": "text" }
+    }
+  }
+}
+
+// dynamic: true    → Auto-add new fields (default)
+// dynamic: false   → Ignore new fields (not indexed, still in _source)
+// dynamic: "strict" → Reject documents with unknown fields</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Dynamic Templates</h3>
+                    <p>Define rules for how dynamically detected fields should be mapped:</p>
+                    <pre><code class="language-json">PUT /my_index
+{
+  "mappings": {
+    "dynamic_templates": [
+      {
+        "strings_as_keywords": {
+          "match_mapping_type": "string",
+          "mapping": {
+            "type": "keyword"
+          }
+        }
+      },
+      {
+        "longs_as_integers": {
+          "match_mapping_type": "long",
+          "mapping": {
+            "type": "integer"
+          }
+        }
+      }
+    ]
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Date Detection</h2>
+                <div class="concept-box">
+                    <h3>Disable Date Detection</h3>
+                    <p>By default, strings that look like dates are mapped as date fields. You can disable this:</p>
+                    <pre><code class="language-json">PUT /my_index
+{
+  "mappings": {
+    "date_detection": false
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Dynamic mapping auto-detects field types from JSON values</li>
+                        <li>&#10003; Use dynamic: "strict" in production to prevent mapping explosion</li>
+                        <li>&#10003; Dynamic templates let you customize how new fields are mapped</li>
+                        <li>&#10003; Date detection can be disabled to prevent unwanted date fields</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('field-types')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('multi-fields')">Next: Multi-Fields &#8594;</a>
+            </div>
+        `
+    },
+    'multi-fields': {
+        title: 'Multi-Fields',
+        category: 'Indexing & Mappings',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Multi-Fields</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Indexing &amp; Mappings</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What are Multi-Fields?</h2>
+                <p>Multi-fields let you index the same field in different ways for different purposes. A common pattern is indexing a string as both <code>text</code> (for full-text search) and <code>keyword</code> (for sorting and aggregations).</p>
+
+                <div class="concept-box">
+                    <h3>The fields Property</h3>
+                    <pre><code class="language-json">PUT /healthcare
+{
+  "mappings": {
+    "properties": {
+      "testName": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          },
+          "autocomplete": {
+            "type": "text",
+            "analyzer": "edge_ngram_analyzer"
+          }
+        }
+      }
+    }
+  }
+}
+
+// Access as:
+// testName        → full-text search
+// testName.keyword → exact match, sorting, aggregations
+// testName.autocomplete → autocomplete search</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Using Multi-Fields in Queries</h2>
+                <div class="example-query">
+                    <h4>Full-text search on testName</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "match": { "testName": "blood count" }
+  }
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;match&quot;:{&quot;testName&quot;:&quot;blood count&quot;}},&quot;size&quot;:5}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Sort by testName.keyword</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": { "match_all": {} },
+  "sort": [
+    { "testName.keyword": "asc" }
+  ],
+  "size": 5
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;match_all&quot;:{}},&quot;sort&quot;:[{&quot;testName.keyword&quot;:&quot;asc&quot;}],&quot;size&quot;:5}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Multi-fields index the same data in multiple ways</li>
+                        <li>&#10003; Common pattern: text + keyword sub-field</li>
+                        <li>&#10003; Access sub-fields using dot notation (field.subfield)</li>
+                        <li>&#10003; No additional storage overhead for the source data</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('dynamic-mapping')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('analyzers')">Next: Analyzers &#8594;</a>
+            </div>
+        `
+    },
+    'tokenizers': {
+        title: 'Tokenizers',
+        category: 'Indexing & Mappings',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Tokenizers</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Indexing &amp; Mappings</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is a Tokenizer?</h2>
+                <p>A tokenizer breaks text into individual tokens (words/terms). It is the core component of an analyzer, sitting between optional character filters and token filters.</p>
+
+                <div class="concept-box">
+                    <h3>Standard Tokenizer</h3>
+                    <p>The default tokenizer. Splits on word boundaries (Unicode text segmentation), removes most punctuation.</p>
+                    <pre><code class="language-text">Input:  "Complete Blood Count (CBC) - Rs.350"
+Tokens: ["Complete", "Blood", "Count", "CBC", "Rs.350"]</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Whitespace Tokenizer</h3>
+                    <p>Splits text only on whitespace characters. Preserves punctuation.</p>
+                    <pre><code class="language-text">Input:  "Complete Blood Count (CBC)"
+Tokens: ["Complete", "Blood", "Count", "(CBC)"]</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Keyword Tokenizer</h3>
+                    <p>No-op tokenizer that keeps the entire input as a single token. Used when you want token filters without splitting.</p>
+                    <pre><code class="language-text">Input:  "Complete Blood Count"
+Tokens: ["Complete Blood Count"]</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>N-gram Tokenizers</h2>
+
+                <div class="concept-box">
+                    <h3>N-gram Tokenizer</h3>
+                    <p>Produces sliding window tokens of specified length. Useful for substring matching.</p>
+                    <pre><code class="language-text">Input:  "blood" (min_gram=3, max_gram=4)
+Tokens: ["blo", "bloo", "loo", "lood", "ood"]</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Edge N-gram Tokenizer</h3>
+                    <p>Like n-gram but only from the beginning of each token. Ideal for autocomplete.</p>
+                    <pre><code class="language-text">Input:  "blood" (min_gram=2, max_gram=5)
+Tokens: ["bl", "blo", "bloo", "blood"]</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Testing Tokenizers</h2>
+                <div class="example-query">
+                    <h4>Test with _analyze API</h4>
+                    <pre><code class="language-json">POST /_analyze
+{
+  "tokenizer": "standard",
+  "text": "Complete Blood Count (CBC)"
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/_analyze', '{&quot;tokenizer&quot;:&quot;standard&quot;,&quot;text&quot;:&quot;Complete Blood Count (CBC)&quot;}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Tokenizers break text into individual tokens</li>
+                        <li>&#10003; standard: splits on word boundaries (most common)</li>
+                        <li>&#10003; keyword: keeps entire input as single token</li>
+                        <li>&#10003; Edge n-gram: produces prefix tokens for autocomplete</li>
+                        <li>&#10003; Use _analyze API to test how text gets tokenized</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('analyzers')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('filters')">Next: Token Filters &#8594;</a>
+            </div>
+        `
+    },
+    'filters': {
+        title: 'Token Filters',
+        category: 'Indexing & Mappings',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Token Filters</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Indexing &amp; Mappings</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What are Token Filters?</h2>
+                <p>Token filters process the stream of tokens produced by a tokenizer. They can modify, add, or remove tokens. Multiple filters can be chained together.</p>
+
+                <div class="concept-box">
+                    <h3>lowercase</h3>
+                    <p>Converts all tokens to lowercase. Essential for case-insensitive search.</p>
+                    <pre><code class="language-text">Input tokens:  ["Complete", "Blood", "Count"]
+Output tokens: ["complete", "blood", "count"]</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>stop</h3>
+                    <p>Removes common words (stop words) like "the", "is", "at", "which".</p>
+                    <pre><code class="language-text">Input tokens:  ["this", "is", "a", "blood", "test"]
+Output tokens: ["blood", "test"]</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>stemmer</h3>
+                    <p>Reduces words to their root form. "running" becomes "run", "tests" becomes "test".</p>
+                    <pre><code class="language-text">Input tokens:  ["testing", "blood", "counts"]
+Output tokens: ["test", "blood", "count"]</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>More Useful Filters</h2>
+
+                <div class="concept-box">
+                    <h3>synonym</h3>
+                    <p>Expands or replaces tokens with synonyms.</p>
+                    <pre><code class="language-json">{
+  "filter": {
+    "medical_synonyms": {
+      "type": "synonym",
+      "synonyms": [
+        "CBC, Complete Blood Count",
+        "ECG, EKG, Electrocardiogram"
+      ]
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>ascii_folding</h3>
+                    <p>Converts Unicode characters to ASCII equivalents. "cafe\u0301" becomes "cafe".</p>
+                </div>
+
+                <div class="concept-box">
+                    <h3>word_delimiter</h3>
+                    <p>Splits tokens on case transitions, non-alphanumeric characters, etc.</p>
+                    <pre><code class="language-text">Input:  "Wi-Fi" → ["Wi", "Fi"]
+Input:  "PowerShot" → ["Power", "Shot"]</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Testing Filters</h2>
+                <div class="example-query">
+                    <h4>Test lowercase + stemmer</h4>
+                    <pre><code class="language-json">POST /_analyze
+{
+  "tokenizer": "standard",
+  "filter": ["lowercase", "stemmer"],
+  "text": "Blood Tests and Testing"
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/_analyze', '{&quot;tokenizer&quot;:&quot;standard&quot;,&quot;filter&quot;:[&quot;lowercase&quot;,&quot;stemmer&quot;],&quot;text&quot;:&quot;Blood Tests and Testing&quot;}')">Try it</button>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Token filters modify tokens after tokenization</li>
+                        <li>&#10003; lowercase: case-insensitive search</li>
+                        <li>&#10003; stemmer: matches word variations (test/tests/testing)</li>
+                        <li>&#10003; synonym: expands medical abbreviations like CBC</li>
+                        <li>&#10003; Filters are applied in order and can be chained</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('tokenizers')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('custom-analyzers')">Next: Custom Analyzers &#8594;</a>
+            </div>
+        `
+    },
+    'custom-analyzers': {
+        title: 'Custom Analyzers',
+        category: 'Indexing & Mappings',
+        difficulty: 'Advanced',
+        content: `
+            <h1>Custom Analyzers</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Indexing &amp; Mappings</span>
+                <span class="difficulty">Difficulty: Advanced</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Anatomy of an Analyzer</h2>
+                <p>An analyzer consists of three components applied in order:</p>
+                <div class="concept-box">
+                    <h3>Analysis Pipeline</h3>
+                    <pre><code class="language-text">Character Filters → Tokenizer → Token Filters
+
+1. Character Filters: Transform raw text before tokenization
+   Example: html_strip removes HTML tags
+
+2. Tokenizer: Breaks text into tokens
+   Example: standard splits on word boundaries
+
+3. Token Filters: Modify the token stream
+   Example: lowercase, stemmer, synonyms</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Creating a Custom Analyzer</h2>
+                <div class="example-query">
+                    <h4>Medical Test Analyzer</h4>
+                    <pre><code class="language-json">PUT /medical_tests
+{
+  "settings": {
+    "analysis": {
+      "char_filter": {
+        "remove_special": {
+          "type": "pattern_replace",
+          "pattern": "[^a-zA-Z0-9\\\\s]",
+          "replacement": " "
+        }
+      },
+      "tokenizer": {
+        "edge_ngram_tokenizer": {
+          "type": "edge_ngram",
+          "min_gram": 2,
+          "max_gram": 15,
+          "token_chars": ["letter", "digit"]
+        }
+      },
+      "filter": {
+        "medical_synonyms": {
+          "type": "synonym",
+          "synonyms": [
+            "CBC, Complete Blood Count",
+            "TSH, Thyroid Stimulating Hormone"
+          ]
+        }
+      },
+      "analyzer": {
+        "medical_autocomplete": {
+          "type": "custom",
+          "char_filter": ["remove_special"],
+          "tokenizer": "edge_ngram_tokenizer",
+          "filter": ["lowercase", "medical_synonyms"]
+        },
+        "medical_search": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "medical_synonyms"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "testName": {
+        "type": "text",
+        "analyzer": "medical_autocomplete",
+        "search_analyzer": "medical_search"
+      }
+    }
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Testing Your Analyzer</h2>
+                <div class="example-query">
+                    <h4>Test with _analyze API</h4>
+                    <pre><code class="language-json">POST /_analyze
+{
+  "analyzer": "standard",
+  "text": "Complete Blood Count (CBC) Test"
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/_analyze', '{&quot;analyzer&quot;:&quot;standard&quot;,&quot;text&quot;:&quot;Complete Blood Count (CBC) Test&quot;}')">Try it</button>
+                </div>
+
+                <div class="key-points">
+                    <h3>Best Practices</h3>
+                    <ul>
+                        <li>Use different analyzers for index-time and search-time (search_analyzer)</li>
+                        <li>Test your analyzer with _analyze before applying to production</li>
+                        <li>Use edge_ngram for autocomplete, standard for normal search</li>
+                        <li>Add synonyms specific to your domain (medical terms, abbreviations)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Custom analyzers = char filters + tokenizer + token filters</li>
+                        <li>&#10003; Define in index settings under analysis</li>
+                        <li>&#10003; Use search_analyzer for different index vs query analysis</li>
+                        <li>&#10003; Test with POST /_analyze before production use</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('filters')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('match-query')">Next: Match Query &#8594;</a>
+            </div>
+        `
+    },
     'nested-query': {
         title: 'Nested Queries',
         category: 'Advanced Search',
@@ -3708,6 +6832,1627 @@ Search "blo" matches because "blo" is indexed!</code></pre>
             <div class="lesson-nav">
                 <a class="btn btn-outline" onclick="loadLesson('faceted-search')">&#8592; Previous</a>
                 <a class="btn btn-primary" onclick="loadLesson('geo-queries')">Next: Geo Queries &#8594;</a>
+            </div>
+        `
+    },
+    'tf-idf': {
+        title: 'TF-IDF &amp; BM25',
+        category: 'Scoring &amp; Relevance',
+        difficulty: 'Advanced',
+        content: `
+            <h1>TF-IDF &amp; BM25: The Math Behind Search Scoring</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Scoring &amp; Relevance</span>
+                <span class="difficulty">Difficulty: Advanced</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Understanding TF-IDF</h2>
+                <p>TF-IDF (Term Frequency-Inverse Document Frequency) is the foundational scoring algorithm for information retrieval. Elasticsearch used TF-IDF in earlier versions before switching to BM25 as the default in version 5.0. Understanding TF-IDF is essential to grasp how BM25 improves upon it.</p>
+
+                <div class="concept-box">
+                    <h3>Term Frequency (TF)</h3>
+                    <p>Term Frequency measures how often a term appears in a document. The more times a search term appears, the more relevant that document is considered. In classic TF-IDF, TF is often calculated as the square root of the raw count.</p>
+                    <pre><code class="language-json">// Example: searching for "blood" in the tests index
+// Document A testDescription: "blood test for blood sugar and blood pressure"
+//   TF("blood") = sqrt(3) = 1.73  (appears 3 times)
+//
+// Document B testDescription: "blood test for infection"
+//   TF("blood") = sqrt(1) = 1.0   (appears 1 time)
+//
+// Document A scores higher on TF because "blood" appears more often</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Inverse Document Frequency (IDF)</h3>
+                    <p>IDF measures how rare or common a term is across all documents. Rare terms are more important for distinguishing documents, so they get a higher weight. Common terms like "test" that appear in almost every document get a lower IDF score.</p>
+                    <pre><code class="language-json">// IDF formula: log(1 + (N - df + 0.5) / (df + 0.5))
+// where N = total documents, df = documents containing the term
+//
+// Suppose our tests index has 500 documents:
+//   "test" appears in 480 documents
+//   IDF("test") = log(1 + (500 - 480 + 0.5) / (480 + 0.5)) = very low
+//
+//   "hemoglobin" appears in 12 documents
+//   IDF("hemoglobin") = log(1 + (500 - 12 + 0.5) / (12 + 0.5)) = high
+//
+// Searching for "hemoglobin test":
+//   "hemoglobin" contributes much more to the score than "test"</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Field Length Normalization</h3>
+                    <p>Shorter fields are considered more relevant when they contain a matching term. A match in a short testName field is more significant than the same match in a long testDescription field.</p>
+                    <pre><code class="language-json">// Field length normalization example:
+// Document A testName: "CBC" (1 token)
+//   Match on "CBC" in a 1-token field = very high norm
+//
+// Document B testDescription: "The CBC test is a complete blood count
+//   that measures red blood cells white blood cells..." (30+ tokens)
+//   Match on "CBC" in a 30-token field = lower norm
+//
+// Document A ranks higher because the match is in a shorter field</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>BM25: The Modern Algorithm</h2>
+                <p>BM25 (Best Matching 25) is the default scoring algorithm in Elasticsearch. It builds upon TF-IDF but introduces saturation for term frequency and configurable parameters to fine-tune relevance.</p>
+
+                <div class="concept-box">
+                    <h3>BM25 Formula and Parameters</h3>
+                    <p>BM25 introduces two key parameters: <strong>k1</strong> controls term frequency saturation, and <strong>b</strong> controls field length normalization. The key innovation is that TF has a diminishing returns curve - a term appearing 10 times is not 10x more relevant than appearing once.</p>
+                    <pre><code class="language-json">// BM25 score = IDF * (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * (dl / avgdl)))
+//
+// Parameters:
+//   k1 (default: 1.2) - Term frequency saturation
+//     k1 = 0   : TF is completely ignored (binary model)
+//     k1 = 1.2 : Default, good balance
+//     k1 = 2.0 : TF matters more, slower saturation
+//
+//   b (default: 0.75) - Field length normalization
+//     b = 0 : No length normalization
+//     b = 1 : Full length normalization
+//
+//   dl = document length (number of terms in the field)
+//   avgdl = average document length across all documents</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Customizing BM25 Parameters</h3>
+                    <p>You can customize k1 and b at index creation time for specific use cases. For healthcare test data, you might want different settings depending on field characteristics.</p>
+                    <pre><code class="language-json">PUT /tests
+{
+  "settings": {
+    "index": {
+      "similarity": {
+        "custom_bm25": {
+          "type": "BM25",
+          "k1": 1.5,
+          "b": 0.5
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "testName": {
+        "type": "text",
+        "similarity": "custom_bm25"
+      },
+      "testDescription": {
+        "type": "text"
+      }
+    }
+  }
+}
+
+// Lower b (0.5 vs default 0.75) for testName:
+//   testName fields are mostly short, so less
+//   normalization prevents penalizing slightly longer names
+//
+// Higher k1 (1.5 vs default 1.2) for testName:
+//   Repeated terms in test names are more meaningful</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>BM25 vs TF-IDF: Key Differences</h3>
+                    <p>BM25 handles edge cases better than classic TF-IDF, particularly for term frequency saturation.</p>
+                    <pre><code class="language-json">// TF-IDF: TF = sqrt(termFreq) - grows without bound
+// BM25:   TF saturates - adding more occurrences has diminishing returns
+//
+// Example with "blood" appearing N times:
+//   N=1:  TF-IDF=1.0,  BM25=0.55
+//   N=5:  TF-IDF=2.24, BM25=0.88
+//   N=10: TF-IDF=3.16, BM25=0.94
+//   N=50: TF-IDF=7.07, BM25=0.99
+//
+// BM25 saturates near 1.0, preventing term-stuffing from
+// artificially inflating scores. TF-IDF keeps growing.
+//
+// Verify scoring with the Explain API:
+POST /tests/_search
+{
+  "explain": true,
+  "query": {
+    "match": { "testName": "blood" }
+  },
+  "size": 3
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; TF-IDF combines term frequency and inverse document frequency to score documents</li>
+                        <li>&#10003; BM25 improves on TF-IDF with term frequency saturation and tunable parameters</li>
+                        <li>&#10003; k1 (default 1.2) controls how quickly TF saturates; b (default 0.75) controls length normalization</li>
+                        <li>&#10003; IDF gives higher weight to rare terms like "hemoglobin" vs common terms like "test"</li>
+                        <li>&#10003; BM25 is the default similarity algorithm in Elasticsearch since version 5.0</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('relevance-scoring')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('explain-api')">Next: Explain API &#8594;</a>
+            </div>
+        `
+    },
+    'explain-api': {
+        title: 'Explain API',
+        category: 'Scoring &amp; Relevance',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Explain API: Debugging Search Relevance</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Scoring &amp; Relevance</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>The _explain Endpoint</h2>
+                <p>The Explain API tells you exactly why a specific document matched (or did not match) a query and how its score was calculated. This is an essential debugging tool when search results are not ranked as expected.</p>
+
+                <div class="concept-box">
+                    <h3>Basic _explain Usage</h3>
+                    <p>The _explain endpoint takes a document ID and a query, then returns a detailed breakdown of the scoring calculation for that specific document.</p>
+                    <pre><code class="language-json">// Explain why document 40 matches a query for "blood count"
+POST /tests/_explain/40
+{
+  "query": {
+    "match": {
+      "testName": "blood count"
+    }
+  }
+}
+
+// Response structure:
+{
+  "_index": "tests",
+  "_id": "40",
+  "matched": true,
+  "explanation": {
+    "value": 8.52,
+    "description": "sum of:",
+    "details": [
+      {
+        "value": 4.21,
+        "description": "weight(testName:blood ...)",
+        "details": [...]
+      },
+      {
+        "value": 4.31,
+        "description": "weight(testName:count ...)",
+        "details": [...]
+      }
+    ]
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Reading the Explain Output</h3>
+                    <p>The explain output is a tree structure. Each node has a value, a description, and optional child details. Understanding this tree is the key to debugging relevance.</p>
+                    <pre><code class="language-json">// Detailed explanation breakdown for a BM25 match:
+{
+  "value": 4.21,
+  "description": "weight(testName:blood in 0) [PerFieldSimilarity]",
+  "details": [
+    {
+      "value": 4.21,
+      "description": "score(freq=1.0), computed as boost * idf * tf from:",
+      "details": [
+        {
+          "value": 2.2,
+          "description": "boost"
+        },
+        {
+          "value": 3.45,
+          "description": "idf, computed as log(1 + (N - n + 0.5) / (n + 0.5))",
+          "details": [
+            { "value": 500, "description": "N, total number of documents" },
+            { "value": 15, "description": "n, number of documents containing term" }
+          ]
+        },
+        {
+          "value": 0.55,
+          "description": "tf, computed as freq / (freq + k1 * (1 - b + b * dl / avgdl))",
+          "details": [
+            { "value": 1.0, "description": "freq, occurrences of term within document" },
+            { "value": 1.2, "description": "k1, term saturation parameter" },
+            { "value": 0.75, "description": "b, length normalization parameter" },
+            { "value": 3.0, "description": "dl, length of field" },
+            { "value": 4.2, "description": "avgdl, average length of field" }
+          ]
+        }
+      ]
+    }
+  ]
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Debugging Match and Non-Match</h2>
+                <p>The Explain API is especially useful when a document you expect to match does not appear in results, or when it appears lower than expected.</p>
+
+                <div class="concept-box">
+                    <h3>Debugging Why a Document Does Not Match</h3>
+                    <p>When _explain returns "matched": false, the explanation tells you exactly where the query failed.</p>
+                    <pre><code class="language-json">// Why doesn't document 55 match this query?
+POST /tests/_explain/55
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "testName": "thyroid" } }
+      ],
+      "filter": [
+        { "range": { "consumerPrice": { "lte": 200 } } }
+      ]
+    }
+  }
+}
+
+// Response when document doesn't match:
+{
+  "matched": false,
+  "explanation": {
+    "value": 0.0,
+    "description": "Failure to meet condition(s) of required/prohibited clause(s)",
+    "details": [
+      {
+        "value": 0.0,
+        "description": "no match on required clause (testName:thyroid)",
+        "details": [...]
+      }
+      // or the filter condition failed:
+      // "description": "consumerPrice:[* TO 200.0] doesn't match"
+    ]
+  }
+}
+
+// Common reasons for non-match:
+// 1. Term was analyzed differently (e.g., "CBC" vs "cbc")
+// 2. Filter clause excluded the document
+// 3. Minimum_should_match not satisfied</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Using explain: true in _search</h3>
+                    <p>You can also add "explain": true directly to a _search request to see score explanations for all returned documents. This is useful for comparing scores across results.</p>
+                    <pre><code class="language-json">// Get explanations for all search results
+POST /tests/_search
+{
+  "explain": true,
+  "query": {
+    "multi_match": {
+      "query": "complete blood count",
+      "fields": ["testName^3", "testDescription", "testAlias"]
+    }
+  },
+  "size": 3,
+  "_source": ["testName", "consumerPrice"]
+}
+
+// Each hit in the response will include an _explanation field:
+// "hits": [
+//   {
+//     "_id": "40",
+//     "_score": 15.7,
+//     "_source": { "testName": "Complete Blood Count (CBC)", ... },
+//     "_explanation": {
+//       "value": 15.7,
+//       "description": "max of:",
+//       "details": [
+//         { "value": 15.7, "description": "... testName^3 ..." },
+//         { "value": 3.2,  "description": "... testDescription ..." },
+//         { "value": 8.1,  "description": "... testAlias ..." }
+//       ]
+//     }
+//   }
+// ]</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Use POST /index/_explain/doc_id to debug scoring for a specific document</li>
+                        <li>&#10003; The explain output is a tree showing boost, IDF, and TF components</li>
+                        <li>&#10003; "matched": false tells you exactly which clause failed</li>
+                        <li>&#10003; Add "explain": true in _search to see explanations for all results</li>
+                        <li>&#10003; Essential for debugging unexpected ranking or missing results</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('tf-idf')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('function-score')">Next: Function Score &#8594;</a>
+            </div>
+        `
+    },
+    'function-score': {
+        title: 'Function Score',
+        category: 'Scoring &amp; Relevance',
+        difficulty: 'Advanced',
+        content: `
+            <h1>Function Score: Custom Scoring Logic</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Scoring &amp; Relevance</span>
+                <span class="difficulty">Difficulty: Advanced</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is function_score?</h2>
+                <p>The function_score query lets you modify the score of documents retrieved by a query using one or more scoring functions. This is essential when you need to incorporate business logic (like popularity, recency, or pricing) into relevance ranking.</p>
+
+                <div class="concept-box">
+                    <h3>Basic function_score Structure</h3>
+                    <p>A function_score wraps an existing query and applies scoring functions to modify the original _score. You control how the function output combines with the query score.</p>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "function_score": {
+      "query": {
+        "match": { "testName": "blood" }
+      },
+      "functions": [
+        {
+          "field_value_factor": {
+            "field": "frequency",
+            "modifier": "log1p",
+            "factor": 0.5
+          }
+        }
+      ],
+      "boost_mode": "multiply",
+      "score_mode": "sum"
+    }
+  }
+}
+
+// boost_mode: how function result combines with query score
+//   multiply (default), sum, avg, first, max, min, replace
+//
+// score_mode: how multiple functions combine with each other
+//   multiply (default), sum, avg, first, max, min</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>field_value_factor</h3>
+                    <p>Use a numeric field value to influence scoring. For healthcare tests, the frequency field (how often a test is ordered) is a natural popularity signal.</p>
+                    <pre><code class="language-json">// Boost popular tests higher in results
+POST /tests/_search
+{
+  "query": {
+    "function_score": {
+      "query": {
+        "match": { "testName": "blood" }
+      },
+      "field_value_factor": {
+        "field": "frequency",
+        "modifier": "log1p",
+        "factor": 0.1,
+        "missing": 1
+      }
+    }
+  }
+}
+
+// modifier options:
+//   none     : field_value * factor
+//   log      : log(field_value * factor)
+//   log1p    : log(1 + field_value * factor)  -- safe for 0 values
+//   log2p    : log(2 + field_value * factor)
+//   ln       : ln(field_value * factor)
+//   ln1p     : ln(1 + field_value * factor)
+//   ln2p     : ln(2 + field_value * factor)
+//   square   : (field_value * factor)^2
+//   sqrt     : sqrt(field_value * factor)
+//   reciprocal : 1 / (field_value * factor)
+//
+// "missing": 1 provides a default if the field is absent</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Advanced Scoring Functions</h2>
+
+                <div class="concept-box">
+                    <h3>script_score</h3>
+                    <p>For complex scoring logic, use Painless scripts. This gives you full control over how the score is calculated using any document fields.</p>
+                    <pre><code class="language-json">// Custom script: balance text relevance with price and popularity
+POST /tests/_search
+{
+  "query": {
+    "function_score": {
+      "query": {
+        "match": { "testName": "blood" }
+      },
+      "script_score": {
+        "script": {
+          "source": "_score * Math.log(2 + doc['frequency'].value) / Math.log(2 + doc['consumerPrice'].value)",
+          "params": {}
+        }
+      }
+    }
+  }
+}
+
+// This formula:
+// - Keeps the original text relevance (_score)
+// - Boosts by popularity (log of frequency)
+// - Penalizes expensive tests (divides by log of price)
+// - log(2 + x) avoids log(0) or log(1) issues</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Decay Functions (gauss, linear, exp)</h3>
+                    <p>Decay functions reduce a score based on the distance of a numeric field from an origin value. This is perfect for scenarios like "prefer tests priced around 500 rupees."</p>
+                    <pre><code class="language-json">// Prefer tests priced near 500, with gradual decay
+POST /tests/_search
+{
+  "query": {
+    "function_score": {
+      "query": {
+        "match": { "category": "Hematology" }
+      },
+      "functions": [
+        {
+          "gauss": {
+            "consumerPrice": {
+              "origin": 500,
+              "scale": 200,
+              "offset": 50,
+              "decay": 0.5
+            }
+          }
+        }
+      ],
+      "boost_mode": "multiply"
+    }
+  }
+}
+
+// origin: The ideal value (price = 500)
+// scale:  At origin +/- scale, the score decays to "decay" value
+// offset: No decay within origin +/- offset
+// decay:  Score at distance "scale" from origin (default 0.5)
+//
+// Decay types:
+//   gauss:  Bell curve, smooth falloff
+//   linear: Straight line decay
+//   exp:    Exponential decay, steep falloff</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>weight and random_score</h3>
+                    <p>Use weight to apply a static multiplier to specific filter conditions, and random_score for randomized results (useful for A/B testing or displaying varied results).</p>
+                    <pre><code class="language-json">// Combine multiple scoring functions with weights
+POST /tests/_search
+{
+  "query": {
+    "function_score": {
+      "query": {
+        "match": { "testName": "blood" }
+      },
+      "functions": [
+        {
+          "filter": { "term": { "category": "Hematology" } },
+          "weight": 2
+        },
+        {
+          "filter": { "range": { "consumerPrice": { "lte": 500 } } },
+          "weight": 1.5
+        },
+        {
+          "random_score": {
+            "seed": 12345,
+            "field": "_seq_no"
+          },
+          "weight": 0.1
+        }
+      ],
+      "score_mode": "sum",
+      "boost_mode": "multiply"
+    }
+  }
+}
+
+// weight: static multiplier applied when filter matches
+// random_score: deterministic random value (0 to 1) per document
+//   seed: same seed = same random order (reproducible)
+//   field: used as additional seed input</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; function_score wraps a query and modifies scores with custom functions</li>
+                        <li>&#10003; field_value_factor uses numeric fields like frequency or price to influence ranking</li>
+                        <li>&#10003; script_score provides full Painless scripting for complex scoring formulas</li>
+                        <li>&#10003; Decay functions (gauss, linear, exp) reduce scores based on distance from a target value</li>
+                        <li>&#10003; Use boost_mode and score_mode to control how function scores combine</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('explain-api')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('boosting-relevance')">Next: Boosting Relevance &#8594;</a>
+            </div>
+        `
+    },
+    'boosting-relevance': {
+        title: 'Boosting Relevance',
+        category: 'Scoring &amp; Relevance',
+        difficulty: 'Advanced',
+        content: `
+            <h1>Boosting Relevance: Controlling Search Rankings</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Scoring &amp; Relevance</span>
+                <span class="difficulty">Difficulty: Advanced</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Field-Level Boosting</h2>
+                <p>Boosting lets you tell Elasticsearch that certain fields or conditions are more important than others. This is one of the most practical ways to tune relevance for your specific use case.</p>
+
+                <div class="concept-box">
+                    <h3>Query-Time Field Boosting</h3>
+                    <p>The most common approach is boosting fields at query time using the caret (^) notation or the boost parameter. A match in testName should typically rank higher than a match in testDescription.</p>
+                    <pre><code class="language-json">// Boost testName matches 3x over testDescription
+POST /tests/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "complete blood count",
+      "fields": [
+        "testName^3",
+        "testAlias^2",
+        "testDescription"
+      ]
+    }
+  }
+}
+
+// Equivalent using explicit boost parameter:
+POST /tests/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "testName": {
+              "query": "complete blood count",
+              "boost": 3
+            }
+          }
+        },
+        {
+          "match": {
+            "testAlias": {
+              "query": "complete blood count",
+              "boost": 2
+            }
+          }
+        },
+        {
+          "match": {
+            "testDescription": "complete blood count"
+          }
+        }
+      ]
+    }
+  }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Negative Boosting</h3>
+                    <p>The boosting query lets you demote documents matching certain criteria without excluding them entirely. This is useful when you want to push down less relevant results instead of filtering them out.</p>
+                    <pre><code class="language-json">// Demote expensive tests without removing them
+POST /tests/_search
+{
+  "query": {
+    "boosting": {
+      "positive": {
+        "match": {
+          "testName": "blood"
+        }
+      },
+      "negative": {
+        "range": {
+          "consumerPrice": { "gte": 2000 }
+        }
+      },
+      "negative_boost": 0.3
+    }
+  }
+}
+
+// Matches where consumerPrice >= 2000 have their
+// score multiplied by 0.3 (reduced to 30%)
+// They still appear in results, just ranked lower
+//
+// negative_boost must be between 0 and 1:
+//   0.0 = completely suppress (like exclude)
+//   0.5 = half the score
+//   1.0 = no effect</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Index-Level Boosting</h2>
+                <p>When searching across multiple indices, you can boost entire indices to prefer results from one index over another.</p>
+
+                <div class="concept-box">
+                    <h3>indices_boost</h3>
+                    <p>Use indices_boost to apply a multiplier to scores from specific indices. This is useful when searching across tests and packages indices simultaneously.</p>
+                    <pre><code class="language-json">// Prefer results from tests index over packages
+POST /tests,packages/_search
+{
+  "indices_boost": [
+    { "tests": 1.5 },
+    { "packages": 1.0 }
+  ],
+  "query": {
+    "multi_match": {
+      "query": "blood test",
+      "fields": ["testName", "testDescription"]
+    }
+  }
+}
+
+// All scores from "tests" index are multiplied by 1.5
+// All scores from "packages" index remain at 1.0
+// This effectively prefers individual tests over packages</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Index-Time vs Query-Time Boosting</h3>
+                    <p>Elasticsearch previously supported index-time boosting (boosting a field when the document is indexed), but this is now deprecated. Always prefer query-time boosting for flexibility and maintainability.</p>
+                    <pre><code class="language-json">// DEPRECATED - Do NOT use index-time boosting:
+PUT /tests
+{
+  "mappings": {
+    "properties": {
+      "testName": {
+        "type": "text",
+        "boost": 2     // DEPRECATED! Do not use
+      }
+    }
+  }
+}
+
+// WHY query-time boosting is better:
+// 1. Can be changed without reindexing
+// 2. Can vary per query based on context
+// 3. Easier to test and iterate
+// 4. No hidden scoring surprises
+//
+// RECOMMENDED - Use query-time boosting:
+POST /tests/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "CBC",
+      "fields": ["testName^3", "testAlias^2", "testDescription"]
+    }
+  }
+}
+// Boost values can change per request as needed</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Use ^ notation or boost parameter to weight fields at query time</li>
+                        <li>&#10003; The boosting query demotes matching documents without excluding them</li>
+                        <li>&#10003; indices_boost applies score multipliers across multiple indices</li>
+                        <li>&#10003; Always prefer query-time over index-time boosting for flexibility</li>
+                        <li>&#10003; Combine field boosting with function_score for maximum control</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('function-score')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('search-as-you-type')">Next: Search-as-You-Type &#8594;</a>
+            </div>
+        `
+    },
+    'search-as-you-type': {
+        title: 'Search-as-You-Type',
+        category: 'Complex Queries',
+        difficulty: 'Advanced',
+        content: `
+            <h1>Search-as-You-Type: Instant Search Experience</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Complex Queries</span>
+                <span class="difficulty">Difficulty: Advanced</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>The search_as_you_type Field Type</h2>
+                <p>Elasticsearch provides a dedicated field type called search_as_you_type that automatically creates optimized subfields for prefix, infix, and shingle-based matching. This is the recommended approach for building instant search experiences.</p>
+
+                <div class="concept-box">
+                    <h3>Mapping Configuration</h3>
+                    <p>When you map a field as search_as_you_type, Elasticsearch automatically creates subfields with n-gram and shingle analyzers optimized for partial matching.</p>
+                    <pre><code class="language-json">// Create an index with search_as_you_type field
+PUT /tests_autocomplete
+{
+  "mappings": {
+    "properties": {
+      "testName": {
+        "type": "search_as_you_type",
+        "max_shingle_size": 3
+      }
+    }
+  }
+}
+
+// This automatically creates these subfields:
+// testName                - root field (standard analyzed)
+// testName._2gram         - shingle (2-word combinations)
+// testName._3gram         - shingle (3-word combinations)
+// testName._index_prefix  - edge n-gram of each term
+//
+// Example: "Complete Blood Count"
+// _2gram tokens:  "Complete Blood", "Blood Count"
+// _3gram tokens:  "Complete Blood Count"
+// _index_prefix:  "C", "Co", "Com", "Comp", ... "B", "Bl", ...</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Querying with bool_prefix</h3>
+                    <p>The multi_match query with type "bool_prefix" is designed to work with search_as_you_type fields. It treats the last term as a prefix and the preceding terms as full matches.</p>
+                    <pre><code class="language-json">// User types "compl blo" - match "Complete Blood Count"
+POST /tests/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "compl blo",
+      "type": "bool_prefix",
+      "fields": [
+        "testName",
+        "testName._2gram",
+        "testName._3gram"
+      ]
+    }
+  }
+}
+
+// How bool_prefix works:
+// Input: "compl blo"
+// Terms: ["compl", "blo"]
+//
+// All terms except the last use "term" query:
+//   term query for "compl" (doesn't match "complete")
+// Last term uses "prefix" query:
+//   prefix query for "blo" (matches "blood")
+//
+// Actually, with analyzed text, "compl" becomes a prefix match
+// on the _index_prefix subfield, so partial terms DO match!</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Shingle Subfields Explained</h2>
+                <p>Shingles are sliding windows of adjacent terms that enable phrase-like matching without requiring exact phrase queries.</p>
+
+                <div class="concept-box">
+                    <h3>How Shingles Improve Matching</h3>
+                    <p>The _2gram and _3gram subfields index sequences of 2 and 3 adjacent words. This means searching for "blood count" matches the shingle "Blood Count" directly, producing better-ranked results than matching individual terms.</p>
+                    <pre><code class="language-json">// Document: "Complete Blood Count (CBC)"
+//
+// Shingle analysis:
+// _2gram tokens: ["Complete Blood", "Blood Count", "Count CBC"]
+// _3gram tokens: ["Complete Blood Count", "Blood Count CBC"]
+//
+// When user searches "blood count":
+// - Root field: matches "blood" and "count" individually
+// - _2gram field: matches "Blood Count" as a unit (higher score!)
+// - _3gram field: no 3-word match (no contribution)
+//
+// The _2gram match scores highest because it found
+// the exact 2-word sequence, proving word order relevance
+
+// Practical example with multiple subfields:
+POST /tests/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "blood count",
+      "type": "bool_prefix",
+      "fields": [
+        "testName",
+        "testName._2gram",
+        "testName._3gram"
+      ]
+    }
+  },
+  "_source": ["testName", "category"],
+  "size": 5
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Combining with Other Queries</h3>
+                    <p>In production, you typically combine search_as_you_type with other filters to create a responsive, filtered search experience.</p>
+                    <pre><code class="language-json">// Autocomplete with category filter and highlighting
+POST /tests/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "thy",
+            "type": "bool_prefix",
+            "fields": [
+              "testName",
+              "testName._2gram",
+              "testName._3gram"
+            ]
+          }
+        }
+      ],
+      "filter": [
+        {
+          "range": {
+            "consumerPrice": { "lte": 1000 }
+          }
+        }
+      ]
+    }
+  },
+  "highlight": {
+    "fields": {
+      "testName": {}
+    }
+  },
+  "_source": ["testName", "consumerPrice", "category"],
+  "size": 10
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; search_as_you_type creates optimized subfields automatically (_2gram, _3gram, _index_prefix)</li>
+                        <li>&#10003; Use multi_match with type "bool_prefix" for instant search queries</li>
+                        <li>&#10003; Shingles index adjacent word combinations for phrase-aware matching</li>
+                        <li>&#10003; The last typed term is treated as a prefix, earlier terms as full matches</li>
+                        <li>&#10003; Combine with bool filters for production-ready search-as-you-type</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('boosting-relevance')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('faceted-search')">Next: Faceted Search &#8594;</a>
+            </div>
+        `
+    },
+    'faceted-search': {
+        title: 'Faceted Search',
+        category: 'Complex Queries',
+        difficulty: 'Advanced',
+        content: `
+            <h1>Faceted Search: Search with Navigable Filters</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Complex Queries</span>
+                <span class="difficulty">Difficulty: Advanced</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Faceted Search?</h2>
+                <p>Faceted search combines full-text search with aggregation-based navigation. Think of any e-commerce site where you search for a product and then see filter counts on the left sidebar (e.g., "Hematology (25)", "Biochemistry (18)"). Those filter counts come from aggregations running alongside the search.</p>
+
+                <div class="concept-box">
+                    <h3>Basic Faceted Search Pattern</h3>
+                    <p>Combine a search query with aggregations to return both search results and facet counts in a single request.</p>
+                    <pre><code class="language-json">// Search for "blood" and get facet counts by category
+POST /tests/_search
+{
+  "query": {
+    "match": { "testName": "blood" }
+  },
+  "aggs": {
+    "category_facets": {
+      "terms": {
+        "field": "category.keyword",
+        "size": 10
+      }
+    },
+    "price_ranges": {
+      "range": {
+        "field": "consumerPrice",
+        "ranges": [
+          { "key": "Budget (Under 300)", "to": 300 },
+          { "key": "Mid-Range (300-1000)", "from": 300, "to": 1000 },
+          { "key": "Premium (Over 1000)", "from": 1000 }
+        ]
+      }
+    }
+  },
+  "size": 5
+}
+
+// Response includes:
+// "hits": [ ... search results for "blood" ... ]
+// "aggregations": {
+//   "category_facets": {
+//     "buckets": [
+//       { "key": "Hematology", "doc_count": 12 },
+//       { "key": "Biochemistry", "doc_count": 5 },
+//       ...
+//     ]
+//   },
+//   "price_ranges": {
+//     "buckets": [
+//       { "key": "Budget (Under 300)", "doc_count": 8 },
+//       ...
+//     ]
+//   }
+// }</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>post_filter for Facet Selection</h2>
+                <p>The key challenge in faceted search is: when a user selects a facet (like "Hematology"), you want the search results to be filtered, but the other facet counts should still reflect the original search. This is where post_filter comes in.</p>
+
+                <div class="concept-box">
+                    <h3>Understanding post_filter</h3>
+                    <p>post_filter applies a filter to search results AFTER aggregations have been calculated. This means aggregations see all matching documents, but the returned hits are filtered.</p>
+                    <pre><code class="language-json">// User searched "blood" and then clicked "Hematology" facet
+POST /tests/_search
+{
+  "query": {
+    "match": { "testName": "blood" }
+  },
+  "aggs": {
+    "category_facets": {
+      "terms": {
+        "field": "category.keyword",
+        "size": 10
+      }
+    }
+  },
+  "post_filter": {
+    "term": { "category.keyword": "Hematology" }
+  },
+  "size": 5
+}
+
+// Result:
+// "hits": only Hematology tests matching "blood"
+// "aggregations.category_facets": counts for ALL categories
+//   matching "blood" (not just Hematology!)
+//
+// This is crucial! Without post_filter, selecting "Hematology"
+// would make all other category counts disappear.
+//
+// Timeline of execution:
+// 1. query runs: finds all docs matching "blood"
+// 2. aggs run: compute facet counts on query results
+// 3. post_filter runs: filter hits to Hematology only</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Global Aggregations</h3>
+                    <p>Sometimes you want facet counts that ignore the search query entirely - showing total counts across all documents. The global aggregation breaks out of the query scope.</p>
+                    <pre><code class="language-json">// Show both filtered and total category counts
+POST /tests/_search
+{
+  "query": {
+    "match": { "testName": "blood" }
+  },
+  "aggs": {
+    "filtered_categories": {
+      "terms": {
+        "field": "category.keyword",
+        "size": 10
+      }
+    },
+    "all_categories": {
+      "global": {},
+      "aggs": {
+        "categories": {
+          "terms": {
+            "field": "category.keyword",
+            "size": 10
+          }
+        }
+      }
+    }
+  },
+  "size": 5
+}
+
+// "filtered_categories": counts from docs matching "blood"
+//   { "Hematology": 12, "Biochemistry": 5, ... }
+//
+// "all_categories.categories": counts from ALL documents
+//   { "Hematology": 45, "Biochemistry": 82, "Radiology": 30, ... }
+//
+// Use case: show "12 of 45" next to Hematology facet</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Advanced Faceted Patterns</h2>
+
+                <div class="concept-box">
+                    <h3>Multi-Select Facets with Filter Aggregations</h3>
+                    <p>When users can select multiple facets simultaneously, each facet bucket must exclude its own filter from the count to remain accurate. This requires a combination of filter and aggs.</p>
+                    <pre><code class="language-json">// User selected Hematology AND price under 500
+// Show accurate counts for all other facet values
+POST /tests/_search
+{
+  "query": {
+    "match": { "testName": "blood" }
+  },
+  "aggs": {
+    "categories_agg": {
+      "filter": {
+        "range": { "consumerPrice": { "lt": 500 } }
+      },
+      "aggs": {
+        "categories": {
+          "terms": { "field": "category.keyword" }
+        }
+      }
+    },
+    "price_agg": {
+      "filter": {
+        "term": { "category.keyword": "Hematology" }
+      },
+      "aggs": {
+        "prices": {
+          "range": {
+            "field": "consumerPrice",
+            "ranges": [
+              { "to": 300 },
+              { "from": 300, "to": 1000 },
+              { "from": 1000 }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "post_filter": {
+    "bool": {
+      "must": [
+        { "term": { "category.keyword": "Hematology" } },
+        { "range": { "consumerPrice": { "lt": 500 } } }
+      ]
+    }
+  },
+  "size": 5
+}
+
+// categories_agg: filtered by price only (not category)
+//   so Hematology count is accurate for price &lt; 500
+// price_agg: filtered by category only (not price)
+//   so each price range count is accurate for Hematology</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Faceted search combines queries with aggregations for filter-based navigation</li>
+                        <li>&#10003; post_filter applies after aggregations, preserving facet counts while filtering results</li>
+                        <li>&#10003; Global aggregations ignore the query scope for total document counts</li>
+                        <li>&#10003; Multi-select facets require each facet to exclude its own filter from counts</li>
+                        <li>&#10003; Always return facet counts alongside search results in a single request</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('search-as-you-type')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('autocomplete')">Next: Autocomplete &#8594;</a>
+            </div>
+        `
+    },
+    'geo-queries': {
+        title: 'Geo Queries',
+        category: 'Complex Queries',
+        difficulty: 'Advanced',
+        content: `
+            <h1>Geo Queries: Location-Based Search</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Complex Queries</span>
+                <span class="difficulty">Difficulty: Advanced</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Geo Field Types</h2>
+                <p>Elasticsearch supports geospatial data through special field types that enable location-based search. For healthcare, this is useful for finding nearby labs, clinics, or testing centers where patients can get their tests done.</p>
+
+                <div class="concept-box">
+                    <h3>Setting Up geo_point Fields</h3>
+                    <p>The geo_point type stores latitude/longitude pairs. You need to explicitly map fields as geo_point since dynamic mapping will not detect them automatically.</p>
+                    <pre><code class="language-json">// Create an index for lab locations with geo_point
+PUT /labs
+{
+  "mappings": {
+    "properties": {
+      "labName": { "type": "text" },
+      "location": { "type": "geo_point" },
+      "testsOffered": { "type": "keyword" },
+      "city": { "type": "keyword" }
+    }
+  }
+}
+
+// Index a lab with location data
+POST /labs/_doc/1
+{
+  "labName": "City Diagnostics Central Lab",
+  "location": {
+    "lat": 28.6139,
+    "lon": 77.2090
+  },
+  "testsOffered": ["CBC", "Thyroid Panel", "Lipid Panel"],
+  "city": "Delhi"
+}
+
+// Alternative geo_point formats:
+// String:   "location": "28.6139,77.2090"
+// Array:    "location": [77.2090, 28.6139]  // Note: [lon, lat]
+// GeoHash:  "location": "ttnfv2x"</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Geo Query Types</h2>
+
+                <div class="concept-box">
+                    <h3>geo_distance Query</h3>
+                    <p>Find all documents within a specified distance from a point. This is the most common geo query - "find labs within 10km of me."</p>
+                    <pre><code class="language-json">// Find labs within 10km of a location (e.g., patient's address)
+POST /labs/_search
+{
+  "query": {
+    "bool": {
+      "must": {
+        "match": { "testsOffered": "CBC" }
+      },
+      "filter": {
+        "geo_distance": {
+          "distance": "10km",
+          "location": {
+            "lat": 28.6139,
+            "lon": 77.2090
+          }
+        }
+      }
+    }
+  }
+}
+
+// Supported distance units:
+// mi (miles), yd (yards), ft (feet), in (inches)
+// km (kilometers), m (meters), cm (centimeters), mm (millimeters)
+// nmi (nautical miles)
+//
+// distance_type options:
+//   "arc" (default) - more accurate, uses great circle
+//   "plane" - faster, less accurate for large distances</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>geo_bounding_box Query</h3>
+                    <p>Find documents within a rectangular area defined by top-left and bottom-right coordinates. Faster than geo_distance for viewport-based searches (e.g., "show labs visible on this map").</p>
+                    <pre><code class="language-json">// Find labs within a bounding box (map viewport)
+POST /labs/_search
+{
+  "query": {
+    "geo_bounding_box": {
+      "location": {
+        "top_left": {
+          "lat": 28.75,
+          "lon": 77.10
+        },
+        "bottom_right": {
+          "lat": 28.50,
+          "lon": 77.35
+        }
+      }
+    }
+  }
+}
+
+// The bounding box is a rectangle on the map
+// top_left: northwest corner
+// bottom_right: southeast corner
+// Very efficient for map-based interfaces</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>geo_shape Query</h3>
+                    <p>For complex geographic regions (polygons, circles, lines), use geo_shape. This requires a geo_shape field type instead of geo_point.</p>
+                    <pre><code class="language-json">// Mapping with geo_shape for service areas
+PUT /lab_coverage
+{
+  "mappings": {
+    "properties": {
+      "labName": { "type": "text" },
+      "serviceArea": { "type": "geo_shape" }
+    }
+  }
+}
+
+// Index a lab with a polygon service area
+POST /lab_coverage/_doc/1
+{
+  "labName": "Metro Diagnostics",
+  "serviceArea": {
+    "type": "polygon",
+    "coordinates": [[
+      [77.10, 28.75],
+      [77.35, 28.75],
+      [77.35, 28.50],
+      [77.10, 28.50],
+      [77.10, 28.75]
+    ]]
+  }
+}
+
+// Find labs whose service area contains a point
+POST /lab_coverage/_search
+{
+  "query": {
+    "geo_shape": {
+      "serviceArea": {
+        "shape": {
+          "type": "point",
+          "coordinates": [77.20, 28.63]
+        },
+        "relation": "contains"
+      }
+    }
+  }
+}
+
+// relation options:
+//   intersects (default) - shape overlaps with query
+//   contains - shape fully contains the query
+//   within - shape is fully within the query
+//   disjoint - shape does not overlap with query</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Sorting by Distance</h2>
+
+                <div class="concept-box">
+                    <h3>Geo Distance Sort</h3>
+                    <p>Sort results by distance from a reference point. This is essential for "nearest lab" functionality where users want results ordered by proximity.</p>
+                    <pre><code class="language-json">// Find labs offering CBC, sorted by distance from user
+POST /labs/_search
+{
+  "query": {
+    "match": { "testsOffered": "CBC" }
+  },
+  "sort": [
+    {
+      "_geo_distance": {
+        "location": {
+          "lat": 28.6139,
+          "lon": 77.2090
+        },
+        "order": "asc",
+        "unit": "km",
+        "mode": "min",
+        "distance_type": "arc"
+      }
+    }
+  ]
+}
+
+// Response includes sort value (distance in km):
+// "hits": [
+//   {
+//     "_source": { "labName": "City Diagnostics Central Lab" },
+//     "sort": [1.234]   // 1.234 km away
+//   },
+//   {
+//     "_source": { "labName": "HealthFirst Diagnostics" },
+//     "sort": [3.567]   // 3.567 km away
+//   }
+// ]
+//
+// mode: "min" | "max" | "median" | "avg"
+//   Used when a document has multiple geo_points</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Use geo_point for lat/lon coordinates and geo_shape for complex geometries</li>
+                        <li>&#10003; geo_distance finds documents within a radius from a point</li>
+                        <li>&#10003; geo_bounding_box is efficient for rectangular map viewport searches</li>
+                        <li>&#10003; geo_shape supports polygon, circle, and other complex shapes with relation operators</li>
+                        <li>&#10003; _geo_distance sort orders results by proximity to a reference point</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('autocomplete')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('multi-index')">Next: Multi-Index Search &#8594;</a>
+            </div>
+        `
+    },
+    'multi-index': {
+        title: 'Multi-Index Search',
+        category: 'Complex Queries',
+        difficulty: 'Advanced',
+        content: `
+            <h1>Multi-Index Search: Querying Across Indices</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Complex Queries</span>
+                <span class="difficulty">Difficulty: Advanced</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Searching Multiple Indices</h2>
+                <p>In real applications, data is often spread across multiple indices. Healthcare platforms might have separate indices for tests, packages, labs, and articles. Elasticsearch makes it easy to search across them all simultaneously.</p>
+
+                <div class="concept-box">
+                    <h3>Basic Multi-Index Search</h3>
+                    <p>Specify multiple index names separated by commas, or use wildcard patterns to search across multiple indices in a single request.</p>
+                    <pre><code class="language-json">// Search across both tests and packages indices
+POST /tests,packages/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "thyroid panel",
+      "fields": ["testName", "testDescription", "packageName"]
+    }
+  },
+  "size": 10
+}
+
+// Using wildcard patterns:
+POST /test*/_search
+{
+  "query": {
+    "match": { "testName": "blood" }
+  }
+}
+// Matches: tests, tests_v2, tests_autocomplete, etc.
+
+// Search all indices (use with caution):
+POST /_all/_search
+{
+  "query": { "match": { "testName": "CBC" } }
+}
+
+// Exclude specific indices with minus sign:
+POST /test*,-tests_archive/_search
+{
+  "query": { "match": { "testName": "blood" } }
+}
+// Searches test* indices but excludes tests_archive</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Index Boosting Across Indices</h3>
+                    <p>When searching across multiple indices, different indices may have varying relevance. Use indices_boost to control which index's results rank higher.</p>
+                    <pre><code class="language-json">// Prefer individual tests over packages in search results
+POST /tests,packages/_search
+{
+  "indices_boost": [
+    { "tests": 2.0 },
+    { "packages": 1.0 }
+  ],
+  "query": {
+    "multi_match": {
+      "query": "complete blood count",
+      "fields": ["testName^2", "testDescription", "packageName"]
+    }
+  },
+  "_source": ["testName", "packageName", "consumerPrice"],
+  "size": 10
+}
+
+// All scores from "tests" are doubled
+// Scores from "packages" remain unchanged
+// Useful for prioritizing certain content types
+
+// You can also use wildcards in indices_boost:
+{
+  "indices_boost": [
+    { "tests": 2.0 },
+    { "packages*": 0.8 }
+  ]
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>The _msearch API</h2>
+                <p>The Multi Search (_msearch) API executes multiple independent search requests in a single HTTP call. This reduces network round trips and is more efficient than making separate requests.</p>
+
+                <div class="concept-box">
+                    <h3>_msearch Request Format</h3>
+                    <p>Each search in _msearch is specified as two lines: a header line (specifying index and other metadata) followed by a body line (the search query). Lines are separated by newlines.</p>
+                    <pre><code class="language-json">// _msearch sends multiple searches in one request
+// Each pair of lines = one search (header + body)
+POST /_msearch
+{"index": "tests"}
+{"query": {"match": {"testName": "blood"}}, "size": 3}
+{"index": "packages"}
+{"query": {"match": {"packageName": "health checkup"}}, "size": 3}
+{"index": "tests"}
+{"query": {"range": {"consumerPrice": {"lte": 200}}}, "size": 3}
+
+// Response contains an array of responses:
+{
+  "responses": [
+    {
+      "hits": {
+        "total": { "value": 15 },
+        "hits": [ ... blood test results ... ]
+      }
+    },
+    {
+      "hits": {
+        "total": { "value": 8 },
+        "hits": [ ... health checkup packages ... ]
+      }
+    },
+    {
+      "hits": {
+        "total": { "value": 42 },
+        "hits": [ ... budget tests under 200 ... ]
+      }
+    }
+  ]
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Practical _msearch Use Case</h3>
+                    <p>A healthcare search page might need to show test results, package suggestions, and popular tests all at once. _msearch handles this in a single network call.</p>
+                    <pre><code class="language-json">// Single request for a search results page
+POST /_msearch
+{"index": "tests"}
+{"query": {"multi_match": {"query": "thyroid", "fields": ["testName^3", "testDescription"]}}, "size": 10}
+{"index": "packages"}
+{"query": {"match": {"packageDescription": "thyroid"}}, "size": 5}
+{"index": "tests"}
+{"query": {"match_all": {}}, "sort": [{"frequency": "desc"}], "size": 5}
+
+// Response[0]: Main test search results for "thyroid"
+// Response[1]: Related packages containing thyroid tests
+// Response[2]: Top 5 most popular tests (for sidebar)
+//
+// Benefits over three separate requests:
+// - Single TCP connection and HTTP round trip
+// - Elasticsearch can optimize execution internally
+// - Atomic: all results returned together
+// - Simpler error handling in application code</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Handling Different Mappings</h2>
+
+                <div class="concept-box">
+                    <h3>Field Mapping Conflicts Across Indices</h3>
+                    <p>When searching across indices, fields with the same name may have different mappings. Elasticsearch handles this gracefully, but you should be aware of the behavior.</p>
+                    <pre><code class="language-json">// "tests" index: consumerPrice is a float
+// "packages" index: consumerPrice is an integer
+// Elasticsearch handles compatible types automatically
+
+// If field types are incompatible, use typed fields:
+POST /tests,packages/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        { "match": { "testName": "blood" } },
+        { "match": { "packageName": "blood" } }
+      ]
+    }
+  },
+  "_source": {
+    "includes": ["testName", "packageName", "consumerPrice"]
+  },
+  "size": 10
+}
+
+// Use _index field to distinguish result sources:
+// Each hit includes "_index": "tests" or "_index": "packages"
+// Your application can render them differently based on _index
+
+// You can also filter by index within the query:
+POST /tests,packages/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "bool": {
+            "must": { "match": { "testName": "blood" } },
+            "filter": { "term": { "_index": "tests" } }
+          }
+        },
+        {
+          "bool": {
+            "must": { "match": { "packageName": "blood" } },
+            "filter": { "term": { "_index": "packages" } }
+          }
+        }
+      ]
+    }
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Search across multiple indices with comma-separated names or wildcard patterns</li>
+                        <li>&#10003; Use indices_boost to prioritize results from specific indices</li>
+                        <li>&#10003; _msearch executes multiple independent queries in a single HTTP request</li>
+                        <li>&#10003; Each _msearch entry has a header line (index) and body line (query)</li>
+                        <li>&#10003; Use the _index field to distinguish which index each result came from</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('geo-queries')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('what-is-elasticsearch')">Next: What is Elasticsearch &#8594;</a>
             </div>
         `
     }
