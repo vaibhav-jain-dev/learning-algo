@@ -21,6 +21,7 @@ import (
 	"github.com/vaibhav-jain-dev/learning-algo/internal/elasticsearch"
 	"github.com/vaibhav-jain-dev/learning-algo/internal/handlers"
 	"github.com/vaibhav-jain-dev/learning-algo/internal/kernel"
+	appminify "github.com/vaibhav-jain-dev/learning-algo/internal/minify"
 	"github.com/vaibhav-jain-dev/learning-algo/internal/redis"
 )
 
@@ -59,12 +60,8 @@ func main() {
 	// Middleware
 	app.Use(recover.New())
 
-	// Note: Compression and ETag disabled for now - was causing CSS issues
-	// Can be re-enabled in production after testing
-	// app.Use(compress.New(compress.Config{
-	// 	Level: compress.LevelBestSpeed,
-	// }))
-	// app.Use(etag.New())
+	// Note: Compression (gzip/brotli) is handled by Cloudflare CDN.
+	// No server-side compression needed.
 
 	app.Use(logger.New(logger.Config{
 		Format: "[${time}] ${status} - ${method} ${path} (${latency})\n",
@@ -193,7 +190,18 @@ func main() {
 		}()
 	}
 
-	// Static files - simple config for development
+	// Minify static CSS/JS files at startup (in production, files are immutable in the container).
+	// Compression (gzip/brotli) is handled by Cloudflare — we only strip whitespace/comments here.
+	minifier := appminify.New()
+	if isProd {
+		minifier.MinifyStaticDir("./frontend/static")
+		minifier.MinifyStaticDir("./frontend/assets")
+	}
+
+	// Minify HTML responses from templates
+	app.Use(minifier.HTMLMiddleware())
+
+	// Static files
 	app.Static("/static", "./frontend/static")
 	app.Static("/assets", "./frontend/assets")
 	app.Static("/problems", "./problems")
