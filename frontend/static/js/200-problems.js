@@ -5199,7 +5199,39 @@
             // Track code changes
             editor.onDidChangeModelContent(function() {
                 currentCode[currentLanguage] = editor.getValue();
+                // Show modified dot on tab
+                var modDot = document.getElementById('tab-modified-' + (currentLanguage === 'go' ? 'go' : 'py'));
+                if (modDot) modDot.style.display = 'inline';
             });
+
+            // Track cursor position for status bar
+            editor.onDidChangeCursorPosition(function(e) {
+                var pos = e.position;
+                var posEl = document.getElementById('statusbar-position');
+                if (posEl) posEl.textContent = 'Ln ' + pos.lineNumber + ', Col ' + pos.column;
+            });
+
+            // Track selection for status bar
+            editor.onDidChangeCursorSelection(function(e) {
+                var sel = e.selection;
+                var posEl = document.getElementById('statusbar-position');
+                if (posEl) {
+                    if (sel.isEmpty()) {
+                        var pos = editor.getPosition();
+                        posEl.textContent = 'Ln ' + pos.lineNumber + ', Col ' + pos.column;
+                    } else {
+                        var lines = sel.endLineNumber - sel.startLineNumber + 1;
+                        var model = editor.getModel();
+                        var selectedText = model.getValueInRange(sel);
+                        posEl.textContent = 'Ln ' + sel.startLineNumber + ', Col ' + sel.startColumn + ' (' + selectedText.length + ' selected)';
+                    }
+                }
+            });
+
+            // Start linting if EditorLinter available
+            if (window.EditorLinter) {
+                window.EditorLinter.startLinting(editor, currentLanguage === 'go' ? 'go' : 'python');
+            }
 
             // Add keyboard shortcuts
             editor.addAction({
@@ -5260,8 +5292,12 @@
         }
         currentLanguage = lang;
 
-        document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.remove('active'); });
-        var activeBtn = document.querySelector('.lang-btn[data-lang="' + lang + '"]');
+        // Update IDE tab bar (VS Code style)
+        document.querySelectorAll('.ide-tab').forEach(function(b) { b.classList.remove('active'); });
+        var activeBtn = document.querySelector('.ide-tab[data-lang="' + lang + '"]');
+        // Also update status bar language display
+        var statusLang = document.getElementById('statusbar-language');
+        if (statusLang) statusLang.textContent = lang === 'go' ? 'Go' : 'Python';
         if (activeBtn) activeBtn.classList.add('active');
 
         if (editor) {
@@ -5272,6 +5308,10 @@
                 monaco.editor.setModelLanguage(editor.getModel(), monacoLang);
             }
             editor.setValue(newCode);
+            // Restart linting for new language
+            if (window.EditorLinter) {
+                window.EditorLinter.startLinting(editor, monacoLang);
+            }
         } else {
             var fallback = document.getElementById('code-fallback');
             if (fallback) fallback.value = currentCode[lang] || originalCode[lang] || getDefaultCode(lang);
@@ -5320,7 +5360,7 @@
         var runBtn = document.getElementById('run-btn');
         if (runBtn) {
             runBtn.disabled = true;
-            runBtn.innerHTML = '<span class="spinner"></span> Running...';
+            runBtn.innerHTML = '<span class="spinner"></span><span>Running...</span>';
         }
 
         // Inject main block behind the scenes for execution
@@ -5348,7 +5388,7 @@
             // Reset run button
             if (runBtn) {
                 runBtn.disabled = false;
-                runBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Run Code';
+                runBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Run</span>';
             }
         });
     };
@@ -5645,7 +5685,7 @@
         var runBtn = document.getElementById('run-btn');
         if (runTestsBtn) {
             runTestsBtn.disabled = true;
-            runTestsBtn.innerHTML = '<span class="spinner"></span> Testing...';
+            runTestsBtn.innerHTML = '<span class="spinner"></span><span>Testing...</span>';
         }
 
         fetch('/htmx/execute', {
@@ -5730,7 +5770,7 @@
             // Reset button states
             if (runTestsBtn) {
                 runTestsBtn.disabled = false;
-                runTestsBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> Run Tests';
+                runTestsBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><span>Test</span>';
             }
         });
     };
