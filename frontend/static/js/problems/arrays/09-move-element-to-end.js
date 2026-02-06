@@ -49,13 +49,6 @@
         explanation: 'Using two pointers, we traverse the data structure to find the solution efficiently. For input array=[1, 2, 3, 4, 5], toMove=3, the result is [1, 2, 5, 4, 3].'
     }
         ],
-        twists: [
-            { id: '09-move-element-to-end/twist-01-move-to-front-instead', name: 'Move to Front Instead', difficulty: 'Easy' },
-            { id: '09-move-element-to-end/twist-02-move-and-count-swaps', name: 'Move and Count Swaps', difficulty: 'Medium' },
-            { id: '09-move-element-to-end/twist-03-move-multiple-values', name: 'Move Multiple Values', difficulty: 'Medium' },
-            { id: '09-move-element-to-end/twist-04-move-preserving-relative-order', name: 'Move Preserving Relative Order', difficulty: 'Medium' },
-            { id: '09-move-element-to-end/twist-05-alternating-placement', name: 'Alternating Placement', difficulty: 'Hard' }
-        ],
         similar: [
     { id: '09-move-element-to-end/01-move-element-preserve-order', name: '01 Move Element Preserve Order', difficulty: 'Medium' },
     { id: '09-move-element-to-end/02-partition-array-by-predicate', name: '02 Partition Array By Predicate', difficulty: 'Medium' },

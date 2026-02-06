@@ -135,12 +135,6 @@ func main() {
     fmt.Println(MaxConstructible([]int{1, 2, 4}, 0))  // 7
 }`
         },
-        twists: [
-            { id: '05-non-constructible-change/02-max-constructible/twist-01-max-constructible-with-variable-budget-denominations', name: 'Max Constructible with Variable Budget Denominations', difficulty: 'Hard' },
-            { id: '05-non-constructible-change/02-max-constructible/twist-02-max-constructible-with-removable-coins', name: 'Max Constructible with Removable Coins', difficulty: 'Hard' },
-            { id: '05-non-constructible-change/02-max-constructible/twist-03-max-constructible-range-starting-from-k', name: 'Max Constructible Range Starting from K', difficulty: 'Medium' },
-            { id: '05-non-constructible-change/02-max-constructible/twist-04-max-constructible-with-paired-budget', name: 'Max Constructible with Paired Budget', difficulty: 'Medium' }
-        ],
         similar: [
 
         ]

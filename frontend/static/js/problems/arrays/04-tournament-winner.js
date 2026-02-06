@@ -41,13 +41,6 @@
         explanation: 'All results are 1, so home teams always win. Match 1: A wins (A:3). Match 2: B wins (B:3). Match 3: C wins (C:3). Tie at 3 points each, but A was first to reach 3, so A wins.'
     }
         ],
-        twists: [
-            { id: '04-tournament-winner/twist-01-tournament-with-variable-points', name: 'Tournament with Variable Points', difficulty: 'Medium' },
-            { id: '04-tournament-winner/twist-02-top-k-teams', name: 'Top K Teams', difficulty: 'Medium' },
-            { id: '04-tournament-winner/twist-03-predict-minimum-wins-for-victory', name: 'Predict Minimum Wins for Victory', difficulty: 'Hard' },
-            { id: '04-tournament-winner/twist-04-tournament-winner-with-draws', name: 'Tournament Winner with Draws', difficulty: 'Medium' },
-            { id: '04-tournament-winner/twist-05-streaming-tournament-updates', name: 'Streaming Tournament Updates', difficulty: 'Medium' }
-        ],
         similar: [
     { id: '04-tournament-winner/01-tournament-bracket', name: '01 Tournament Bracket', difficulty: 'Medium' },
     { id: '04-tournament-winner/02-tournament-tiebreakers', name: '02 Tournament Tiebreakers', difficulty: 'Medium' },

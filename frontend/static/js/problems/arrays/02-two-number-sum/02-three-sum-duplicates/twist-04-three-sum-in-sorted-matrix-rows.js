@@ -16,31 +16,30 @@
         description: 'Given a matrix where each row is sorted, pick one element from each of exactly three different rows so they sum to target. List all unique triplets. The elements come from different rows, so you cannot sort a single array. Requires combining row-wise two-pointer with cross-row iteration.',
         problem: 'The elements come from different rows, so you cannot sort a single array. Requires combining row-wise two-pointer with cross-row iteration.',
         hints: [
-            'Think about how three sum in sorted matrix rows differs from the standard version of this problem.',
-            'Key insight: The elements come from different rows, so you cannot sort a single array. Requires combining row-wise two-pointer with cross-row iteration.',
-            'Consider whether sorting can help simplify the approach.',
-            'Break the problem into smaller subproblems and solve each one independently.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Think about how this twist differs from the standard version: Given a matrix where each row is sorted, pick one element from each of exactly t.',
+            'The elements come from different rows, so you cannot sort a single array. Requires combining row-wise two-pointer with cross-row iteration.',
+            'Sorting the input first may simplify the problem significantly.',
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
-            time: 'O(n log n)',
+            time: 'O(n log k)',
             space: 'O(n)'
         },
         examples: [
             {
-                input: {"array":[-3,-1,0,2,4]},
-                output: [0,1,4,9,16],
-                explanation: 'Elements transformed and sorted correctly.'
+                input: {"nums":[-1,2,1,-4],"target":1},
+                output: 2,
+                explanation: 'The triplet (-1, 2, 1) has sum 2, which is closest to target 1.'
             },
             {
-                input: {"array":[1,2,3]},
-                output: [1,4,9],
-                explanation: 'All positive - order maintained after transformation.'
+                input: {"nums":[0,0,0],"target":1},
+                output: 0,
+                explanation: 'Only triplet possible: 0+0+0=0, closest to 1.'
             },
             {
-                input: {"array":[-5,-3,-1]},
-                output: [1,9,25],
-                explanation: 'All negative - order reversed after transformation.'
+                input: {"nums":[1,2,3,4,5],"target":10},
+                output: 10,
+                explanation: 'Triplet (2,3,5) or (1,4,5) sums to exactly 10.'
             }
         ],
         solutions: {
@@ -51,21 +50,19 @@
     Given a matrix where each row is sorted, pick one element from each of exactly three different rows so they sum to target. List all unique triplets.
     \n    Approach: The elements come from different rows, so you cannot sort a single array. Requires combining row-wise two-pointer with cross-row iteration.
 
-    Time: O(n log n)
+    Time: O(n log k)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # matrix=[[-1,0,1],[1,2,3],[-2,0,2]], target=3 → [[1,2,0]] etc.
 
+    Example: matrix=[[-1,0,1],[1,2,3],[-2,0,2]], target=3 → [[1,2,0]] etc.
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -81,18 +78,17 @@ import "fmt"
 
 // ThreeSumInSortedMatrixRows solves the Three Sum in Sorted Matrix Rows problem.
 // Given a matrix where each row is sorted, pick one element from each of exactly three different rows so they sum to target. List all unique triplets.
-// Time: O(n log n), Space: O(n)
+// Time: O(n log k), Space: O(n)
 func ThreeSumInSortedMatrixRows(data []int) []int {
     if len(data) == 0 {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

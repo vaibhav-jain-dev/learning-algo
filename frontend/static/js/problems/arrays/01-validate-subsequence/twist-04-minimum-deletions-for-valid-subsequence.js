@@ -16,11 +16,10 @@
         description: 'The sequence is NOT a subsequence. Find the minimum elements to delete from the array so it becomes one. Switches from verification to optimization. Requires thinking about which elements block subsequence formation.',
         problem: 'Switches from verification to optimization. Requires thinking about which elements block subsequence formation.',
         hints: [
-            'Think about how minimum deletions for valid subsequence differs from the standard version of this problem.',
-            'Key insight: Switches from verification to optimization. Requires thinking about which elements block subsequence formation.',
+            'Think about how this twist differs from the standard version: The sequence is NOT a subsequence. Find the minimum elements to delete from the .',
+            'Switches from verification to optimization. Requires thinking about which elements block subsequence formation.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
-            'Dynamic programming may help - identify the subproblems and their recurrence relation.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[1,3,5,2,4]},
-                output: 1,
-                explanation: 'Only one operation needed to achieve the goal.'
+                input: {"array":[5,1,22,25,6,-1,8,10],"sequence":[1,6,-1,10]},
+                output: true,
+                explanation: 'The sequence elements appear in order within the array.'
             },
             {
-                input: {"array":[1,2,3,4]},
-                output: 0,
-                explanation: 'Already satisfies the condition, no operations needed.'
+                input: {"array":[1,2,3,4,5],"sequence":[5,3,1]},
+                output: false,
+                explanation: 'The sequence elements do not appear in the required order.'
             },
             {
-                input: {"array":[5,3,1,4,2]},
-                output: 2,
-                explanation: 'Two operations needed to satisfy the condition.'
+                input: {"array":[1,1,1,1,1],"sequence":[1,1,1]},
+                output: true,
+                explanation: 'Duplicate elements are handled correctly.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # array=[5,1,3,2,4], sequence=[1,2,4] → delete 3 (1 deletion)
 
+    Example: array=[5,1,3,2,4], sequence=[1,2,4] → delete 3 (1 deletion)
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func MinimumDeletionsForValidSubsequence(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

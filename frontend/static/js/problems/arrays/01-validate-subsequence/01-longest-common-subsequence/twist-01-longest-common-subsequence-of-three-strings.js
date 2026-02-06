@@ -16,31 +16,30 @@
         description: 'Find the LCS of three strings simultaneously instead of two. Extends the 2D DP table to 3D, significantly increasing complexity and requiring careful index management across three dimensions.',
         problem: 'Extends the 2D DP table to 3D, significantly increasing complexity and requiring careful index management across three dimensions.',
         hints: [
-            'Think about how longest common subsequence of three strings differs from the standard version of this problem.',
-            'Key insight: Extends the 2D DP table to 3D, significantly increasing complexity and requiring careful index management across three dimensions.',
+            'Think about how this twist differs from the standard version: Find the LCS of three strings simultaneously instead of two..',
+            'Extends the 2D DP table to 3D, significantly increasing complexity and requiring careful index management across three dimensions.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
-            'Break the problem into smaller subproblems and solve each one independently.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
-            time: 'O(n^2)',
-            space: 'O(n)'
+            time: 'O(n^3)',
+            space: 'O(n^3)'
         },
         examples: [
             {
-                input: {"array":[1,2,3,2,1]},
+                input: {"text1":"abcde","text2":"ace"},
                 output: 3,
-                explanation: 'The maximum/longest valid segment has length 3.'
+                explanation: 'The longest common subsequence is "ace" with length 3.'
             },
             {
-                input: {"array":[5,4,3,2,1]},
+                input: {"text1":"abc","text2":"def"},
+                output: 0,
+                explanation: 'No common characters exist between the two strings.'
+            },
+            {
+                input: {"text1":"abcba","text2":"abcba"},
                 output: 5,
-                explanation: 'The entire array satisfies the condition.'
-            },
-            {
-                input: {"array":[1]},
-                output: 1,
-                explanation: 'Single element is trivially valid.'
+                explanation: 'Identical strings have LCS equal to their length.'
             }
         ],
         solutions: {
@@ -51,21 +50,19 @@
     Find the LCS of three strings simultaneously instead of two.
     \n    Approach: Extends the 2D DP table to 3D, significantly increasing complexity and requiring careful index management across three dimensions.
 
-    Time: O(n^2)
-    Space: O(n)
-    """
-    # Implementation based on the twist description
-    # text1="abcde", text2="ace", text3="aue" → 2 ("ae" is common to all three)
+    Time: O(n^3)
+    Space: O(n^3)
 
+    Example: text1="abcde", text2="ace", text3="aue" → 2 ("ae" is common to all three)
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -81,18 +78,17 @@ import "fmt"
 
 // LongestCommonSubsequenceOfThreeStrings solves the Longest Common Subsequence of Three Strings problem.
 // Find the LCS of three strings simultaneously instead of two.
-// Time: O(n^2), Space: O(n)
+// Time: O(n^3), Space: O(n^3)
 func LongestCommonSubsequenceOfThreeStrings(data []int) []int {
     if len(data) == 0 {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

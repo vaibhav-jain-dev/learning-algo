@@ -195,13 +195,6 @@ func main() {
     fmt.Println(TournamentTiebreakers(competitions, results)) // "A"
 }`
         },
-        twists: [
-            { id: '04-tournament-winner/02-tournament-tiebreakers/twist-01-multi-level-tiebreakers', name: 'Multi-Level Tiebreakers', difficulty: 'Hard' },
-            { id: '04-tournament-winner/02-tournament-tiebreakers/twist-02-circular-head-to-head-resolution', name: 'Circular Head-to-Head Resolution', difficulty: 'Hard' },
-            { id: '04-tournament-winner/02-tournament-tiebreakers/twist-03-tournament-with-group-stages', name: 'Tournament with Group Stages', difficulty: 'Medium' },
-            { id: '04-tournament-winner/02-tournament-tiebreakers/twist-04-weighted-tiebreaker-points', name: 'Weighted Tiebreaker Points', difficulty: 'Medium' },
-            { id: '04-tournament-winner/02-tournament-tiebreakers/twist-05-retroactive-tiebreaker-after-disqualification', name: 'Retroactive Tiebreaker After Disqualification', difficulty: 'Hard' }
-        ],
         similar: [
 
         ]

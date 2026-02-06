@@ -46,13 +46,6 @@
         explanation: 'Sorted: [1,1,1,1,5,10,15,20,100]. Sum grows: 1,2,3,4,9,19,34,54. Coin 100: 100>55, return 55.'
     }
         ],
-        twists: [
-            { id: '05-non-constructible-change/twist-01-non-constructible-with-coin-reuse', name: 'Non-Constructible with Coin Reuse', difficulty: 'Medium' },
-            { id: '05-non-constructible-change/twist-02-kth-non-constructible-change', name: 'Kth Non-Constructible Change', difficulty: 'Hard' },
-            { id: '05-non-constructible-change/twist-03-non-constructible-change-from-two-pockets', name: 'Non-Constructible Change from Two Pockets', difficulty: 'Medium' },
-            { id: '05-non-constructible-change/twist-04-maximum-non-constructible-under-a-limit', name: 'Maximum Non-Constructible Under a Limit', difficulty: 'Hard' },
-            { id: '05-non-constructible-change/twist-05-non-constructible-after-removing-one-coin', name: 'Non-Constructible After Removing One Coin', difficulty: 'Medium' }
-        ],
         similar: [
     { id: '05-non-constructible-change/01-min-coins-to-add', name: '01 Min Coins To Add', difficulty: 'Medium' },
     { id: '05-non-constructible-change/02-max-constructible', name: '02 Max Constructible', difficulty: 'Medium' },

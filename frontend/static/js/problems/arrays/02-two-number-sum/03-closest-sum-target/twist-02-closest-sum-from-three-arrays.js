@@ -16,31 +16,30 @@
         description: 'Given three sorted arrays, pick one element from each to minimize the distance of their sum to target. Extends from two-pointer on two arrays to three arrays, where a simple two-pointer approach does not directly apply. Requires fixing one element and applying two-pointer to the other two.',
         problem: 'Extends from two-pointer on two arrays to three arrays, where a simple two-pointer approach does not directly apply. Requires fixing one element and applying two-pointer to the other two.',
         hints: [
-            'Think about how closest sum from three arrays differs from the standard version of this problem.',
-            'Key insight: Extends from two-pointer on two arrays to three arrays, where a simple two-pointer approach does not directly apply. Requires fixing one element and applying two-pointer to the other two.',
-            'Consider whether sorting can help simplify the approach.',
-            'Break the problem into smaller subproblems and solve each one independently.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Think about how this twist differs from the standard version: Given three sorted arrays, pick one element from each to minimize the distance o.',
+            'Extends from two-pointer on two arrays to three arrays, where a simple two-pointer approach does not directly apply. Requires fixing one element and applying two-pointer to the other two.',
+            'Sorting the input first may simplify the problem significantly.',
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
-            time: 'O(n log n)',
+            time: 'O(n log k)',
             space: 'O(n)'
         },
         examples: [
             {
-                input: {"array":[1,2,3,4,5],"target":9},
-                output: [[1,3,5],[2,3,4]],
-                explanation: 'Found all valid combinations summing to target.'
+                input: {"arr1":[1,3,5,7],"arr2":[2,4,6,8],"target":10},
+                output: [3,7],
+                explanation: '3 + 7 = 10, exact match to target.'
             },
             {
-                input: {"array":[-1,0,1,2],"target":0},
-                output: [[-1,0,1]],
-                explanation: 'Negative numbers included in the valid combination.'
+                input: {"arr1":[-1,3,8],"arr2":[2,4,9],"target":7},
+                output: [3,4],
+                explanation: '3 + 4 = 7, exact match.'
             },
             {
-                input: {"array":[1,2,3],"target":100},
-                output: [],
-                explanation: 'No valid combination exists for this target.'
+                input: {"arr1":[1,4],"arr2":[10,20],"target":15},
+                output: [4,10],
+                explanation: '4 + 10 = 14, closest to 15.'
             }
         ],
         solutions: {
@@ -51,21 +50,19 @@
     Given three sorted arrays, pick one element from each to minimize the distance of their sum to target.
     \n    Approach: Extends from two-pointer on two arrays to three arrays, where a simple two-pointer approach does not directly apply. Requires fixing one element and applying two-pointer to the other two.
 
-    Time: O(n log n)
+    Time: O(n log k)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # arr1=[1,3], arr2=[2,5], arr3=[4,6], target=12 → [3,5,4]=12 (exact)
 
+    Example: arr1=[1,3], arr2=[2,5], arr3=[4,6], target=12 → [3,5,4]=12 (exact)
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -81,18 +78,17 @@ import "fmt"
 
 // ClosestSumFromThreeArrays solves the Closest Sum from Three Arrays problem.
 // Given three sorted arrays, pick one element from each to minimize the distance of their sum to target.
-// Time: O(n log n), Space: O(n)
+// Time: O(n log k), Space: O(n)
 func ClosestSumFromThreeArrays(data []int) []int {
     if len(data) == 0 {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

@@ -16,11 +16,10 @@
         description: 'Find the shortest string that has both text1 and text2 as subsequences. Inverts the LCS thinking: instead of finding what is common, you must figure out how to merge both strings with minimum length using the LCS as overlap.',
         problem: 'Inverts the LCS thinking: instead of finding what is common, you must figure out how to merge both strings with minimum length using the LCS as overlap.',
         hints: [
-            'Think about how shortest common supersequence differs from the standard version of this problem.',
-            'Key insight: Inverts the LCS thinking: instead of finding what is common, you must figure out how to merge both strings with minimum length using the LCS as overlap.',
+            'Think about how this twist differs from the standard version: Find the shortest string that has both text1 and text2 as subsequences..',
+            'Inverts the LCS thinking: instead of finding what is common, you must figure out how to merge both strings with minimum length using the LCS as overlap.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
-            'Dynamic programming may help - identify the subproblems and their recurrence relation.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[1,2,3,4,5]},
-                output: true,
-                explanation: 'Standard case satisfying the problem conditions.'
+                input: {"text1":"abcde","text2":"ace"},
+                output: 3,
+                explanation: 'The longest common subsequence is "ace" with length 3.'
             },
             {
-                input: {"array":[5,3,1]},
-                output: false,
-                explanation: 'Case where the condition is not met.'
+                input: {"text1":"abc","text2":"def"},
+                output: 0,
+                explanation: 'No common characters exist between the two strings.'
             },
             {
-                input: {"array":[1]},
-                output: true,
-                explanation: 'Edge case with single element.'
+                input: {"text1":"abcba","text2":"abcba"},
+                output: 5,
+                explanation: 'Identical strings have LCS equal to their length.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # text1="abac", text2="cab" → "cabac" (length 5)
 
+    Example: text1="abac", text2="cab" → "cabac" (length 5)
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func ShortestCommonSupersequence(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

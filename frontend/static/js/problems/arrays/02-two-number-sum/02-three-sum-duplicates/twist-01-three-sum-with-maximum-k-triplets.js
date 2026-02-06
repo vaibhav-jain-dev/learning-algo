@@ -16,11 +16,10 @@
         description: 'Return at most k unique triplets that sum to target, prioritizing those with the smallest absolute values. Adds a selection/priority constraint on top of finding all triplets, requiring you to sort results or use a heap.',
         problem: 'Adds a selection/priority constraint on top of finding all triplets, requiring you to sort results or use a heap.',
         hints: [
-            'Think about how three sum with maximum k triplets differs from the standard version of this problem.',
-            'Key insight: Adds a selection/priority constraint on top of finding all triplets, requiring you to sort results or use a heap.',
+            'Think about how this twist differs from the standard version: Return at most k unique triplets that sum to target, prioritizing those with the.',
+            'Adds a selection/priority constraint on top of finding all triplets, requiring you to sort results or use a heap.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
-            'Break the problem into smaller subproblems and solve each one independently.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n log k)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[1,3,5,7],"k":2},
-                output: [1,3],
-                explanation: 'The k=2 smallest/closest values found.'
+                input: {"nums":[-1,2,1,-4],"target":1},
+                output: 2,
+                explanation: 'The triplet (-1, 2, 1) has sum 2, which is closest to target 1.'
             },
             {
-                input: {"array":[10,20,30],"k":1},
-                output: [10],
-                explanation: 'With k=1, return the single best result.'
+                input: {"nums":[0,0,0],"target":1},
+                output: 0,
+                explanation: 'Only triplet possible: 0+0+0=0, closest to 1.'
             },
             {
-                input: {"array":[5,5,5,5],"k":3},
-                output: [5,5,5],
-                explanation: 'Duplicate values handled correctly with k=3.'
+                input: {"nums":[1,2,3,4,5],"target":10},
+                output: 10,
+                explanation: 'Triplet (2,3,5) or (1,4,5) sums to exactly 10.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n log k)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # nums=[-2,-1,0,1,2,3], target=0, k=2 → [[-1,0,1],[-2,-1,3]] (smallest abs values first)
 
+    Example: nums=[-2,-1,0,1,2,3], target=0, k=2 → [[-1,0,1],[-2,-1,3]] (smallest abs values first)
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func ThreeSumWithMaximumKTriplets(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

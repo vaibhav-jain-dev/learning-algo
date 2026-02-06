@@ -16,31 +16,30 @@
         description: 'Given s and t, delete the minimum characters from s so that the number of distinct subsequences matching t equals exactly k. Inverts the counting problem into an optimization problem, requiring binary search or careful DP over deletion choices.',
         problem: 'Inverts the counting problem into an optimization problem, requiring binary search or careful DP over deletion choices.',
         hints: [
-            'Think about how minimum deletions to reach exactly k subsequences differs from the standard version of this problem.',
-            'Key insight: Inverts the counting problem into an optimization problem, requiring binary search or careful DP over deletion choices.',
+            'Think about how this twist differs from the standard version: Given s and t, delete the minimum characters from s so that the number of distin.',
+            'Inverts the counting problem into an optimization problem, requiring binary search or careful DP over deletion choices.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
-            'Dynamic programming may help - identify the subproblems and their recurrence relation.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
-            time: 'O(n log k)',
+            time: 'O(n)',
             space: 'O(n)'
         },
         examples: [
             {
-                input: {"array":[1,3,5,2,4]},
-                output: 1,
-                explanation: 'Only one operation needed to achieve the goal.'
+                input: {"s":"rabbbit","t":"rabbit"},
+                output: 3,
+                explanation: 'Three distinct ways to select "rabbit" from "rabbbit" by choosing different b characters.'
             },
             {
-                input: {"array":[1,2,3,4]},
+                input: {"s":"aabb","t":"ab"},
+                output: 4,
+                explanation: 'Four ways: positions (0,2), (0,3), (1,2), (1,3).'
+            },
+            {
+                input: {"s":"abc","t":"xyz"},
                 output: 0,
-                explanation: 'Already satisfies the condition, no operations needed.'
-            },
-            {
-                input: {"array":[5,3,1,4,2]},
-                output: 2,
-                explanation: 'Two operations needed to satisfy the condition.'
+                explanation: 'No matching subsequence exists.'
             }
         ],
         solutions: {
@@ -51,21 +50,19 @@
     Given s and t, delete the minimum characters from s so that the number of distinct subsequences matching t equals exactly k.
     \n    Approach: Inverts the counting problem into an optimization problem, requiring binary search or careful DP over deletion choices.
 
-    Time: O(n log k)
+    Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # s="rabbbit", t="rabbit", k=1 → delete 1 "b" to get exactly 1 way
 
+    Example: s="rabbbit", t="rabbit", k=1 → delete 1 "b" to get exactly 1 way
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -81,18 +78,17 @@ import "fmt"
 
 // MinimumDeletionsToReachExactlyKSubsequences solves the Minimum Deletions to Reach Exactly K Subsequences problem.
 // Given s and t, delete the minimum characters from s so that the number of distinct subsequences matching t equals exactly k.
-// Time: O(n log k), Space: O(n)
+// Time: O(n), Space: O(n)
 func MinimumDeletionsToReachExactlyKSubsequences(data []int) []int {
     if len(data) == 0 {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

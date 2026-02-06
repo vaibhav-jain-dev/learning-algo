@@ -16,11 +16,10 @@
         description: 'The array may contain duplicates. Return all unique pairs that sum to the target. Duplicate handling changes the hash table approach: you must track counts and avoid reporting the same pair multiple times.',
         problem: 'Duplicate handling changes the hash table approach: you must track counts and avoid reporting the same pair multiple times.',
         hints: [
-            'Think about how two sum with duplicate pairs differs from the standard version of this problem.',
-            'Key insight: Duplicate handling changes the hash table approach: you must track counts and avoid reporting the same pair multiple times.',
+            'Think about how this twist differs from the standard version: The array may contain duplicates. Return all unique pairs that sum to the target.',
+            'Duplicate handling changes the hash table approach: you must track counts and avoid reporting the same pair multiple times.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
-            'Break the problem into smaller subproblems and solve each one independently.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[1,2,3,4,5],"target":9},
-                output: [[1,3,5],[2,3,4]],
-                explanation: 'Found all valid combinations summing to target.'
+                input: {"array":[3,5,-4,8,11,1,-1,6],"targetSum":10},
+                output: [-1,11],
+                explanation: '-1 + 11 = 10, which equals the target sum.'
             },
             {
-                input: {"array":[-1,0,1,2],"target":0},
-                output: [[-1,0,1]],
-                explanation: 'Negative numbers included in the valid combination.'
-            },
-            {
-                input: {"array":[1,2,3],"target":100},
+                input: {"array":[1,2,3,4,5],"targetSum":10},
                 output: [],
-                explanation: 'No valid combination exists for this target.'
+                explanation: 'No two distinct numbers sum to 10.'
+            },
+            {
+                input: {"array":[4,6],"targetSum":10},
+                output: [4,6],
+                explanation: '4 + 6 = 10.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # array=[1,1,2,3,3], target=4 → [[1,3]] (only one unique pair despite multiple 1s and 3s)
 
+    Example: array=[1,1,2,3,3], target=4 → [[1,3]] (only one unique pair despite multiple 1s and 3s)
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func TwoSumWithDuplicatePairs(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

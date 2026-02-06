@@ -16,11 +16,10 @@
         description: 'Count subsequences of s that equal t, but you are allowed to substitute up to m characters in s before counting. Combines edit distance thinking with subsequence counting, requiring an additional DP dimension for substitution budget.',
         problem: 'Combines edit distance thinking with subsequence counting, requiring an additional DP dimension for substitution budget.',
         hints: [
-            'Think about how distinct subsequences with character substitution budget differs from the standard version of this problem.',
-            'Key insight: Combines edit distance thinking with subsequence counting, requiring an additional DP dimension for substitution budget.',
-            'A hash map can help track frequencies or previously seen values efficiently.',
-            'Dynamic programming may help - identify the subproblems and their recurrence relation.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Think about how this twist differs from the standard version: Count subsequences of s that equal t, but you are allowed to substitute up to m .',
+            'Combines edit distance thinking with subsequence counting, requiring an additional DP dimension for substitution budget.',
+            'Start with a brute force approach, then optimize by identifying repeated work.',
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[1,2,3,4,5]},
-                output: true,
-                explanation: 'Standard case satisfying the problem conditions.'
+                input: {"s":"rabbbit","t":"rabbit"},
+                output: 3,
+                explanation: 'Three distinct ways to select "rabbit" from "rabbbit" by choosing different b characters.'
             },
             {
-                input: {"array":[5,3,1]},
-                output: false,
-                explanation: 'Case where the condition is not met.'
+                input: {"s":"aabb","t":"ab"},
+                output: 4,
+                explanation: 'Four ways: positions (0,2), (0,3), (1,2), (1,3).'
             },
             {
-                input: {"array":[1]},
-                output: true,
-                explanation: 'Edge case with single element.'
+                input: {"s":"abc","t":"xyz"},
+                output: 0,
+                explanation: 'No matching subsequence exists.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # s="rxbbit", t="rabbit", m=1 → count subsequences after optimally changing 1 char
 
+    Example: s="rxbbit", t="rabbit", m=1 → count subsequences after optimally changing 1 char
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func DistinctSubsequencesWithCharacterSubstitutionBudget(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

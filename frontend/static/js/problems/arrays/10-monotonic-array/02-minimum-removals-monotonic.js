@@ -174,13 +174,6 @@ func main() {
     // Output: 2
 }`
         },
-        twists: [
-            { id: '10-monotonic-array/02-minimum-removals-monotonic/twist-01-minimum-removals-for-strict-monotonicity', name: 'Minimum Removals for Strict Monotonicity', difficulty: 'Hard' },
-            { id: '10-monotonic-array/02-minimum-removals-monotonic/twist-02-minimum-removals-with-cost', name: 'Minimum Removals with Cost', difficulty: 'Very Hard' },
-            { id: '10-monotonic-array/02-minimum-removals-monotonic/twist-03-removals-to-make-k-monotonic', name: 'Removals to Make K-Monotonic', difficulty: 'Hard' },
-            { id: '10-monotonic-array/02-minimum-removals-monotonic/twist-04-identify-removed-elements', name: 'Identify Removed Elements', difficulty: 'Hard' },
-            { id: '10-monotonic-array/02-minimum-removals-monotonic/twist-05-minimum-changes-instead-of-removals', name: 'Minimum Changes Instead of Removals', difficulty: 'Hard' }
-        ],
         similar: [
 
         ]

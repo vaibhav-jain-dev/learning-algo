@@ -168,13 +168,6 @@ func main() {
     fmt.Println(MinMatchesGuarantee([]int{6, 6, 6}, 3))  // 2
 }`
         },
-        twists: [
-            { id: '04-tournament-winner/03-min-matches-guarantee/twist-01-min-matches-for-top-k-guarantee', name: 'Min Matches for Top K Guarantee', difficulty: 'Hard' },
-            { id: '04-tournament-winner/03-min-matches-guarantee/twist-02-min-matches-with-known-schedule', name: 'Min Matches with Known Schedule', difficulty: 'Hard' },
-            { id: '04-tournament-winner/03-min-matches-guarantee/twist-03-probability-of-winner-after-k-matches', name: 'Probability of Winner After K Matches', difficulty: 'Very Hard' },
-            { id: '04-tournament-winner/03-min-matches-guarantee/twist-04-min-matches-with-bonus-points', name: 'Min Matches with Bonus Points', difficulty: 'Medium' },
-            { id: '04-tournament-winner/03-min-matches-guarantee/twist-05-min-matches-across-multiple-groups', name: 'Min Matches Across Multiple Groups', difficulty: 'Hard' }
-        ],
         similar: [
 
         ]

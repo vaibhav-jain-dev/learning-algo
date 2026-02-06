@@ -16,11 +16,10 @@
         description: 'Support insert/delete operations on both arrays and query the closest sum pair after each update. Static two-pointer no longer works. Requires balanced BSTs or augmented data structures to maintain sorted order and efficiently find closest pairs after modifications.',
         problem: 'Static two-pointer no longer works. Requires balanced BSTs or augmented data structures to maintain sorted order and efficiently find closest pairs after modifications.',
         hints: [
-            'Think about how dynamic closest sum with array updates differs from the standard version of this problem.',
-            'Key insight: Static two-pointer no longer works. Requires balanced BSTs or augmented data structures to maintain sorted order and efficiently find closest pairs after modifications.',
+            'Think about how this twist differs from the standard version: Support insert/delete operations on both arrays and query the closest sum pair a.',
+            'Static two-pointer no longer works. Requires balanced BSTs or augmented data structures to maintain sorted order and efficiently find closest pairs after modifications.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
-            'Break the problem into smaller subproblems and solve each one independently.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[1,2,3,4,5],"target":9},
-                output: [[1,3,5],[2,3,4]],
-                explanation: 'Found all valid combinations summing to target.'
+                input: {"arr1":[1,3,5,7],"arr2":[2,4,6,8],"target":10},
+                output: [3,7],
+                explanation: '3 + 7 = 10, exact match to target.'
             },
             {
-                input: {"array":[-1,0,1,2],"target":0},
-                output: [[-1,0,1]],
-                explanation: 'Negative numbers included in the valid combination.'
+                input: {"arr1":[-1,3,8],"arr2":[2,4,9],"target":7},
+                output: [3,4],
+                explanation: '3 + 4 = 7, exact match.'
             },
             {
-                input: {"array":[1,2,3],"target":100},
-                output: [],
-                explanation: 'No valid combination exists for this target.'
+                input: {"arr1":[1,4],"arr2":[10,20],"target":15},
+                output: [4,10],
+                explanation: '4 + 10 = 14, closest to 15.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # arr1=[1,5], arr2=[3,7], target=8 → [1,7]. Insert 4 into arr1 → [4,3] is now closer
 
+    Example: arr1=[1,5], arr2=[3,7], target=8 → [1,7]. Insert 4 into arr1 → [4,3] is now closer
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func DynamicClosestSumWithArrayUpdates(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

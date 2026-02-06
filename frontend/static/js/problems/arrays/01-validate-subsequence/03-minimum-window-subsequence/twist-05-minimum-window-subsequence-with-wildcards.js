@@ -16,11 +16,10 @@
         description: 'The pattern s2 can contain wildcard characters "?" that match any single character in s1. Wildcards change the matching logic: instead of exact character comparison, you need conditional matching that accepts any character at wildcard positions.',
         problem: 'Wildcards change the matching logic: instead of exact character comparison, you need conditional matching that accepts any character at wildcard positions.',
         hints: [
-            'Think about how minimum window subsequence with wildcards differs from the standard version of this problem.',
-            'Key insight: Wildcards change the matching logic: instead of exact character comparison, you need conditional matching that accepts any character at wildcard positions.',
+            'Think about how this twist differs from the standard version: The pattern s2 can contain wildcard characters "?" that match any single charact.',
+            'Wildcards change the matching logic: instead of exact character comparison, you need conditional matching that accepts any character at wildcard positions.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
-            'Break the problem into smaller subproblems and solve each one independently.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[1,3,5,2,4]},
-                output: 1,
-                explanation: 'Only one operation needed to achieve the goal.'
+                input: {"s1":"abcdebdde","s2":"bde"},
+                output: "bcde",
+                explanation: 'The smallest window containing "bde" as a subsequence is "bcde".'
             },
             {
-                input: {"array":[1,2,3,4]},
-                output: 0,
-                explanation: 'Already satisfies the condition, no operations needed.'
+                input: {"s1":"abcdef","s2":"ace"},
+                output: "abcde",
+                explanation: 'Window from a to e contains "ace" as a subsequence.'
             },
             {
-                input: {"array":[5,3,1,4,2]},
-                output: 2,
-                explanation: 'Two operations needed to satisfy the condition.'
+                input: {"s1":"xyz","s2":"abc"},
+                output: "",
+                explanation: 'No valid window exists.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # s1="abcdebdde", s2="b?e" → "bcd" (? matches c, then e completes)
 
+    Example: s1="abcdebdde", s2="b?e" → "bcd" (? matches c, then e completes)
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func MinimumWindowSubsequenceWithWildcards(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

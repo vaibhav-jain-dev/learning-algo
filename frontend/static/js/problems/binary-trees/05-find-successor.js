@@ -44,41 +44,11 @@
     }
         ],
         twists: [
-            {
-                title: 'Find Predecessor Instead',
-                difficulty: 'Medium',
-                description: 'Find the in-order predecessor of a given node (the node that comes immediately before it in in-order traversal).',
-                whyDifferent: 'The logic is mirrored: instead of going to the right subtree and finding the leftmost, go to the left subtree and find the rightmost. The parent traversal direction also reverses.',
-                example: 'In-order: 6,4,2,5,1,3. Predecessor of 1 is 5. Predecessor of 6 is null.'
-            },
-            {
-                title: 'Successor Without Parent Pointers',
-                difficulty: 'Medium',
-                description: 'Find the in-order successor when nodes do NOT have parent pointers. You only have the root of the tree and the target value.',
-                whyDifferent: 'Without parent pointers, you cannot walk up. You must traverse from the root, tracking the last node where you went left (potential successor) while searching for the target.',
-                example: 'Tree rooted at 1. To find successor of 5, search from root, tracking last left-turn ancestor.'
-            },
-            {
-                title: 'K-th Successor',
-                difficulty: 'Medium',
-                description: 'Find the k-th in-order successor of the target node (the node that is k positions after it in in-order traversal).',
-                whyDifferent: 'Instead of returning the immediate next, you need to advance k steps in in-order traversal. This may cross multiple subtree boundaries and parent links, requiring a general in-order iteration mechanism.',
-                example: 'In-order: 6,4,2,5,1,3. 2nd successor of 4 is 5. 3rd successor of 4 is 1.'
-            },
-            {
-                title: 'Preorder Successor',
-                difficulty: 'Medium',
-                description: 'Find the preorder successor instead of the in-order successor. Preorder visits: node, left, right.',
-                whyDifferent: 'Preorder successor logic is different: if the node has a left child, successor is the left child. If it has only a right child, successor is the right child. If it is a leaf, walk up to find the first ancestor whose right subtree has not been visited.',
-                example: 'Preorder: 1,2,4,6,5,3. Preorder successor of 6 is 5. Preorder successor of 5 is 3.'
-            },
-            {
-                title: 'Threaded Binary Tree Successor',
-                difficulty: 'Hard',
-                description: 'The tree is a threaded binary tree where null right pointers are replaced with threads to the in-order successor. Find the successor using threads.',
-                whyDifferent: 'Threaded trees encode successor information directly in the tree structure. If the right pointer is a thread, the successor is immediate. If it is a real child, find the leftmost node of the right subtree. You must distinguish threads from real children.',
-                example: 'Node 5 has a thread (not a real right child) pointing to node 1. Successor of 5 is 1 via the thread.'
-            }
+            { id: '05-find-successor/twist-01-find-predecessor-instead', name: 'Find Predecessor Instead', difficulty: 'Medium' },
+            { id: '05-find-successor/twist-02-successor-without-parent-pointers', name: 'Successor Without Parent Pointers', difficulty: 'Medium' },
+            { id: '05-find-successor/twist-03-k-th-successor', name: 'K-th Successor', difficulty: 'Medium' },
+            { id: '05-find-successor/twist-04-preorder-successor', name: 'Preorder Successor', difficulty: 'Medium' },
+            { id: '05-find-successor/twist-05-threaded-binary-tree-successor', name: 'Threaded Binary Tree Successor', difficulty: 'Hard' }
         ],
         similar: [
 

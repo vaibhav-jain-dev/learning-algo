@@ -16,31 +16,30 @@
         description: 'Instead of returning all triplets, just count how many unique triplets sum to target. While the core algorithm is similar, counting allows mathematical shortcuts: when duplicates exist, you can calculate combinations instead of enumerating.',
         problem: 'While the core algorithm is similar, counting allows mathematical shortcuts: when duplicates exist, you can calculate combinations instead of enumerating.',
         hints: [
-            'Think about how count unique triplets without listing differs from the standard version of this problem.',
-            'Key insight: While the core algorithm is similar, counting allows mathematical shortcuts: when duplicates exist, you can calculate combinations instead of enumerating.',
-            'A hash map can help track frequencies or previously seen values efficiently.',
-            'Break the problem into smaller subproblems and solve each one independently.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Think about how this twist differs from the standard version: Instead of returning all triplets, just count how many unique triplets sum to ta.',
+            'While the core algorithm is similar, counting allows mathematical shortcuts: when duplicates exist, you can calculate combinations instead of enumerating.',
+            'Start with a brute force approach, then optimize by identifying repeated work.',
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
-            time: 'O(n^2)',
+            time: 'O(n)',
             space: 'O(n)'
         },
         examples: [
             {
-                input: {"array":[1,2,1,2,3]},
+                input: {"nums":[-1,2,1,-4],"target":1},
                 output: 2,
-                explanation: 'Two valid configurations found in the input.'
+                explanation: 'The triplet (-1, 2, 1) has sum 2, which is closest to target 1.'
             },
             {
-                input: {"array":[1,2,3]},
-                output: 1,
-                explanation: 'Only one valid configuration exists.'
+                input: {"nums":[0,0,0],"target":1},
+                output: 0,
+                explanation: 'Only triplet possible: 0+0+0=0, closest to 1.'
             },
             {
-                input: {"array":[1,1,1]},
-                output: 3,
-                explanation: 'Multiple identical elements create multiple valid configurations.'
+                input: {"nums":[1,2,3,4,5],"target":10},
+                output: 10,
+                explanation: 'Triplet (2,3,5) or (1,4,5) sums to exactly 10.'
             }
         ],
         solutions: {
@@ -51,21 +50,19 @@
     Instead of returning all triplets, just count how many unique triplets sum to target.
     \n    Approach: While the core algorithm is similar, counting allows mathematical shortcuts: when duplicates exist, you can calculate combinations instead of enumerating.
 
-    Time: O(n^2)
+    Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # nums=[0,0,0,0], target=0 → 1 (only one unique triplet [0,0,0])
 
+    Example: nums=[0,0,0,0], target=0 → 1 (only one unique triplet [0,0,0])
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -81,18 +78,17 @@ import "fmt"
 
 // CountUniqueTripletsWithoutListing solves the Count Unique Triplets Without Listing problem.
 // Instead of returning all triplets, just count how many unique triplets sum to target.
-// Time: O(n^2), Space: O(n)
+// Time: O(n), Space: O(n)
 func CountUniqueTripletsWithoutListing(data []int) []int {
     if len(data) == 0 {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

@@ -134,13 +134,6 @@ func main() {
     fmt.Println(FourNumberSum([]int{1, 0, -1, 0, -2, 2}, 0))
 }`
         },
-        twists: [
-            { id: '07-three-number-sum/03-four-number-sum/twist-01-four-sum-closest', name: 'Four Sum Closest', difficulty: 'Hard' },
-            { id: '07-three-number-sum/03-four-number-sum/twist-02-unique-quadruplet-values', name: 'Unique Quadruplet Values', difficulty: 'Hard' },
-            { id: '07-three-number-sum/03-four-number-sum/twist-03-four-sum-below-target', name: 'Four Sum Below Target', difficulty: 'Hard' },
-            { id: '07-three-number-sum/03-four-number-sum/twist-04-four-sum-with-constraints', name: 'Four Sum with Constraints', difficulty: 'Very Hard' },
-            { id: '07-three-number-sum/03-four-number-sum/twist-05-maximum-product-quadruplet', name: 'Maximum Product Quadruplet', difficulty: 'Hard' }
-        ],
         similar: [
 
         ]

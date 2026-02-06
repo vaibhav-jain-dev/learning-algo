@@ -188,13 +188,6 @@ func main() {
     fmt.Println(CanBecomeMonotonic([]int{3, 4, 2, 3}))    // false
 }`
         },
-        twists: [
-            { id: '10-monotonic-array/03-can-become-monotonic/twist-01-can-become-monotonic-with-k-changes', name: 'Can Become Monotonic with K Changes', difficulty: 'Hard' },
-            { id: '10-monotonic-array/03-can-become-monotonic/twist-02-can-become-monotonic-by-swapping', name: 'Can Become Monotonic by Swapping', difficulty: 'Hard' },
-            { id: '10-monotonic-array/03-can-become-monotonic/twist-03-which-element-to-change', name: 'Which Element to Change', difficulty: 'Medium' },
-            { id: '10-monotonic-array/03-can-become-monotonic/twist-04-can-become-strictly-monotonic', name: 'Can Become Strictly Monotonic', difficulty: 'Medium' },
-            { id: '10-monotonic-array/03-can-become-monotonic/twist-05-can-become-monotonic-by-removing', name: 'Can Become Monotonic by Removing', difficulty: 'Medium' }
-        ],
         similar: [
 
         ]

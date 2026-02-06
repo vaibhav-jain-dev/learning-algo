@@ -173,13 +173,6 @@ func main() {
     fmt.Println(TournamentBracket(bracket2, [][]int{}, 0)) // "Team2"
 }`
         },
-        twists: [
-            { id: '04-tournament-winner/01-tournament-bracket/twist-01-double-elimination-bracket', name: 'Double Elimination Bracket', difficulty: 'Hard' },
-            { id: '04-tournament-winner/01-tournament-bracket/twist-02-bracket-with-seeding', name: 'Bracket with Seeding', difficulty: 'Medium' },
-            { id: '04-tournament-winner/01-tournament-bracket/twist-03-predict-all-possible-champions', name: 'Predict All Possible Champions', difficulty: 'Hard' },
-            { id: '04-tournament-winner/01-tournament-bracket/twist-04-bracket-reset-from-results', name: 'Bracket Reset from Results', difficulty: 'Medium' },
-            { id: '04-tournament-winner/01-tournament-bracket/twist-05-minimum-upsets-to-change-champion', name: 'Minimum Upsets to Change Champion', difficulty: 'Very Hard' }
-        ],
         similar: [
 
         ]

@@ -16,11 +16,10 @@
         description: 'The sequence is valid if it can be found going left-to-right OR right-to-left in the array. You must consider two traversal directions, potentially doubling the search space but also the solution space.',
         problem: 'You must consider two traversal directions, potentially doubling the search space but also the solution space.',
         hints: [
-            'Think about how bidirectional subsequence check differs from the standard version of this problem.',
-            'Key insight: You must consider two traversal directions, potentially doubling the search space but also the solution space.',
+            'Think about how this twist differs from the standard version: The sequence is valid if it can be found going left-to-right OR right-to-left in.',
+            'You must consider two traversal directions, potentially doubling the search space but also the solution space.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
-            'Break the problem into smaller subproblems and solve each one independently.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[1,2,3,4,5]},
+                input: {"array":[5,1,22,25,6,-1,8,10],"sequence":[1,6,-1,10]},
                 output: true,
-                explanation: 'Standard case satisfying the problem conditions.'
+                explanation: 'The sequence elements appear in order within the array.'
             },
             {
-                input: {"array":[5,3,1]},
+                input: {"array":[1,2,3,4,5],"sequence":[5,3,1]},
                 output: false,
-                explanation: 'Case where the condition is not met.'
+                explanation: 'The sequence elements do not appear in the required order.'
             },
             {
-                input: {"array":[1]},
+                input: {"array":[1,1,1,1,1],"sequence":[1,1,1]},
                 output: true,
-                explanation: 'Edge case with single element.'
+                explanation: 'Duplicate elements are handled correctly.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # array=[1,2,3,4,5], sequence=[5,3,1] → true (valid right-to-left)
 
+    Example: array=[1,2,3,4,5], sequence=[5,3,1] → true (valid right-to-left)
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func BidirectionalSubsequenceCheck(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

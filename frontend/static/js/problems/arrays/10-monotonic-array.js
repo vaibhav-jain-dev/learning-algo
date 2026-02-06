@@ -59,13 +59,6 @@
         explanation: 'Processing the input data produces the output. For input array=[1, 2, 1], the result is false.'
     }
         ],
-        twists: [
-            { id: '10-monotonic-array/twist-01-strictly-monotonic-check', name: 'Strictly Monotonic Check', difficulty: 'Easy' },
-            { id: '10-monotonic-array/twist-02-monotonic-with-one-exception', name: 'Monotonic with One Exception', difficulty: 'Medium' },
-            { id: '10-monotonic-array/twist-03-direction-of-monotonicity', name: 'Direction of Monotonicity', difficulty: 'Easy' },
-            { id: '10-monotonic-array/twist-04-longest-monotonic-prefix', name: 'Longest Monotonic Prefix', difficulty: 'Medium' },
-            { id: '10-monotonic-array/twist-05-count-monotonic-subarrays', name: 'Count Monotonic Subarrays', difficulty: 'Medium' }
-        ],
         similar: [
     { id: '10-monotonic-array/01-longest-monotonic-subarray', name: '01 Longest Monotonic Subarray', difficulty: 'Medium' },
     { id: '10-monotonic-array/02-minimum-removals-monotonic', name: '02 Minimum Removals Monotonic', difficulty: 'Hard' },

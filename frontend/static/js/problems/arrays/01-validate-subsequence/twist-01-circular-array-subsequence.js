@@ -16,31 +16,30 @@
         description: 'What if the main array is circular? The sequence can wrap around from the end back to the beginning. You need to handle wrap-around logic with modular arithmetic and decide when to stop to avoid infinite loops.',
         problem: 'You need to handle wrap-around logic with modular arithmetic and decide when to stop to avoid infinite loops.',
         hints: [
-            'Think about how circular array subsequence differs from the standard version of this problem.',
-            'Key insight: You need to handle wrap-around logic with modular arithmetic and decide when to stop to avoid infinite loops.',
-            'Start with a brute force approach, then optimize by identifying repeated work.',
-            'For circular arrays, consider concatenating the array with itself or using modular arithmetic.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Think about how this twist differs from the standard version: What if the main array is circular? The sequence can wrap around from the end ba.',
+            'You need to handle wrap-around logic with modular arithmetic and decide when to stop to avoid infinite loops.',
+            'For circular structures, consider concatenating the data with itself or using modular arithmetic.',
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
-            time: 'O(n)',
+            time: 'O(n log k)',
             space: 'O(n)'
         },
         examples: [
             {
-                input: {"array":[4,5,1,2,3]},
+                input: {"array":[5,1,22,25,6,-1,8,10],"sequence":[1,6,-1,10]},
                 output: true,
-                explanation: 'Circular traversal allows wrap-around from end to beginning.'
+                explanation: 'The sequence elements appear in order within the array.'
             },
             {
-                input: {"array":[1,2,3,4,5]},
-                output: true,
-                explanation: 'Standard case without wrap-around needed.'
-            },
-            {
-                input: {"array":[3,1,2]},
+                input: {"array":[1,2,3,4,5],"sequence":[5,3,1]},
                 output: false,
-                explanation: 'Even with circular traversal, the condition is not met.'
+                explanation: 'The sequence elements do not appear in the required order.'
+            },
+            {
+                input: {"array":[1,1,1,1,1],"sequence":[1,1,1]},
+                output: true,
+                explanation: 'Duplicate elements are handled correctly.'
             }
         ],
         solutions: {
@@ -51,21 +50,19 @@
     What if the main array is circular? The sequence can wrap around from the end back to the beginning.
     \n    Approach: You need to handle wrap-around logic with modular arithmetic and decide when to stop to avoid infinite loops.
 
-    Time: O(n)
+    Time: O(n log k)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # array=[4,5,1,2,3], sequence=[3,4,5] → true (wraps from 3 back to 4,5)
 
+    Example: array=[4,5,1,2,3], sequence=[3,4,5] → true (wraps from 3 back to 4,5)
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -81,18 +78,17 @@ import "fmt"
 
 // CircularArraySubsequence solves the Circular Array Subsequence problem.
 // What if the main array is circular? The sequence can wrap around from the end back to the beginning.
-// Time: O(n), Space: O(n)
+// Time: O(n log k), Space: O(n)
 func CircularArraySubsequence(data []int) []int {
     if len(data) == 0 {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

@@ -175,13 +175,6 @@ func main() {
     // Output: [3 3 3]
 }`
         },
-        twists: [
-            { id: '08-smallest-difference/02-smallest-diff-triplet/twist-01-maximize-triplet-range', name: 'Maximize Triplet Range', difficulty: 'Hard' },
-            { id: '08-smallest-difference/02-smallest-diff-triplet/twist-02-smallest-diff-quadruplet', name: 'Smallest Diff Quadruplet', difficulty: 'Very Hard' },
-            { id: '08-smallest-difference/02-smallest-diff-triplet/twist-03-k-closest-triplets', name: 'K Closest Triplets', difficulty: 'Very Hard' },
-            { id: '08-smallest-difference/02-smallest-diff-triplet/twist-04-unsorted-input-arrays', name: 'Unsorted Input Arrays', difficulty: 'Hard' },
-            { id: '08-smallest-difference/02-smallest-diff-triplet/twist-05-triplet-within-threshold', name: 'Triplet Within Threshold', difficulty: 'Medium' }
-        ],
         similar: [
 
         ]

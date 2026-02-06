@@ -263,13 +263,6 @@ func main() {
     }
 }`
         },
-        twists: [
-            { id: '06-transpose-matrix/02-spiral-matrix-transpose/twist-01-spiral-read-row-major-write', name: 'Spiral Read, Row-Major Write', difficulty: 'Medium' },
-            { id: '06-transpose-matrix/02-spiral-matrix-transpose/twist-02-row-major-read-spiral-write', name: 'Row-Major Read, Spiral Write', difficulty: 'Medium' },
-            { id: '06-transpose-matrix/02-spiral-matrix-transpose/twist-03-diagonal-read-spiral-write', name: 'Diagonal Read, Spiral Write', difficulty: 'Hard' },
-            { id: '06-transpose-matrix/02-spiral-matrix-transpose/twist-04-in-place-spiral-transpose', name: 'In-Place Spiral Transpose', difficulty: 'Very Hard' },
-            { id: '06-transpose-matrix/02-spiral-matrix-transpose/twist-05-reverse-spiral-transpose', name: 'Reverse Spiral Transpose', difficulty: 'Hard' }
-        ],
         similar: [
 
         ]

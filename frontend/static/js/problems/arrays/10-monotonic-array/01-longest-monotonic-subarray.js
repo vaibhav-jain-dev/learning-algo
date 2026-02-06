@@ -157,13 +157,6 @@ func main() {
     // Output: 4
 }`
         },
-        twists: [
-            { id: '10-monotonic-array/01-longest-monotonic-subarray/twist-01-longest-strictly-monotonic-subarray', name: 'Longest Strictly Monotonic Subarray', difficulty: 'Medium' },
-            { id: '10-monotonic-array/01-longest-monotonic-subarray/twist-02-longest-alternating-subarray', name: 'Longest Alternating Subarray', difficulty: 'Medium' },
-            { id: '10-monotonic-array/01-longest-monotonic-subarray/twist-03-all-longest-monotonic-subarrays', name: 'All Longest Monotonic Subarrays', difficulty: 'Medium' },
-            { id: '10-monotonic-array/01-longest-monotonic-subarray/twist-04-longest-monotonic-with-k-exceptions', name: 'Longest Monotonic with K Exceptions', difficulty: 'Hard' },
-            { id: '10-monotonic-array/01-longest-monotonic-subarray/twist-05-second-longest-monotonic-subarray', name: 'Second Longest Monotonic Subarray', difficulty: 'Hard' }
-        ],
         similar: [
 
         ]

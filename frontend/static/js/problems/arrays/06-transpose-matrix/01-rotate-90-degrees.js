@@ -212,13 +212,6 @@ func main() {
     // [[7 4 1] [8 5 2] [9 6 3]]
 }`
         },
-        twists: [
-            { id: '06-transpose-matrix/01-rotate-90-degrees/twist-01-rotate-180-degrees', name: 'Rotate 180 Degrees', difficulty: 'Easy' },
-            { id: '06-transpose-matrix/01-rotate-90-degrees/twist-02-rotate-counterclockwise-90', name: 'Rotate Counterclockwise 90', difficulty: 'Medium' },
-            { id: '06-transpose-matrix/01-rotate-90-degrees/twist-03-rotate-rectangular-matrix', name: 'Rotate Rectangular Matrix', difficulty: 'Hard' },
-            { id: '06-transpose-matrix/01-rotate-90-degrees/twist-04-rotate-by-k90-degrees', name: 'Rotate by K*90 Degrees', difficulty: 'Medium' },
-            { id: '06-transpose-matrix/01-rotate-90-degrees/twist-05-rotate-ring-only', name: 'Rotate Ring Only', difficulty: 'Hard' }
-        ],
         similar: [
 
         ]

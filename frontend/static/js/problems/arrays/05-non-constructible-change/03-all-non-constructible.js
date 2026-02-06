@@ -130,13 +130,6 @@ func main() {
     fmt.Println(AllNonConstructible([]int{1, 5, 10}, 20))  // [2,3,4,7,8,9,12,13,14,17,18,19]
 }`
         },
-        twists: [
-            { id: '05-non-constructible-change/03-all-non-constructible/twist-01-count-non-constructible-values', name: 'Count Non-Constructible Values', difficulty: 'Medium' },
-            { id: '05-non-constructible-change/03-all-non-constructible/twist-02-non-constructible-ranges', name: 'Non-Constructible Ranges', difficulty: 'Medium' },
-            { id: '05-non-constructible-change/03-all-non-constructible/twist-03-all-non-constructible-with-unlimited-coins', name: 'All Non-Constructible with Unlimited Coins', difficulty: 'Hard' },
-            { id: '05-non-constructible-change/03-all-non-constructible/twist-04-minimum-coin-to-make-value-constructible', name: 'Minimum Coin to Make Value Constructible', difficulty: 'Medium' },
-            { id: '05-non-constructible-change/03-all-non-constructible/twist-05-all-non-constructible-with-coin-usage-limits', name: 'All Non-Constructible with Coin Usage Limits', difficulty: 'Hard' }
-        ],
         similar: [
 
         ]

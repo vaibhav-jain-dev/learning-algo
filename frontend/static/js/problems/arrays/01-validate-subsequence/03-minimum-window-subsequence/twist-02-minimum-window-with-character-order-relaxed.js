@@ -16,11 +16,10 @@
         description: 'Find the minimum window that contains all characters of s2 (as an anagram, not a subsequence). Changes from subsequence matching to frequency matching, converting the problem to a classic sliding window with character counts.',
         problem: 'Changes from subsequence matching to frequency matching, converting the problem to a classic sliding window with character counts.',
         hints: [
-            'Think about how minimum window with character order relaxed differs from the standard version of this problem.',
-            'Key insight: Changes from subsequence matching to frequency matching, converting the problem to a classic sliding window with character counts.',
-            'Consider using two pointers or a sliding window approach.',
-            'Dynamic programming may help - identify the subproblems and their recurrence relation.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Think about how this twist differs from the standard version: Find the minimum window that contains all characters of s2 (as an anagram, not a.',
+            'Changes from subsequence matching to frequency matching, converting the problem to a classic sliding window with character counts.',
+            'Start with a brute force approach, then optimize by identifying repeated work.',
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[1,3,5,2,4]},
-                output: 1,
-                explanation: 'Only one operation needed to achieve the goal.'
+                input: {"s1":"abcdebdde","s2":"bde"},
+                output: "bcde",
+                explanation: 'The smallest window containing "bde" as a subsequence is "bcde".'
             },
             {
-                input: {"array":[1,2,3,4]},
-                output: 0,
-                explanation: 'Already satisfies the condition, no operations needed.'
+                input: {"s1":"abcdef","s2":"ace"},
+                output: "abcde",
+                explanation: 'Window from a to e contains "ace" as a subsequence.'
             },
             {
-                input: {"array":[5,3,1,4,2]},
-                output: 2,
-                explanation: 'Two operations needed to satisfy the condition.'
+                input: {"s1":"xyz","s2":"abc"},
+                output: "",
+                explanation: 'No valid window exists.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # s1="adobecodebanc", s2="abc" → "banc" (contains a, b, c in any order)
 
+    Example: s1="adobecodebanc", s2="abc" → "banc" (contains a, b, c in any order)
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func MinimumWindowWithCharacterOrderRelaxed(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

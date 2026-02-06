@@ -157,11 +157,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Spiral with Obstacles', difficulty: 'Hard', description: 'Walk in a spiral from a starting point but some cells are blocked. Skip blocked cells and continue the spiral path.', whyDifferent: 'Obstacles break the simple step-counting pattern. You must detect blocked cells and adjust the spiral expansion.', example: 'grid 3x3, start (1,1), cell (0,2) blocked. Spiral skips (0,2) and continues.' },
-            { title: 'Shortest Spiral Distance', difficulty: 'Hard', description: 'Given a start cell and target cell in a grid, find how many steps it takes to reach the target following the spiral path.', whyDifferent: 'Instead of visiting all cells, you stop early when the target is found, requiring efficient position-in-spiral calculation.', example: 'rows = 3, cols = 3, start = (0,0), target = (1,1). Spiral distance = 8 (center is last).' },
-            { title: 'Reverse Spiral Path', difficulty: 'Medium', description: 'Given a spiral-ordered list of coordinates, determine the starting cell and grid dimensions that produced it.', whyDifferent: 'Inverse problem: reconstruct parameters from output rather than generating output from parameters.', example: 'coords = [[0,0],[0,1],[0,2],[0,3]]. Deduced: 1x4 grid starting at (0,0).' },
-            { title: 'Spiral with Direction Choice', difficulty: 'Hard', description: 'At the starting point you can choose to go in any of 4 directions first. Find the direction choice that visits all cells with fewest out-of-bound steps.', whyDifferent: 'Requires simulating all 4 starting directions and counting wasted steps, an optimization over brute-force spiraling.', example: 'rows = 3, cols = 5, start = (1,2). Starting right wastes fewer steps than starting left.' },
-            { title: 'K-th Cell in Spiral', difficulty: 'Medium', description: 'Return the coordinates of the K-th cell visited in the spiral, without generating the entire spiral.', whyDifferent: 'Requires O(1) or O(sqrt(n)) computation of spiral position instead of O(n) simulation.', example: 'rows = 5, cols = 6, start = (1,4), K = 5. Return the 5th visited cell coordinates.' }
+            { id: '11-spiral-traverse/02-spiral-matrix-starting-point/twist-01-spiral-with-obstacles', name: 'Spiral with Obstacles', difficulty: 'Hard' },
+            { id: '11-spiral-traverse/02-spiral-matrix-starting-point/twist-02-shortest-spiral-distance', name: 'Shortest Spiral Distance', difficulty: 'Hard' },
+            { id: '11-spiral-traverse/02-spiral-matrix-starting-point/twist-03-reverse-spiral-path', name: 'Reverse Spiral Path', difficulty: 'Medium' },
+            { id: '11-spiral-traverse/02-spiral-matrix-starting-point/twist-04-spiral-with-direction-choice', name: 'Spiral with Direction Choice', difficulty: 'Hard' },
+            { id: '11-spiral-traverse/02-spiral-matrix-starting-point/twist-05-kth-cell-in-spiral', name: 'K-th Cell in Spiral', difficulty: 'Medium' }
         ],
         similar: [
 

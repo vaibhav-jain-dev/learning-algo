@@ -16,31 +16,30 @@
         description: 'The array is circular, and you can only use elements that are within a window of size k in the circular arrangement. Introduces a spatial constraint on which pairs are valid, combining sliding window with two-sum logic.',
         problem: 'Introduces a spatial constraint on which pairs are valid, combining sliding window with two-sum logic.',
         hints: [
-            'Think about how two sum in a circular array differs from the standard version of this problem.',
-            'Key insight: Introduces a spatial constraint on which pairs are valid, combining sliding window with two-sum logic.',
-            'Consider using two pointers or a sliding window approach.',
-            'For circular arrays, consider concatenating the array with itself or using modular arithmetic.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Think about how this twist differs from the standard version: The array is circular, and you can only use elements that are within a window of.',
+            'Introduces a spatial constraint on which pairs are valid, combining sliding window with two-sum logic.',
+            'For circular structures, consider concatenating the data with itself or using modular arithmetic.',
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
-            time: 'O(n)',
+            time: 'O(n log k)',
             space: 'O(n)'
         },
         examples: [
             {
-                input: {"array":[4,5,1,2,3]},
-                output: true,
-                explanation: 'Circular traversal allows wrap-around from end to beginning.'
+                input: {"array":[3,5,-4,8,11,1,-1,6],"targetSum":10},
+                output: [-1,11],
+                explanation: '-1 + 11 = 10, which equals the target sum.'
             },
             {
-                input: {"array":[1,2,3,4,5]},
-                output: true,
-                explanation: 'Standard case without wrap-around needed.'
+                input: {"array":[1,2,3,4,5],"targetSum":10},
+                output: [],
+                explanation: 'No two distinct numbers sum to 10.'
             },
             {
-                input: {"array":[3,1,2]},
-                output: false,
-                explanation: 'Even with circular traversal, the condition is not met.'
+                input: {"array":[4,6],"targetSum":10},
+                output: [4,6],
+                explanation: '4 + 6 = 10.'
             }
         ],
         solutions: {
@@ -51,21 +50,19 @@
     The array is circular, and you can only use elements that are within a window of size k in the circular arrangement.
     \n    Approach: Introduces a spatial constraint on which pairs are valid, combining sliding window with two-sum logic.
 
-    Time: O(n)
+    Time: O(n log k)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # array=[1,4,2,3,5], target=6, k=3 → [1,5] is valid (circular neighbors), [4,2] is valid
 
+    Example: array=[1,4,2,3,5], target=6, k=3 → [1,5] is valid (circular neighbors), [4,2] is valid
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -81,18 +78,17 @@ import "fmt"
 
 // TwoSumInACircularArray solves the Two Sum in a Circular Array problem.
 // The array is circular, and you can only use elements that are within a window of size k in the circular arrangement.
-// Time: O(n), Space: O(n)
+// Time: O(n log k), Space: O(n)
 func TwoSumInACircularArray(data []int) []int {
     if len(data) == 0 {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

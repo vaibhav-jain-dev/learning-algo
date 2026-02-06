@@ -162,13 +162,6 @@ func main() {
     // Output: [1 5 3 4 2]
 }`
         },
-        twists: [
-            { id: '09-move-element-to-end/02-partition-array-by-predicate/twist-01-stable-partition', name: 'Stable Partition', difficulty: 'Hard' },
-            { id: '09-move-element-to-end/02-partition-array-by-predicate/twist-02-three-way-partition', name: 'Three-Way Partition', difficulty: 'Hard' },
-            { id: '09-move-element-to-end/02-partition-array-by-predicate/twist-03-partition-and-count', name: 'Partition and Count', difficulty: 'Easy' },
-            { id: '09-move-element-to-end/02-partition-array-by-predicate/twist-04-partition-with-minimum-swaps', name: 'Partition with Minimum Swaps', difficulty: 'Hard' },
-            { id: '09-move-element-to-end/02-partition-array-by-predicate/twist-05-partition-by-multiple-predicates', name: 'Partition by Multiple Predicates', difficulty: 'Very Hard' }
-        ],
         similar: [
 
         ]

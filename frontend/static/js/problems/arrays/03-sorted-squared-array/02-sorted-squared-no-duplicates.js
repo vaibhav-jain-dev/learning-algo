@@ -144,13 +144,6 @@ func main() {
     fmt.Println(SortedSquaredNoDuplicates([]int{-5, -3, 0, 2, 3, 5}))
 }`
         },
-        twists: [
-            { id: '03-sorted-squared-array/02-sorted-squared-no-duplicates/twist-01-count-unique-squared-values', name: 'Count Unique Squared Values', difficulty: 'Easy' },
-            { id: '03-sorted-squared-array/02-sorted-squared-no-duplicates/twist-02-sorted-squared-keep-last-occurrence', name: 'Sorted Squared Keep Last Occurrence', difficulty: 'Medium' },
-            { id: '03-sorted-squared-array/02-sorted-squared-no-duplicates/twist-03-k-most-frequent-squared-values', name: 'K Most Frequent Squared Values', difficulty: 'Medium' },
-            { id: '03-sorted-squared-array/02-sorted-squared-no-duplicates/twist-04-deduplicated-squares-in-reverse-order', name: 'Deduplicated Squares in Reverse Order', difficulty: 'Easy' },
-            { id: '03-sorted-squared-array/02-sorted-squared-no-duplicates/twist-05-sorted-squared-no-duplicates-with-original-indices', name: 'Sorted Squared No Duplicates with Original Indices', difficulty: 'Hard' }
-        ],
         similar: [
 
         ]

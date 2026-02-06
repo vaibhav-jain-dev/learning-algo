@@ -159,13 +159,6 @@ func main() {
     // Output: [3 3 3 3]
 }`
         },
-        twists: [
-            { id: '09-move-element-to-end/03-dutch-national-flag/twist-01-four-way-partition', name: 'Four-Way Partition', difficulty: 'Very Hard' },
-            { id: '09-move-element-to-end/03-dutch-national-flag/twist-02-stable-three-way-partition', name: 'Stable Three-Way Partition', difficulty: 'Very Hard' },
-            { id: '09-move-element-to-end/03-dutch-national-flag/twist-03-count-swaps-in-dnf', name: 'Count Swaps in DNF', difficulty: 'Hard' },
-            { id: '09-move-element-to-end/03-dutch-national-flag/twist-04-dnf-with-custom-comparator', name: 'DNF with Custom Comparator', difficulty: 'Hard' },
-            { id: '09-move-element-to-end/03-dutch-national-flag/twist-05-online-dutch-national-flag', name: 'Online Dutch National Flag', difficulty: 'Very Hard' }
-        ],
         similar: [
 
         ]

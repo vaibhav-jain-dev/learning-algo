@@ -139,13 +139,6 @@ func main() {
     // Output: [2 2 2]
 }`
         },
-        twists: [
-            { id: '09-move-element-to-end/01-move-element-preserve-order/twist-01-preserve-order-move-to-front', name: 'Preserve Order Move to Front', difficulty: 'Medium' },
-            { id: '09-move-element-to-end/01-move-element-preserve-order/twist-02-stable-partition-two-values', name: 'Stable Partition Two Values', difficulty: 'Medium' },
-            { id: '09-move-element-to-end/01-move-element-preserve-order/twist-03-move-with-minimum-writes', name: 'Move with Minimum Writes', difficulty: 'Hard' },
-            { id: '09-move-element-to-end/01-move-element-preserve-order/twist-04-move-in-linked-list', name: 'Move in Linked List', difficulty: 'Medium' },
-            { id: '09-move-element-to-end/01-move-element-preserve-order/twist-05-move-preserving-stability-index', name: 'Move Preserving Stability Index', difficulty: 'Hard' }
-        ],
         similar: [
 
         ]

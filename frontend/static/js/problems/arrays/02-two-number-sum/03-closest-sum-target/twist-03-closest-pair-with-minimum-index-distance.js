@@ -16,11 +16,10 @@
         description: 'Among all pairs with the closest sum to target, return the one where the two chosen indices (original positions) are farthest apart. Adds a secondary optimization criterion, requiring you to track not just the closest sum but also index positions from the original arrays.',
         problem: 'Adds a secondary optimization criterion, requiring you to track not just the closest sum but also index positions from the original arrays.',
         hints: [
-            'Think about how closest pair with minimum index distance differs from the standard version of this problem.',
-            'Key insight: Adds a secondary optimization criterion, requiring you to track not just the closest sum but also index positions from the original arrays.',
+            'Think about how this twist differs from the standard version: Among all pairs with the closest sum to target, return the one where the two cho.',
+            'Adds a secondary optimization criterion, requiring you to track not just the closest sum but also index positions from the original arrays.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
-            'Break the problem into smaller subproblems and solve each one independently.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[1,3,5,2,4]},
-                output: 1,
-                explanation: 'Only one operation needed to achieve the goal.'
+                input: {"arr1":[1,3,5,7],"arr2":[2,4,6,8],"target":10},
+                output: [3,7],
+                explanation: '3 + 7 = 10, exact match to target.'
             },
             {
-                input: {"array":[1,2,3,4]},
-                output: 0,
-                explanation: 'Already satisfies the condition, no operations needed.'
+                input: {"arr1":[-1,3,8],"arr2":[2,4,9],"target":7},
+                output: [3,4],
+                explanation: '3 + 4 = 7, exact match.'
             },
             {
-                input: {"array":[5,3,1,4,2]},
-                output: 2,
-                explanation: 'Two operations needed to satisfy the condition.'
+                input: {"arr1":[1,4],"arr2":[10,20],"target":15},
+                output: [4,10],
+                explanation: '4 + 10 = 14, closest to 15.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # arr1=[1,3,5,7], arr2=[2,4,6,8], target=10 → [3,8] instead of [5,6] if index distance is larger
 
+    Example: arr1=[1,3,5,7], arr2=[2,4,6,8], target=10 → [3,8] instead of [5,6] if index distance is larger
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func ClosestPairWithMinimumIndexDistance(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

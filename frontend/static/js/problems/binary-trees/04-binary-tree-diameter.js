@@ -49,41 +49,11 @@
     }
         ],
         twists: [
-            {
-                title: 'N-ary Tree Diameter',
-                difficulty: 'Hard',
-                description: 'Find the diameter of an N-ary tree where each node can have any number of children.',
-                whyDifferent: 'In a binary tree, the diameter through a node is leftHeight + rightHeight. In an N-ary tree, you must find the two tallest subtrees among all children to compute the through-path, requiring sorting or tracking top-2 heights.',
-                example: 'Node(1, children=[Node(2, children=[Node(5)]), Node(3), Node(4, children=[Node(6, children=[Node(7)])])]). Diameter = height(2-subtree) + height(4-subtree) = 2+3 = 5.'
-            },
-            {
-                title: 'Iterative Diameter Computation',
-                difficulty: 'Medium',
-                description: 'Compute the diameter without recursion. Use iterative postorder traversal with an explicit stack.',
-                whyDifferent: 'The recursive solution elegantly returns height while updating a global diameter. Iteratively, you need to process nodes in postorder and store computed heights in a hash map to look up when processing parent nodes.',
-                example: 'Stack-based postorder: process leaves first, store their heights, then process parents using stored child heights.'
-            },
-            {
-                title: 'Diameter as Node Count',
-                difficulty: 'Easy',
-                description: 'Compute the diameter measured in nodes instead of edges. The diameter is the number of nodes on the longest path.',
-                whyDifferent: 'Off-by-one difference. The diameter in edges equals diameter in nodes minus 1. The base case changes: a single node has diameter 1 (nodes) vs 0 (edges). Tests precision in definition.',
-                example: 'Path 8->7->3->4->5->6: 6 nodes, 5 edges. Node-diameter=6, edge-diameter=5.'
-            },
-            {
-                title: 'Return the Diameter Path',
-                difficulty: 'Hard',
-                description: 'Instead of returning the diameter length, return the actual list of node values along the longest path.',
-                whyDifferent: 'Tracking the length is O(1) per node, but reconstructing the actual path requires storing and merging path arrays at each node. The postorder logic must return both height and the path to the deepest leaf.',
-                example: 'Tree from base problem: return [8, 7, 3, 4, 5, 6] as the diameter path.'
-            },
-            {
-                title: 'Weighted Edge Diameter',
-                difficulty: 'Hard',
-                description: 'Each edge has a weight. The diameter is the longest path by total edge weight, not number of edges.',
-                whyDifferent: 'Height is no longer just +1 per level. Each edge contributes its weight. You must track weighted path sums instead of simple heights, and the maximum through-path uses weighted sums.',
-                example: 'Root->Left (weight 5), Root->Right (weight 1), Right->Leaf (weight 10). Diameter path is Left-Root-Right-Leaf = 5+1+10 = 16.'
-            }
+            { id: '04-binary-tree-diameter/twist-01-n-ary-tree-diameter', name: 'N-ary Tree Diameter', difficulty: 'Hard' },
+            { id: '04-binary-tree-diameter/twist-02-iterative-diameter-computation', name: 'Iterative Diameter Computation', difficulty: 'Medium' },
+            { id: '04-binary-tree-diameter/twist-03-diameter-as-node-count', name: 'Diameter as Node Count', difficulty: 'Easy' },
+            { id: '04-binary-tree-diameter/twist-04-return-the-diameter-path', name: 'Return the Diameter Path', difficulty: 'Hard' },
+            { id: '04-binary-tree-diameter/twist-05-weighted-edge-diameter', name: 'Weighted Edge Diameter', difficulty: 'Hard' }
         ],
         similar: [
 

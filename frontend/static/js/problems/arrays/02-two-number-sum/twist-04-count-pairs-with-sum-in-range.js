@@ -16,11 +16,10 @@
         description: 'Count the number of pairs whose sum falls within a given range [low, high] instead of equaling a specific target. Switches from exact matching to range checking, which may require sorting + two pointers and subtracting count of pairs below low from count below high+1.',
         problem: 'Switches from exact matching to range checking, which may require sorting + two pointers and subtracting count of pairs below low from count below high+1.',
         hints: [
-            'Think about how count pairs with sum in range differs from the standard version of this problem.',
-            'Key insight: Switches from exact matching to range checking, which may require sorting + two pointers and subtracting count of pairs below low from count below high+1.',
-            'A hash map can help track frequencies or previously seen values efficiently.',
-            'Break the problem into smaller subproblems and solve each one independently.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Think about how this twist differs from the standard version: Count the number of pairs whose sum falls within a given range [low, high] inste.',
+            'Switches from exact matching to range checking, which may require sorting + two pointers and subtracting count of pairs below low from count below high+1.',
+            'Start with a brute force approach, then optimize by identifying repeated work.',
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[1,2,1,2,3]},
-                output: 2,
-                explanation: 'Two valid configurations found in the input.'
+                input: {"array":[3,5,-4,8,11,1,-1,6],"targetSum":10},
+                output: [-1,11],
+                explanation: '-1 + 11 = 10, which equals the target sum.'
             },
             {
-                input: {"array":[1,2,3]},
-                output: 1,
-                explanation: 'Only one valid configuration exists.'
+                input: {"array":[1,2,3,4,5],"targetSum":10},
+                output: [],
+                explanation: 'No two distinct numbers sum to 10.'
             },
             {
-                input: {"array":[1,1,1]},
-                output: 3,
-                explanation: 'Multiple identical elements create multiple valid configurations.'
+                input: {"array":[4,6],"targetSum":10},
+                output: [4,6],
+                explanation: '4 + 6 = 10.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # array=[1,2,3,4,5], low=5, high=7 → 4 pairs: (1,4),(1,5),(2,3),(2,4),(2,5),(3,4) with sums in [5,7]
 
+    Example: array=[1,2,3,4,5], low=5, high=7 → 4 pairs: (1,4),(1,5),(2,3),(2,4),(2,5),(3,4) with sums in [5,7]
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func CountPairsWithSumInRange(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

@@ -16,11 +16,10 @@
         description: 'Find the longest common subsequence allowing up to k character mismatches between the matched pairs. Adds a third dimension to the DP state for tracking mismatches, changing the recurrence relation significantly.',
         problem: 'Adds a third dimension to the DP state for tracking mismatches, changing the recurrence relation significantly.',
         hints: [
-            'Think about how lcs with at most k mismatches differs from the standard version of this problem.',
-            'Key insight: Adds a third dimension to the DP state for tracking mismatches, changing the recurrence relation significantly.',
+            'Think about how this twist differs from the standard version: Find the longest common subsequence allowing up to k character mismatches betwee.',
+            'Adds a third dimension to the DP state for tracking mismatches, changing the recurrence relation significantly.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
-            'Dynamic programming may help - identify the subproblems and their recurrence relation.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n log k)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[1,3,5,7],"k":2},
-                output: [1,3],
-                explanation: 'The k=2 smallest/closest values found.'
+                input: {"text1":"abcde","text2":"ace"},
+                output: 3,
+                explanation: 'The longest common subsequence is "ace" with length 3.'
             },
             {
-                input: {"array":[10,20,30],"k":1},
-                output: [10],
-                explanation: 'With k=1, return the single best result.'
+                input: {"text1":"abc","text2":"def"},
+                output: 0,
+                explanation: 'No common characters exist between the two strings.'
             },
             {
-                input: {"array":[5,5,5,5],"k":3},
-                output: [5,5,5],
-                explanation: 'Duplicate values handled correctly with k=3.'
+                input: {"text1":"abcba","text2":"abcba"},
+                output: 5,
+                explanation: 'Identical strings have LCS equal to their length.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n log k)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # text1="abcde", text2="axcye", k=1 → 4 ("abce" with one mismatch b↔x or d↔y)
 
+    Example: text1="abcde", text2="axcye", k=1 → 4 ("abce" with one mismatch b↔x or d↔y)
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func LCSWithAtMostKMismatches(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

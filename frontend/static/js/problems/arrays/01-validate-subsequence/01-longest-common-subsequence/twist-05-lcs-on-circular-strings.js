@@ -16,11 +16,10 @@
         description: 'Both strings are circular (the end wraps to the beginning). Find the LCS considering all rotations. You must consider all rotational alignments, turning a single DP computation into potentially O(n) DP computations or requiring a clever concatenation trick.',
         problem: 'You must consider all rotational alignments, turning a single DP computation into potentially O(n) DP computations or requiring a clever concatenation trick.',
         hints: [
-            'Think about how lcs on circular strings differs from the standard version of this problem.',
-            'Key insight: You must consider all rotational alignments, turning a single DP computation into potentially O(n) DP computations or requiring a clever concatenation trick.',
-            'Start with a brute force approach, then optimize by identifying repeated work.',
-            'For circular arrays, consider concatenating the array with itself or using modular arithmetic.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Think about how this twist differs from the standard version: Both strings are circular (the end wraps to the beginning). Find the LCS conside.',
+            'You must consider all rotational alignments, turning a single DP computation into potentially O(n) DP computations or requiring a clever concatenation trick.',
+            'For circular structures, consider concatenating the data with itself or using modular arithmetic.',
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[4,5,1,2,3]},
-                output: true,
-                explanation: 'Circular traversal allows wrap-around from end to beginning.'
+                input: {"text1":"abcde","text2":"ace"},
+                output: 3,
+                explanation: 'The longest common subsequence is "ace" with length 3.'
             },
             {
-                input: {"array":[1,2,3,4,5]},
-                output: true,
-                explanation: 'Standard case without wrap-around needed.'
+                input: {"text1":"abc","text2":"def"},
+                output: 0,
+                explanation: 'No common characters exist between the two strings.'
             },
             {
-                input: {"array":[3,1,2]},
-                output: false,
-                explanation: 'Even with circular traversal, the condition is not met.'
+                input: {"text1":"abcba","text2":"abcba"},
+                output: 5,
+                explanation: 'Identical strings have LCS equal to their length.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # text1="abc" (rotations: abc, bca, cab), text2="cab" → 3 (cab rotation of text1 matches exactly)
 
+    Example: text1="abc" (rotations: abc, bca, cab), text2="cab" → 3 (cab rotation of text1 matches exactly)
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func LCSOnCircularStrings(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

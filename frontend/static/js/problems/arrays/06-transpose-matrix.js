@@ -61,13 +61,6 @@
         explanation: 'Processing the input data produces the output. For input matrix=[[1, 2, 3], [4, 5, 6], [7, 8, 9]], the result is [[1, 4, 7], [2, 5, 8], [3, 6, 9]].'
     }
         ],
-        twists: [
-            { id: '06-transpose-matrix/twist-01-in-place-transpose-of-square-matrix', name: 'In-Place Transpose of Square Matrix', difficulty: 'Medium' },
-            { id: '06-transpose-matrix/twist-02-anti-diagonal-transpose', name: 'Anti-Diagonal Transpose', difficulty: 'Medium' },
-            { id: '06-transpose-matrix/twist-03-transpose-with-lazy-evaluation', name: 'Transpose with Lazy Evaluation', difficulty: 'Hard' },
-            { id: '06-transpose-matrix/twist-04-sparse-matrix-transpose', name: 'Sparse Matrix Transpose', difficulty: 'Medium' },
-            { id: '06-transpose-matrix/twist-05-recursive-block-transpose', name: 'Recursive Block Transpose', difficulty: 'Hard' }
-        ],
         similar: [
     { id: '06-transpose-matrix/01-rotate-90-degrees', name: '01 Rotate 90 Degrees', difficulty: 'Medium' },
     { id: '06-transpose-matrix/02-spiral-matrix-transpose', name: '02 Spiral Matrix Transpose', difficulty: 'Medium' },

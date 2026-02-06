@@ -46,13 +46,6 @@
         explanation: 'Mixed array. Compare (-7)²=49 vs 30²=900: 900 wins. Then (-7)² vs 22²=484: 484 wins. Then (-7)²=49 vs 9²=81: 81 wins. Then 49 vs 1²: 49 wins. Continue until done.'
     }
         ],
-        twists: [
-            { id: '03-sorted-squared-array/twist-01-sorted-cubed-array', name: 'Sorted Cubed Array', difficulty: 'Medium' },
-            { id: '03-sorted-squared-array/twist-02-sorted-squared-with-count-of-position-changes', name: 'Sorted Squared with Count of Position Changes', difficulty: 'Medium' },
-            { id: '03-sorted-squared-array/twist-03-in-place-sorted-squared-array', name: 'In-Place Sorted Squared Array', difficulty: 'Hard' },
-            { id: '03-sorted-squared-array/twist-04-sorted-squared-array-with-custom-transform', name: 'Sorted Squared Array with Custom Transform', difficulty: 'Medium' },
-            { id: '03-sorted-squared-array/twist-05-streaming-sorted-squared', name: 'Streaming Sorted Squared', difficulty: 'Hard' }
-        ],
         similar: [
             { id: '03-sorted-squared-array/01-merge-sorted-arrays-with-squares', name: 'Merge Sorted Arrays With Squares', difficulty: 'Medium' },
             { id: '03-sorted-squared-array/02-sorted-squared-no-duplicates', name: 'Sorted Squared No Duplicates', difficulty: 'Medium' },

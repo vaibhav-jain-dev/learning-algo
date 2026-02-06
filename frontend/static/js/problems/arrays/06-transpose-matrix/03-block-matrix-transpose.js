@@ -207,13 +207,6 @@ func main() {
     }
 }`
         },
-        twists: [
-            { id: '06-transpose-matrix/03-block-matrix-transpose/twist-01-block-transpose-with-internal-transpose', name: 'Block Transpose with Internal Transpose', difficulty: 'Hard' },
-            { id: '06-transpose-matrix/03-block-matrix-transpose/twist-02-block-rotate-90', name: 'Block Rotate 90', difficulty: 'Hard' },
-            { id: '06-transpose-matrix/03-block-matrix-transpose/twist-03-non-uniform-block-sizes', name: 'Non-Uniform Block Sizes', difficulty: 'Very Hard' },
-            { id: '06-transpose-matrix/03-block-matrix-transpose/twist-04-in-place-block-transpose', name: 'In-Place Block Transpose', difficulty: 'Very Hard' },
-            { id: '06-transpose-matrix/03-block-matrix-transpose/twist-05-block-transpose-with-padding', name: 'Block Transpose with Padding', difficulty: 'Hard' }
-        ],
         similar: [
 
         ]

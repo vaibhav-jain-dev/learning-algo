@@ -169,13 +169,6 @@ func main() {
     fmt.Println(KthSmallestSquared([]int{-4, -2, 0, 1, 3}, 1))  // 0
 }`
         },
-        twists: [
-            { id: '03-sorted-squared-array/03-kth-smallest-squared/twist-01-kth-smallest-squared-across-multiple-arrays', name: 'Kth Smallest Squared Across Multiple Arrays', difficulty: 'Hard' },
-            { id: '03-sorted-squared-array/03-kth-smallest-squared/twist-02-kth-smallest-unique-squared', name: 'Kth Smallest Unique Squared', difficulty: 'Medium' },
-            { id: '03-sorted-squared-array/03-kth-smallest-squared/twist-03-median-of-squared-array', name: 'Median of Squared Array', difficulty: 'Medium' },
-            { id: '03-sorted-squared-array/03-kth-smallest-squared/twist-04-kth-smallest-with-range-query', name: 'Kth Smallest with Range Query', difficulty: 'Very Hard' },
-            { id: '03-sorted-squared-array/03-kth-smallest-squared/twist-05-kth-smallest-squared-sum-of-pairs', name: 'Kth Smallest Squared Sum of Pairs', difficulty: 'Very Hard' }
-        ],
         similar: [
 
         ]

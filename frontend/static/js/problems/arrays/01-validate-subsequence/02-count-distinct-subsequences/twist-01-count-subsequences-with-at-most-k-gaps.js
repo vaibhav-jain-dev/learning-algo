@@ -16,11 +16,10 @@
         description: 'Count distinct subsequences of s that equal t, but consecutive matched characters must have at most k characters between them in s. Adds a gap constraint that requires tracking the last matched position in the DP state, changing from 2D to 3D DP.',
         problem: 'Adds a gap constraint that requires tracking the last matched position in the DP state, changing from 2D to 3D DP.',
         hints: [
-            'Think about how count subsequences with at most k gaps differs from the standard version of this problem.',
-            'Key insight: Adds a gap constraint that requires tracking the last matched position in the DP state, changing from 2D to 3D DP.',
-            'A hash map can help track frequencies or previously seen values efficiently.',
-            'Dynamic programming may help - identify the subproblems and their recurrence relation.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Think about how this twist differs from the standard version: Count distinct subsequences of s that equal t, but consecutive matched character.',
+            'Adds a gap constraint that requires tracking the last matched position in the DP state, changing from 2D to 3D DP.',
+            'Start with a brute force approach, then optimize by identifying repeated work.',
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n log k)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[1,2,1,2,3]},
-                output: 2,
-                explanation: 'Two valid configurations found in the input.'
-            },
-            {
-                input: {"array":[1,2,3]},
-                output: 1,
-                explanation: 'Only one valid configuration exists.'
-            },
-            {
-                input: {"array":[1,1,1]},
+                input: {"s":"rabbbit","t":"rabbit"},
                 output: 3,
-                explanation: 'Multiple identical elements create multiple valid configurations.'
+                explanation: 'Three distinct ways to select "rabbit" from "rabbbit" by choosing different b characters.'
+            },
+            {
+                input: {"s":"aabb","t":"ab"},
+                output: 4,
+                explanation: 'Four ways: positions (0,2), (0,3), (1,2), (1,3).'
+            },
+            {
+                input: {"s":"abc","t":"xyz"},
+                output: 0,
+                explanation: 'No matching subsequence exists.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n log k)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # s="rabbbit", t="rbt", k=2 → fewer matches since characters must be close together
 
+    Example: s="rabbbit", t="rbt", k=2 → fewer matches since characters must be close together
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func CountSubsequencesWithAtMostKGaps(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

@@ -145,12 +145,6 @@ func main() {
     fmt.Println(MinCoinsToAdd([]int{1, 2, 5}, 10))   // 0
 }`
         },
-        twists: [
-            { id: '05-non-constructible-change/01-min-coins-to-add/twist-01-min-coins-to-add-with-denomination-constraint', name: 'Min Coins to Add with Denomination Constraint', difficulty: 'Hard' },
-            { id: '05-non-constructible-change/01-min-coins-to-add/twist-02-min-total-value-of-coins-to-add', name: 'Min Total Value of Coins to Add', difficulty: 'Hard' },
-            { id: '05-non-constructible-change/01-min-coins-to-add/twist-03-min-coins-to-add-for-range-l-r', name: 'Min Coins to Add for Range [L, R]', difficulty: 'Medium' },
-            { id: '05-non-constructible-change/01-min-coins-to-add/twist-04-min-coins-to-add-with-coin-limit', name: 'Min Coins to Add with Coin Limit', difficulty: 'Hard' }
-        ],
         similar: [
 
         ]

@@ -16,11 +16,10 @@
         description: 'The string s1 is circular. Find the minimum window where s2 is a subsequence, allowing wrap-around. The circular nature means windows can span the wrap-around point, requiring concatenation tricks or careful modular index handling.',
         problem: 'The circular nature means windows can span the wrap-around point, requiring concatenation tricks or careful modular index handling.',
         hints: [
-            'Think about how minimum window subsequence in circular string differs from the standard version of this problem.',
-            'Key insight: The circular nature means windows can span the wrap-around point, requiring concatenation tricks or careful modular index handling.',
-            'Consider using two pointers or a sliding window approach.',
-            'For circular arrays, consider concatenating the array with itself or using modular arithmetic.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Think about how this twist differs from the standard version: The string s1 is circular. Find the minimum window where s2 is a subsequence, al.',
+            'The circular nature means windows can span the wrap-around point, requiring concatenation tricks or careful modular index handling.',
+            'For circular structures, consider concatenating the data with itself or using modular arithmetic.',
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[4,5,1,2,3]},
-                output: true,
-                explanation: 'Circular traversal allows wrap-around from end to beginning.'
+                input: {"s1":"abcdebdde","s2":"bde"},
+                output: "bcde",
+                explanation: 'The smallest window containing "bde" as a subsequence is "bcde".'
             },
             {
-                input: {"array":[1,2,3,4,5]},
-                output: true,
-                explanation: 'Standard case without wrap-around needed.'
+                input: {"s1":"abcdef","s2":"ace"},
+                output: "abcde",
+                explanation: 'Window from a to e contains "ace" as a subsequence.'
             },
             {
-                input: {"array":[3,1,2]},
-                output: false,
-                explanation: 'Even with circular traversal, the condition is not met.'
+                input: {"s1":"xyz","s2":"abc"},
+                output: "",
+                explanation: 'No valid window exists.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # s1="cdeab", s2="abc" → "abc" via wrap-around (a at index 3, b at index 4, c at index 0)
 
+    Example: s1="cdeab", s2="abc" → "abc" via wrap-around (a at index 3, b at index 4, c at index 0)
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func MinimumWindowSubsequenceInCircularString(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

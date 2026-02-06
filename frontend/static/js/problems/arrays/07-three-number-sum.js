@@ -61,13 +61,6 @@
         explanation: 'After sorting the input, we can apply an efficient algorithm to find the result. For input array=[1, 2, 3, 4, 5], targetSum=100, the result is [].'
     }
         ],
-        twists: [
-            { id: '07-three-number-sum/twist-01-closest-three-sum', name: 'Closest Three Sum', difficulty: 'Medium' },
-            { id: '07-three-number-sum/twist-02-three-sum-count-only', name: 'Three Sum Count Only', difficulty: 'Medium' },
-            { id: '07-three-number-sum/twist-03-three-sum-without-sorting', name: 'Three Sum Without Sorting', difficulty: 'Hard' },
-            { id: '07-three-number-sum/twist-04-three-sum-in-range', name: 'Three Sum in Range', difficulty: 'Hard' },
-            { id: '07-three-number-sum/twist-05-three-sum-with-multiplicity', name: 'Three Sum With Multiplicity', difficulty: 'Hard' }
-        ],
         similar: [
             { id: '07-three-number-sum/03-four-number-sum', name: 'Four Number Sum', difficulty: 'Hard' }
         ]

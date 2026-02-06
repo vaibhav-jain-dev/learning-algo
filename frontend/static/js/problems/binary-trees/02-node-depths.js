@@ -37,41 +37,11 @@
     }
         ],
         twists: [
-            {
-                title: 'N-ary Tree Node Depths',
-                difficulty: 'Medium',
-                description: 'Compute the sum of all node depths in an N-ary tree where each node can have any number of children.',
-                whyDifferent: 'Instead of recursing on left/right, you iterate over a children array. The core logic stays similar but the traversal pattern and base cases change for variable branching.',
-                example: 'Node(1, children=[Node(2, children=[Node(4)]), Node(3)]). Depths: 0+1+1+2=4.'
-            },
-            {
-                title: 'Iterative BFS Node Depths',
-                difficulty: 'Easy',
-                description: 'Compute sum of node depths using BFS (level-order traversal) instead of DFS. Use the level number as the depth.',
-                whyDifferent: 'BFS naturally tracks depth by level. Instead of passing depth as a recursive parameter, you use the queue level counter. All nodes at level k contribute k to the sum.',
-                example: 'Level 0: 1 node (depth 0). Level 1: 2 nodes (depth 2). Level 2: 4 nodes (depth 8). Total: 10.'
-            },
-            {
-                title: 'Weighted Node Depths',
-                difficulty: 'Medium',
-                description: 'Each node has a weight. The contribution of a node is weight * depth. Return the weighted depth sum.',
-                whyDifferent: 'You cannot just count depth; you must multiply by each node\'s value. This changes the accumulation logic and prevents simple level-counting optimizations.',
-                example: 'Tree: 1(w=3)->2(w=1)->4(w=2). Weighted depths: 3*0 + 1*1 + 2*2 = 5.'
-            },
-            {
-                title: 'Space-Constrained Morris Traversal',
-                difficulty: 'Hard',
-                description: 'Compute the sum of node depths using O(1) extra space (no recursion stack, no queue). Use Morris traversal but track depth.',
-                whyDifferent: 'Morris traversal does not naturally track depth. You must compute depth changes by counting thread hops, making the depth tracking significantly more complex.',
-                example: 'Same result as base problem but achieved without any stack or queue data structure.'
-            },
-            {
-                title: 'Streaming Node Insertions',
-                difficulty: 'Hard',
-                description: 'Nodes are inserted one at a time into a BST. After each insertion, report the current sum of all node depths without re-traversing.',
-                whyDifferent: 'Each insertion changes the depth of zero existing nodes (BST insertion adds a leaf). You need to incrementally update the total by adding the depth of the new leaf, computed during the insertion path.',
-                example: 'Insert 5: sum=0. Insert 3: sum=1. Insert 7: sum=2. Insert 1: sum=4 (new node at depth 2).'
-            }
+            { id: '02-node-depths/twist-01-n-ary-tree-node-depths', name: 'N-ary Tree Node Depths', difficulty: 'Medium' },
+            { id: '02-node-depths/twist-02-iterative-bfs-node-depths', name: 'Iterative BFS Node Depths', difficulty: 'Easy' },
+            { id: '02-node-depths/twist-03-weighted-node-depths', name: 'Weighted Node Depths', difficulty: 'Medium' },
+            { id: '02-node-depths/twist-04-space-constrained-morris-traversal', name: 'Space-Constrained Morris Traversal', difficulty: 'Hard' },
+            { id: '02-node-depths/twist-05-streaming-node-insertions', name: 'Streaming Node Insertions', difficulty: 'Hard' }
         ],
         similar: [
     { id: '02-node-depths/02-node-depths/01-maximum-depth', name: 'Maximum Depth of Binary Tree', difficulty: 'Easy' },

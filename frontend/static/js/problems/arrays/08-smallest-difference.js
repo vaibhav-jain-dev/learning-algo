@@ -53,13 +53,6 @@
         explanation: 'Using two pointers, we traverse the data structure to find the solution efficiently. For input arrayOne=[10, 1000], arrayTwo=[1001, 11], the result is [1000, 1001].'
     }
         ],
-        twists: [
-            { id: '08-smallest-difference/twist-01-closest-to-target-difference', name: 'Closest to Target Difference', difficulty: 'Medium' },
-            { id: '08-smallest-difference/twist-02-smallest-difference-unsorted', name: 'Smallest Difference Unsorted', difficulty: 'Medium' },
-            { id: '08-smallest-difference/twist-03-k-th-smallest-difference-pair', name: 'K-th Smallest Difference Pair', difficulty: 'Hard' },
-            { id: '08-smallest-difference/twist-04-smallest-circular-difference', name: 'Smallest Circular Difference', difficulty: 'Hard' },
-            { id: '08-smallest-difference/twist-05-smallest-difference-from-three-arrays', name: 'Smallest Difference From Three Arrays', difficulty: 'Hard' }
-        ],
         similar: [
             { id: '08-smallest-difference/01-k-smallest-differences', name: 'K Smallest Differences', difficulty: 'Medium' },
             { id: '08-smallest-difference/02-smallest-diff-triplet', name: 'Smallest Diff Triplet', difficulty: 'Hard' }

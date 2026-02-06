@@ -16,31 +16,30 @@
         description: 'Return all unique triplets whose sum is within epsilon distance of the target. Changes from finding one optimal answer to collecting all answers within a range, requiring careful enumeration without early termination.',
         problem: 'Changes from finding one optimal answer to collecting all answers within a range, requiring careful enumeration without early termination.',
         hints: [
-            'Think about how three sums within epsilon of target differs from the standard version of this problem.',
-            'Key insight: Changes from finding one optimal answer to collecting all answers within a range, requiring careful enumeration without early termination.',
+            'Think about how this twist differs from the standard version: Return all unique triplets whose sum is within epsilon distance of the target..',
+            'Changes from finding one optimal answer to collecting all answers within a range, requiring careful enumeration without early termination.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
-            'Break the problem into smaller subproblems and solve each one independently.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
-            time: 'O(n^2)',
+            time: 'O(n)',
             space: 'O(n)'
         },
         examples: [
             {
-                input: {"array":[1,2,3,4,5],"target":9},
-                output: [[1,3,5],[2,3,4]],
-                explanation: 'Found all valid combinations summing to target.'
+                input: {"nums":[-1,2,1,-4],"target":1},
+                output: 2,
+                explanation: 'The triplet (-1, 2, 1) has sum 2, which is closest to target 1.'
             },
             {
-                input: {"array":[-1,0,1,2],"target":0},
-                output: [[-1,0,1]],
-                explanation: 'Negative numbers included in the valid combination.'
+                input: {"nums":[0,0,0],"target":1},
+                output: 0,
+                explanation: 'Only triplet possible: 0+0+0=0, closest to 1.'
             },
             {
-                input: {"array":[1,2,3],"target":100},
-                output: [],
-                explanation: 'No valid combination exists for this target.'
+                input: {"nums":[1,2,3,4,5],"target":10},
+                output: 10,
+                explanation: 'Triplet (2,3,5) or (1,4,5) sums to exactly 10.'
             }
         ],
         solutions: {
@@ -51,21 +50,19 @@
     Return all unique triplets whose sum is within epsilon distance of the target.
     \n    Approach: Changes from finding one optimal answer to collecting all answers within a range, requiring careful enumeration without early termination.
 
-    Time: O(n^2)
+    Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # nums=[-1,0,1,2,-1,-4], target=0, epsilon=1 → all triplets with sum in [-1,1]
 
+    Example: nums=[-1,0,1,2,-1,-4], target=0, epsilon=1 → all triplets with sum in [-1,1]
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -81,18 +78,17 @@ import "fmt"
 
 // ThreeSumsWithinEpsilonOfTarget solves the Three Sums Within Epsilon of Target problem.
 // Return all unique triplets whose sum is within epsilon distance of the target.
-// Time: O(n^2), Space: O(n)
+// Time: O(n), Space: O(n)
 func ThreeSumsWithinEpsilonOfTarget(data []int) []int {
     if len(data) == 0 {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

@@ -200,12 +200,6 @@ func main() {
     fmt.Println(KSmallestDifferences([]int{1, 7, 11}, []int{2, 4, 6}, 4))
 }`
         },
-        twists: [
-            { id: '08-smallest-difference/01-k-smallest-differences/twist-01-k-largest-differences', name: 'K Largest Differences', difficulty: 'Medium' },
-            { id: '08-smallest-difference/01-k-smallest-differences/twist-02-exactly-k-th-smallest-difference', name: 'Exactly K-th Smallest Difference', difficulty: 'Hard' },
-            { id: '08-smallest-difference/01-k-smallest-differences/twist-03-k-smallest-without-heap', name: 'K Smallest Without Heap', difficulty: 'Hard' },
-            { id: '08-smallest-difference/01-k-smallest-differences/twist-04-k-smallest-with-weighted-difference', name: 'K Smallest With Weighted Difference', difficulty: 'Hard' }
-        ],
         similar: [
 
         ]

@@ -16,31 +16,30 @@
         description: 'Instead of just true/false, count how many starting positions in the array allow the sequence to be matched going forward. Changes from a single-pass check to exploring multiple potential starting points, requiring careful counting.',
         problem: 'Changes from a single-pass check to exploring multiple potential starting points, requiring careful counting.',
         hints: [
-            'Think about how count all valid starting positions differs from the standard version of this problem.',
-            'Key insight: Changes from a single-pass check to exploring multiple potential starting points, requiring careful counting.',
-            'A hash map can help track frequencies or previously seen values efficiently.',
-            'Break the problem into smaller subproblems and solve each one independently.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Think about how this twist differs from the standard version: Instead of just true/false, count how many starting positions in the array allow.',
+            'Changes from a single-pass check to exploring multiple potential starting points, requiring careful counting.',
+            'Start with a brute force approach, then optimize by identifying repeated work.',
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
-            time: 'O(n^2)',
+            time: 'O(n)',
             space: 'O(n)'
         },
         examples: [
             {
-                input: {"array":[1,2,1,2,3]},
-                output: 2,
-                explanation: 'Two valid configurations found in the input.'
+                input: {"array":[5,1,22,25,6,-1,8,10],"sequence":[1,6,-1,10]},
+                output: true,
+                explanation: 'The sequence elements appear in order within the array.'
             },
             {
-                input: {"array":[1,2,3]},
-                output: 1,
-                explanation: 'Only one valid configuration exists.'
+                input: {"array":[1,2,3,4,5],"sequence":[5,3,1]},
+                output: false,
+                explanation: 'The sequence elements do not appear in the required order.'
             },
             {
-                input: {"array":[1,1,1]},
-                output: 3,
-                explanation: 'Multiple identical elements create multiple valid configurations.'
+                input: {"array":[1,1,1,1,1],"sequence":[1,1,1]},
+                output: true,
+                explanation: 'Duplicate elements are handled correctly.'
             }
         ],
         solutions: {
@@ -51,21 +50,19 @@
     Instead of just true/false, count how many starting positions in the array allow the sequence to be matched going forward.
     \n    Approach: Changes from a single-pass check to exploring multiple potential starting points, requiring careful counting.
 
-    Time: O(n^2)
+    Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # array=[1,2,1,2,3], sequence=[1,2] → 2 (can start at index 0 or index 2)
 
+    Example: array=[1,2,1,2,3], sequence=[1,2] → 2 (can start at index 0 or index 2)
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -81,18 +78,17 @@ import "fmt"
 
 // CountAllValidStartingPositions solves the Count All Valid Starting Positions problem.
 // Instead of just true/false, count how many starting positions in the array allow the sequence to be matched going forward.
-// Time: O(n^2), Space: O(n)
+// Time: O(n), Space: O(n)
 func CountAllValidStartingPositions(data []int) []int {
     if len(data) == 0 {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

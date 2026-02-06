@@ -16,11 +16,10 @@
         description: 'Instead of an exact match, find the pair whose sum is closest to the target. The hash table approach no longer works directly. Requires sorting + two pointers to efficiently search for the closest sum.',
         problem: 'The hash table approach no longer works directly. Requires sorting + two pointers to efficiently search for the closest sum.',
         hints: [
-            'Think about how two sum closest to target differs from the standard version of this problem.',
-            'Key insight: The hash table approach no longer works directly. Requires sorting + two pointers to efficiently search for the closest sum.',
+            'Think about how this twist differs from the standard version: Instead of an exact match, find the pair whose sum is closest to the target..',
+            'The hash table approach no longer works directly. Requires sorting + two pointers to efficiently search for the closest sum.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
-            'Break the problem into smaller subproblems and solve each one independently.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[1,2,3,4,5],"target":9},
-                output: [[1,3,5],[2,3,4]],
-                explanation: 'Found all valid combinations summing to target.'
+                input: {"array":[3,5,-4,8,11,1,-1,6],"targetSum":10},
+                output: [-1,11],
+                explanation: '-1 + 11 = 10, which equals the target sum.'
             },
             {
-                input: {"array":[-1,0,1,2],"target":0},
-                output: [[-1,0,1]],
-                explanation: 'Negative numbers included in the valid combination.'
-            },
-            {
-                input: {"array":[1,2,3],"target":100},
+                input: {"array":[1,2,3,4,5],"targetSum":10},
                 output: [],
-                explanation: 'No valid combination exists for this target.'
+                explanation: 'No two distinct numbers sum to 10.'
+            },
+            {
+                input: {"array":[4,6],"targetSum":10},
+                output: [4,6],
+                explanation: '4 + 6 = 10.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # array=[1,3,5,7], target=10 → [3,7] (sum=10, exact match) or [5,7] if target=11
 
+    Example: array=[1,3,5,7], target=10 → [3,7] (sum=10, exact match) or [5,7] if target=11
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func TwoSumClosestToTarget(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 

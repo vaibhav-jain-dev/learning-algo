@@ -179,12 +179,6 @@ func main() {
     fmt.Println(MergeSortedArraysWithSquares([]int{-5, 0, 3}, []int{1, 2, 6}))
 }`
         },
-        twists: [
-            { id: '03-sorted-squared-array/01-merge-sorted-arrays-with-squares/twist-01-merge-k-sorted-arrays-with-squares', name: 'Merge K Sorted Arrays with Squares', difficulty: 'Hard' },
-            { id: '03-sorted-squared-array/01-merge-sorted-arrays-with-squares/twist-02-merge-sorted-squares-with-duplicate-removal', name: 'Merge Sorted Squares with Duplicate Removal', difficulty: 'Medium' },
-            { id: '03-sorted-squared-array/01-merge-sorted-arrays-with-squares/twist-03-intersection-of-squared-arrays', name: 'Intersection of Squared Arrays', difficulty: 'Medium' },
-            { id: '03-sorted-squared-array/01-merge-sorted-arrays-with-squares/twist-04-merge-squares-with-weighted-sum', name: 'Merge Squares with Weighted Sum', difficulty: 'Hard' }
-        ],
         similar: [
 
         ]

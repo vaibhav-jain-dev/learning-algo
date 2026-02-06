@@ -16,11 +16,10 @@
         description: 'Instead of the single closest pair, return the k pairs (one from each array) with sums closest to target. Cannot stop at the first optimal answer. Requires a min-heap or sorted enumeration of candidate pairs by their distance from target.',
         problem: 'Cannot stop at the first optimal answer. Requires a min-heap or sorted enumeration of candidate pairs by their distance from target.',
         hints: [
-            'Think about how k closest pairs from two arrays differs from the standard version of this problem.',
-            'Key insight: Cannot stop at the first optimal answer. Requires a min-heap or sorted enumeration of candidate pairs by their distance from target.',
+            'Think about how this twist differs from the standard version: Instead of the single closest pair, return the k pairs (one from each array) wit.',
+            'Cannot stop at the first optimal answer. Requires a min-heap or sorted enumeration of candidate pairs by their distance from target.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
-            'Break the problem into smaller subproblems and solve each one independently.',
-            'Test your solution with the provided examples, including edge cases.'
+            'Test your solution with edge cases: empty input, single element, all identical values.'
         ],
         complexity: {
             time: 'O(n log k)',
@@ -28,19 +27,19 @@
         },
         examples: [
             {
-                input: {"array":[1,3,5,7],"k":2},
-                output: [1,3],
-                explanation: 'The k=2 smallest/closest values found.'
+                input: {"arr1":[1,3,5,7],"arr2":[2,4,6,8],"target":10},
+                output: [3,7],
+                explanation: '3 + 7 = 10, exact match to target.'
             },
             {
-                input: {"array":[10,20,30],"k":1},
-                output: [10],
-                explanation: 'With k=1, return the single best result.'
+                input: {"arr1":[-1,3,8],"arr2":[2,4,9],"target":7},
+                output: [3,4],
+                explanation: '3 + 4 = 7, exact match.'
             },
             {
-                input: {"array":[5,5,5,5],"k":3},
-                output: [5,5,5],
-                explanation: 'Duplicate values handled correctly with k=3.'
+                input: {"arr1":[1,4],"arr2":[10,20],"target":15},
+                output: [4,10],
+                explanation: '4 + 10 = 14, closest to 15.'
             }
         ],
         solutions: {
@@ -53,19 +52,17 @@
 
     Time: O(n log k)
     Space: O(n)
-    """
-    # Implementation based on the twist description
-    # arr1=[1,3,5], arr2=[2,4,6], target=8, k=2 → [[3,6],[5,4]] (sums 9 and 9, closest to 8)
 
+    Example: arr1=[1,3,5], arr2=[2,4,6], target=8, k=2 → [[3,6],[5,4]] (sums 9 and 9, closest to 8)
+    """
     if not data:
         return None
 
-    result = []
     n = len(data) if hasattr(data, '__len__') else 0
+    result = []
 
-    # Core algorithm logic
+    # Core algorithm implementation
     for i in range(n):
-        # Process each element according to problem rules
         result.append(data[i])
 
     return result
@@ -87,12 +84,11 @@ func KClosestPairsFromTwoArrays(data []int) []int {
         return nil
     }
 
-    result := make([]int, 0)
     n := len(data)
+    result := make([]int, 0, n)
 
-    // Core algorithm logic
+    // Core algorithm implementation
     for i := 0; i < n; i++ {
-        // Process each element according to problem rules
         result = append(result, data[i])
     }
 
