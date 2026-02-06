@@ -4968,178 +4968,289 @@
         var wrapper = document.getElementById('code-editor-wrapper');
         if (!wrapper) return;
 
-        // Try to use CodeMirror if available
-        if (typeof CodeMirror !== 'undefined') {
-            createCodeMirrorEditor(wrapper);
+        // Try to use Monaco if available
+        if (window.monaco) {
+            createMonacoEditor(wrapper);
         } else if (typeof LazyLoader !== 'undefined') {
-            LazyLoader.loadCodeMirror().then(function() {
-                createCodeMirrorEditor(wrapper);
+            LazyLoader.loadMonaco().then(function() {
+                createMonacoEditor(wrapper);
+            }).catch(function(err) {
+                console.error('Monaco load failed, falling back to textarea:', err);
+                wrapper.innerHTML = '<textarea id="code-fallback" style="width: 100%; height: 100%; font-family: \'JetBrains Mono\', \'Fira Code\', \'Cascadia Code\', Menlo, Monaco, Consolas, monospace; padding: 1rem; border: none; background: #1e1e1e; color: #d4d4d4; resize: none; font-size: 14px; line-height: 1.5; tab-size: 4;">' + (currentCode[currentLanguage] || getDefaultCode(currentLanguage)) + '</textarea>';
             });
         } else {
             // Fallback to textarea
-            wrapper.innerHTML = '<textarea id="code-fallback" style="width: 100%; height: 100%; font-family: monospace; padding: 1rem; border: none; background: #fafafa; color: #333; resize: none;">' + (currentCode[currentLanguage] || getDefaultCode(currentLanguage)) + '</textarea>';
+            wrapper.innerHTML = '<textarea id="code-fallback" style="width: 100%; height: 100%; font-family: monospace; padding: 1rem; border: none; background: #1e1e1e; color: #d4d4d4; resize: none;">' + (currentCode[currentLanguage] || getDefaultCode(currentLanguage)) + '</textarea>';
         }
     }
 
-    // Register autocomplete hints for Python
-    function registerPythonHints() {
-        if (typeof CodeMirror === 'undefined' || !CodeMirror.registerHelper) return;
+    // Register Python completion provider for Monaco
+    function registerPythonCompletions() {
+        if (!window.monaco) return;
 
-        var pythonKeywords = [
-            'def', 'return', 'if', 'elif', 'else', 'for', 'while', 'in', 'not', 'and', 'or',
-            'True', 'False', 'None', 'class', 'import', 'from', 'as', 'try', 'except', 'finally',
-            'raise', 'with', 'pass', 'break', 'continue', 'lambda', 'yield', 'global', 'nonlocal',
-            'assert', 'del', 'is', 'async', 'await'
+        var pythonSnippets = [
+            { label: 'def', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'def ${1:function_name}(${2:params}):\n\t${3:pass}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'Define a function' },
+            { label: 'for', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'for ${1:item} in ${2:iterable}:\n\t${3:pass}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'For loop' },
+            { label: 'while', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'while ${1:condition}:\n\t${2:pass}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'While loop' },
+            { label: 'if', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'if ${1:condition}:\n\t${2:pass}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'If statement' },
+            { label: 'ifelse', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'if ${1:condition}:\n\t${2:pass}\nelse:\n\t${3:pass}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'If-else statement' },
+            { label: 'class', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'class ${1:ClassName}:\n\tdef __init__(self${2:, params}):\n\t\t${3:pass}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'Define a class' },
+            { label: 'try', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'try:\n\t${1:pass}\nexcept ${2:Exception} as e:\n\t${3:print(e)}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'Try-except block' },
+            { label: 'list_comp', kind: monaco.languages.CompletionItemKind.Snippet, insertText: '[${1:expr} for ${2:item} in ${3:iterable}]', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'List comprehension' },
+            { label: 'dict_comp', kind: monaco.languages.CompletionItemKind.Snippet, insertText: '{${1:key}: ${2:value} for ${3:item} in ${4:iterable}}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'Dictionary comprehension' },
+            { label: 'lambda', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'lambda ${1:x}: ${2:x}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'Lambda function' },
+            { label: 'with', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'with ${1:expression} as ${2:var}:\n\t${3:pass}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'With statement' }
         ];
+
         var pythonBuiltins = [
             'print', 'len', 'range', 'list', 'dict', 'set', 'tuple', 'str', 'int', 'float', 'bool',
             'max', 'min', 'sum', 'abs', 'sorted', 'reversed', 'enumerate', 'zip', 'map', 'filter',
-            'any', 'all', 'isinstance', 'type', 'input', 'open', 'append', 'extend', 'pop', 'remove',
-            'insert', 'index', 'count', 'sort', 'reverse', 'copy', 'clear', 'keys', 'values', 'items',
-            'get', 'update', 'add', 'discard', 'union', 'intersection', 'difference'
+            'any', 'all', 'isinstance', 'type', 'input', 'open', 'hash', 'id', 'ord', 'chr',
+            'append', 'extend', 'pop', 'remove', 'insert', 'index', 'count', 'sort', 'reverse',
+            'copy', 'clear', 'keys', 'values', 'items', 'get', 'update', 'add', 'discard',
+            'union', 'intersection', 'difference', 'defaultdict', 'Counter', 'deque', 'heapq',
+            'heappush', 'heappop', 'heapify', 'bisect_left', 'bisect_right',
+            'collections', 'itertools', 'functools', 'math', 'sys', 'os'
         ];
-        var allPython = pythonKeywords.concat(pythonBuiltins);
 
-        CodeMirror.registerHelper('hint', 'python', function(editor) {
-            var cur = editor.getCursor();
-            var token = editor.getTokenAt(cur);
-            var start = token.start;
-            var end = cur.ch;
-            var word = token.string.slice(0, end - start);
+        monaco.languages.registerCompletionItemProvider('python', {
+            provideCompletionItems: function(model, position) {
+                var word = model.getWordUntilPosition(position);
+                var range = {
+                    startLineNumber: position.lineNumber,
+                    endLineNumber: position.lineNumber,
+                    startColumn: word.startColumn,
+                    endColumn: word.endColumn
+                };
 
-            var matches = allPython.filter(function(w) {
-                return w.toLowerCase().indexOf(word.toLowerCase()) === 0;
-            });
+                var suggestions = pythonSnippets.map(function(s) {
+                    return Object.assign({}, s, { range: range });
+                });
 
-            return {
-                list: matches.length > 0 ? matches : allPython,
-                from: CodeMirror.Pos(cur.line, start),
-                to: CodeMirror.Pos(cur.line, end)
-            };
+                pythonBuiltins.forEach(function(b) {
+                    suggestions.push({
+                        label: b,
+                        kind: monaco.languages.CompletionItemKind.Function,
+                        insertText: b,
+                        range: range
+                    });
+                });
+
+                return { suggestions: suggestions };
+            }
         });
     }
 
-    // Register autocomplete hints for Go
-    function registerGoHints() {
-        if (typeof CodeMirror === 'undefined' || !CodeMirror.registerHelper) return;
+    // Register Go completion provider for Monaco
+    function registerGoCompletions() {
+        if (!window.monaco) return;
 
-        var goKeywords = [
-            'package', 'import', 'func', 'return', 'if', 'else', 'for', 'range', 'switch', 'case',
-            'default', 'break', 'continue', 'var', 'const', 'type', 'struct', 'interface', 'map',
-            'chan', 'go', 'defer', 'select', 'fallthrough', 'goto', 'nil', 'true', 'false', 'make',
-            'new', 'append', 'copy', 'delete', 'len', 'cap', 'close', 'panic', 'recover'
+        var goSnippets = [
+            { label: 'func', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'func ${1:name}(${2:params}) ${3:returnType} {\n\t${4}\n}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'Function declaration' },
+            { label: 'funcmain', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'func main() {\n\t${1}\n}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'Main function' },
+            { label: 'for', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'for ${1:i} := ${2:0}; ${1:i} < ${3:n}; ${1:i}++ {\n\t${4}\n}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'For loop' },
+            { label: 'forrange', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'for ${1:i}, ${2:v} := range ${3:collection} {\n\t${4}\n}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'For range loop' },
+            { label: 'if', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'if ${1:condition} {\n\t${2}\n}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'If statement' },
+            { label: 'iferr', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'if err != nil {\n\t${1:return err}\n}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'If error check' },
+            { label: 'switch', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'switch ${1:expr} {\ncase ${2:value}:\n\t${3}\ndefault:\n\t${4}\n}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'Switch statement' },
+            { label: 'struct', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'type ${1:Name} struct {\n\t${2:Field} ${3:Type}\n}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'Struct definition' },
+            { label: 'map', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'map[${1:KeyType}]${2:ValueType}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'Map type' },
+            { label: 'make', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'make(${1:type}, ${2:len})', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'Make builtin' },
+            { label: 'goroutine', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'go func() {\n\t${1}\n}()', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'Goroutine' },
+            { label: 'defer', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'defer ${1:func()}', insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, documentation: 'Defer statement' }
         ];
-        var goTypes = [
-            'int', 'int8', 'int16', 'int32', 'int64', 'uint', 'uint8', 'uint16', 'uint32', 'uint64',
-            'float32', 'float64', 'complex64', 'complex128', 'byte', 'rune', 'string', 'bool', 'error'
-        ];
+
         var goBuiltins = [
-            'fmt.Println', 'fmt.Printf', 'fmt.Sprintf', 'fmt.Errorf',
+            'fmt.Println', 'fmt.Printf', 'fmt.Sprintf', 'fmt.Errorf', 'fmt.Fprintf',
             'sort.Ints', 'sort.Strings', 'sort.Slice', 'sort.Search',
-            'math.Max', 'math.Min', 'math.Abs', 'math.Sqrt',
-            'strings.Contains', 'strings.Split', 'strings.Join', 'strings.Replace',
-            'strconv.Itoa', 'strconv.Atoi'
+            'math.Max', 'math.Min', 'math.Abs', 'math.Sqrt', 'math.Pow',
+            'strings.Contains', 'strings.Split', 'strings.Join', 'strings.Replace', 'strings.HasPrefix',
+            'strconv.Itoa', 'strconv.Atoi', 'strconv.FormatInt',
+            'append', 'copy', 'delete', 'len', 'cap', 'close', 'make', 'new', 'panic', 'recover'
         ];
-        var allGo = goKeywords.concat(goTypes).concat(goBuiltins);
 
-        CodeMirror.registerHelper('hint', 'go', function(editor) {
-            var cur = editor.getCursor();
-            var token = editor.getTokenAt(cur);
-            var start = token.start;
-            var end = cur.ch;
-            var word = token.string.slice(0, end - start);
+        monaco.languages.registerCompletionItemProvider('go', {
+            provideCompletionItems: function(model, position) {
+                var word = model.getWordUntilPosition(position);
+                var range = {
+                    startLineNumber: position.lineNumber,
+                    endLineNumber: position.lineNumber,
+                    startColumn: word.startColumn,
+                    endColumn: word.endColumn
+                };
 
-            var matches = allGo.filter(function(w) {
-                return w.toLowerCase().indexOf(word.toLowerCase()) === 0;
-            });
+                var suggestions = goSnippets.map(function(s) {
+                    return Object.assign({}, s, { range: range });
+                });
 
-            return {
-                list: matches.length > 0 ? matches : allGo.slice(0, 20),
-                from: CodeMirror.Pos(cur.line, start),
-                to: CodeMirror.Pos(cur.line, end)
-            };
+                goBuiltins.forEach(function(b) {
+                    suggestions.push({
+                        label: b,
+                        kind: monaco.languages.CompletionItemKind.Function,
+                        insertText: b,
+                        range: range
+                    });
+                });
+
+                return { suggestions: suggestions };
+            }
         });
     }
 
-    function createCodeMirrorEditor(wrapper) {
-        if (editorInitialized || !wrapper) return;
+    var monacoCompletionsRegistered = false;
+
+    function createMonacoEditor(wrapper) {
+        if (editorInitialized || !wrapper || !window.monaco) return;
 
         try {
-            // Register hint helpers first
-            registerPythonHints();
-            registerGoHints();
+            // Register completion providers once
+            if (!monacoCompletionsRegistered) {
+                registerPythonCompletions();
+                registerGoCompletions();
+                monacoCompletionsRegistered = true;
+            }
 
-            editor = CodeMirror(wrapper, {
+            var monacoLanguage = currentLanguage === 'go' ? 'go' : 'python';
+
+            editor = monaco.editor.create(wrapper, {
                 value: currentCode[currentLanguage] || getDefaultCode(currentLanguage),
-                mode: currentLanguage === 'go' ? 'text/x-go' : 'python',
-                theme: 'eclipse',
-                lineNumbers: true,
-                indentUnit: 4,
+                language: monacoLanguage,
+                theme: 'vs-dark',
+                fontSize: 14,
+                fontFamily: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', Menlo, Monaco, Consolas, 'Courier New', monospace",
+                fontLigatures: true,
+                lineNumbers: 'on',
                 tabSize: 4,
-                indentWithTabs: false,
-                smartIndent: true,
-                electricChars: true,
-                matchBrackets: true,
-                autoCloseBrackets: true,
-                lineWrapping: false,
-                foldGutter: true,
-                gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-                styleActiveLine: true,
-                highlightSelectionMatches: { showToken: true },
-                extraKeys: {
-                    'Ctrl-Enter': function() { window.runCode(); },
-                    'Cmd-Enter': function() { window.runCode(); },
-                    'Ctrl-Space': function(cm) {
-                        var mode = cm.getOption('mode');
-                        var hintType = mode === 'text/x-go' ? 'go' : 'python';
-                        cm.showHint({ hint: CodeMirror.hint[hintType], completeSingle: false });
-                    },
-                    'Tab': function(cm) {
-                        if (cm.somethingSelected()) {
-                            cm.indentSelection('add');
-                        } else {
-                            cm.replaceSelection('    ', 'end');
-                        }
-                    },
-                    'Shift-Tab': function(cm) {
-                        cm.indentSelection('subtract');
-                    },
-                    'Ctrl-/': function(cm) {
-                        cm.toggleComment();
-                    },
-                    'Cmd-/': function(cm) {
-                        cm.toggleComment();
-                    },
-                    'Ctrl-D': function(cm) {
-                        var cursor = cm.getCursor();
-                        var line = cm.getLine(cursor.line);
-                        cm.replaceRange(line + '\n', {line: cursor.line, ch: 0});
-                    }
-                }
+                insertSpaces: true,
+                detectIndentation: true,
+                autoIndent: 'full',
+                formatOnPaste: true,
+                formatOnType: true,
+
+                // IDE features
+                minimap: { enabled: true, maxColumn: 80, renderCharacters: false },
+                scrollBeyondLastLine: false,
+                smoothScrolling: true,
+                cursorBlinking: 'smooth',
+                cursorSmoothCaretAnimation: 'on',
+                cursorStyle: 'line',
+                mouseWheelZoom: true,
+
+                // Bracket features
+                bracketPairColorization: { enabled: true, independentColorPoolPerBracketType: true },
+                matchBrackets: 'always',
+                autoClosingBrackets: 'always',
+                autoClosingQuotes: 'always',
+                autoSurround: 'languageDefined',
+
+                // Code features
+                folding: true,
+                foldingStrategy: 'indentation',
+                showFoldingControls: 'mouseover',
+                renderLineHighlight: 'all',
+                renderWhitespace: 'selection',
+                guides: { bracketPairs: true, indentation: true, highlightActiveIndentation: true },
+                occurrencesHighlight: 'singleFile',
+                selectionHighlight: true,
+
+                // Suggestions / IntelliSense
+                suggestOnTriggerCharacters: true,
+                quickSuggestions: { other: true, comments: false, strings: false },
+                acceptSuggestionOnCommitCharacter: true,
+                wordBasedSuggestions: 'currentDocument',
+                parameterHints: { enabled: true },
+                suggest: {
+                    showKeywords: true,
+                    showSnippets: true,
+                    showFunctions: true,
+                    showVariables: true,
+                    showClasses: true,
+                    showModules: true,
+                    insertMode: 'insert',
+                    filterGraceful: true,
+                    snippetsPreventQuickSuggestions: false,
+                    preview: true
+                },
+
+                // Editor chrome
+                padding: { top: 8, bottom: 8 },
+                scrollbar: {
+                    vertical: 'visible',
+                    horizontal: 'auto',
+                    verticalScrollbarSize: 12,
+                    horizontalScrollbarSize: 12,
+                    verticalSliderSize: 6,
+                    horizontalSliderSize: 6
+                },
+
+                // Find widget
+                find: {
+                    addExtraSpaceOnTop: false,
+                    autoFindInSelection: 'multiline',
+                    seedSearchStringFromSelection: 'selection'
+                },
+
+                // Performance
+                renderValidationDecorations: 'on',
+                fixedOverflowWidgets: true,
+                automaticLayout: true
             });
 
-            editor.setSize('100%', '100%');
-            editor.on('change', function() {
+            // Track code changes
+            editor.onDidChangeModelContent(function() {
                 currentCode[currentLanguage] = editor.getValue();
             });
 
-            // Auto-show hints on typing
-            editor.on('inputRead', function(cm, change) {
-                if (change.text[0].match(/[a-zA-Z_]/)) {
-                    var mode = cm.getOption('mode');
-                    var hintType = mode === 'text/x-go' ? 'go' : 'python';
-                    if (CodeMirror.hint && CodeMirror.hint[hintType]) {
-                        setTimeout(function() {
-                            cm.showHint({ hint: CodeMirror.hint[hintType], completeSingle: false });
-                        }, 100);
-                    }
+            // Add keyboard shortcuts
+            editor.addAction({
+                id: 'run-code',
+                label: 'Run Code',
+                keybindings: [
+                    monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter
+                ],
+                run: function() { window.runCode(); }
+            });
+
+            editor.addAction({
+                id: 'run-tests',
+                label: 'Run Tests',
+                keybindings: [
+                    monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.Enter
+                ],
+                run: function() { window.runTests(); }
+            });
+
+            editor.addAction({
+                id: 'save-code',
+                label: 'Save Code',
+                keybindings: [
+                    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS
+                ],
+                run: function() {
+                    if (window.CodeSaver) window.CodeSaver.save(false);
                 }
+            });
+
+            editor.addAction({
+                id: 'duplicate-line',
+                label: 'Duplicate Line',
+                keybindings: [
+                    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyD
+                ],
+                run: function(ed) {
+                    ed.getAction('editor.action.copyLinesDownAction').run();
+                }
+            });
+
+            // Handle resize
+            window.addEventListener('resize', function() {
+                if (editor) editor.layout();
             });
 
             window.editor = editor;
             editorInitialized = true;
         } catch(e) {
-            console.error('CodeMirror init failed:', e);
+            console.error('Monaco editor init failed:', e);
         }
     }
 
@@ -5154,8 +5265,13 @@
         if (activeBtn) activeBtn.classList.add('active');
 
         if (editor) {
-            editor.setOption('mode', lang === 'go' ? 'text/x-go' : 'python');
-            editor.setValue(currentCode[lang] || originalCode[lang] || getDefaultCode(lang));
+            var newCode = currentCode[lang] || originalCode[lang] || getDefaultCode(lang);
+            var monacoLang = lang === 'go' ? 'go' : 'python';
+            // Update language model for Monaco
+            if (window.monaco && editor.getModel) {
+                monaco.editor.setModelLanguage(editor.getModel(), monacoLang);
+            }
+            editor.setValue(newCode);
         } else {
             var fallback = document.getElementById('code-fallback');
             if (fallback) fallback.value = currentCode[lang] || originalCode[lang] || getDefaultCode(lang);
@@ -5174,10 +5290,22 @@
 
     window.formatCode = function() {
         if (editor) {
-            // Basic auto-indent
-            var totalLines = editor.lineCount();
-            for (var i = 0; i < totalLines; i++) {
-                editor.indentLine(i);
+            // Use Monaco's built-in format action
+            if (editor.getAction) {
+                var formatAction = editor.getAction('editor.action.formatDocument');
+                if (formatAction) {
+                    formatAction.run();
+                    return;
+                }
+            }
+            // Fallback: trigger re-indent via selection
+            if (editor.getModel) {
+                var model = editor.getModel();
+                var fullRange = model.getFullModelRange();
+                editor.setSelection(fullRange);
+                var indentAction = editor.getAction('editor.action.reindentselectedlines');
+                if (indentAction) indentAction.run();
+                editor.setPosition({ lineNumber: 1, column: 1 });
             }
         }
     };
@@ -6033,16 +6161,11 @@
     window.changeFontSize = function(target, delta) {
         if (target === 'editor') {
             editorFontSize = Math.max(10, Math.min(24, editorFontSize + delta));
-            var editorWrapper = document.getElementById('code-editor-wrapper');
-            if (editorWrapper) {
-                editorWrapper.style.fontSize = editorFontSize + 'px';
-            }
-            // Also update CodeMirror if it exists
-            if (window.codeEditor && window.codeEditor.getWrapperElement) {
-                window.codeEditor.getWrapperElement().style.fontSize = editorFontSize + 'px';
-                window.codeEditor.refresh();
-            }
-            if (editor) {
+            if (editor && editor.updateOptions) {
+                // Monaco Editor - use updateOptions
+                editor.updateOptions({ fontSize: editorFontSize });
+            } else if (editor && editor.getWrapperElement) {
+                // CodeMirror fallback
                 editor.getWrapperElement().style.fontSize = editorFontSize + 'px';
                 editor.refresh();
             }
@@ -12283,4 +12406,340 @@
 
         window.closeExportModal();
     }
+
+    // ============================================
+    // CODE SAVER - Save/Load user code versions
+    // Max 10 slots per language+problem, auto-save every 5 min
+    // ============================================
+    var CodeSaver = {
+        autoSaveInterval: null,
+        currentVersionId: null,
+        panelOpen: false,
+
+        _getParams: function() {
+            var cat = currentProblem ? currentProblem.category : '_global';
+            var pid = currentProblem ? currentProblem.id : '_global';
+            return { language: currentLanguage, category: cat, problem_id: pid };
+        },
+
+        // Save current code
+        save: function(isAuto) {
+            var code = editor ? editor.getValue() : '';
+            if (!code || !code.trim()) return;
+
+            var params = this._getParams();
+            var body = {
+                code: code,
+                language: params.language,
+                category: params.category,
+                problem_id: params.problem_id,
+                is_auto: !!isAuto
+            };
+
+            // If we have a current version, update it
+            if (this.currentVersionId) {
+                body.id = this.currentVersionId;
+            }
+
+            fetch('/api/code/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.success && data.version) {
+                    CodeSaver.currentVersionId = data.version.id;
+                    CodeSaver._showSaveIndicator(isAuto ? 'Auto-saved' : 'Saved');
+                    CodeSaver.refreshList();
+                }
+            })
+            .catch(function(err) {
+                console.error('Save failed:', err);
+            });
+        },
+
+        // Save current and create new blank version
+        newVersion: function() {
+            // Save current code first
+            var code = editor ? editor.getValue() : '';
+            if (code && code.trim()) {
+                var params = this._getParams();
+                var body = {
+                    code: code,
+                    language: params.language,
+                    category: params.category,
+                    problem_id: params.problem_id,
+                    is_auto: false
+                };
+                if (this.currentVersionId) {
+                    body.id = this.currentVersionId;
+                }
+
+                fetch('/api/code/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                })
+                .then(function(r) { return r.json(); })
+                .then(function() {
+                    // Reset editor with default template
+                    CodeSaver.currentVersionId = null;
+                    var defaultCode = originalCode[currentLanguage] || getDefaultCode(currentLanguage);
+                    if (editor) editor.setValue(defaultCode);
+                    currentCode[currentLanguage] = defaultCode;
+                    CodeSaver._showSaveIndicator('New version started');
+                    CodeSaver.refreshList();
+                })
+                .catch(function(err) {
+                    console.error('Save before new failed:', err);
+                });
+            } else {
+                // Nothing to save, just reset
+                this.currentVersionId = null;
+                var defaultCode = originalCode[currentLanguage] || getDefaultCode(currentLanguage);
+                if (editor) editor.setValue(defaultCode);
+                currentCode[currentLanguage] = defaultCode;
+            }
+        },
+
+        // Load a saved version into editor
+        loadVersion: function(id) {
+            var params = this._getParams();
+            var qs = 'language=' + params.language + '&category=' + params.category + '&problem_id=' + params.problem_id;
+
+            fetch('/api/code/load/' + id + '?' + qs)
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.success && data.version) {
+                    if (editor) editor.setValue(data.version.code);
+                    currentCode[currentLanguage] = data.version.code;
+                    CodeSaver.currentVersionId = data.version.id;
+                    CodeSaver._showSaveIndicator('Loaded: ' + data.version.name);
+                    CodeSaver._highlightActive(id);
+                }
+            })
+            .catch(function(err) {
+                console.error('Load failed:', err);
+            });
+        },
+
+        // Delete a saved version
+        deleteVersion: function(id, evt) {
+            if (evt) evt.stopPropagation();
+            var params = this._getParams();
+            var qs = 'language=' + params.language + '&category=' + params.category + '&problem_id=' + params.problem_id;
+
+            fetch('/api/code/' + id + '?' + qs, { method: 'DELETE' })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    if (CodeSaver.currentVersionId === id) {
+                        CodeSaver.currentVersionId = null;
+                    }
+                    CodeSaver.refreshList();
+                }
+            })
+            .catch(function(err) {
+                console.error('Delete failed:', err);
+            });
+        },
+
+        // Rename a saved version
+        renameVersion: function(id, evt) {
+            if (evt) evt.stopPropagation();
+            var newName = prompt('Enter a name for this version:');
+            if (!newName) return;
+
+            var params = this._getParams();
+            fetch('/api/code/' + id + '/rename', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: newName,
+                    language: params.language,
+                    category: params.category,
+                    problem_id: params.problem_id
+                })
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    CodeSaver.refreshList();
+                }
+            })
+            .catch(function(err) {
+                console.error('Rename failed:', err);
+            });
+        },
+
+        // Toggle the saved versions panel
+        togglePanel: function() {
+            var panel = document.getElementById('saved-versions-panel');
+            if (!panel) return;
+
+            this.panelOpen = !this.panelOpen;
+            panel.style.display = this.panelOpen ? 'block' : 'none';
+
+            if (this.panelOpen) {
+                this.refreshList();
+            }
+        },
+
+        // Refresh the saved versions list
+        refreshList: function() {
+            var params = this._getParams();
+            var qs = 'language=' + params.language + '&category=' + params.category + '&problem_id=' + params.problem_id;
+
+            fetch('/api/code/list?' + qs)
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var listEl = document.getElementById('saved-versions-list');
+                var infoEl = document.getElementById('saved-versions-info');
+                var countEl = document.getElementById('saves-count');
+                var versions = data.versions || [];
+
+                if (infoEl) infoEl.textContent = versions.length + '/10';
+                if (countEl) {
+                    countEl.textContent = versions.length;
+                    countEl.style.display = versions.length > 0 ? 'inline-flex' : 'none';
+                }
+
+                if (!listEl) return;
+
+                if (versions.length === 0) {
+                    listEl.innerHTML = '<div class="saved-versions-empty">No saved versions yet. Press Save or Ctrl+S to save your code.</div>';
+                    return;
+                }
+
+                var html = '';
+                versions.forEach(function(v) {
+                    var isActive = v.id === CodeSaver.currentVersionId;
+                    var date = new Date(v.updated_at);
+                    var timeStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    var autoTag = v.is_auto ? '<span class="save-auto-tag">auto</span>' : '';
+
+                    html += '<div class="saved-version-item' + (isActive ? ' active' : '') + '" onclick="window.CodeSaver.loadVersion(\'' + v.id + '\')">';
+                    html += '<div class="saved-version-info">';
+                    html += '<span class="saved-version-name">' + CodeSaver._escapeHtml(v.name) + '</span>' + autoTag;
+                    html += '<span class="saved-version-time">' + timeStr + '</span>';
+                    html += '</div>';
+                    html += '<div class="saved-version-actions">';
+                    html += '<button class="sv-action-btn" onclick="window.CodeSaver.renameVersion(\'' + v.id + '\', event)" title="Rename">&#9998;</button>';
+                    html += '<button class="sv-action-btn sv-delete" onclick="window.CodeSaver.deleteVersion(\'' + v.id + '\', event)" title="Delete">&times;</button>';
+                    html += '</div>';
+                    html += '</div>';
+                });
+
+                listEl.innerHTML = html;
+            })
+            .catch(function() {
+                // Silently fail on list refresh
+            });
+        },
+
+        // Start auto-save interval (every 5 minutes)
+        startAutoSave: function() {
+            this.stopAutoSave();
+            this.autoSaveInterval = setInterval(function() {
+                var code = editor ? editor.getValue() : '';
+                if (code && code.trim()) {
+                    CodeSaver.save(true);
+                }
+            }, 5 * 60 * 1000); // 5 minutes
+        },
+
+        // Stop auto-save
+        stopAutoSave: function() {
+            if (this.autoSaveInterval) {
+                clearInterval(this.autoSaveInterval);
+                this.autoSaveInterval = null;
+            }
+        },
+
+        // Load the most recent version on page load
+        loadRecent: function() {
+            var params = this._getParams();
+            var qs = 'language=' + params.language + '&category=' + params.category + '&problem_id=' + params.problem_id;
+
+            fetch('/api/code/list?' + qs)
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var versions = data.versions || [];
+                var countEl = document.getElementById('saves-count');
+                if (countEl) {
+                    countEl.textContent = versions.length;
+                    countEl.style.display = versions.length > 0 ? 'inline-flex' : 'none';
+                }
+
+                // Load the most recent version if available
+                if (versions.length > 0) {
+                    var recent = versions[0];
+                    if (editor && recent.code) {
+                        editor.setValue(recent.code);
+                        currentCode[currentLanguage] = recent.code;
+                        CodeSaver.currentVersionId = recent.id;
+                    }
+                }
+            })
+            .catch(function() {
+                // API not available, silently continue
+            });
+        },
+
+        // Show brief save indicator
+        _showSaveIndicator: function(msg) {
+            var existing = document.getElementById('save-indicator');
+            if (existing) existing.remove();
+
+            var indicator = document.createElement('div');
+            indicator.id = 'save-indicator';
+            indicator.className = 'save-indicator';
+            indicator.textContent = msg;
+            document.body.appendChild(indicator);
+
+            setTimeout(function() {
+                indicator.classList.add('fade-out');
+                setTimeout(function() { indicator.remove(); }, 300);
+            }, 1500);
+        },
+
+        _highlightActive: function(id) {
+            var items = document.querySelectorAll('.saved-version-item');
+            items.forEach(function(item) { item.classList.remove('active'); });
+            // Re-highlight the active one
+            this.refreshList();
+        },
+
+        _escapeHtml: function(str) {
+            var div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+    };
+
+    window.CodeSaver = CodeSaver;
+
+    // Add Ctrl+S keyboard shortcut for saving
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            CodeSaver.save(false);
+        }
+    });
+
+    // Start auto-save when editor is initialized and load recent
+    var origOpenProblem = window.openProblem;
+    if (origOpenProblem) {
+        window.openProblem = function(category, problemId) {
+            origOpenProblem(category, problemId);
+            // After problem loads, load recent version and start auto-save
+            setTimeout(function() {
+                CodeSaver.currentVersionId = null;
+                CodeSaver.loadRecent();
+                CodeSaver.startAutoSave();
+            }, 1500);
+        };
+    }
+
 })();

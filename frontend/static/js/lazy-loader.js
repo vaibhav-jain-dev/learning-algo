@@ -10,9 +10,13 @@
     const loadedScripts = new Set();
     const loadingPromises = new Map();
 
+    // Monaco Editor CDN base
+    const MONACO_VERSION = '0.50.0';
+    const MONACO_CDN = 'https://cdn.jsdelivr.net/npm/monaco-editor@' + MONACO_VERSION + '/min';
+
     // CDN URLs for lazy-loaded resources
     const CDN = {
-        // CodeMirror
+        // CodeMirror (kept for SQL/Redis pages)
         codemirror: {
             css: [
                 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css',
@@ -182,6 +186,42 @@
     }
 
     /**
+     * Load Monaco Editor via AMD loader from CDN
+     */
+    let monacoLoadPromise = null;
+    function loadMonaco() {
+        if (window.monaco) {
+            return Promise.resolve(window.monaco);
+        }
+
+        if (monacoLoadPromise) {
+            return monacoLoadPromise;
+        }
+
+        monacoLoadPromise = loadScript(MONACO_CDN + '/vs/loader.js').then(function() {
+            return new Promise(function(resolve, reject) {
+                window.require.config({
+                    paths: { vs: MONACO_CDN + '/vs' },
+                    'vs/nls': { availableLanguages: { '*': '' } }
+                });
+
+                // Load Monaco editor core
+                window.require(['vs/editor/editor.main'], function() {
+                    resolve(window.monaco);
+                }, function(err) {
+                    monacoLoadPromise = null;
+                    reject(err);
+                });
+            });
+        }).catch(function(err) {
+            monacoLoadPromise = null;
+            throw err;
+        });
+
+        return monacoLoadPromise;
+    }
+
+    /**
      * Load SQL Formatter
      */
     function loadSqlFormatter() {
@@ -233,6 +273,9 @@
             case 'codemirror':
                 loadCodeMirror().catch(function() {});
                 break;
+            case 'monaco':
+                loadMonaco().catch(function() {});
+                break;
             case 'highlight':
                 loadHighlight().catch(function() {});
                 break;
@@ -258,9 +301,13 @@
             }
         }).catch(function() {});
 
-        // Preload CodeMirror for practice/SQL/Redis pages
-        if (path.includes('/practice') || path.includes('/sql') ||
-            path.includes('/redis') || path.includes('/elasticsearch')) {
+        // Preload Monaco for 200-problems page
+        if (path.includes('/200-problems') || path.includes('/practice')) {
+            preload('monaco');
+        }
+
+        // Preload CodeMirror for SQL/Redis pages
+        if (path.includes('/sql') || path.includes('/redis') || path.includes('/elasticsearch')) {
             preload('codemirror');
         }
 
@@ -277,6 +324,8 @@
         switch (feature) {
             case 'codemirror':
                 return typeof CodeMirror !== 'undefined';
+            case 'monaco':
+                return typeof window.monaco !== 'undefined';
             case 'highlight':
                 return typeof hljs !== 'undefined';
             case 'sql-formatter':
@@ -311,6 +360,7 @@
     // Export public API
     window.LazyLoader = {
         loadCodeMirror: loadCodeMirror,
+        loadMonaco: loadMonaco,
         loadSqlFormatter: loadSqlFormatter,
         loadHtml2Pdf: loadHtml2Pdf,
         loadHighlight: loadHighlight,
