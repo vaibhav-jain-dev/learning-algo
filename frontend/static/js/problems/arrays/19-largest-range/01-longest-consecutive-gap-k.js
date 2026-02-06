@@ -125,6 +125,13 @@ func main() {
     fmt.Println(LongestConsecutiveWithGapK([]int{1, 2, 3, 4, 5}, 1))  // 5
 }`
         },
+        twists: [
+            { title: 'Longest Arithmetic Subsequence', difficulty: 'Hard', description: 'Find the longest subsequence (not necessarily contiguous) with a constant difference K between consecutive elements.', whyDifferent: 'Non-contiguous subsequence requires DP: for each element, extend the longest chain ending at (value - K).', example: 'nums = [3, 6, 9, 12, 1, 4], K = 3. Subsequence [3, 6, 9, 12] length 4.' },
+            { title: 'Any Gap Longest Sequence', difficulty: 'Hard', description: 'Find the longest arithmetic sequence for any gap value. Return both the length and the gap.', whyDifferent: 'Must try all possible gaps, which can be found from pairwise differences. DP over all possible K values.', example: 'nums = [1, 3, 5, 7, 2, 4]. Gap 2: [1,3,5,7] len 4. Gap 1: [1,2] len 2. Best: gap=2, len=4.' },
+            { title: 'Gap K with Duplicates Counting', difficulty: 'Hard', description: 'When duplicates exist, count the number of distinct start points for sequences of length >= L with gap K.', whyDifferent: 'Duplicates create multiple valid starting points for the same value, requiring careful counting.', example: 'nums = [1, 1, 3, 3, 5], K = 2, L = 3. Sequences: [1,3,5]. Two start points for 1. Count = 2.' },
+            { title: 'Cyclic Gap K Sequence', difficulty: 'Hard', description: 'Numbers wrap around modulo M. Find the longest sequence where each next element is (prev + K) mod M.', whyDifferent: 'Modular arithmetic means the sequence can wrap around, changing the expansion and termination logic.', example: 'nums = [1, 3, 5, 7, 9, 1], K = 2, M = 10. Sequence: [1,3,5,7,9,1] length 6 (wraps).' },
+            { title: 'Minimum Additions for Gap K Length L', difficulty: 'Hard', description: 'Find the minimum elements to add to achieve a sequence of length L with gap K.', whyDifferent: 'Optimization problem: find the best starting point and compute how many gaps are unfilled, minimizing additions needed.', example: 'nums = [1, 5, 9], K = 2, L = 5. Sequence [1,3,5,7,9] needs adding 3 and 7. Min additions = 2.' }
+        ],
         similar: [
 
         ]

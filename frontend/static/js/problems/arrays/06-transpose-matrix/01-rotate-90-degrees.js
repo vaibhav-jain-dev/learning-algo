@@ -212,6 +212,13 @@ func main() {
     // [[7 4 1] [8 5 2] [9 6 3]]
 }`
         },
+        twists: [
+            { title: 'Rotate 180 Degrees', difficulty: 'Easy', description: 'Rotate the matrix by 180 degrees in-place. Each element moves to the diagonally opposite position.', whyDifferent: 'Simpler than 90-degree: just reverse all rows and then reverse element order within each row (or reverse the entire flat array).', example: 'matrix = [[1,2],[3,4]]. Result: [[4,3],[2,1]].' },
+            { title: 'Rotate Counterclockwise 90', difficulty: 'Medium', description: 'Rotate the matrix 90 degrees counterclockwise instead of clockwise.', whyDifferent: 'Transpose + reverse columns (instead of rows), or reverse rows first then transpose. Direction change alters the composition.', example: 'matrix = [[1,2,3],[4,5,6],[7,8,9]]. Result: [[3,6,9],[2,5,8],[1,4,7]].' },
+            { title: 'Rotate Rectangular Matrix', difficulty: 'Hard', description: 'Rotate a non-square m x n matrix by 90 degrees. The result will be n x m. Cannot be done in-place.', whyDifferent: 'Dimensions change, so in-place is impossible. Must allocate a new matrix and map coordinates correctly.', example: 'matrix = [[1,2,3],[4,5,6]]. 2x3 -> 3x2. Result: [[4,1],[5,2],[6,3]].' },
+            { title: 'Rotate by K*90 Degrees', difficulty: 'Medium', description: 'Rotate by K * 90 degrees where K can be any integer. Optimize by reducing K mod 4.', whyDifferent: 'Must recognize that K mod 4 determines the actual rotation, then apply the appropriate transformation.', example: 'matrix = [[1,2],[3,4]], K = 7. 7 mod 4 = 3. Rotate 270 degrees (same as 90 CCW).' },
+            { title: 'Rotate Ring Only', difficulty: 'Hard', description: 'Rotate only the outermost ring of the matrix by 90 degrees, leaving inner elements unchanged.', whyDifferent: 'Must extract the ring, rotate its elements, and place them back. Inner layers remain untouched.', example: 'matrix = [[1,2,3],[4,5,6],[7,8,9]]. Rotate outer ring: [[7,4,1],[8,5,2],[9,6,3]]. Center 5 stays.' }
+        ],
         similar: [
 
         ]

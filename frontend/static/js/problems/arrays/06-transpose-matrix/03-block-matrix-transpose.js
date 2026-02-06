@@ -207,6 +207,13 @@ func main() {
     }
 }`
         },
+        twists: [
+            { title: 'Block Transpose with Internal Transpose', difficulty: 'Hard', description: 'Transpose the block positions AND transpose elements within each block. Double transposition at two levels.', whyDifferent: 'Each element undergoes two coordinate transformations: its position within the block transposes, and the block itself moves.', example: 'matrix 4x4, k=2. Block (0,0) [[1,2],[5,6]] -> transposed block [[1,5],[2,6]] placed at (0,0) of result.' },
+            { title: 'Block Rotate 90', difficulty: 'Hard', description: 'Instead of transposing blocks, rotate each block 90 degrees clockwise in its position, and also rotate block positions.', whyDifferent: 'Rotation is not the same as transposition. Requires applying 90-degree rotation both at the block level and within each block.', example: 'matrix 4x4, k=2. Each 2x2 block is rotated 90 degrees, and blocks are rearranged as if the block grid was rotated.' },
+            { title: 'Non-Uniform Block Sizes', difficulty: 'Very Hard', description: 'The matrix is divided into blocks of varying sizes (given by a partition specification). Transpose the block structure.', whyDifferent: 'Variable block sizes mean you cannot use simple index arithmetic. Must handle each block boundary individually.', example: 'matrix 4x4 with blocks [2x1, 2x3] in first row, [2x1, 2x3] in second row. Transpose the block layout.' },
+            { title: 'In-Place Block Transpose', difficulty: 'Very Hard', description: 'For a square matrix where k divides n, perform block transpose in-place with O(1) extra space.', whyDifferent: 'Must swap blocks without auxiliary storage, cycling through block positions similarly to in-place matrix transpose.', example: 'matrix 4x4, k=2. Swap block(0,1) with block(1,0) in-place. Diagonal blocks stay.' },
+            { title: 'Block Transpose with Padding', difficulty: 'Hard', description: 'Matrix dimensions are not divisible by k. Pad with zeros to make dimensions divisible, then perform block transpose.', whyDifferent: 'Padding changes the matrix dimensions and adds zeros that must be tracked or removed from the final output.', example: 'matrix 3x5, k=2. Pad to 4x6, transpose blocks, then optionally trim. Result dimensions change.' }
+        ],
         similar: [
 
         ]
