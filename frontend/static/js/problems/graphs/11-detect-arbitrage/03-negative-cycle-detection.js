@@ -215,6 +215,13 @@ func main() {
     fmt.Println(HasNegativeCycle(3, edges3)) // false
 }`
         },
+        twists: [
+            { title: 'Find the Negative Cycle', difficulty: 'Hard', description: 'Not just detect, but return the actual vertices forming the negative cycle.', whyDifferent: 'After detecting a relaxation in the Nth iteration, you backtrack through predecessors to trace the cycle. You must follow the predecessor chain for N steps to ensure you are inside the cycle.', example: 'Edges [0->1 weight 1, 1->2 weight -3, 2->0 weight 1]. Cycle: [0, 1, 2, 0] with total weight -1.' },
+            { title: 'Positive Cycle Detection', difficulty: 'Easy', description: 'Detect if the graph contains a positive weight cycle instead of negative.', whyDifferent: 'Negate all edge weights and run Bellman-Ford for negative cycle detection. Alternatively, run the algorithm seeking increases rather than decreases.', example: 'Edges [0->1 weight 3, 1->2 weight 2, 2->0 weight 1]. Cycle 0->1->2->0 has weight 6 > 0. Positive cycle exists.' },
+            { title: 'Shortest Path with No Negative Cycles', difficulty: 'Medium', description: 'If no negative cycle exists, return the shortest path distances from source to all nodes. If negative cycle exists, report which nodes are affected.', whyDifferent: 'You combine detection with computation. Nodes reachable from a negative cycle have distance negative infinity, requiring BFS from cycle nodes to mark affected nodes.', example: 'Negative cycle at nodes {1,2,3}. Node 4 reachable from node 3 has distance -infinity. Node 5 not reachable from cycle has finite distance.' },
+            { title: 'Minimum Weight Cycle', difficulty: 'Very Hard', description: 'Find the cycle with the minimum total weight in the graph (whether negative or not).', whyDifferent: 'Bellman-Ford detects any negative cycle but not the minimum one. Finding the minimum weight cycle requires running shortest path from each node and checking all back edges.', example: 'Cycles: [0,1,0] weight 4, [1,2,3,1] weight -2, [0,1,2,0] weight 1. Minimum weight cycle: [1,2,3,1] with weight -2.' },
+            { title: 'Negative Cycle in Undirected Graph', difficulty: 'Hard', description: 'The graph is undirected. Detect if any cycle has negative total weight.', whyDifferent: 'In undirected graphs, every negative edge creates a trivial negative cycle (traverse back and forth). You must define meaningful cycles as simple cycles with at least 3 nodes.', example: 'Undirected edge (0,1) weight -5. Traversing 0->1->0 costs -10, but this is a degenerate cycle. Look for simple cycles of length >= 3.' }
+        ],
         similar: [
 
         ]

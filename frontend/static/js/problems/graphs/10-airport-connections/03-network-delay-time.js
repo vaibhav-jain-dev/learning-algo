@@ -206,6 +206,13 @@ func main() {
     fmt.Println(NetworkDelayTime(times, 2, 2)) // -1
 }`
         },
+        twists: [
+            { title: 'Multiple Sources', difficulty: 'Medium', description: 'Send signals from multiple source nodes simultaneously. Find the minimum time for all nodes to receive at least one signal.', whyDifferent: 'Multi-source Dijkstra initializes the priority queue with all sources at distance 0. Each node receives the signal from whichever source reaches it first.', example: 'Sources at nodes 1 and 5. Node 3 is reached by node 1 in 4 time units and node 5 in 2 time units. Signal arrives at time 2.' },
+            { title: 'Signal Relay with Delay', difficulty: 'Hard', description: 'Each node takes processing_time[i] to relay the signal before it can propagate to neighbors. Include this in the total time.', whyDifferent: 'Edge weights alone do not determine arrival time. Node processing adds a per-node cost, making the effective edge weight = edge_time + destination_processing_time.', example: 'Edge 1->2 takes 3 time. Node 2 processing takes 2 time. Signal arrives at node 2 at time 3 but is not relayed until time 5.' },
+            { title: 'Unreliable Edges', difficulty: 'Hard', description: 'Each edge has a probability of failure. Find the path to each node that maximizes the probability of the signal arriving.', whyDifferent: 'Instead of minimizing sum of weights, you maximize product of probabilities. This requires modified Dijkstra with multiplication and max-heap.', example: 'Path A: prob 0.9 * 0.8 = 0.72. Path B: prob 0.95 * 0.7 = 0.665. Choose Path A.' },
+            { title: 'Bidirectional Edges', difficulty: 'Easy', description: 'All connections are bidirectional with the same weight in both directions. Find network delay time.', whyDifferent: 'Each directed edge becomes two edges. The graph has more paths to explore, potentially finding shorter routes through reverse edges.', example: 'Edge [2,1,1] becomes both 2->1 and 1->2 with weight 1. More paths available.' },
+            { title: 'Minimum Time to Reach Specific Node', difficulty: 'Easy', description: 'Instead of waiting for all nodes, find the minimum time for the signal to reach a specific target node.', whyDifferent: 'You can stop Dijkstra early when the target node is popped from the priority queue, potentially much faster than computing all distances.', example: 'Send signal from node 1, need it at node 5. Dijkstra pops node 5 at time 7. Answer: 7. No need to compute distances to other nodes.' }
+        ],
         similar: [
 
         ]

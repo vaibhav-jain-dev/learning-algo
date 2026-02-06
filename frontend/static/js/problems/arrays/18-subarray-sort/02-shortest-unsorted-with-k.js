@@ -160,6 +160,13 @@ func main() {
     fmt.Println(ShortestUnsortedWithK([]int{1, 2, 3, 4}))  // 0
 }`
         },
+        twists: [
+            { title: 'Longest Sorted Prefix and Suffix', difficulty: 'Medium', description: 'Find the lengths of the longest sorted prefix and longest sorted suffix that do not need to be re-sorted.', whyDifferent: 'Instead of the unsorted middle, focus on the sorted endpoints. The answer relates to the unsorted middle but frames it differently.', example: 'array = [1, 2, 6, 4, 8, 10, 9, 15]. Sorted prefix: [1,2] len 2. Sorted suffix: [15] len 1.' },
+            { title: 'Shortest Unsorted for Descending', difficulty: 'Medium', description: 'Find the shortest subarray to sort so the entire array becomes sorted in descending order.', whyDifferent: 'All comparison directions flip: out-of-order means ascending pair instead of descending.', example: 'array = [15, 9, 10, 8, 4, 6, 2]. Unsorted region for descending target: [9, 10, 8, 4, 6]. Length = 5.' },
+            { title: 'Count Unsorted Subarrays', difficulty: 'Hard', description: 'Count the total number of contiguous subarrays that, if sorted, would make the entire array sorted.', whyDifferent: 'Any subarray containing the minimum unsorted region works. Count = number of valid (left, right) pairs containing that region.', example: 'array = [2, 6, 4, 8, 10, 9, 15]. Min unsorted [1,5]. Subarrays containing it: count all valid expansions.' },
+            { title: 'Shortest Unsorted Subarray Value', difficulty: 'Medium', description: 'Return the actual subarray that needs sorting, not just its length.', whyDifferent: 'Must extract and return the subarray elements, requiring precise boundary index computation.', example: 'array = [2, 6, 4, 8, 10, 9, 15]. Unsorted subarray: [6, 4, 8, 10, 9].' },
+            { title: 'Shortest Unsorted with Tolerance', difficulty: 'Hard', description: 'Elements are considered in-order if they differ by at most T from their sorted position value. Find the shortest subarray violating this tolerance.', whyDifferent: 'Approximate sorting changes what counts as out-of-order, requiring comparison against a sorted copy with tolerance.', example: 'array = [1, 3, 2, 4], T = 1. 3 and 2 are within tolerance of their sorted positions. Length = 0.' }
+        ],
         similar: [
 
         ]
