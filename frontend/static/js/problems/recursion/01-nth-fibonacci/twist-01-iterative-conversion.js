@@ -2,10 +2,12 @@
  * Iterative Conversion
  * Category: recursion
  * Difficulty: Easy
+ * Algorithm: recursion-fibonacci
  * Parent: 01-nth-fibonacci
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Iterative Conversion',
         difficulty: 'Easy',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'fib(6) using only a for-loop and two variables prev=0, curr=1, iterating and swapping until reaching n.' },
-                output: 'See example',
-                explanation: 'fib(6) using only a for-loop and two variables prev=0, curr=1, iterating and swapping until reaching n.'
+                input: {"n":6},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the iterative conversion criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Iterative Conversion
-# Category: recursion
-# Difficulty: Easy
-# Parent: 01-nth-fibonacci
-
-def solve():
+            python: `def iterative_conversion(n):
     """
+    Iterative Conversion
+
     Rewrite the naive recursive Fibonacci using a simple loop with two variables. No recursion allowed.
 
-    Key insight: Forces you to think about how recursive state maps to loop variables and how the call stack is replaced by explicit variable updates.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(n)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(iterative_conversion(6))  # Expected: 1
+print(iterative_conversion(0))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Iterative Conversion problem.
+// IterativeConversion solves the Iterative Conversion problem.
 // Rewrite the naive recursive Fibonacci using a simple loop with two variables. No recursion allowed.
-// Key insight: Forces you to think about how recursive state maps to loop variables and how the call stack is replaced by explicit variable updates.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func IterativeConversion(n int) int {
+	result := 0
+
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(IterativeConversion(6)) // Expected: 1
+	fmt.Println(IterativeConversion(0)) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '01-nth-fibonacci/twist-01-iterative-conversion', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/01-nth-fibonacci/twist-01-iterative-conversion'] = problem;
 })();

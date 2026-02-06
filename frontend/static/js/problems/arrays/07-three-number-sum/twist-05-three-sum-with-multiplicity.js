@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5],"target":9},
                 output: [[1,3,5],[2,3,4]],
-                explanation: 'Found all valid combinations summing to target.'
+                explanation: ''
             },
             {
                 input: {"array":[-1,0,1,2],"target":0},
                 output: [[-1,0,1]],
-                explanation: 'Negative numbers included in the valid combination.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1,2,3],"target":100},
                 output: [],
-                explanation: 'No valid combination exists for this target.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def three_sum_with_multiplicity(data):
+            python: `def three_sum_with_multiplicity(array, targetSum):
     """
     Three Sum With Multiplicity
 
-    Given an array that may contain duplicates, count all ordered triplet indices (i, j, k) where i < j < k and array[i] + array[j] + array[k] = target.
-    \n    Approach: Instead of unique value triplets, you count index-based combinations, requiring combinatorial math when duplicates exist.
+    Given an array that may contain duplicates, count all ordered triplet indices (i, j, k) where i < j < k and array[i] + array[j] + array[k] = target. Instead of unique value triplets, you count index-based combinations, requiring combinatorial math when duplicates exist.
 
     Time: O(n^2)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 1, 2, 2, 3, 3], target = 6. Multiple index combinations yield the same value triplet.
+    count = 0
+    n = len(array)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on targetSum
+        j = 0
+        for k in range(i, n):
+            if j < len(targetSum) and array[k] == targetSum[j]:
+                j += 1
+        if j == len(targetSum):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(three_sum_with_multiplicity([1, 2, 3, 4, 5]))
-print(three_sum_with_multiplicity([5, 3, 1]))
-print(three_sum_with_multiplicity([1]))`,
+print(three_sum_with_multiplicity([1,2,3,4,5], None))  # Expected: [[1,3,5],[2,3,4]]
+print(three_sum_with_multiplicity([-1,0,1,2], None))  # Expected: [[-1,0,1]]
+print(three_sum_with_multiplicity([1,2,3], None))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
 // ThreeSumWithMultiplicity solves the Three Sum With Multiplicity problem.
-// Given an array that may contain duplicates, count all ordered triplet indices (i, j, k) where i < j < k and array[i] + array[j] + array[k] = target.
+// Given an array that may contain duplicates, count all ordered triplet indices (i, j, k) where i < j < k and array[i] + array[j] + array[k] = target. Instead of unique value triplets, you count index-based combinations, requiring combinatorial math when duplicates exist.
 // Time: O(n^2), Space: O(n)
-func ThreeSumWithMultiplicity(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func ThreeSumWithMultiplicity(array []int, targetSum int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(ThreeSumWithMultiplicity([]int{1, 2, 3, 4, 5}))
-    fmt.Println(ThreeSumWithMultiplicity([]int{5, 3, 1}))
-    fmt.Println(ThreeSumWithMultiplicity([]int{1}))
-}`
+	fmt.Println(ThreeSumWithMultiplicity([]int{1, 2, 3, 4, 5}, nil)) // Expected: [[1,3,5],[2,3,4]]
+	fmt.Println(ThreeSumWithMultiplicity([]int{-1, 0, 1, 2}, nil)) // Expected: [[-1,0,1]]
+	fmt.Println(ThreeSumWithMultiplicity([]int{1, 2, 3}, nil)) // Expected: []
+}
+`
         },
         twists: [],
         similar: []

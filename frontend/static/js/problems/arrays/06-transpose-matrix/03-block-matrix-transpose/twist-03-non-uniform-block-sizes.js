@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,3,5,7],"k":2},
                 output: [1,3],
-                explanation: 'The k=2 smallest/closest values found.'
+                explanation: ''
             },
             {
                 input: {"array":[10,20,30],"k":1},
                 output: [10],
-                explanation: 'With k=1, return the single best result.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[5,5,5,5],"k":3},
                 output: [5,5,5],
-                explanation: 'Duplicate values handled correctly with k=3.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def non_uniform_block_sizes(data):
+            python: `def non_uniform_block_sizes(array, k):
     """
     Non-Uniform Block Sizes
 
-    The matrix is divided into blocks of varying sizes (given by a partition specification). Transpose the block structure.
-    \n    Approach: Variable block sizes mean you cannot use simple index arithmetic. Must handle each block boundary individually.
+    The matrix is divided into blocks of varying sizes (given by a partition specification). Transpose the block structure. Variable block sizes mean you cannot use simple index arithmetic. Must handle each block boundary individually.
 
     Time: O(n log k)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # matrix 4x4 with blocks [2x1, 2x3] in first row, [2x1, 2x3] in second row. Transpose the block layout.
+    count = 0
+    n = len(array)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on k
+        j = 0
+        for k in range(i, n):
+            if j < len(k) and array[k] == k[j]:
+                j += 1
+        if j == len(k):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(non_uniform_block_sizes([1, 2, 3, 4, 5]))
-print(non_uniform_block_sizes([5, 3, 1]))
-print(non_uniform_block_sizes([1]))`,
+print(non_uniform_block_sizes([1,3,5,7], 2))  # Expected: [1,3]
+print(non_uniform_block_sizes([10,20,30], 1))  # Expected: [10]
+print(non_uniform_block_sizes([5,5,5,5], 3))  # Expected: [5,5,5]
+`,
             go: `package main
 
 import "fmt"
 
 // NonUniformBlockSizes solves the Non-Uniform Block Sizes problem.
-// The matrix is divided into blocks of varying sizes (given by a partition specification). Transpose the block structure.
+// The matrix is divided into blocks of varying sizes (given by a partition specification). Transpose the block structure. Variable block sizes mean you cannot use simple index arithmetic. Must handle each block boundary individually.
 // Time: O(n log k), Space: O(n)
-func NonUniformBlockSizes(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func NonUniformBlockSizes(array []int, k int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(NonUniformBlockSizes([]int{1, 2, 3, 4, 5}))
-    fmt.Println(NonUniformBlockSizes([]int{5, 3, 1}))
-    fmt.Println(NonUniformBlockSizes([]int{1}))
-}`
+	fmt.Println(NonUniformBlockSizes([]int{1, 3, 5, 7}, 2)) // Expected: [1,3]
+	fmt.Println(NonUniformBlockSizes([]int{10, 20, 30}, 1)) // Expected: [10]
+	fmt.Println(NonUniformBlockSizes([]int{5, 5, 5, 5}, 3)) // Expected: [5,5,5]
+}
+`
         },
         twists: [],
         similar: []

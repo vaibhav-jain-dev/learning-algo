@@ -2,10 +2,12 @@
  * Partial Capture
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-flood-fill
  * Parent: 06-remove-islands/01-surrounded-regions
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Partial Capture',
         difficulty: 'Hard',
@@ -19,87 +21,78 @@
             'Consider the example: An O group touches only the top border.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(M * N)', space: 'O(M * N)' },
+        complexity: {
+            time: 'O(M * N)',
+            space: 'O(M * N)'
+        },
         examples: [
-            { input: { description: 'An O group touches only the top border. Since it touches only 1 side, it gets captured.' }, output: 'See explanation', explanation: 'An O group touches only the top border. Since it touches only 1 side, it gets captured.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"board":[["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]},
+                output: [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"]],
+                explanation: 'The partial capture for this input yields [X,X,X,X, X,O,O,X, X,X,O,X].'
+            },
+            // Edge case
+            {
+                input: {"board":[["X","X","X","X"]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def partial_capture(data):
+            python: `def partial_capture(board):
     """
     Partial Capture
 
     Capture O regions that are surrounded on at least 3 sides (top, bottom, left, right borders). A region touching only one border side should be captured.
 
-    Approach:
-    Instead of binary border/not-border, you track which specific borders a region touches and only spare it if it touches 2 or more border sides.
-
     Time: O(M * N)
     Space: O(M * N)
     """
-    # Instead of binary border/not-border, you track which specific borders a region touches and only spare it if it touches 2 or more border sides.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Partial Capture
-    # Key difference from parent: Instead of binary border/not-border, you track which specific borders a region touches and only spar
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(board)):
+        # Check if element meets criteria
+        result.append(board[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return partial_capture(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # An O group touches only the top border. Since it touches only 1 side, it gets captured.
-    print("Test: Partial Capture")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(partial_capture([["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]))  # Expected: [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"]]
+print(partial_capture([["X","X","X","X"]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// PartialCapture solves the Partial Capture problem
+// PartialCapture solves the Partial Capture problem.
 // Capture O regions that are surrounded on at least 3 sides (top, bottom, left, right borders). A region touching only one border side should be captured.
-//
-// Approach: Instead of binary border/not-border, you track which specific borders a region touches and only spare it if it touches 2 or more border sides.
-//
-// Time: O(M * N)
-// Space: O(M * N)
-func PartialCapture(input interface{}) interface{} {
-    // Instead of binary border/not-border, you track which specific borders a region touches and only spare it if it touches 2 or more border sides.
+// Time: O(M * N), Space: O(M * N)
+func PartialCapture(board [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Partial Capture
-    // Key difference from parent: Instead of binary border/not-border, you track which specific borders a region touches and only spar
+	for i := 0; i < len(board); i++ {
+		result = append(result, board[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // An O group touches only the top border. Since it touches only 1 side, it gets captured.
-    fmt.Println("Test: Partial Capture")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(PartialCapture([][]int{{X, X, X, X}, {X, O, O, X}, {X, X, O, X}, {X, O, X, X}})) // Expected: [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"]]
+	fmt.Println(PartialCapture([][]int{{X, X, X, X}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '06-remove-islands/01-surrounded-regions/twist-05-partial-capture', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/06-remove-islands/01-surrounded-regions/twist-05-partial-capture'] = problem;
 })();

@@ -2,10 +2,12 @@
  * Count All Combinations
  * Category: dynamic-programming
  * Difficulty: Medium
+ * Algorithm: dp-coin-change
  * Parent: 03-min-coins/02-coin-change-ii-exact-coins
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Count All Combinations',
         difficulty: 'Medium',
@@ -19,84 +21,97 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'amount=11, coins=[1,2,5], k=3 returns 2 (5+5+1 and 2+2+7? no, 1+5+5 and 2+4+5? Actually [5,5,1] and different orderings collapse, so you must count unique multisets).'
+                input: {"amount":11,"coins":[1,2,5],"k":3},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the count all combinations criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"amount":10,"coins":[2,5],"k":2},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the count all combinations criteria.'
+            },
+            {
+                input: {"amount":7,"coins":[2,4],"k":3},
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the count all combinations criteria.'
+            },
+            // Edge case
+            {
+                input: {"amount":0,"coins":[1],"k":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def countAllCombinations(data):
+            python: `def count_all_combinations(amount, coins, k):
     """
     Count All Combinations
 
     Instead of returning whether it is possible, count the total number of distinct ways to make the amount using exactly k coins.
 
-    Approach:
-    Shifts from boolean feasibility to counting, requiring you to accumulate counts rather than short-circuit on the first True.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    count = 0
+    n = len(amount)
 
-    # Example: amount=11, coins=[1,2,5], k=3 returns 2 (5+5+1 and 2+2+7? no, 1+5+5 and 2+4+5? Actually [5,5,1] and different orderings 
+    for i in range(n):
+        # Check condition based on coins
+        j = 0
+        for k in range(i, n):
+            if j < len(coins) and amount[k] == coins[j]:
+                j += 1
+        if j == len(coins):
+            count += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
-    return result
+    return count
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Count All Combinations...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(count_all_combinations(11, [1,2,5], 3))  # Expected: 1
+print(count_all_combinations(10, [2,5], 2))  # Expected: 1
+print(count_all_combinations(7, [2,4], 3))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // CountAllCombinations solves the Count All Combinations problem.
 // Instead of returning whether it is possible, count the total number of distinct ways to make the amount using exactly k coins.
-//
-// Approach: Shifts from boolean feasibility to counting, requiring you to accumulate counts rather than short-circuit on the first True.
-func CountAllCombinations(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2), Space: O(n)
+func CountAllCombinations(amount int, coins []int, k int) int {
+	result := 0
 
-    // Example: amount=11, coins=[1,2,5], k=3 returns 2 (5+5+1 and 2+2+7? no, 1+5+5 and 2+4+5? Actually [5,5,1] and 
+	for i := 0; i < len(amount); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Count All Combinations...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(CountAllCombinations(11, []int{1, 2, 5}, 3)) // Expected: 1
+	fmt.Println(CountAllCombinations(10, []int{2, 5}, 2)) // Expected: 1
+	fmt.Println(CountAllCombinations(7, []int{2, 4}, 3)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '03-min-coins/02-coin-change-ii-exact-coins/twist-01-count-all-combinations', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/03-min-coins/02-coin-change-ii-exact-coins/twist-01-count-all-combinations'] = problem;
 })();

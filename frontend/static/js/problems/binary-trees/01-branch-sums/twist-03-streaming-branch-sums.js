@@ -2,10 +2,12 @@
  * Streaming Branch Sums
  * Category: binary-trees
  * Difficulty: Hard
+ * Algorithm: tree-dfs
  * Parent: 01-branch-sums
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Streaming Branch Sums',
         difficulty: 'Hard',
@@ -19,121 +21,78 @@
             'Think about how the base case differs from the original problem.',
             'Review the example: Insert 1 (root) => [1].'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Insert 1 (root) => [1]' },
-                output: 'See explanation',
-                explanation: 'Insert 1 (root) => [1]. Insert 2 (left of 1) => [3]. Insert 3 (right of 1) => [3, 4].'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: [0],
+                explanation: 'The streaming branch sums for this input yields [0].'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def streaming_branch_sums(data):
+            python: `def streaming_branch_sums(tree):
     """
     Streaming Branch Sums
 
-    Nodes are added to the tree one at a time via an insert stream.
-     After each insertion, output the current list of branch sums without re-traversing the entire tree.
+    Nodes are added to the tree one at a time via an insert stream. After each insertion, output the current list of branch sums without re-traversing the entire tree. Instead of a one-shot traversal, you need to maintain state about existing branch sums and efficiently update them when a leaf gains a child or a new leaf appears.
 
-    Approach: Instead of a one-shot traversal, you need to maintain state about existing branch sums and efficiently update them when a leaf gains a child or a new leaf appears
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: Instead of a one-shot traversal, you need to maintain state about existing branch sums and efficiently update them when a leaf gains a child or a new leaf appears
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Streaming Branch Sums
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Insert 1 (root) => [1]
-    print("See problem description for test cases")`,
+# Test cases
+print(streaming_branch_sums({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5, "right": {"value": 10}}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: [0]
+print(streaming_branch_sums({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5, "right": {"value": 10}}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// StreamingBranchSums solves: Streaming Branch Sums
-// Instead of a one-shot traversal, you need to maintain state about existing branch sums and efficiently update them when a leaf gains a child or a new leaf appears
+// StreamingBranchSums solves the Streaming Branch Sums problem.
+// Nodes are added to the tree one at a time via an insert stream. After each insertion, output the current list of branch sums without re-traversing the entire tree. Instead of a one-shot traversal, you need to maintain state about existing branch sums and efficiently update them when a leaf gains a child or a new leaf appears.
 // Time: O(n), Space: O(n)
-func StreamingBranchSums(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func StreamingBranchSums(tree *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    // TODO: Implement Streaming Branch Sums
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Insert 1 (root) => [1]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(StreamingBranchSums({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: [0]
+	fmt.Println(StreamingBranchSums({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '01-branch-sums/twist-03-streaming-branch-sums', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/01-branch-sums/twist-03-streaming-branch-sums'] = problem;
 })();

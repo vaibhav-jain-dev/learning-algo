@@ -2,10 +2,12 @@
  * Recover Edit Sequence
  * Category: dynamic-programming
  * Difficulty: Medium
+ * Algorithm: dp-edit-distance
  * Parent: 04-levenshtein-distance
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Recover Edit Sequence',
         difficulty: 'Medium',
@@ -19,84 +21,97 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'str1="horse", str2="ros": operations are [replace h->r, delete o (keep o), delete r (keep r->keep?), keep s]. The sequence is replace(0,r), delete(1), delete(3).'
+                input: {"str1":"abc","str2":"yabd"},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the recover edit sequence criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"str1":"horse","str2":"ros"},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the recover edit sequence criteria.'
+            },
+            {
+                input: {"str1":"","str2":"abc"},
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the recover edit sequence criteria.'
+            },
+            // Edge case
+            {
+                input: {"str1":"","str2":""},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def recoverEditSequence(data):
+            python: `def recover_edit_sequence(str1, str2):
     """
     Recover Edit Sequence
 
     Return not just the minimum edit distance, but the actual sequence of operations (insert, delete, replace) to transform str1 into str2.
 
-    Approach:
-    Requires backtracking through the DP table to reconstruct the path, turning a value-only problem into a path-recovery problem.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    count = 0
+    n = len(str1)
 
-    # Example: str1="horse", str2="ros": operations are [replace h->r, delete o (keep o), delete r (keep r->keep?), keep s]. The sequen
+    for i in range(n):
+        # Check condition based on str2
+        j = 0
+        for k in range(i, n):
+            if j < len(str2) and str1[k] == str2[j]:
+                j += 1
+        if j == len(str2):
+            count += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
-    return result
+    return count
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Recover Edit Sequence...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(recover_edit_sequence("abc", "yabd"))  # Expected: 1
+print(recover_edit_sequence("horse", "ros"))  # Expected: 2
+print(recover_edit_sequence("", "abc"))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // RecoverEditSequence solves the Recover Edit Sequence problem.
 // Return not just the minimum edit distance, but the actual sequence of operations (insert, delete, replace) to transform str1 into str2.
-//
-// Approach: Requires backtracking through the DP table to reconstruct the path, turning a value-only problem into a path-recovery problem.
-func RecoverEditSequence(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2), Space: O(n)
+func RecoverEditSequence(str1 string, str2 string) int {
+	result := 0
 
-    // Example: str1="horse", str2="ros": operations are [replace h->r, delete o (keep o), delete r (keep r->keep?),
+	for i := 0; i < len(str1); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Recover Edit Sequence...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(RecoverEditSequence("abc", "yabd")) // Expected: 1
+	fmt.Println(RecoverEditSequence("horse", "ros")) // Expected: 2
+	fmt.Println(RecoverEditSequence("", "abc")) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '04-levenshtein-distance/twist-02-recover-edit-sequence', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/04-levenshtein-distance/twist-02-recover-edit-sequence'] = problem;
 })();

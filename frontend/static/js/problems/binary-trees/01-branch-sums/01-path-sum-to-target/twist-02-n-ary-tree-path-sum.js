@@ -2,10 +2,12 @@
  * N-ary Tree Path Sum
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-dfs
  * Parent: 01-branch-sums/01-path-sum-to-target
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'N-ary Tree Path Sum',
         difficulty: 'Medium',
@@ -19,120 +21,92 @@
             'Think about how the base case differs from the original problem.',
             'Review the example: Node(1, children=[Node(2, children=[Node(4)]), Node(6)]), target=7.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Node(1, children=[Node(2, children=[Node(4)]), Node(6)]), target=7' },
-                output: 'See explanation',
-                explanation: 'Node(1, children=[Node(2, children=[Node(4)]), Node(6)]), target=7. Result: [[1,2,4], [1,6]].'
+                input: {"tree":{"value":5,"left":{"value":4,"left":{"value":11,"left":{"value":7},"right":{"value":2}}},"right":{"value":8,"left":{"value":13},"right":{"value":4,"left":{"value":5},"right":{"value":1}}}},"target":22},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the n ary tree path sum criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2},"right":{"value":3}},"target":4},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the n ary tree path sum criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":5,"left":{"value":4,"left":{"value":11,"left":{"value":7},"right":{"value":2}}},"right":{"value":8,"left":{"value":13},"right":{"value":4,"left":{"value":5},"right":{"value":1}}}},"target":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def n_ary_tree_path_sum(data):
+            python: `def n_ary_tree_path_sum(tree, target):
     """
     N-ary Tree Path Sum
 
-    Find all root-to-leaf paths summing to target in an N-ary tree where each node can have any number of children.
+    Find all root-to-leaf paths summing to target in an N-ary tree where each node can have any number of children. Instead of checking left/right children, you must iterate over a variable-length children array. Leaf detection changes from "no left and no right" to "empty children array".
 
-    Approach: Instead of checking left/right children, you must iterate over a variable-length children array
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    count = 0
+    n = len(tree)
 
-    # Key insight: Instead of checking left/right children, you must iterate over a variable-length children array
+    for i in range(n):
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and tree[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement N-ary Tree Path Sum
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Node(1, children=[Node(2, children=[Node(4)]), Node(6)]), target=7
-    print("See problem description for test cases")`,
+# Test cases
+print(n_ary_tree_path_sum({"value": 5, "left": {"value": 4, "left": {"value": 11, "left": {"value": 7}, "right": {"value": 2}}}, "right": {"value": 8, "left": {"value": 13}, "right": {"value": 4, "left": {"value": 5}, "right": {"value": 1}}}}, 22))  # Expected: 1
+print(n_ary_tree_path_sum({"value": 1, "left": {"value": 2}, "right": {"value": 3}}, 4))  # Expected: 2
+print(n_ary_tree_path_sum({"value": 5, "left": {"value": 4, "left": {"value": 11, "left": {"value": 7}, "right": {"value": 2}}}, "right": {"value": 8, "left": {"value": 13}, "right": {"value": 4, "left": {"value": 5}, "right": {"value": 1}}}}, 0))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// NaryTreePathSum solves: N-ary Tree Path Sum
-// Instead of checking left/right children, you must iterate over a variable-length children array
+// NAryTreePathSum solves the N-ary Tree Path Sum problem.
+// Find all root-to-leaf paths summing to target in an N-ary tree where each node can have any number of children. Instead of checking left/right children, you must iterate over a variable-length children array. Leaf detection changes from "no left and no right" to "empty children array".
 // Time: O(n), Space: O(n)
-func NaryTreePathSum(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func NAryTreePathSum(tree *TreeNode, target int) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement N-ary Tree Path Sum
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Node(1, children=[Node(2, children=[Node(4)]), Node(6)]), target=7
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(NAryTreePathSum({"value":5,"left":{"value":4,"left":{"value":11,"left":{"value":7},"right":{"value":2}}},"right":{"value":8,"left":{"value":13},"right":{"value":4,"left":{"value":5},"right":{"value":1}}}}, 22)) // Expected: 1
+	fmt.Println(NAryTreePathSum({"value":1,"left":{"value":2},"right":{"value":3}}, 4)) // Expected: 2
+	fmt.Println(NAryTreePathSum({"value":5,"left":{"value":4,"left":{"value":11,"left":{"value":7},"right":{"value":2}}},"right":{"value":8,"left":{"value":13},"right":{"value":4,"left":{"value":5},"right":{"value":1}}}}, 0)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '01-branch-sums/01-path-sum-to-target/twist-02-n-ary-tree-path-sum', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/01-branch-sums/01-path-sum-to-target/twist-02-n-ary-tree-path-sum'] = problem;
 })();

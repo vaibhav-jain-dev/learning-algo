@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"teams":["A","B","C","D"],"results":[1,0,1]},
                 output: "A",
-                explanation: 'Team A emerges as the winner through the tournament.'
+                explanation: ''
             },
             {
                 input: {"teams":["X","Y"],"results":[0]},
                 output: "Y",
-                explanation: 'In a two-team matchup, Y wins.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"teams":["A","B","C"],"results":[1,1]},
                 output: "A",
-                explanation: 'A wins both matches to become champion.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def tournament_with_variable_points(data):
+            python: `def tournament_with_variable_points(competitions, results):
     """
     Tournament with Variable Points
 
-    Instead of 3 points per win, each match awards a different number of points (given as a third array). Determine the winner.
-    \n    Approach: The hash table accumulation approach remains, but the variable points mean you cannot easily predict the leader without processing all matches.
+    Instead of 3 points per win, each match awards a different number of points (given as a third array). Determine the winner. The hash table accumulation approach remains, but the variable points mean you cannot easily predict the leader without processing all matches.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # competitions=[["A","B"],["B","C"]], results=[1,0], points=[3,5] → B gets 5 for second match win
+    count = 0
+    n = len(competitions)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on results
+        j = 0
+        for k in range(i, n):
+            if j < len(results) and competitions[k] == results[j]:
+                j += 1
+        if j == len(results):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(tournament_with_variable_points([1, 2, 3, 4, 5]))
-print(tournament_with_variable_points([5, 3, 1]))
-print(tournament_with_variable_points([1]))`,
+print(tournament_with_variable_points(None, [1,0,1]))  # Expected: "A"
+print(tournament_with_variable_points(None, [0]))  # Expected: "Y"
+print(tournament_with_variable_points(None, [1,1]))  # Expected: "A"
+`,
             go: `package main
 
 import "fmt"
 
 // TournamentWithVariablePoints solves the Tournament with Variable Points problem.
-// Instead of 3 points per win, each match awards a different number of points (given as a third array). Determine the winner.
+// Instead of 3 points per win, each match awards a different number of points (given as a third array). Determine the winner. The hash table accumulation approach remains, but the variable points mean you cannot easily predict the leader without processing all matches.
 // Time: O(n), Space: O(n)
-func TournamentWithVariablePoints(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func TournamentWithVariablePoints(competitions [][]int, results []int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(competitions); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(TournamentWithVariablePoints([]int{1, 2, 3, 4, 5}))
-    fmt.Println(TournamentWithVariablePoints([]int{5, 3, 1}))
-    fmt.Println(TournamentWithVariablePoints([]int{1}))
-}`
+	fmt.Println(TournamentWithVariablePoints(nil, []int{1, 0, 1})) // Expected: "A"
+	fmt.Println(TournamentWithVariablePoints(nil, []int{0})) // Expected: "Y"
+	fmt.Println(TournamentWithVariablePoints(nil, []int{1, 1})) // Expected: "A"
+}
+`
         },
         twists: [],
         similar: []

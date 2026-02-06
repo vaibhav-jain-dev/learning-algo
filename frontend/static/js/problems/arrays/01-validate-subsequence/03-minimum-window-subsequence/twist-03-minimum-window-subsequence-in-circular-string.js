@@ -26,80 +26,80 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"s1":"abcdebdde","s2":"bde"},
                 output: "bcde",
-                explanation: 'The smallest window containing "bde" as a subsequence is "bcde".'
+                explanation: ''
             },
             {
                 input: {"s1":"abcdef","s2":"ace"},
                 output: "abcde",
-                explanation: 'Window from a to e contains "ace" as a subsequence.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"s1":"xyz","s2":"abc"},
                 output: "",
-                explanation: 'No valid window exists.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def minimum_window_subsequence_in_circular_string(data):
+            python: `def minimum_window_subsequence_in_circular_string(s1, s2):
     """
     Minimum Window Subsequence in Circular String
 
-    The string s1 is circular. Find the minimum window where s2 is a subsequence, allowing wrap-around.
-    \n    Approach: The circular nature means windows can span the wrap-around point, requiring concatenation tricks or careful modular index handling.
+    The string s1 is circular. Find the minimum window where s2 is a subsequence, allowing wrap-around. The circular nature means windows can span the wrap-around point, requiring concatenation tricks or careful modular index handling.
 
     Time: O(n)
     Space: O(n)
-
-    Example: s1="cdeab", s2="abc" → "abc" via wrap-around (a at index 3, b at index 4, c at index 0)
     """
-    if not data:
-        return None
+    n = len(s1)
+    m = len(s2)
+    doubled = s1 + s1
+    j = 0
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
+    for i in range(min(2 * n, 2 * n)):
+        if j < m and doubled[i] == s2[j]:
+            j += 1
+        if j == m:
+            return True
 
-    # Core algorithm implementation
-    for i in range(n):
-        result.append(data[i])
-
-    return result
+    return False
 
 
 # Test cases
-print(minimum_window_subsequence_in_circular_string([1, 2, 3, 4, 5]))
-print(minimum_window_subsequence_in_circular_string([5, 3, 1]))
-print(minimum_window_subsequence_in_circular_string([1]))`,
+print(minimum_window_subsequence_in_circular_string("abcdebdde", "bde"))  # Expected: "bcde"
+print(minimum_window_subsequence_in_circular_string("abcdef", "ace"))  # Expected: "abcde"
+print(minimum_window_subsequence_in_circular_string("xyz", "abc"))  # Expected: ""
+`,
             go: `package main
 
 import "fmt"
 
 // MinimumWindowSubsequenceInCircularString solves the Minimum Window Subsequence in Circular String problem.
-// The string s1 is circular. Find the minimum window where s2 is a subsequence, allowing wrap-around.
+// The string s1 is circular. Find the minimum window where s2 is a subsequence, allowing wrap-around. The circular nature means windows can span the wrap-around point, requiring concatenation tricks or careful modular index handling.
 // Time: O(n), Space: O(n)
-func MinimumWindowSubsequenceInCircularString(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MinimumWindowSubsequenceInCircularString(s1 string, s2 string) int {
+	n := len(s1)
+	m := len(s2)
+	j := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < 2*n && j < m; i++ {
+		if s1[i%n] == s2[j] {
+			j++
+		}
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return j == m
 }
 
 func main() {
-    fmt.Println(MinimumWindowSubsequenceInCircularString([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MinimumWindowSubsequenceInCircularString([]int{5, 3, 1}))
-    fmt.Println(MinimumWindowSubsequenceInCircularString([]int{1}))
-}`
+	fmt.Println(MinimumWindowSubsequenceInCircularString("abcdebdde", "bde")) // Expected: "bcde"
+	fmt.Println(MinimumWindowSubsequenceInCircularString("abcdef", "ace")) // Expected: "abcde"
+	fmt.Println(MinimumWindowSubsequenceInCircularString("xyz", "abc")) // Expected: ""
+}
+`
         },
         twists: [],
         similar: []

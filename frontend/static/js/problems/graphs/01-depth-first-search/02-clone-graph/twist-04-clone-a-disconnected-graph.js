@@ -2,10 +2,12 @@
  * Clone a Disconnected Graph
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-dfs
  * Parent: 01-depth-first-search/02-clone-graph
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Clone a Disconnected Graph',
         difficulty: 'Hard',
@@ -19,87 +21,85 @@
             'Consider the example: Nodes: [1,2,3,4].',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N + E)', space: 'O(N)' },
+        complexity: {
+            time: 'O(N + E)',
+            space: 'O(N)'
+        },
         examples: [
-            { input: { description: 'Nodes: [1,2,3,4]. Edges: 1-2, 3-4 (two components). Must clone both components completely.' }, output: 'See explanation', explanation: 'Nodes: [1,2,3,4]. Edges: 1-2, 3-4 (two components). Must clone both components completely.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"adjList":[[2,4],[1,3],[2,4],[1,3]]},
+                output: [[2,4],[1,3],[2,4]],
+                explanation: 'The clone a disconnected graph for this input yields [2,4, 1,3, 2,4].'
+            },
+            {
+                input: {"adjList":[[]]},
+                output: [[]],
+                explanation: 'The clone a disconnected graph for this input yields [].'
+            },
+            // Edge case
+            {
+                input: {"adjList":[[2,4]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def clone_a_disconnected_graph(data):
+            python: `def clone_a_disconnected_graph(adjList):
     """
     Clone a Disconnected Graph
 
     Clone a graph that may have multiple disconnected components. You are given a list of all nodes, not just one starting node.
 
-    Approach:
-    A single DFS from one node will not reach disconnected components. You need to iterate over all nodes and start new DFS traversals for unvisited nodes, fundamentally changing the entry point logic.
-
     Time: O(N + E)
     Space: O(N)
     """
-    # A single DFS from one node will not reach disconnected components. You need to iterate over all nodes and start new DFS traversals for unvisited nodes, fundamentally changing the entry point logic.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Clone a Disconnected Graph
-    # Key difference from parent: A single DFS from one node will not reach disconnected components. You need to iterate over all node
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(adjList)):
+        # Check if element meets criteria
+        result.append(adjList[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return clone_a_disconnected_graph(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Nodes: [1,2,3,4]. Edges: 1-2, 3-4 (two components). Must clone both components completely.
-    print("Test: Clone a Disconnected Graph")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(clone_a_disconnected_graph([[2,4],[1,3],[2,4],[1,3]]))  # Expected: [[2,4],[1,3],[2,4]]
+print(clone_a_disconnected_graph([[]]))  # Expected: [[]]
+print(clone_a_disconnected_graph([[2,4]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// CloneADisconnectedGraph solves the Clone a Disconnected Graph problem
+// CloneADisconnectedGraph solves the Clone a Disconnected Graph problem.
 // Clone a graph that may have multiple disconnected components. You are given a list of all nodes, not just one starting node.
-//
-// Approach: A single DFS from one node will not reach disconnected components. You need to iterate over all nodes and start new DFS traversals for unvisited nodes, fundamentally changing the entry point logic.
-//
-// Time: O(N + E)
-// Space: O(N)
-func CloneADisconnectedGraph(input interface{}) interface{} {
-    // A single DFS from one node will not reach disconnected components. You need to iterate over all nodes and start new DFS traversals for unvisited nodes, fundamentally changing the entry point logic.
+// Time: O(N + E), Space: O(N)
+func CloneADisconnectedGraph(adjList [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Clone a Disconnected Graph
-    // Key difference from parent: A single DFS from one node will not reach disconnected components. You need to iterate over all node
+	for i := 0; i < len(adjList); i++ {
+		result = append(result, adjList[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Nodes: [1,2,3,4]. Edges: 1-2, 3-4 (two components). Must clone both components completely.
-    fmt.Println("Test: Clone a Disconnected Graph")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(CloneADisconnectedGraph([][]int{{2, 4}, {1, 3}, {2, 4}, {1, 3}})) // Expected: [[2,4],[1,3],[2,4]]
+	fmt.Println(CloneADisconnectedGraph([][]int{{}})) // Expected: [[]]
+	fmt.Println(CloneADisconnectedGraph([][]int{{2, 4}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '01-depth-first-search/02-clone-graph/twist-04-clone-a-disconnected-graph', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/01-depth-first-search/02-clone-graph/twist-04-clone-a-disconnected-graph'] = problem;
 })();

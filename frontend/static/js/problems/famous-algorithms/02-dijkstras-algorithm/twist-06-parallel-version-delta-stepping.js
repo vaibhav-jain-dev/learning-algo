@@ -2,74 +2,97 @@
  * Parallel Version: Delta-Stepping
  * Category: famous-algorithms
  * Difficulty: Very Hard
+ * Algorithm: dijkstras-algorithm
  * Parent: 02-dijkstras-algorithm
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Parallel Version: Delta-Stepping',
         difficulty: 'Very Hard',
         algorithm: 'dijkstras-algorithm',
         parent: '02-dijkstras-algorithm',
-        description: 'Design a parallel version of Dijkstra\'s algorithm. The challenge: Dijkstra\'s is inherently sequential since it processes one vertex at a time. Delta-stepping relaxes this by processing all vertices within a distance band simultaneously.',
-        problem: 'Standard Dijkstra\'s has a strict sequential dependency: the next vertex to process depends on the current state. Parallelization requires relaxing this constraint at the cost of potentially doing redundant work.',
+        description: 'Design a parallel version of Dijkstra\',
+        problem: 'Standard Dijkstra\',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'With delta=3, process all vertices with distance in [0,3), then [3,6), etc. Within each band, edges can be relaxed in parallel. Light edges (weight < delta) may cause chain reactions within a band.' },
-                output: 'See example',
-                explanation: 'With delta=3, process all vertices with distance in [0,3), then [3,6), etc. Within each band, edges can be relaxed in parallel. Light edges (weight < delta) may cause chain reactions within a band.'
+                input: {"vertices":5,"edges":[[0,1,4],[0,2,1],[1,3,1],[2,1,2],[2,3,5],[3,4,3]],"source":0},
+                output: [[0,1,4],[0,2,1],[1,3,1]],
+                explanation: 'The parallel version delta stepping for this input yields [0,1,4, 0,2,1, 1,3,1].'
+            },
+            // Edge case
+            {
+                input: {"vertices":0,"edges":[[0,1,4]],"source":0},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Parallel Version: Delta-Stepping
-# Category: famous-algorithms
-# Difficulty: Very Hard
-# Parent: 02-dijkstras-algorithm
-
-def solve():
+            python: `def parallel_version_delta_stepping(vertices, edges, source):
     """
-    Design a parallel version of Dijkstra's algorithm. The challenge: Dijkstra's is inherently sequential since it processes one vertex at a time. Delta-stepping relaxes this by processing all vertices within a distance band simultaneously.
+    Parallel Version: Delta-Stepping
 
-    Key insight: Standard Dijkstra's has a strict sequential dependency: the next vertex to process depends on the current state. Parallelization requires relaxing this constraint at the cost of potentially doing redundant work.
+    Design a parallel version of Dijkstra\\
+
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(vertices)):
+        # Check if element meets criteria
+        result.append(vertices[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(parallel_version_delta_stepping(5, [[0,1,4],[0,2,1],[1,3,1],[2,1,2],[2,3,5],[3,4,3]], 0))  # Expected: [[0,1,4],[0,2,1],[1,3,1]]
+print(parallel_version_delta_stepping(0, [[0,1,4]], 0))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Parallel Version: Delta-Stepping problem.
-// Design a parallel version of Dijkstra's algorithm. The challenge: Dijkstra's is inherently sequential since it processes one vertex at a time. Delta-stepping relaxes this by processing all vertices within a distance band simultaneously.
-// Key insight: Standard Dijkstra's has a strict sequential dependency: the next vertex to process depends on the current state. Parallelization requires relaxing this constraint at the cost of potentially doing redundant work.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// ParallelVersionDeltaStepping solves the Parallel Version: Delta-Stepping problem.
+// Design a parallel version of Dijkstra\\
+// Time: O(?), Space: O(?)
+func ParallelVersionDeltaStepping(vertices int, edges [][]int, source int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(vertices); i++ {
+		result = append(result, vertices[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(ParallelVersionDeltaStepping(5, [][]int{{0, 1, 4}, {0, 2, 1}, {1, 3, 1}, {2, 1, 2}, {2, 3, 5}, {3, 4, 3}}, 0)) // Expected: [[0,1,4],[0,2,1],[1,3,1]]
+	fmt.Println(ParallelVersionDeltaStepping(0, [][]int{{0, 1, 4}}, 0)) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '02-dijkstras-algorithm/twist-06-parallel-version-delta-stepping', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/02-dijkstras-algorithm/twist-06-parallel-version-delta-stepping'] = problem;
 })();

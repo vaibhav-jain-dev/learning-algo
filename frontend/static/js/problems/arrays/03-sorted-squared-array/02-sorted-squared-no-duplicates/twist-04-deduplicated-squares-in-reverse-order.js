@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5]},
                 output: true,
-                explanation: 'Standard case satisfying the problem conditions.'
+                explanation: ''
             },
             {
                 input: {"array":[5,3,1]},
                 output: false,
-                explanation: 'Case where the condition is not met.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1]},
                 output: true,
-                explanation: 'Edge case with single element.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def deduplicated_squares_in_reverse_order(data):
+            python: `def deduplicated_squares_in_reverse_order(array):
     """
     Deduplicated Squares in Reverse Order
 
-    Return unique squared values in descending order instead of ascending.
-    \n    Approach: Changes the fill direction of the two-pointer approach: instead of filling from the end and then deduplicating, you can deduplicate as you fill from the start.
+    Return unique squared values in descending order instead of ascending. Changes the fill direction of the two-pointer approach: instead of filling from the end and then deduplicating, you can deduplicate as you fill from the start.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array=[-5,-3,0,2,3,5] → [25,9,4,0]
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in array:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(deduplicated_squares_in_reverse_order([1, 2, 3, 4, 5]))
-print(deduplicated_squares_in_reverse_order([5, 3, 1]))
-print(deduplicated_squares_in_reverse_order([1]))`,
+print(deduplicated_squares_in_reverse_order([1,2,3,4,5]))  # Expected: True
+print(deduplicated_squares_in_reverse_order([5,3,1]))  # Expected: False
+print(deduplicated_squares_in_reverse_order([1]))  # Expected: True
+`,
             go: `package main
 
 import "fmt"
 
 // DeduplicatedSquaresInReverseOrder solves the Deduplicated Squares in Reverse Order problem.
-// Return unique squared values in descending order instead of ascending.
+// Return unique squared values in descending order instead of ascending. Changes the fill direction of the two-pointer approach: instead of filling from the end and then deduplicating, you can deduplicate as you fill from the start.
 // Time: O(n), Space: O(n)
-func DeduplicatedSquaresInReverseOrder(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func DeduplicatedSquaresInReverseOrder(array []int) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range array {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(DeduplicatedSquaresInReverseOrder([]int{1, 2, 3, 4, 5}))
-    fmt.Println(DeduplicatedSquaresInReverseOrder([]int{5, 3, 1}))
-    fmt.Println(DeduplicatedSquaresInReverseOrder([]int{1}))
-}`
+	fmt.Println(DeduplicatedSquaresInReverseOrder([]int{1, 2, 3, 4, 5})) // Expected: true
+	fmt.Println(DeduplicatedSquaresInReverseOrder([]int{5, 3, 1})) // Expected: false
+	fmt.Println(DeduplicatedSquaresInReverseOrder([]int{1})) // Expected: true
+}
+`
         },
         twists: [],
         similar: []

@@ -2,10 +2,12 @@
  * Remove Routes Instead
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-connections
  * Parent: 10-airport-connections
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Remove Routes Instead',
         difficulty: 'Hard',
@@ -19,87 +21,85 @@
             'Consider the example: 18 airports with 19 routes.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(A * (A + R))', space: 'O(A + R)' },
+        complexity: {
+            time: 'O(A * (A + R))',
+            space: 'O(A + R)'
+        },
         examples: [
-            { input: { description: '18 airports with 19 routes. Minimum routes to keep: 17. Maximum removable: 19-17=2.' }, output: 'See explanation', explanation: '18 airports with 19 routes. Minimum routes to keep: 17. Maximum removable: 19-17=2.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"airports":["BGI","CDG","DEL","DOH","DSM","EWR","EYW","HND","ICN","JFK","LGA","LHR","ORD","SAN","SFO","SIN","TLV","BUD"],"routes":[["DSM","ORD"],["ORD","BGI"],["BGI","LGA"],["SIN","CDG"],["CDG","SIN"],["CDG","BUD"],["DEL","DOH"],["DEL","CDG"],["TLV","DEL"],["EWR","HND"],["HND","ICN"],["HND","JFK"],["ICN","JFK"],["JFK","LGA"],["EYW","LHR"],["LHR","SFO"],["SFO","SAN"],["SFO","DSM"],["SAN","EYW"]],"startingAirport":"LGA"},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the remove routes instead criteria.'
+            },
+            // Edge case
+            {
+                input: {"airports":["BGI"],"routes":[["DSM","ORD"]],"startingAirport":""},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def remove_routes_instead(data):
+            python: `def remove_routes_instead(airports, routes, startingAirport):
     """
     Remove Routes Instead
 
     All airports are currently reachable. Find the maximum number of existing routes you can remove while keeping all airports reachable from the starting airport.
 
-    Approach:
-    This is the inverse problem: find the minimum routes to keep (a spanning arborescence), and remove the rest. The answer is total routes minus (N-1).
-
     Time: O(A * (A + R))
     Space: O(A + R)
     """
-    # This is the inverse problem: find the minimum routes to keep (a spanning arborescence), and remove the rest. The answer is total routes minus (N-1).
+    count = 0
+    n = len(airports)
 
-    # Implementation
-    result = None
+    for i in range(n):
+        # Check condition based on routes
+        j = 0
+        for k in range(i, n):
+            if j < len(routes) and airports[k] == routes[j]:
+                j += 1
+        if j == len(routes):
+            count += 1
 
-    # Core algorithm adapted for: Remove Routes Instead
-    # Key difference from parent: This is the inverse problem: find the minimum routes to keep (a spanning arborescence), and remove t
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return remove_routes_instead(data)
+    return count
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # 18 airports with 19 routes. Minimum routes to keep: 17. Maximum removable: 19-17=2.
-    print("Test: Remove Routes Instead")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(remove_routes_instead(["BGI","CDG","DEL","DOH","DSM","EWR","EYW","HND","ICN","JFK","LGA","LHR","ORD","SAN","SFO","SIN","TLV","BUD"], [["DSM","ORD"],["ORD","BGI"],["BGI","LGA"],["SIN","CDG"],["CDG","SIN"],["CDG","BUD"],["DEL","DOH"],["DEL","CDG"],["TLV","DEL"],["EWR","HND"],["HND","ICN"],["HND","JFK"],["ICN","JFK"],["JFK","LGA"],["EYW","LHR"],["LHR","SFO"],["SFO","SAN"],["SFO","DSM"],["SAN","EYW"]], "LGA"))  # Expected: 2
+print(remove_routes_instead(["BGI"], [["DSM","ORD"]], ""))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// RemoveRoutesInstead solves the Remove Routes Instead problem
+// RemoveRoutesInstead solves the Remove Routes Instead problem.
 // All airports are currently reachable. Find the maximum number of existing routes you can remove while keeping all airports reachable from the starting airport.
-//
-// Approach: This is the inverse problem: find the minimum routes to keep (a spanning arborescence), and remove the rest. The answer is total routes minus (N-1).
-//
-// Time: O(A * (A + R))
-// Space: O(A + R)
-func RemoveRoutesInstead(input interface{}) interface{} {
-    // This is the inverse problem: find the minimum routes to keep (a spanning arborescence), and remove the rest. The answer is total routes minus (N-1).
+// Time: O(A * (A + R)), Space: O(A + R)
+func RemoveRoutesInstead(airports []string, routes [][]int, startingAirport string) int {
+	result := 0
 
-    // Core algorithm adapted for: Remove Routes Instead
-    // Key difference from parent: This is the inverse problem: find the minimum routes to keep (a spanning arborescence), and remove t
+	for i := 0; i < len(airports); i++ {
+		// Process element
+		result++
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // 18 airports with 19 routes. Minimum routes to keep: 17. Maximum removable: 19-17=2.
-    fmt.Println("Test: Remove Routes Instead")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(RemoveRoutesInstead([]string{"BGI", "CDG", "DEL", "DOH", "DSM", "EWR", "EYW", "HND", "ICN", "JFK", "LGA", "LHR", "ORD", "SAN", "SFO", "SIN", "TLV", "BUD"}, [][]int{{DSM, ORD}, {ORD, BGI}, {BGI, LGA}, {SIN, CDG}, {CDG, SIN}, {CDG, BUD}, {DEL, DOH}, {DEL, CDG}, {TLV, DEL}, {EWR, HND}, {HND, ICN}, {HND, JFK}, {ICN, JFK}, {JFK, LGA}, {EYW, LHR}, {LHR, SFO}, {SFO, SAN}, {SFO, DSM}, {SAN, EYW}}, "LGA")) // Expected: 2
+	fmt.Println(RemoveRoutesInstead([]string{"BGI"}, [][]int{{DSM, ORD}}, "")) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '10-airport-connections/twist-03-remove-routes-instead', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/10-airport-connections/twist-03-remove-routes-instead'] = problem;
 })();

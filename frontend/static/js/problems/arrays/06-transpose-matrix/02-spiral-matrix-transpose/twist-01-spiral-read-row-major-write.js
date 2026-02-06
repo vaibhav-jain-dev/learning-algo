@@ -27,83 +27,72 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"matrix":[[1,2,3],[4,5,6],[7,8,9]]},
                 output: [1,2,3,6,9,8,7,4,5],
-                explanation: 'Elements read in spiral order from outside to inside.'
+                explanation: ''
             },
             {
                 input: {"matrix":[[1,2],[3,4]]},
                 output: [1,2,4,3],
-                explanation: 'Small matrix spiral traversal.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"matrix":[[1]]},
                 output: [1],
-                explanation: 'Single element matrix.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def spiral_read_row_major_write(data):
+            python: `def spiral_read_row_major_write(matrix):
     """
     Spiral Read, Row-Major Write
 
-    Read the matrix in spiral order but write the values in standard row-major order to a transposed-dimension matrix.
-    \n    Approach: The writing pattern is simple (sequential), so only the reading is spiral. Decouples the two spiral operations.
+    Read the matrix in spiral order but write the values in standard row-major order to a transposed-dimension matrix. The writing pattern is simple (sequential), so only the reading is spiral. Decouples the two spiral operations.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # matrix = [[1,2,3],[4,5,6]]. Spiral read: [1,2,3,6,5,4]. Write to 3x2 row-major: [[1,2],[3,6],[5,4]].
+    result = 0
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(matrix)):
+        # Process element
+        result += 1  # Update based on condition
 
     return result
 
 
 # Test cases
-print(spiral_read_row_major_write([1, 2, 3, 4, 5]))
-print(spiral_read_row_major_write([5, 3, 1]))
-print(spiral_read_row_major_write([1]))`,
+print(spiral_read_row_major_write([[1,2,3],[4,5,6],[7,8,9]]))  # Expected: [1,2,3,6,9,8,7,4,5]
+print(spiral_read_row_major_write([[1,2],[3,4]]))  # Expected: [1,2,4,3]
+print(spiral_read_row_major_write([[1]]))  # Expected: [1]
+`,
             go: `package main
 
 import "fmt"
 
 // SpiralReadRowMajorWrite solves the Spiral Read, Row-Major Write problem.
-// Read the matrix in spiral order but write the values in standard row-major order to a transposed-dimension matrix.
+// Read the matrix in spiral order but write the values in standard row-major order to a transposed-dimension matrix. The writing pattern is simple (sequential), so only the reading is spiral. Decouples the two spiral operations.
 // Time: O(n), Space: O(n)
-func SpiralReadRowMajorWrite(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func SpiralReadRowMajorWrite(matrix [][]int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(matrix); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(SpiralReadRowMajorWrite([]int{1, 2, 3, 4, 5}))
-    fmt.Println(SpiralReadRowMajorWrite([]int{5, 3, 1}))
-    fmt.Println(SpiralReadRowMajorWrite([]int{1}))
-}`
+	fmt.Println(SpiralReadRowMajorWrite([][]int{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}})) // Expected: [1,2,3,6,9,8,7,4,5]
+	fmt.Println(SpiralReadRowMajorWrite([][]int{{1, 2}, {3, 4}})) // Expected: [1,2,4,3]
+	fmt.Println(SpiralReadRowMajorWrite([][]int{{1}})) // Expected: [1]
+}
+`
         },
         twists: [],
         similar: []

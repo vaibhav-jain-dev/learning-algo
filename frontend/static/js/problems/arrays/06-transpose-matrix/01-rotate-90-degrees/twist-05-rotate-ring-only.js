@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"matrix":[[1,2],[3,4]]},
                 output: [[1,3],[2,4]],
-                explanation: 'Matrix transformed according to the specified operation.'
+                explanation: ''
             },
             {
                 input: {"matrix":[[1,2,3],[4,5,6]]},
                 output: [[1,4],[2,5],[3,6]],
-                explanation: 'Rectangular matrix handled correctly.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"matrix":[[1]]},
                 output: [[1]],
-                explanation: 'Single element matrix is trivially handled.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def rotate_ring_only(data):
+            python: `def rotate_ring_only(matrix):
     """
     Rotate Ring Only
 
-    Rotate only the outermost ring of the matrix by 90 degrees, leaving inner elements unchanged.
-    \n    Approach: Must extract the ring, rotate its elements, and place them back. Inner layers remain untouched.
+    Rotate only the outermost ring of the matrix by 90 degrees, leaving inner elements unchanged. Must extract the ring, rotate its elements, and place them back. Inner layers remain untouched.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # matrix = [[1,2,3],[4,5,6],[7,8,9]]. Rotate outer ring: [[7,4,1],[8,5,2],[9,6,3]]. Center 5 stays.
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in matrix:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(rotate_ring_only([1, 2, 3, 4, 5]))
-print(rotate_ring_only([5, 3, 1]))
-print(rotate_ring_only([1]))`,
+print(rotate_ring_only([[1,2],[3,4]]))  # Expected: [[1,3],[2,4]]
+print(rotate_ring_only([[1,2,3],[4,5,6]]))  # Expected: [[1,4],[2,5],[3,6]]
+print(rotate_ring_only([[1]]))  # Expected: [[1]]
+`,
             go: `package main
 
 import "fmt"
 
 // RotateRingOnly solves the Rotate Ring Only problem.
-// Rotate only the outermost ring of the matrix by 90 degrees, leaving inner elements unchanged.
+// Rotate only the outermost ring of the matrix by 90 degrees, leaving inner elements unchanged. Must extract the ring, rotate its elements, and place them back. Inner layers remain untouched.
 // Time: O(n), Space: O(n)
-func RotateRingOnly(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func RotateRingOnly(matrix []string) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range matrix {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(RotateRingOnly([]int{1, 2, 3, 4, 5}))
-    fmt.Println(RotateRingOnly([]int{5, 3, 1}))
-    fmt.Println(RotateRingOnly([]int{1}))
-}`
+	fmt.Println(RotateRingOnly([][]int{{1, 2}, {3, 4}})) // Expected: [[1,3],[2,4]]
+	fmt.Println(RotateRingOnly([][]int{{1, 2, 3}, {4, 5, 6}})) // Expected: [[1,4],[2,5],[3,6]]
+	fmt.Println(RotateRingOnly([][]int{{1}})) // Expected: [[1]]
+}
+`
         },
         twists: [],
         similar: []

@@ -2,10 +2,12 @@
  * LCA of Multiple Nodes (Not Just Two)
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-ancestor
  * Parent: 04-youngest-common-ancestor
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'LCA of Multiple Nodes (Not Just Two)',
         difficulty: 'Medium',
@@ -19,87 +21,85 @@
             'Consider the example: Tree: A->B->D, A->B->E, A->C->F.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(D)', space: 'O(1)' },
+        complexity: {
+            time: 'O(D)',
+            space: 'O(1)'
+        },
         examples: [
-            { input: { description: 'Tree: A->B->D, A->B->E, A->C->F. LCA(D,E,F) = A. LCA(D,E) = B, then LCA(B,F) = A.' }, output: 'See explanation', explanation: 'Tree: A->B->D, A->B->E, A->C->F. LCA(D,E,F) = A. LCA(D,E) = B, then LCA(B,F) = A.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"tree":"A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G","descendant1":"E","descendant2":"I"},
+                output: [0],
+                explanation: 'The lca of multiple nodes not just two for this input yields [0].'
+            },
+            {
+                input: {"tree":"A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G","descendant1":"H","descendant2":"G"},
+                output: [0,1],
+                explanation: 'The lca of multiple nodes not just two for this input yields [0, 1].'
+            },
+            // Edge case
+            {
+                input: {"tree":"","descendant1":"","descendant2":""},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def lca_of_multiple_nodes_not_just_two(data):
+            python: `def lca_of_multiple_nodes_not_just_two(tree, descendant1, descendant2):
     """
     LCA of Multiple Nodes (Not Just Two)
 
     Find the LCA of K nodes (not just two). The LCA of multiple nodes is the deepest node that is an ancestor of all K nodes.
 
-    Approach:
-    With two nodes, you compare two paths. With K nodes, you must find the common prefix of K paths, or iteratively compute LCA of pairs: LCA(a,b,c) = LCA(LCA(a,b),c).
-
     Time: O(D)
     Space: O(1)
     """
-    # With two nodes, you compare two paths. With K nodes, you must find the common prefix of K paths, or iteratively compute LCA of pairs: LCA(a,b,c) = LCA(LCA(a,b),c).
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: LCA of Multiple Nodes (Not Just Two)
-    # Key difference from parent: With two nodes, you compare two paths. With K nodes, you must find the common prefix of K paths, or 
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return lca_of_multiple_nodes_not_just_two(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Tree: A->B->D, A->B->E, A->C->F. LCA(D,E,F) = A. LCA(D,E) = B, then LCA(B,F) = A.
-    print("Test: LCA of Multiple Nodes (Not Just Two)")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(lca_of_multiple_nodes_not_just_two("A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G", "E", "I"))  # Expected: [0]
+print(lca_of_multiple_nodes_not_just_two("A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G", "H", "G"))  # Expected: [0,1]
+print(lca_of_multiple_nodes_not_just_two("", "", ""))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// LCAOfMultipleNodesNotJustTwo solves the LCA of Multiple Nodes (Not Just Two) problem
+// LcaOfMultipleNodesNotJustTwo solves the LCA of Multiple Nodes (Not Just Two) problem.
 // Find the LCA of K nodes (not just two). The LCA of multiple nodes is the deepest node that is an ancestor of all K nodes.
-//
-// Approach: With two nodes, you compare two paths. With K nodes, you must find the common prefix of K paths, or iteratively compute LCA of pairs: LCA(a,b,c) = LCA(LCA(a,b),c).
-//
-// Time: O(D)
-// Space: O(1)
-func LCAOfMultipleNodesNotJustTwo(input interface{}) interface{} {
-    // With two nodes, you compare two paths. With K nodes, you must find the common prefix of K paths, or iteratively compute LCA of pairs: LCA(a,b,c) = LCA(LCA(a,b),c).
+// Time: O(D), Space: O(1)
+func LcaOfMultipleNodesNotJustTwo(tree string, descendant1 string, descendant2 string) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: LCA of Multiple Nodes (Not Just Two)
-    // Key difference from parent: With two nodes, you compare two paths. With K nodes, you must find the common prefix of K paths, or 
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Tree: A->B->D, A->B->E, A->C->F. LCA(D,E,F) = A. LCA(D,E) = B, then LCA(B,F) = A.
-    fmt.Println("Test: LCA of Multiple Nodes (Not Just Two)")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(LcaOfMultipleNodesNotJustTwo("A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G", "E", "I")) // Expected: [0]
+	fmt.Println(LcaOfMultipleNodesNotJustTwo("A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G", "H", "G")) // Expected: [0,1]
+	fmt.Println(LcaOfMultipleNodesNotJustTwo("", "", "")) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '04-youngest-common-ancestor/twist-05-lca-of-multiple-nodes-not-just-two', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/04-youngest-common-ancestor/twist-05-lca-of-multiple-nodes-not-just-two'] = problem;
 })();

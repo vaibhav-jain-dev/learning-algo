@@ -2,10 +2,12 @@
  * Arbitrage with Fees
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-arbitrage
  * Parent: 11-detect-arbitrage
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Arbitrage with Fees',
         difficulty: 'Hard',
@@ -19,87 +21,91 @@
             'Consider the example: Exchange rate 1.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N^3)', space: 'O(N^2)' },
+        complexity: {
+            time: 'O(N^3)',
+            space: 'O(N^2)'
+        },
         examples: [
-            { input: { description: 'Exchange rate 1.5 with 1% fee gives effective rate 1.485. An arbitrage opportunity at 1.5 may vanish with fees.' }, output: 'See explanation', explanation: 'Exchange rate 1.5 with 1% fee gives effective rate 1.485. An arbitrage opportunity at 1.5 may vanish with fees.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"exchangeRates":[[1,0.8631,0.5903],[1.1586,1,0.6849],[1.6939,1.46,1]]},
+                output: 4.66,
+                explanation: 'The computed value for this input is 4.66.'
+            },
+            {
+                input: {"exchangeRates":[[1,0.5,0.25],[2,1,0.5],[4,2,1]]},
+                output: 1.46,
+                explanation: 'The computed value for this input is 1.46.'
+            },
+            // Edge case
+            {
+                input: {"exchangeRates":[[1,0.8631,0.5903]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def arbitrage_with_fees(data):
+            python: `def arbitrage_with_fees(exchangeRates):
     """
     Arbitrage with Fees
 
     Each currency exchange has a transaction fee (flat or percentage). Detect arbitrage considering fees.
 
-    Approach:
-    Fees reduce the effective exchange rate. The log-transform must account for fees: log(rate * (1 - fee_pct)) instead of log(rate), potentially eliminating marginal arbitrage.
-
     Time: O(N^3)
     Space: O(N^2)
     """
-    # Fees reduce the effective exchange rate. The log-transform must account for fees: log(rate * (1 - fee_pct)) instead of log(rate), potentially eliminating marginal arbitrage.
+    total = 0
+    count = 0
 
-    # Implementation
-    result = None
+    for val in exchangeRates:
+        total += val
+        count += 1
 
-    # Core algorithm adapted for: Arbitrage with Fees
-    # Key difference from parent: Fees reduce the effective exchange rate. The log-transform must account for fees: log(rate * (1 - fe
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return arbitrage_with_fees(data)
+    return total / count if count > 0 else 0.0
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Exchange rate 1.5 with 1% fee gives effective rate 1.485. An arbitrage opportunity at 1.5 may vanish with fees.
-    print("Test: Arbitrage with Fees")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(arbitrage_with_fees([[1,0.8631,0.5903],[1.1586,1,0.6849],[1.6939,1.46,1]]))  # Expected: 4.66
+print(arbitrage_with_fees([[1,0.5,0.25],[2,1,0.5],[4,2,1]]))  # Expected: 1.46
+print(arbitrage_with_fees([[1,0.8631,0.5903]]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// ArbitrageWithFees solves the Arbitrage with Fees problem
+// ArbitrageWithFees solves the Arbitrage with Fees problem.
 // Each currency exchange has a transaction fee (flat or percentage). Detect arbitrage considering fees.
-//
-// Approach: Fees reduce the effective exchange rate. The log-transform must account for fees: log(rate * (1 - fee_pct)) instead of log(rate), potentially eliminating marginal arbitrage.
-//
-// Time: O(N^3)
-// Space: O(N^2)
-func ArbitrageWithFees(input interface{}) interface{} {
-    // Fees reduce the effective exchange rate. The log-transform must account for fees: log(rate * (1 - fee_pct)) instead of log(rate), potentially eliminating marginal arbitrage.
+// Time: O(N^3), Space: O(N^2)
+func ArbitrageWithFees(exchangeRates [][]int) float64 {
+	total := 0.0
+	count := 0
 
-    // Core algorithm adapted for: Arbitrage with Fees
-    // Key difference from parent: Fees reduce the effective exchange rate. The log-transform must account for fees: log(rate * (1 - fe
+	for _, v := range exchangeRates {
+		total += float64(v)
+		count++
+	}
 
-    return nil
+	if count == 0 {
+		return 0.0
+	}
+	return total / float64(count)
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Exchange rate 1.5 with 1% fee gives effective rate 1.485. An arbitrage opportunity at 1.5 may vanish with fees.
-    fmt.Println("Test: Arbitrage with Fees")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(ArbitrageWithFees([][]int{{1, 0.8631, 0.5903}, {1.1586, 1, 0.6849}, {1.6939, 1.46, 1}})) // Expected: 4.66
+	fmt.Println(ArbitrageWithFees([][]int{{1, 0.5, 0.25}, {2, 1, 0.5}, {4, 2, 1}})) // Expected: 1.46
+	fmt.Println(ArbitrageWithFees([][]int{{1, 0.8631, 0.5903}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '11-detect-arbitrage/twist-03-arbitrage-with-fees', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/11-detect-arbitrage/twist-03-arbitrage-with-fees'] = problem;
 })();

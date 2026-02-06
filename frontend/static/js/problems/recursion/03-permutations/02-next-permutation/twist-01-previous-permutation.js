@@ -2,10 +2,12 @@
  * Previous Permutation
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-permutations
  * Parent: 03-permutations/02-next-permutation
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Previous Permutation',
         difficulty: 'Medium',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For [1,3,2], the previous permutation is [1,2,3]. For [3,2,1] (smallest), wrap to [3,2,1] -> already smallest, so no change or wrap to largest.' },
-                output: 'See example',
-                explanation: 'For [1,3,2], the previous permutation is [1,2,3]. For [3,2,1] (smallest), wrap to [3,2,1] -> already smallest, so no change or wrap to largest.'
+                input: {"nums":[1,2,3]},
+                output: [1,2,3],
+                explanation: 'The previous permutation for this input yields [1, 2, 3].'
+            },
+            // Edge case
+            {
+                input: {"nums":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Previous Permutation
-# Category: recursion
-# Difficulty: Medium
-# Parent: 03-permutations/02-next-permutation
-
-def solve():
+            python: `def previous_permutation(nums):
     """
+    Previous Permutation
+
     Instead of finding the next lexicographically greater permutation, find the previous lexicographically smaller permutation.
 
-    Key insight: Reverses the scanning direction logic -- you must find the first increasing pair from the right and swap with the largest smaller element, then reverse.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(nums)):
+        # Check if element meets criteria
+        result.append(nums[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(previous_permutation([1,2,3]))  # Expected: [1,2,3]
+print(previous_permutation([1]))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Previous Permutation problem.
+// PreviousPermutation solves the Previous Permutation problem.
 // Instead of finding the next lexicographically greater permutation, find the previous lexicographically smaller permutation.
-// Key insight: Reverses the scanning direction logic -- you must find the first increasing pair from the right and swap with the largest smaller element, then reverse.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func PreviousPermutation(nums []int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(nums); i++ {
+		result = append(result, nums[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(PreviousPermutation([]int{1, 2, 3})) // Expected: [1,2,3]
+	fmt.Println(PreviousPermutation([]int{1})) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '03-permutations/02-next-permutation/twist-01-previous-permutation', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/03-permutations/02-next-permutation/twist-01-previous-permutation'] = problem;
 })();

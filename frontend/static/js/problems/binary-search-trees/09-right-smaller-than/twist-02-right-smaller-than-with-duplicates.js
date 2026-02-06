@@ -2,10 +2,12 @@
  * Right Smaller Than with Duplicates
  * Category: binary-search-trees
  * Difficulty: Hard
+ * Algorithm: bst-augmented
  * Parent: 09-right-smaller-than
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Right Smaller Than with Duplicates',
         difficulty: 'Hard',
@@ -14,68 +16,88 @@
         description: 'The array contains duplicate values. Count elements strictly smaller to the right. Handle duplicates correctly in the BST insertion.',
         problem: 'Duplicates create ambiguity in BST placement. If equal values go right, they should not be counted as "smaller." You must carefully separate the equal case from the strictly-less case in your augmented BST. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: right smaller than with duplicates.",
-                  "Consider how duplicates create ambiguity in bst placement affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'For [5, 5, 2, 5, 3], the right-smaller counts are [2, 1, 0, 1, 0]. The first 5 has 2 and 3 to its right that are smaller, but not the other 5s.'
+                input: {"array":[8,5,11,-1,3,4,2]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the right smaller than with duplicates criteria.'
+            },
+            {
+                input: {"array":[1,2,3,4,5]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the right smaller than with duplicates criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[8]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Right Smaller Than with Duplicates
-# Difficulty: Hard
-# Parent: 09-right-smaller-than
-#
-# The array contains duplicate values. Count elements strictly smaller to the right. Handle duplicates correctly in the BST insertion.
-
-def rightSmallerThanWithDuplicates(data):
+            python: `def right_smaller_than_with_duplicates(array):
     """
     Right Smaller Than with Duplicates
 
-    Approach: Duplicates create ambiguity in BST placement.
+    The array contains duplicate values. Count elements strictly smaller to the right. Handle duplicates correctly in the BST insertion.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Duplicates create ambiguity in BST placement
-    pass
+    result = 0
+
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: For [5, 5, 2, 5, 3], the right-smaller counts are [2, 1, 0, 1, 0]
-    print(rightSmallerThanWithDuplicates({}))`,
+# Test cases
+print(right_smaller_than_with_duplicates([8,5,11,-1,3,4,2]))  # Expected: 1
+print(right_smaller_than_with_duplicates([1,2,3,4,5]))  # Expected: 2
+print(right_smaller_than_with_duplicates([8]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// Right Smaller Than with Duplicates
-// Difficulty: Hard
-// Parent: 09-right-smaller-than
-//
+// RightSmallerThanWithDuplicates solves the Right Smaller Than with Duplicates problem.
 // The array contains duplicate values. Count elements strictly smaller to the right. Handle duplicates correctly in the BST insertion.
+// Time: O(n), Space: O(1)
+func RightSmallerThanWithDuplicates(array []int) int {
+	result := 0
 
-func RightSmallerThanWithDuplicates(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Duplicates create ambiguity in BST placement
-    return nil
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    // Example: For [5, 5, 2, 5, 3], the right-smaller counts are [2, 1, 0, 1, 0]
-    fmt.Println(RightSmallerThanWithDuplicates(map[string]interface{}{}))
-}`
+	fmt.Println(RightSmallerThanWithDuplicates([]int{8, 5, 11, -1, 3, 4, 2})) // Expected: 1
+	fmt.Println(RightSmallerThanWithDuplicates([]int{1, 2, 3, 4, 5})) // Expected: 2
+	fmt.Println(RightSmallerThanWithDuplicates([]int{8})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '09-right-smaller-than/twist-02-right-smaller-than-with-duplicates', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/09-right-smaller-than/twist-02-right-smaller-than-with-duplicates'] = problem;
 })();

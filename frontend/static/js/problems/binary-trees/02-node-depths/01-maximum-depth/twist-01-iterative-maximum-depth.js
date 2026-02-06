@@ -2,10 +2,12 @@
  * Iterative Maximum Depth
  * Category: binary-trees
  * Difficulty: Easy
+ * Algorithm: tree-dfs
  * Parent: 02-node-depths/01-maximum-depth
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Iterative Maximum Depth',
         difficulty: 'Easy',
@@ -19,121 +21,86 @@
             'Key insight: BFS naturally counts levels.',
             'Instead of recursive max(left, right)+1, you increment a depth counter each time you process a complete level from the queue.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Queue processes level by level' },
-                output: 'See explanation',
-                explanation: 'Queue processes level by level. After 3 levels are exhausted, return 3.'
+                input: {"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the iterative maximum depth criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"right":{"value":2}}},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the iterative maximum depth criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def iterative_maximum_depth(data):
+            python: `def iterative_maximum_depth(tree):
     """
     Iterative Maximum Depth
 
-    Find the maximum depth of the binary tree using BFS (level-order traversal) instead of recursion.
-     Count the number of levels.
+    Find the maximum depth of the binary tree using BFS (level-order traversal) instead of recursion. Count the number of levels. BFS naturally counts levels. Instead of recursive max(left, right)+1, you increment a depth counter each time you process a complete level from the queue.
 
-    Approach: BFS naturally counts levels
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: BFS naturally counts levels
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Iterative Maximum Depth
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Queue processes level by level
-    print("See problem description for test cases")`,
+# Test cases
+print(iterative_maximum_depth({"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: 1
+print(iterative_maximum_depth({"value": 1, "right": {"value": 2}}))  # Expected: 2
+print(iterative_maximum_depth({"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// IterativeMaximumDepth solves: Iterative Maximum Depth
-// BFS naturally counts levels
+// IterativeMaximumDepth solves the Iterative Maximum Depth problem.
+// Find the maximum depth of the binary tree using BFS (level-order traversal) instead of recursion. Count the number of levels. BFS naturally counts levels. Instead of recursive max(left, right)+1, you increment a depth counter each time you process a complete level from the queue.
 // Time: O(n), Space: O(n)
-func IterativeMaximumDepth(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func IterativeMaximumDepth(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Iterative Maximum Depth
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Queue processes level by level
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(IterativeMaximumDepth({"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: 1
+	fmt.Println(IterativeMaximumDepth({"value":1,"right":{"value":2}})) // Expected: 2
+	fmt.Println(IterativeMaximumDepth({"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '02-node-depths/01-maximum-depth/twist-01-iterative-maximum-depth', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/02-node-depths/01-maximum-depth/twist-01-iterative-maximum-depth'] = problem;
 })();

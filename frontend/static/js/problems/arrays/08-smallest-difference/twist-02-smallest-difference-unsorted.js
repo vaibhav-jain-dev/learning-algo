@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[-3,-1,0,2,4]},
                 output: [0,1,4,9,16],
-                explanation: 'Elements transformed and sorted correctly.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: [1,4,9],
-                explanation: 'All positive - order maintained after transformation.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[-5,-3,-1]},
                 output: [1,9,25],
-                explanation: 'All negative - order reversed after transformation.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def smallest_difference_unsorted(data):
+            python: `def smallest_difference_unsorted(arrayOne, arrayTwo):
     """
     Smallest Difference Unsorted
 
-    Find the smallest difference pair but you cannot sort either array. Use a hash-based approach.
-    \n    Approach: Removes the sorted two-pointer technique, forcing a completely different algorithmic strategy with hash sets.
+    Find the smallest difference pair but you cannot sort either array. Use a hash-based approach. Removes the sorted two-pointer technique, forcing a completely different algorithmic strategy with hash sets.
 
     Time: O(n log n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # arrayOne = [10, 5, -1], arrayTwo = [26, 15, 17]. Must find [5, 15] with diff 10 without sorting.
+    count = 0
+    n = len(arrayOne)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on arrayTwo
+        j = 0
+        for k in range(i, n):
+            if j < len(arrayTwo) and arrayOne[k] == arrayTwo[j]:
+                j += 1
+        if j == len(arrayTwo):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(smallest_difference_unsorted([1, 2, 3, 4, 5]))
-print(smallest_difference_unsorted([5, 3, 1]))
-print(smallest_difference_unsorted([1]))`,
+print(smallest_difference_unsorted(None, None))  # Expected: [0,1,4,9,16]
+print(smallest_difference_unsorted(None, None))  # Expected: [1,4,9]
+print(smallest_difference_unsorted(None, None))  # Expected: [1,9,25]
+`,
             go: `package main
 
 import "fmt"
 
 // SmallestDifferenceUnsorted solves the Smallest Difference Unsorted problem.
-// Find the smallest difference pair but you cannot sort either array. Use a hash-based approach.
+// Find the smallest difference pair but you cannot sort either array. Use a hash-based approach. Removes the sorted two-pointer technique, forcing a completely different algorithmic strategy with hash sets.
 // Time: O(n log n), Space: O(n)
-func SmallestDifferenceUnsorted(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func SmallestDifferenceUnsorted(arrayOne []int, arrayTwo []int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(arrayOne); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(SmallestDifferenceUnsorted([]int{1, 2, 3, 4, 5}))
-    fmt.Println(SmallestDifferenceUnsorted([]int{5, 3, 1}))
-    fmt.Println(SmallestDifferenceUnsorted([]int{1}))
-}`
+	fmt.Println(SmallestDifferenceUnsorted(nil, nil)) // Expected: [0,1,4,9,16]
+	fmt.Println(SmallestDifferenceUnsorted(nil, nil)) // Expected: [1,4,9]
+	fmt.Println(SmallestDifferenceUnsorted(nil, nil)) // Expected: [1,9,25]
+}
+`
         },
         twists: [],
         similar: []

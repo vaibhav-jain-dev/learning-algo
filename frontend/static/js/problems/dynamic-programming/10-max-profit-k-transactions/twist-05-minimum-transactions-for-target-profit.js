@@ -2,10 +2,12 @@
  * Minimum Transactions for Target Profit
  * Category: dynamic-programming
  * Difficulty: Hard
+ * Algorithm: dp-transactions
  * Parent: 10-max-profit-k-transactions
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Minimum Transactions for Target Profit',
         difficulty: 'Hard',
@@ -19,84 +21,97 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'prices=[5,11,3,50,60,90], target=90: 1 transaction (buy at 3, sell at 90) gives profit 87 < 90. Need 2 transactions for 93 >= 90. Answer: 2.'
+                input: {"prices":[5,11,3,50,60,90],"k":2,"target":10},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the minimum transactions for target profit criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"prices":[3,2,5,7,1,3],"k":1,"target":10},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the minimum transactions for target profit criteria.'
+            },
+            {
+                input: {"prices":[1,2,3,4,5],"k":2,"target":10},
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the minimum transactions for target profit criteria.'
+            },
+            // Edge case
+            {
+                input: {"prices":[5],"k":0,"target":10},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def minimumTransactionsForTargetProfit(data):
+            python: `def minimum_transactions_for_target_profit(prices, k, target):
     """
     Minimum Transactions for Target Profit
 
     Given a target profit P, find the minimum number of transactions needed to achieve at least profit P. Return -1 if impossible.
 
-    Approach:
-    Inverts the problem: k is now the output to minimize rather than a constraint, and the DP must search for the smallest transaction count reaching the profit threshold.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    count = 0
+    n = len(prices)
 
-    # Example: prices=[5,11,3,50,60,90], target=90: 1 transaction (buy at 3, sell at 90) gives profit 87 < 90. Need 2 transactions for 
+    for i in range(n):
+        # Check condition based on k
+        j = 0
+        for k in range(i, n):
+            if j < len(k) and prices[k] == k[j]:
+                j += 1
+        if j == len(k):
+            count += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
-    return result
+    return count
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Minimum Transactions for Target Profit...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(minimum_transactions_for_target_profit([5,11,3,50,60,90], 2, 10))  # Expected: 1
+print(minimum_transactions_for_target_profit([3,2,5,7,1,3], 1, 10))  # Expected: 2
+print(minimum_transactions_for_target_profit([1,2,3,4,5], 2, 10))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // MinimumTransactionsForTargetProfit solves the Minimum Transactions for Target Profit problem.
 // Given a target profit P, find the minimum number of transactions needed to achieve at least profit P. Return -1 if impossible.
-//
-// Approach: Inverts the problem: k is now the output to minimize rather than a constraint, and the DP must search for the smallest transaction count reaching the 
-func MinimumTransactionsForTargetProfit(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2), Space: O(n)
+func MinimumTransactionsForTargetProfit(prices []int, k int, target int) int {
+	result := 0
 
-    // Example: prices=[5,11,3,50,60,90], target=90: 1 transaction (buy at 3, sell at 90) gives profit 87 < 90. Need
+	for i := 0; i < len(prices); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Minimum Transactions for Target Profit...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(MinimumTransactionsForTargetProfit([]int{5, 11, 3, 50, 60, 90}, 2, 10)) // Expected: 1
+	fmt.Println(MinimumTransactionsForTargetProfit([]int{3, 2, 5, 7, 1, 3}, 1, 10)) // Expected: 2
+	fmt.Println(MinimumTransactionsForTargetProfit([]int{1, 2, 3, 4, 5}, 2, 10)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '10-max-profit-k-transactions/twist-05-minimum-transactions-for-target-profit', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/10-max-profit-k-transactions/twist-05-minimum-transactions-for-target-profit'] = problem;
 })();

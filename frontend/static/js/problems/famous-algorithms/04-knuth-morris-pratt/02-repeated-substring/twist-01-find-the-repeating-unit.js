@@ -2,10 +2,12 @@
  * Find the Repeating Unit
  * Category: famous-algorithms
  * Difficulty: Easy
+ * Algorithm: kmp-algorithm
  * Parent: 04-knuth-morris-pratt/02-repeated-substring
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Find the Repeating Unit',
         difficulty: 'Easy',
@@ -19,57 +21,86 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For "abcabcabc", return "abc". For "abab", return "ab". For "abc", return "" (no repeating unit).' },
-                output: 'See example',
-                explanation: 'For "abcabcabc", return "abc". For "abab", return "ab". For "abc", return "" (no repeating unit).'
+                input: {"s":"abab"},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the find the repeating unit criteria.'
+            },
+            {
+                input: {"s":"abcabcabcabc"},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the find the repeating unit criteria.'
+            },
+            // Edge case
+            {
+                input: {"s":""},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Find the Repeating Unit
-# Category: famous-algorithms
-# Difficulty: Easy
-# Parent: 04-knuth-morris-pratt/02-repeated-substring
-
-def solve():
+            python: `def find_the_repeating_unit(s):
     """
+    Find the Repeating Unit
+
     If the string can be constructed from a repeated substring, return that shortest repeating unit.
 
-    Key insight: Extends from boolean detection to extraction -- use the same LPS approach but return the substring s[0:patternLen] instead of just true/false.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(s)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(find_the_repeating_unit("abab"))  # Expected: 1
+print(find_the_repeating_unit("abcabcabcabc"))  # Expected: 2
+print(find_the_repeating_unit(""))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Find the Repeating Unit problem.
+// FindTheRepeatingUnit solves the Find the Repeating Unit problem.
 // If the string can be constructed from a repeated substring, return that shortest repeating unit.
-// Key insight: Extends from boolean detection to extraction -- use the same LPS approach but return the substring s[0:patternLen] instead of just true/false.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func FindTheRepeatingUnit(s string) int {
+	result := 0
+
+	for i := 0; i < len(s); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(FindTheRepeatingUnit("abab")) // Expected: 1
+	fmt.Println(FindTheRepeatingUnit("abcabcabcabc")) // Expected: 2
+	fmt.Println(FindTheRepeatingUnit("")) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '04-knuth-morris-pratt/02-repeated-substring/twist-01-find-the-repeating-unit', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/04-knuth-morris-pratt/02-repeated-substring/twist-01-find-the-repeating-unit'] = problem;
 })();

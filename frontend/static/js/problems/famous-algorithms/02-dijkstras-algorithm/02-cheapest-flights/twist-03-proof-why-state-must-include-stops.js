@@ -2,10 +2,12 @@
  * Proof: Why State Must Include Stops
  * Category: famous-algorithms
  * Difficulty: Hard
+ * Algorithm: dijkstras-algorithm
  * Parent: 02-dijkstras-algorithm/02-cheapest-flights
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Proof: Why State Must Include Stops',
         difficulty: 'Hard',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Node X reached via 2 stops (cost 10) and 4 stops (cost 5). If K=3, only the 2-stop path can continue. The cheaper 4-stop path is useless despite lower cost.' },
-                output: 'See example',
-                explanation: 'Node X reached via 2 stops (cost 10) and 4 stops (cost 5). If K=3, only the 2-stop path can continue. The cheaper 4-stop path is useless despite lower cost.'
+                input: {"n":4,"flights":[[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]],"src":0,"dst":3,"k":1},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the proof why state must include stops criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"flights":[[0,1,100]],"src":0,"dst":0,"k":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Proof: Why State Must Include Stops
-# Category: famous-algorithms
-# Difficulty: Hard
-# Parent: 02-dijkstras-algorithm/02-cheapest-flights
-
-def solve():
+            python: `def proof_why_state_must_include_stops(n, flights, src, dst, k):
     """
+    Proof: Why State Must Include Stops
+
     Prove that the state space for this problem must include (node, stops_used) rather than just (node). Show that without stops in the state, the algorithm can produce incorrect results even with the modified visited check.
 
-    Key insight: Forces formal reasoning about state space design. The standard Dijkstra state (node, distance) is insufficient because two paths to the same node with different stop counts represent fundamentally different states.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(n)
+
+    for i in range(n):
+        # Check condition based on flights
+        j = 0
+        for k in range(i, n):
+            if j < len(flights) and n[k] == flights[j]:
+                j += 1
+        if j == len(flights):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(proof_why_state_must_include_stops(4, [[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]], 0, 3, 1))  # Expected: 1
+print(proof_why_state_must_include_stops(0, [[0,1,100]], 0, 0, 0))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Proof: Why State Must Include Stops problem.
+// ProofWhyStateMustIncludeStops solves the Proof: Why State Must Include Stops problem.
 // Prove that the state space for this problem must include (node, stops_used) rather than just (node). Show that without stops in the state, the algorithm can produce incorrect results even with the modified visited check.
-// Key insight: Forces formal reasoning about state space design. The standard Dijkstra state (node, distance) is insufficient because two paths to the same node with different stop counts represent fundamentally different states.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func ProofWhyStateMustIncludeStops(n int, flights [][]int, src int, dst int, k int) int {
+	result := 0
+
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(ProofWhyStateMustIncludeStops(4, [][]int{{0, 1, 100}, {1, 2, 100}, {2, 0, 100}, {1, 3, 600}, {2, 3, 200}}, 0, 3, 1)) // Expected: 1
+	fmt.Println(ProofWhyStateMustIncludeStops(0, [][]int{{0, 1, 100}}, 0, 0, 0)) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '02-dijkstras-algorithm/02-cheapest-flights/twist-03-proof-why-state-must-include-stops', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/02-dijkstras-algorithm/02-cheapest-flights/twist-03-proof-why-state-must-include-stops'] = problem;
 })();

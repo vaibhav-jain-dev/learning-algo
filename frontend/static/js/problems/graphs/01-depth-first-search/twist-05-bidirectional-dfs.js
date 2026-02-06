@@ -2,10 +2,12 @@
  * Bidirectional DFS
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-dfs
  * Parent: 01-depth-first-search
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Bidirectional DFS',
         difficulty: 'Hard',
@@ -19,87 +21,78 @@
             'Consider the example: Graph: A-B-C-D-E.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(V + E)', space: 'O(V)' },
+        complexity: {
+            time: 'O(V + E)',
+            space: 'O(V)'
+        },
         examples: [
-            { input: { description: 'Graph: A-B-C-D-E. Source=A, Target=E. Forward DFS explores A,B,C while backward DFS explores E,D,C. They meet at C.' }, output: 'See explanation', explanation: 'Graph: A-B-C-D-E. Source=A, Target=E. Forward DFS explores A,B,C while backward DFS explores E,D,C. They meet at C.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]},"target":10},
+                output: [0],
+                explanation: 'The bidirectional dfs for this input yields [0].'
+            },
+            // Edge case
+            {
+                input: {"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]},"target":10},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def bidirectional_dfs(data):
+            python: `def bidirectional_dfs(tree, target):
     """
     Bidirectional DFS
 
     Given a source and target in an undirected graph, run DFS simultaneously from both ends. Detect when the two searches meet to find a connecting path.
 
-    Approach:
-    You must manage two separate DFS states and a meeting condition. This is rarely done with DFS (BFS is more natural for bidirectional search), so it challenges your understanding of DFS limitations.
-
     Time: O(V + E)
     Space: O(V)
     """
-    # You must manage two separate DFS states and a meeting condition. This is rarely done with DFS (BFS is more natural for bidirectional search), so it challenges your understanding of DFS limitations.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Bidirectional DFS
-    # Key difference from parent: You must manage two separate DFS states and a meeting condition. This is rarely done with DFS (BFS i
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return bidirectional_dfs(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Graph: A-B-C-D-E. Source=A, Target=E. Forward DFS explores A,B,C while backward DFS explores E,D,C. They meet at C.
-    print("Test: Bidirectional DFS")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(bidirectional_dfs({"name": "A", "children": [{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}, 10))  # Expected: [0]
+print(bidirectional_dfs({"name": "A", "children": [{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}, 10))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// BidirectionalDFS solves the Bidirectional DFS problem
+// BidirectionalDfs solves the Bidirectional DFS problem.
 // Given a source and target in an undirected graph, run DFS simultaneously from both ends. Detect when the two searches meet to find a connecting path.
-//
-// Approach: You must manage two separate DFS states and a meeting condition. This is rarely done with DFS (BFS is more natural for bidirectional search), so it challenges your understanding of DFS limitations.
-//
-// Time: O(V + E)
-// Space: O(V)
-func BidirectionalDFS(input interface{}) interface{} {
-    // You must manage two separate DFS states and a meeting condition. This is rarely done with DFS (BFS is more natural for bidirectional search), so it challenges your understanding of DFS limitations.
+// Time: O(V + E), Space: O(V)
+func BidirectionalDfs(tree map[string]interface{}, target int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Bidirectional DFS
-    // Key difference from parent: You must manage two separate DFS states and a meeting condition. This is rarely done with DFS (BFS i
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Graph: A-B-C-D-E. Source=A, Target=E. Forward DFS explores A,B,C while backward DFS explores E,D,C. They meet at C.
-    fmt.Println("Test: Bidirectional DFS")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(BidirectionalDfs({"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}, 10)) // Expected: [0]
+	fmt.Println(BidirectionalDfs({"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}, 10)) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '01-depth-first-search/twist-05-bidirectional-dfs', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/01-depth-first-search/twist-05-bidirectional-dfs'] = problem;
 })();

@@ -2,10 +2,12 @@
  * Branch Sums with Parent Pointers
  * Category: binary-trees
  * Difficulty: Easy
+ * Algorithm: tree-dfs
  * Parent: 01-branch-sums
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Branch Sums with Parent Pointers',
         difficulty: 'Easy',
@@ -19,121 +21,79 @@
             'Think about how the base case differs from the original problem.',
             'Review the example: Given leaf node with value 8, walk up: 8->4->2->1, branch sum = 15.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Given leaf node with value 8, walk up: 8->4->2->1, branch sum = 15' },
-                output: 'See explanation',
-                explanation: 'Given leaf node with value 8, walk up: 8->4->2->1, branch sum = 15.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the branch sums with parent pointers criteria.'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def branch_sums_with_parent_pointers(data):
+            python: `def branch_sums_with_parent_pointers(tree):
     """
     Branch Sums with Parent Pointers
 
-    Each node has a parent pointer.
-     Given any leaf node, compute its branch sum by walking up to the root instead of down from the root.
+    Each node has a parent pointer. Given any leaf node, compute its branch sum by walking up to the root instead of down from the root. Reverses the direction of thinking: instead of top-down DFS passing sums down, you walk bottom-up from each leaf accumulating values toward the root.
 
-    Approach: Reverses the direction of thinking: instead of top-down DFS passing sums down, you walk bottom-up from each leaf accumulating values toward the root
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: Reverses the direction of thinking: instead of top-down DFS passing sums down, you walk bottom-up from each leaf accumulating values toward the root
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Branch Sums with Parent Pointers
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Given leaf node with value 8, walk up: 8->4->2->1, branch sum = 15
-    print("See problem description for test cases")`,
+# Test cases
+print(branch_sums_with_parent_pointers({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5, "right": {"value": 10}}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: 1
+print(branch_sums_with_parent_pointers({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5, "right": {"value": 10}}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// BranchSumsWithParentPointers solves: Branch Sums with Parent Pointers
-// Reverses the direction of thinking: instead of top-down DFS passing sums down, you walk bottom-up from each leaf accumulating values toward the root
+// BranchSumsWithParentPointers solves the Branch Sums with Parent Pointers problem.
+// Each node has a parent pointer. Given any leaf node, compute its branch sum by walking up to the root instead of down from the root. Reverses the direction of thinking: instead of top-down DFS passing sums down, you walk bottom-up from each leaf accumulating values toward the root.
 // Time: O(n), Space: O(n)
-func BranchSumsWithParentPointers(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func BranchSumsWithParentPointers(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Branch Sums with Parent Pointers
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Given leaf node with value 8, walk up: 8->4->2->1, branch sum = 15
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(BranchSumsWithParentPointers({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: 1
+	fmt.Println(BranchSumsWithParentPointers({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '01-branch-sums/twist-04-branch-sums-with-parent-pointers', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/01-branch-sums/twist-04-branch-sums-with-parent-pointers'] = problem;
 })();

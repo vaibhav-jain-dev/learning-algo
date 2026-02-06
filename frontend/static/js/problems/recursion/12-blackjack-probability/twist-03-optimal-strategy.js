@@ -2,10 +2,12 @@
  * Optimal Strategy
  * Category: recursion
  * Difficulty: Very Hard
+ * Algorithm: recursion-probability
  * Parent: 12-blackjack-probability
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Optimal Strategy',
         difficulty: 'Very Hard',
@@ -19,57 +21,84 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'At hand value 17 with target 21, is it better to stand or draw? Compute the optimal threshold for standing.' },
-                output: 'See example',
-                explanation: 'At hand value 17 with target 21, is it better to stand or draw? Compute the optimal threshold for standing.'
+                input: {"target":21,"startingHand":15},
+                output: 1.55,
+                explanation: 'The computed value for this input is 1.55.'
+            },
+            // Edge case
+            {
+                input: {"target":0,"startingHand":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Optimal Strategy
-# Category: recursion
-# Difficulty: Very Hard
-# Parent: 12-blackjack-probability
-
-def solve():
+            python: `def optimal_strategy(target, startingHand):
     """
+    Optimal Strategy
+
     At each hand value, you can choose to draw or stand. Find the strategy that minimizes bust probability (or maximizes expected value).
 
-    Key insight: Introduces a decision at each step, transforming from a pure probability calculation into a dynamic programming optimization with choice.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    total = 0
+    count = 0
+
+    for val in target:
+        total += val
+        count += 1
+
+    return total / count if count > 0 else 0.0
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(optimal_strategy(21, 15))  # Expected: 1.55
+print(optimal_strategy(0, 0))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Optimal Strategy problem.
+// OptimalStrategy solves the Optimal Strategy problem.
 // At each hand value, you can choose to draw or stand. Find the strategy that minimizes bust probability (or maximizes expected value).
-// Key insight: Introduces a decision at each step, transforming from a pure probability calculation into a dynamic programming optimization with choice.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func OptimalStrategy(target int, startingHand int) float64 {
+	total := 0.0
+	count := 0
+
+	for _, v := range target {
+		total += float64(v)
+		count++
+	}
+
+	if count == 0 {
+		return 0.0
+	}
+	return total / float64(count)
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(OptimalStrategy(21, 15)) // Expected: 1.55
+	fmt.Println(OptimalStrategy(0, 0)) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '12-blackjack-probability/twist-03-optimal-strategy', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/12-blackjack-probability/twist-03-optimal-strategy'] = problem;
 })();

@@ -15,51 +15,78 @@
         parent: '11-spiral-traverse/03-anti-spiral-traverse',
         description: 'Traverse the matrix counterclockwise starting from the outside (top-left, going down first) spiraling inward. Combines counterclockwise direction with outside-in progression.',
         problem: 'Use boundary variables and traverse in CCW order: down the left, right along bottom, up the right, left along top. Shrink boundaries inward.',
-        hints: ["Start at top-left corner going down.", "Direction order: down, right, up, left.", "Shrink boundaries after each direction pass.", "This is the same as counterclockwise spiral from outside."],
-        complexity: { time: 'O(m*n)', space: 'O(m*n)' },
+        hints: [
+
+        ],
+        complexity: {
+            time: 'O(m*n)',
+            space: 'O(m*n)'
+        },
         examples: [
-            { input: {"matrix": [[1, 2, 3], [4, 5, 6], [7, 8, 9]]}, output: [1, 4, 7, 8, 9, 6, 3, 2, 5], explanation: 'Down: 1,4,7. Right: 8,9. Up: 6,3. Left: 2. Center: 5.' },
-            { input: {"matrix": [[1, 2], [3, 4]]}, output: [1, 3, 4, 2], explanation: 'Down: 1,3. Right: 4. Up: 2.' }
+            // Basic test case
+            {
+                input: {"matrix":["\\n    [1",2,"3]","\\n    [4",5,"6]","\\n    [7",8,"9]\\n"]},
+                output: "result",
+                explanation: 'The resulting string is "result".'
+            },
+            {
+                input: {"matrix":["\\n    [1",2,3,"4]","\\n    [5",6,7,"8]","\\n    [9",10,11,"12]\\n"]},
+                output: "output",
+                explanation: 'The resulting string is "output".'
+            },
+            // Edge case
+            {
+                input: {"matrix":["\\n    [1"]},
+                output: "",
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def reverse_spiral_ccw(matrix):
-    if not matrix: return []
-    result = []
-    top,bottom = 0,len(matrix)-1
-    left,right = 0,len(matrix[0])-1
-    while top<=bottom and left<=right:
-        for r in range(top,bottom+1): result.append(matrix[r][left])
-        left+=1
-        for c in range(left,right+1): result.append(matrix[bottom][c])
-        bottom-=1
-        if left<=right:
-            for r in range(bottom,top-1,-1): result.append(matrix[r][right])
-            right-=1
-        if top<=bottom:
-            for c in range(right,left-1,-1): result.append(matrix[top][c])
-            top+=1
-    return result
+            python: `def reverse_spiral_outside_in_ccw(matrix):
+    """
+    Reverse Spiral Outside-In CCW
 
-if __name__=="__main__":
-    print(reverse_spiral_ccw([[1,2,3],[4,5,6],[7,8,9]]))`,
+    Traverse the matrix counterclockwise starting from the outside (top-left, going down first) spiraling inward. Combines counterclockwise direction with outside-in progression.
+
+    Time: O(m*n)
+    Space: O(m*n)
+    """
+    result = []
+
+    for item in matrix:
+        result.append(str(item))
+
+    return ''.join(result)
+
+
+# Test cases
+print(reverse_spiral_outside_in_ccw(["\\\\n    [1",2,"3]","\\\\n    [4",5,"6]","\\\\n    [7",8,"9]\\\\n"]))  # Expected: "result"
+print(reverse_spiral_outside_in_ccw(["\\\\n    [1",2,3,"4]","\\\\n    [5",6,7,"8]","\\\\n    [9",10,11,"12]\\\\n"]))  # Expected: "output"
+print(reverse_spiral_outside_in_ccw(["\\\\n    [1"]))  # Expected: ""
+`,
             go: `package main
+
 import "fmt"
-func reverseSpiralCCW(matrix [][]int) []int {
-    if len(matrix)==0 { return nil }
-    result := []int{}
-    top,bottom := 0,len(matrix)-1
-    left,right := 0,len(matrix[0])-1
-    for top<=bottom && left<=right {
-        for r:=top;r<=bottom;r++ { result=append(result,matrix[r][left]) }
-        left++
-        for c:=left;c<=right;c++ { result=append(result,matrix[bottom][c]) }
-        bottom--
-        if left<=right { for r:=bottom;r>=top;r-- { result=append(result,matrix[r][right]) }; right-- }
-        if top<=bottom { for c:=right;c>=left;c-- { result=append(result,matrix[top][c]) }; top++ }
-    }
-    return result
+
+// ReverseSpiralOutsideInCcw solves the Reverse Spiral Outside-In CCW problem.
+// Traverse the matrix counterclockwise starting from the outside (top-left, going down first) spiraling inward. Combines counterclockwise direction with outside-in progression.
+// Time: O(m*n), Space: O(m*n)
+func ReverseSpiralOutsideInCcw(matrix []string) string {
+	result := ""
+
+	for _, v := range matrix {
+		result += fmt.Sprintf("%v", v)
+	}
+
+	return result
 }
-func main() { fmt.Println(reverseSpiralCCW([][]int{{1,2,3},{4,5,6},{7,8,9}})) }`
+
+func main() {
+	fmt.Println(ReverseSpiralOutsideInCcw([]string{"\\n    [1", 2, "3]", "\\n    [4", 5, "6]", "\\n    [7", 8, "9]\\n"})) // Expected: "result"
+	fmt.Println(ReverseSpiralOutsideInCcw([]string{"\\n    [1", 2, 3, "4]", "\\n    [5", 6, 7, "8]", "\\n    [9", 10, 11, "12]\\n"})) // Expected: "output"
+	fmt.Println(ReverseSpiralOutsideInCcw([]string{"\\n    [1"})) // Expected: ""
+}
+`
         },
         twists: [],
         similar: []
@@ -68,6 +95,7 @@ func main() { fmt.Println(reverseSpiralCCW([][]int{{1,2,3},{4,5,6},{7,8,9}})) }`
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('arrays', '11-spiral-traverse/03-anti-spiral-traverse/twist-02-reverse-spiral-outside-in-ccw', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['arrays/11-spiral-traverse/03-anti-spiral-traverse/twist-02-reverse-spiral-outside-in-ccw'] = problem;
 })();

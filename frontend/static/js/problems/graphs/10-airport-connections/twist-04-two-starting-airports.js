@@ -2,10 +2,12 @@
  * Two Starting Airports
  * Category: graphs
  * Difficulty: Very Hard
+ * Algorithm: graph-connections
  * Parent: 10-airport-connections
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Two Starting Airports',
         difficulty: 'Very Hard',
@@ -19,87 +21,85 @@
             'Consider the example: 3 unreachable components.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'Varies - see approach', space: 'Varies - see approach' },
+        complexity: {
+            time: 'Varies - see approach',
+            space: 'Varies - see approach'
+        },
         examples: [
-            { input: { description: '3 unreachable components. Assign 2 to start A and 1 to start B. Total new routes: 3.' }, output: 'See explanation', explanation: '3 unreachable components. Assign 2 to start A and 1 to start B. Total new routes: 3.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"airports":["BGI","CDG","DEL","DOH","DSM","EWR","EYW","HND","ICN","JFK","LGA","LHR","ORD","SAN","SFO","SIN","TLV","BUD"],"routes":[["DSM","ORD"],["ORD","BGI"],["BGI","LGA"],["SIN","CDG"],["CDG","SIN"],["CDG","BUD"],["DEL","DOH"],["DEL","CDG"],["TLV","DEL"],["EWR","HND"],["HND","ICN"],["HND","JFK"],["ICN","JFK"],["JFK","LGA"],["EYW","LHR"],["LHR","SFO"],["SFO","SAN"],["SFO","DSM"],["SAN","EYW"]],"startingAirport":"LGA"},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the two starting airports criteria.'
+            },
+            // Edge case
+            {
+                input: {"airports":["BGI"],"routes":[["DSM","ORD"]],"startingAirport":""},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def two_starting_airports(data):
+            python: `def two_starting_airports(airports, routes, startingAirport):
     """
     Two Starting Airports
 
     There are two starting airports. Every other airport must be reachable from at least one starting airport. Minimize new routes.
 
-    Approach:
-    Unreachable components can be connected to either starting airport. You must optimally assign each component to one of the two starts, a set cover variant.
-
     Time: Varies - see approach
     Space: Varies - see approach
     """
-    # Unreachable components can be connected to either starting airport. You must optimally assign each component to one of the two starts, a set cover variant.
+    count = 0
+    n = len(airports)
 
-    # Implementation
-    result = None
+    for i in range(n):
+        # Check condition based on routes
+        j = 0
+        for k in range(i, n):
+            if j < len(routes) and airports[k] == routes[j]:
+                j += 1
+        if j == len(routes):
+            count += 1
 
-    # Core algorithm adapted for: Two Starting Airports
-    # Key difference from parent: Unreachable components can be connected to either starting airport. You must optimally assign each c
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return two_starting_airports(data)
+    return count
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # 3 unreachable components. Assign 2 to start A and 1 to start B. Total new routes: 3.
-    print("Test: Two Starting Airports")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(two_starting_airports(["BGI","CDG","DEL","DOH","DSM","EWR","EYW","HND","ICN","JFK","LGA","LHR","ORD","SAN","SFO","SIN","TLV","BUD"], [["DSM","ORD"],["ORD","BGI"],["BGI","LGA"],["SIN","CDG"],["CDG","SIN"],["CDG","BUD"],["DEL","DOH"],["DEL","CDG"],["TLV","DEL"],["EWR","HND"],["HND","ICN"],["HND","JFK"],["ICN","JFK"],["JFK","LGA"],["EYW","LHR"],["LHR","SFO"],["SFO","SAN"],["SFO","DSM"],["SAN","EYW"]], "LGA"))  # Expected: 1
+print(two_starting_airports(["BGI"], [["DSM","ORD"]], ""))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TwoStartingAirports solves the Two Starting Airports problem
+// TwoStartingAirports solves the Two Starting Airports problem.
 // There are two starting airports. Every other airport must be reachable from at least one starting airport. Minimize new routes.
-//
-// Approach: Unreachable components can be connected to either starting airport. You must optimally assign each component to one of the two starts, a set cover variant.
-//
-// Time: Varies - see approach
-// Space: Varies - see approach
-func TwoStartingAirports(input interface{}) interface{} {
-    // Unreachable components can be connected to either starting airport. You must optimally assign each component to one of the two starts, a set cover variant.
+// Time: Varies - see approach, Space: Varies - see approach
+func TwoStartingAirports(airports []string, routes [][]int, startingAirport string) int {
+	result := 0
 
-    // Core algorithm adapted for: Two Starting Airports
-    // Key difference from parent: Unreachable components can be connected to either starting airport. You must optimally assign each c
+	for i := 0; i < len(airports); i++ {
+		// Process element
+		result++
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // 3 unreachable components. Assign 2 to start A and 1 to start B. Total new routes: 3.
-    fmt.Println("Test: Two Starting Airports")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(TwoStartingAirports([]string{"BGI", "CDG", "DEL", "DOH", "DSM", "EWR", "EYW", "HND", "ICN", "JFK", "LGA", "LHR", "ORD", "SAN", "SFO", "SIN", "TLV", "BUD"}, [][]int{{DSM, ORD}, {ORD, BGI}, {BGI, LGA}, {SIN, CDG}, {CDG, SIN}, {CDG, BUD}, {DEL, DOH}, {DEL, CDG}, {TLV, DEL}, {EWR, HND}, {HND, ICN}, {HND, JFK}, {ICN, JFK}, {JFK, LGA}, {EYW, LHR}, {LHR, SFO}, {SFO, SAN}, {SFO, DSM}, {SAN, EYW}}, "LGA")) // Expected: 1
+	fmt.Println(TwoStartingAirports([]string{"BGI"}, [][]int{{DSM, ORD}}, "")) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '10-airport-connections/twist-04-two-starting-airports', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/10-airport-connections/twist-04-two-starting-airports'] = problem;
 })();

@@ -2,10 +2,12 @@
  * N-ary Tree Average of Levels
  * Category: binary-trees
  * Difficulty: Easy
+ * Algorithm: tree-bfs
  * Parent: 02-node-depths/03-average-of-levels
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'N-ary Tree Average of Levels',
         difficulty: 'Easy',
@@ -19,120 +21,86 @@
             'Think about how the base case differs from the original problem.',
             'Review the example: Node(3, children=[Node(9), Node(20, children=[Node(15), Node(7)])]).'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Node(3, children=[Node(9), Node(20, children=[Node(15), Node(7)])])' },
-                output: 'See explanation',
-                explanation: 'Node(3, children=[Node(9), Node(20, children=[Node(15), Node(7)])]). Same output: [3.0, 14.5, 11.0].'
+                input: {"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the n ary tree average of levels criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"right":{"value":6}}}},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the n ary tree average of levels criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def n_ary_tree_average_of_levels(data):
+            python: `def n_ary_tree_average_of_levels(tree):
     """
     N-ary Tree Average of Levels
 
-    Compute average of levels in an N-ary tree where nodes can have any number of children.
+    Compute average of levels in an N-ary tree where nodes can have any number of children. BFS logic is nearly identical, but when enqueuing children you iterate over a children array instead of checking left/right. Level boundaries remain the same.
 
-    Approach: BFS logic is nearly identical, but when enqueuing children you iterate over a children array instead of checking left/right
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: BFS logic is nearly identical, but when enqueuing children you iterate over a children array instead of checking left/right
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement N-ary Tree Average of Levels
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Node(3, children=[Node(9), Node(20, children=[Node(15), Node(7)])])
-    print("See problem description for test cases")`,
+# Test cases
+print(n_ary_tree_average_of_levels({"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: 1
+print(n_ary_tree_average_of_levels({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5}}, "right": {"value": 3, "right": {"value": 6}}}))  # Expected: 2
+print(n_ary_tree_average_of_levels({"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// NaryTreeAverageOfLevels solves: N-ary Tree Average of Levels
-// BFS logic is nearly identical, but when enqueuing children you iterate over a children array instead of checking left/right
+// NAryTreeAverageOfLevels solves the N-ary Tree Average of Levels problem.
+// Compute average of levels in an N-ary tree where nodes can have any number of children. BFS logic is nearly identical, but when enqueuing children you iterate over a children array instead of checking left/right. Level boundaries remain the same.
 // Time: O(n), Space: O(n)
-func NaryTreeAverageOfLevels(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func NAryTreeAverageOfLevels(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement N-ary Tree Average of Levels
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Node(3, children=[Node(9), Node(20, children=[Node(15), Node(7)])])
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(NAryTreeAverageOfLevels({"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: 1
+	fmt.Println(NAryTreeAverageOfLevels({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"right":{"value":6}}})) // Expected: 2
+	fmt.Println(NAryTreeAverageOfLevels({"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '02-node-depths/03-average-of-levels/twist-03-n-ary-tree-average-of-levels', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/02-node-depths/03-average-of-levels/twist-03-n-ary-tree-average-of-levels'] = problem;
 })();

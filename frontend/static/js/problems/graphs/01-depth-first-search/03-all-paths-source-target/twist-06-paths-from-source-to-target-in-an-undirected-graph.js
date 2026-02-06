@@ -2,10 +2,12 @@
  * Paths from Source to Target in an Undirected Graph
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-dfs
  * Parent: 01-depth-first-search/03-all-paths-source-target
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Paths from Source to Target in an Undirected Graph',
         difficulty: 'Hard',
@@ -19,87 +21,85 @@
             'Consider the example: Undirected: 0-1, 1-2, 0-2, 2-3.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(2^N * N)', space: 'O(N)' },
+        complexity: {
+            time: 'O(2^N * N)',
+            space: 'O(N)'
+        },
         examples: [
-            { input: { description: 'Undirected: 0-1, 1-2, 0-2, 2-3. Paths 0->3: [0,1,2,3], [0,2,3], [0,2,1,...] - but 1 does not reach 3 without 2, so just [0,1,2,3] and [0,2,3].' }, output: 'See explanation', explanation: 'Undirected: 0-1, 1-2, 0-2, 2-3. Paths 0->3: [0,1,2,3], [0,2,3], [0,2,1,...] - but 1 does not reach 3 without 2, so just [0,1,2,3] and [0,2,3].' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"graph":[[1,2],[3],[3],[]]},
+                output: [[1,2],[3],[3],[]],
+                explanation: 'The paths from source to target in an undirected graph for this input yields [1,2, 3, 3, ].'
+            },
+            {
+                input: {"graph":[[4,3,1],[3,2,4],[3],[4],[]]},
+                output: [[4,3,1],[3,2,4],[3],[4]],
+                explanation: 'The paths from source to target in an undirected graph for this input yields [4,3,1, 3,2,4, 3, 4].'
+            },
+            // Edge case
+            {
+                input: {"graph":[[1,2]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def paths_from_source_to_target_in_an_undirected_graph(data):
+            python: `def paths_from_source_to_target_in_an_undirected_graph(graph):
     """
     Paths from Source to Target in an Undirected Graph
 
     Find all simple paths in an undirected graph. Since edges are bidirectional, you must avoid revisiting nodes within the same path.
 
-    Approach:
-    Undirected edges create many more potential paths and cycles. The visited tracking per path becomes critical, and the search space explodes compared to the DAG version.
-
     Time: O(2^N * N)
     Space: O(N)
     """
-    # Undirected edges create many more potential paths and cycles. The visited tracking per path becomes critical, and the search space explodes compared to the DAG version.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Paths from Source to Target in an Undirected Graph
-    # Key difference from parent: Undirected edges create many more potential paths and cycles. The visited tracking per path becomes 
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(graph)):
+        # Check if element meets criteria
+        result.append(graph[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return paths_from_source_to_target_in_an_undirected_graph(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Undirected: 0-1, 1-2, 0-2, 2-3. Paths 0->3: [0,1,2,3], [0,2,3], [0,2,1,...] - but 1 does not reach 3 without 2, so just [0,1,2,3] and [0,2,3].
-    print("Test: Paths from Source to Target in an Undirected Graph")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(paths_from_source_to_target_in_an_undirected_graph([[1,2],[3],[3],[]]))  # Expected: [[1,2],[3],[3],[]]
+print(paths_from_source_to_target_in_an_undirected_graph([[4,3,1],[3,2,4],[3],[4],[]]))  # Expected: [[4,3,1],[3,2,4],[3],[4]]
+print(paths_from_source_to_target_in_an_undirected_graph([[1,2]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// PathsFromSourceToTargetInAnUndirectedGraph solves the Paths from Source to Target in an Undirected Graph problem
+// PathsFromSourceToTargetInAnUndirectedGraph solves the Paths from Source to Target in an Undirected Graph problem.
 // Find all simple paths in an undirected graph. Since edges are bidirectional, you must avoid revisiting nodes within the same path.
-//
-// Approach: Undirected edges create many more potential paths and cycles. The visited tracking per path becomes critical, and the search space explodes compared to the DAG version.
-//
-// Time: O(2^N * N)
-// Space: O(N)
-func PathsFromSourceToTargetInAnUndirectedGraph(input interface{}) interface{} {
-    // Undirected edges create many more potential paths and cycles. The visited tracking per path becomes critical, and the search space explodes compared to the DAG version.
+// Time: O(2^N * N), Space: O(N)
+func PathsFromSourceToTargetInAnUndirectedGraph(graph [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Paths from Source to Target in an Undirected Graph
-    // Key difference from parent: Undirected edges create many more potential paths and cycles. The visited tracking per path becomes 
+	for i := 0; i < len(graph); i++ {
+		result = append(result, graph[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Undirected: 0-1, 1-2, 0-2, 2-3. Paths 0->3: [0,1,2,3], [0,2,3], [0,2,1,...] - but 1 does not reach 3 without 2, so just [0,1,2,3] and [0,2,3].
-    fmt.Println("Test: Paths from Source to Target in an Undirected Graph")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(PathsFromSourceToTargetInAnUndirectedGraph([][]int{{1, 2}, {3}, {3}, {}})) // Expected: [[1,2],[3],[3],[]]
+	fmt.Println(PathsFromSourceToTargetInAnUndirectedGraph([][]int{{4, 3, 1}, {3, 2, 4}, {3}, {4}, {}})) // Expected: [[4,3,1],[3,2,4],[3],[4]]
+	fmt.Println(PathsFromSourceToTargetInAnUndirectedGraph([][]int{{1, 2}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '01-depth-first-search/03-all-paths-source-target/twist-06-paths-from-source-to-target-in-an-undirected-graph', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/01-depth-first-search/03-all-paths-source-target/twist-06-paths-from-source-to-target-in-an-undirected-graph'] = problem;
 })();

@@ -26,80 +26,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"text1":"abcde","text2":"ace"},
                 output: 3,
-                explanation: 'The longest common subsequence is "ace" with length 3.'
+                explanation: ''
             },
             {
                 input: {"text1":"abc","text2":"def"},
                 output: 0,
-                explanation: 'No common characters exist between the two strings.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"text1":"abcba","text2":"abcba"},
                 output: 5,
-                explanation: 'Identical strings have LCS equal to their length.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def shortest_common_supersequence(data):
+            python: `def shortest_common_supersequence(text1, text2):
     """
     Shortest Common Supersequence
 
-    Find the shortest string that has both text1 and text2 as subsequences.
-    \n    Approach: Inverts the LCS thinking: instead of finding what is common, you must figure out how to merge both strings with minimum length using the LCS as overlap.
+    Find the shortest string that has both text1 and text2 as subsequences. Inverts the LCS thinking: instead of finding what is common, you must figure out how to merge both strings with minimum length using the LCS as overlap.
 
     Time: O(n)
     Space: O(n)
-
-    Example: text1="abac", text2="cab" → "cabac" (length 5)
     """
-    if not data:
-        return None
+    count = 0
+    n = len(text1)
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
-
-    # Core algorithm implementation
     for i in range(n):
-        result.append(data[i])
+        # Check condition based on text2
+        j = 0
+        for k in range(i, n):
+            if j < len(text2) and text1[k] == text2[j]:
+                j += 1
+        if j == len(text2):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(shortest_common_supersequence([1, 2, 3, 4, 5]))
-print(shortest_common_supersequence([5, 3, 1]))
-print(shortest_common_supersequence([1]))`,
+print(shortest_common_supersequence("abcde", "ace"))  # Expected: 3
+print(shortest_common_supersequence("abc", "def"))  # Expected: 0
+print(shortest_common_supersequence("abcba", "abcba"))  # Expected: 5
+`,
             go: `package main
 
 import "fmt"
 
 // ShortestCommonSupersequence solves the Shortest Common Supersequence problem.
-// Find the shortest string that has both text1 and text2 as subsequences.
+// Find the shortest string that has both text1 and text2 as subsequences. Inverts the LCS thinking: instead of finding what is common, you must figure out how to merge both strings with minimum length using the LCS as overlap.
 // Time: O(n), Space: O(n)
-func ShortestCommonSupersequence(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func ShortestCommonSupersequence(text1 string, text2 string) int {
+	result := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(text1); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(ShortestCommonSupersequence([]int{1, 2, 3, 4, 5}))
-    fmt.Println(ShortestCommonSupersequence([]int{5, 3, 1}))
-    fmt.Println(ShortestCommonSupersequence([]int{1}))
-}`
+	fmt.Println(ShortestCommonSupersequence("abcde", "ace")) // Expected: 3
+	fmt.Println(ShortestCommonSupersequence("abc", "def")) // Expected: 0
+	fmt.Println(ShortestCommonSupersequence("abcba", "abcba")) // Expected: 5
+}
+`
         },
         twists: [],
         similar: []

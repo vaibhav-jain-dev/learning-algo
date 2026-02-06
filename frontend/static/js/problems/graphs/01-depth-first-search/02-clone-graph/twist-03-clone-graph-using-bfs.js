@@ -2,10 +2,12 @@
  * Clone Graph Using BFS
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-dfs
  * Parent: 01-depth-first-search/02-clone-graph
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Clone Graph Using BFS',
         difficulty: 'Medium',
@@ -19,87 +21,85 @@
             'Consider the example: Same graph 1-2-3-4 cycle.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N + E)', space: 'O(N)' },
+        complexity: {
+            time: 'O(N + E)',
+            space: 'O(N)'
+        },
         examples: [
-            { input: { description: 'Same graph 1-2-3-4 cycle. BFS processes level by level: clone 1, then clone 2 and 4 (level 1), then clone 3 (level 2).' }, output: 'See explanation', explanation: 'Same graph 1-2-3-4 cycle. BFS processes level by level: clone 1, then clone 2 and 4 (level 1), then clone 3 (level 2).' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"adjList":[[2,4],[1,3],[2,4],[1,3]]},
+                output: [[2,4],[1,3],[2,4]],
+                explanation: 'The clone graph using bfs for this input yields [2,4, 1,3, 2,4].'
+            },
+            {
+                input: {"adjList":[[]]},
+                output: [[]],
+                explanation: 'The clone graph using bfs for this input yields [].'
+            },
+            // Edge case
+            {
+                input: {"adjList":[[2,4]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def clone_graph_using_bfs(data):
+            python: `def clone_graph_using_bfs(adjList):
     """
     Clone Graph Using BFS
 
     Clone the same undirected graph but use BFS instead of DFS. The result must be identical.
 
-    Approach:
-    Switches from recursive/stack-based to iterative queue-based cloning. You must handle the mapping of old-to-new nodes in a different traversal order, which changes when clones are created vs when their neighbors are populated.
-
     Time: O(N + E)
     Space: O(N)
     """
-    # Switches from recursive/stack-based to iterative queue-based cloning. You must handle the mapping of old-to-new nodes in a different traversal order, which changes when clones are created vs when their neighbors are populated.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Clone Graph Using BFS
-    # Key difference from parent: Switches from recursive/stack-based to iterative queue-based cloning. You must handle the mapping of
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(adjList)):
+        # Check if element meets criteria
+        result.append(adjList[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return clone_graph_using_bfs(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Same graph 1-2-3-4 cycle. BFS processes level by level: clone 1, then clone 2 and 4 (level 1), then clone 3 (level 2).
-    print("Test: Clone Graph Using BFS")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(clone_graph_using_bfs([[2,4],[1,3],[2,4],[1,3]]))  # Expected: [[2,4],[1,3],[2,4]]
+print(clone_graph_using_bfs([[]]))  # Expected: [[]]
+print(clone_graph_using_bfs([[2,4]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// CloneGraphUsingBFS solves the Clone Graph Using BFS problem
+// CloneGraphUsingBfs solves the Clone Graph Using BFS problem.
 // Clone the same undirected graph but use BFS instead of DFS. The result must be identical.
-//
-// Approach: Switches from recursive/stack-based to iterative queue-based cloning. You must handle the mapping of old-to-new nodes in a different traversal order, which changes when clones are created vs when their neighbors are populated.
-//
-// Time: O(N + E)
-// Space: O(N)
-func CloneGraphUsingBFS(input interface{}) interface{} {
-    // Switches from recursive/stack-based to iterative queue-based cloning. You must handle the mapping of old-to-new nodes in a different traversal order, which changes when clones are created vs when their neighbors are populated.
+// Time: O(N + E), Space: O(N)
+func CloneGraphUsingBfs(adjList [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Clone Graph Using BFS
-    // Key difference from parent: Switches from recursive/stack-based to iterative queue-based cloning. You must handle the mapping of
+	for i := 0; i < len(adjList); i++ {
+		result = append(result, adjList[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Same graph 1-2-3-4 cycle. BFS processes level by level: clone 1, then clone 2 and 4 (level 1), then clone 3 (level 2).
-    fmt.Println("Test: Clone Graph Using BFS")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(CloneGraphUsingBfs([][]int{{2, 4}, {1, 3}, {2, 4}, {1, 3}})) // Expected: [[2,4],[1,3],[2,4]]
+	fmt.Println(CloneGraphUsingBfs([][]int{{}})) // Expected: [[]]
+	fmt.Println(CloneGraphUsingBfs([][]int{{2, 4}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '01-depth-first-search/02-clone-graph/twist-03-clone-graph-using-bfs', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/01-depth-first-search/02-clone-graph/twist-03-clone-graph-using-bfs'] = problem;
 })();

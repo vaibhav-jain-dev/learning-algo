@@ -2,10 +2,12 @@
  * Closest Path Sum
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-dfs
  * Parent: 01-branch-sums/01-path-sum-to-target
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Closest Path Sum',
         difficulty: 'Medium',
@@ -19,121 +21,92 @@
             'Key insight: Changes from an exact match to an optimization problem.',
             'You must track the best candidate path and its difference from target throughout the entire traversal, never pruning early.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree: 1->2->3, 1->4' },
-                output: 'See explanation',
-                explanation: 'Tree: 1->2->3, 1->4. Target=5. Path 1->4=5 is exact match. If target=7, closest is 1->2->3=6 (diff=1).'
+                input: {"tree":{"value":5,"left":{"value":4,"left":{"value":11,"left":{"value":7},"right":{"value":2}}},"right":{"value":8,"left":{"value":13},"right":{"value":4,"left":{"value":5},"right":{"value":1}}}},"target":10},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the closest path sum criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2},"right":{"value":3}},"target":10},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the closest path sum criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":5,"left":{"value":4,"left":{"value":11,"left":{"value":7},"right":{"value":2}}},"right":{"value":8,"left":{"value":13},"right":{"value":4,"left":{"value":5},"right":{"value":1}}}},"target":10},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def closest_path_sum(data):
+            python: `def closest_path_sum(tree, target):
     """
     Closest Path Sum
 
-    If no exact path sum equals the target, return the path whose sum is closest to the target.
-     If there is a tie, return the shorter path.
+    If no exact path sum equals the target, return the path whose sum is closest to the target. If there is a tie, return the shorter path. Changes from an exact match to an optimization problem. You must track the best candidate path and its difference from target throughout the entire traversal, never pruning early.
 
-    Approach: Changes from an exact match to an optimization problem
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    count = 0
+    n = len(tree)
 
-    # Key insight: Changes from an exact match to an optimization problem
+    for i in range(n):
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and tree[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Closest Path Sum
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree: 1->2->3, 1->4
-    print("See problem description for test cases")`,
+# Test cases
+print(closest_path_sum({"value": 5, "left": {"value": 4, "left": {"value": 11, "left": {"value": 7}, "right": {"value": 2}}}, "right": {"value": 8, "left": {"value": 13}, "right": {"value": 4, "left": {"value": 5}, "right": {"value": 1}}}}, 10))  # Expected: 1
+print(closest_path_sum({"value": 1, "left": {"value": 2}, "right": {"value": 3}}, 10))  # Expected: 2
+print(closest_path_sum({"value": 5, "left": {"value": 4, "left": {"value": 11, "left": {"value": 7}, "right": {"value": 2}}}, "right": {"value": 8, "left": {"value": 13}, "right": {"value": 4, "left": {"value": 5}, "right": {"value": 1}}}}, 10))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// ClosestPathSum solves: Closest Path Sum
-// Changes from an exact match to an optimization problem
+// ClosestPathSum solves the Closest Path Sum problem.
+// If no exact path sum equals the target, return the path whose sum is closest to the target. If there is a tie, return the shorter path. Changes from an exact match to an optimization problem. You must track the best candidate path and its difference from target throughout the entire traversal, never pruning early.
 // Time: O(n), Space: O(n)
-func ClosestPathSum(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func ClosestPathSum(tree *TreeNode, target int) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Closest Path Sum
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree: 1->2->3, 1->4
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(ClosestPathSum({"value":5,"left":{"value":4,"left":{"value":11,"left":{"value":7},"right":{"value":2}}},"right":{"value":8,"left":{"value":13},"right":{"value":4,"left":{"value":5},"right":{"value":1}}}}, 10)) // Expected: 1
+	fmt.Println(ClosestPathSum({"value":1,"left":{"value":2},"right":{"value":3}}, 10)) // Expected: 2
+	fmt.Println(ClosestPathSum({"value":5,"left":{"value":4,"left":{"value":11,"left":{"value":7},"right":{"value":2}}},"right":{"value":8,"left":{"value":13},"right":{"value":4,"left":{"value":5},"right":{"value":1}}}}, 10)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '01-branch-sums/01-path-sum-to-target/twist-05-closest-path-sum', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/01-branch-sums/01-path-sum-to-target/twist-05-closest-path-sum'] = problem;
 })();

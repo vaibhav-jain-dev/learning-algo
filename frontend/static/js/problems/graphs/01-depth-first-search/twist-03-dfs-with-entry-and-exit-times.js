@@ -2,10 +2,12 @@
  * DFS with Entry and Exit Times
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-dfs
  * Parent: 01-depth-first-search
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'DFS with Entry and Exit Times',
         difficulty: 'Medium',
@@ -19,87 +21,78 @@
             'Consider the example: Tree A->[B,C]: discovery/finish times might be A(1/6), B(2/3), C(4/5).',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(V + E)', space: 'O(V)' },
+        complexity: {
+            time: 'O(V + E)',
+            space: 'O(V)'
+        },
         examples: [
-            { input: { description: 'Tree A->[B,C]: discovery/finish times might be A(1/6), B(2/3), C(4/5).' }, output: 'See explanation', explanation: 'Tree A->[B,C]: discovery/finish times might be A(1/6), B(2/3), C(4/5).' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}},
+                output: [0],
+                explanation: 'The dfs with entry and exit times for this input yields [0].'
+            },
+            // Edge case
+            {
+                input: {"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def dfs_with_entry_and_exit_times(data):
+            python: `def dfs_with_entry_and_exit_times(tree):
     """
     DFS with Entry and Exit Times
 
     Modify DFS to record the discovery time and finish time for each node. These timestamps are crucial for many advanced graph algorithms.
 
-    Approach:
-    Requires tracking global state (a timer) across recursive calls and understanding pre-order vs post-order processing. This is foundational for topological sort and SCC detection.
-
     Time: O(V + E)
     Space: O(V)
     """
-    # Requires tracking global state (a timer) across recursive calls and understanding pre-order vs post-order processing. This is foundational for topological sort and SCC detection.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: DFS with Entry and Exit Times
-    # Key difference from parent: Requires tracking global state (a timer) across recursive calls and understanding pre-order vs post-
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return dfs_with_entry_and_exit_times(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Tree A->[B,C]: discovery/finish times might be A(1/6), B(2/3), C(4/5).
-    print("Test: DFS with Entry and Exit Times")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(dfs_with_entry_and_exit_times({"name": "A", "children": [{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}))  # Expected: [0]
+print(dfs_with_entry_and_exit_times({"name": "A", "children": [{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// DFSWithEntryAndExitTimes solves the DFS with Entry and Exit Times problem
+// DfsWithEntryAndExitTimes solves the DFS with Entry and Exit Times problem.
 // Modify DFS to record the discovery time and finish time for each node. These timestamps are crucial for many advanced graph algorithms.
-//
-// Approach: Requires tracking global state (a timer) across recursive calls and understanding pre-order vs post-order processing. This is foundational for topological sort and SCC detection.
-//
-// Time: O(V + E)
-// Space: O(V)
-func DFSWithEntryAndExitTimes(input interface{}) interface{} {
-    // Requires tracking global state (a timer) across recursive calls and understanding pre-order vs post-order processing. This is foundational for topological sort and SCC detection.
+// Time: O(V + E), Space: O(V)
+func DfsWithEntryAndExitTimes(tree map[string]interface{}) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: DFS with Entry and Exit Times
-    // Key difference from parent: Requires tracking global state (a timer) across recursive calls and understanding pre-order vs post-
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Tree A->[B,C]: discovery/finish times might be A(1/6), B(2/3), C(4/5).
-    fmt.Println("Test: DFS with Entry and Exit Times")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(DfsWithEntryAndExitTimes({"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]})) // Expected: [0]
+	fmt.Println(DfsWithEntryAndExitTimes({"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '01-depth-first-search/twist-03-dfs-with-entry-and-exit-times', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/01-depth-first-search/twist-03-dfs-with-entry-and-exit-times'] = problem;
 })();

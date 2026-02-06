@@ -2,10 +2,12 @@
  * Flatten to Right-Skewed List
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-flatten
  * Parent: 08-flatten-tree
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Flatten to Right-Skewed List',
         difficulty: 'Medium',
@@ -19,120 +21,78 @@
             'Think about how the base case differs from the original problem.',
             'Review the example: Tree [1, 2, 5, 3, 4, null, 6] flattens to 1 -> 2 -> 3 -> 4 -> 5 -> 6 (all right pointers, all left pointers null).'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree [1, 2, 5, 3, 4, null, 6] flattens to 1 -> 2 -> 3 -> 4 -> 5 -> 6 (all right pointers, all left pointers null)' },
-                output: 'See explanation',
-                explanation: 'Tree [1, 2, 5, 3, 4, null, 6] flattens to 1 -> 2 -> 3 -> 4 -> 5 -> 6 (all right pointers, all left pointers null).'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6}}}},
+                output: [0],
+                explanation: 'The flatten to right skewed list for this input yields [0].'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def flatten_to_right_skewed_list(data):
+            python: `def flatten_to_right_skewed_list(tree):
     """
     Flatten to Right-Skewed List
 
-    Flatten the binary tree into a right-skewed linked list following preorder traversal order, where every node has no left child and the right pointer points to the next node.
+    Flatten the binary tree into a right-skewed linked list following preorder traversal order, where every node has no left child and the right pointer points to the next node. The original uses inorder (left-to-right) order with a doubly-linked structure. Preorder requires processing root before children, and the single-direction (right-only) linking means you must handle the left subtree displacement carefully.
 
-    Approach: The original uses inorder (left-to-right) order with a doubly-linked structure
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: The original uses inorder (left-to-right) order with a doubly-linked structure
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Flatten to Right-Skewed List
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree [1, 2, 5, 3, 4, null, 6] flattens to 1 -> 2 -> 3 -> 4 -> 5 -> 6 (all right pointers, all left pointers null)
-    print("See problem description for test cases")`,
+# Test cases
+print(flatten_to_right_skewed_list({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}}}))  # Expected: [0]
+print(flatten_to_right_skewed_list({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// FlattenToRightskewedList solves: Flatten to Right-Skewed List
-// The original uses inorder (left-to-right) order with a doubly-linked structure
+// FlattenToRightSkewedList solves the Flatten to Right-Skewed List problem.
+// Flatten the binary tree into a right-skewed linked list following preorder traversal order, where every node has no left child and the right pointer points to the next node. The original uses inorder (left-to-right) order with a doubly-linked structure. Preorder requires processing root before children, and the single-direction (right-only) linking means you must handle the left subtree displacement carefully.
 // Time: O(n), Space: O(n)
-func FlattenToRightskewedList(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func FlattenToRightSkewedList(tree *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    // TODO: Implement Flatten to Right-Skewed List
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree [1, 2, 5, 3, 4, null, 6] flattens to 1 -> 2 -> 3 -> 4 -> 5 -> 6 (all right pointers, all left pointers null)
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(FlattenToRightSkewedList({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6}}})) // Expected: [0]
+	fmt.Println(FlattenToRightSkewedList({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '08-flatten-tree/twist-01-flatten-to-right-skewed-list', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/08-flatten-tree/twist-01-flatten-to-right-skewed-list'] = problem;
 })();

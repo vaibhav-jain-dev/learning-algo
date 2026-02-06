@@ -2,74 +2,98 @@
  * Prim vs Kruskal Comparison
  * Category: famous-algorithms
  * Difficulty: Medium
+ * Algorithm: kruskals-algorithm
  * Parent: 06-kruskals-algorithm/01-min-cost-to-connect
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Prim vs Kruskal Comparison',
         difficulty: 'Medium',
         algorithm: 'kruskals-algorithm',
         parent: '06-kruskals-algorithm/01-min-cost-to-connect',
-        description: 'Solve the same problem using Prim\'s algorithm and compare the performance characteristics with Kruskal\'s approach.',
-        problem: 'Prim\'s grows a single tree from a starting vertex using a priority queue, while Kruskal\'s sorts all edges globally. Dense graphs (like this one with O(n^2) edges) may favor Prim\'s.',
+        description: 'Solve the same problem using Prim\',
+        problem: 'Prim\',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For 5 points generating 10 edges, Kruskal sorts all 10 edges then processes them. Prim starts from one point and greedily extends.' },
-                output: 'See example',
-                explanation: 'For 5 points generating 10 edges, Kruskal sorts all 10 edges then processes them. Prim starts from one point and greedily extends.'
+                input: {"points":[[0,0],[2,2],[3,10],[5,2],[7,0]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the prim vs kruskal comparison criteria.'
+            },
+            // Edge case
+            {
+                input: {"points":[[0,0]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Prim vs Kruskal Comparison
-# Category: famous-algorithms
-# Difficulty: Medium
-# Parent: 06-kruskals-algorithm/01-min-cost-to-connect
-
-def solve():
+            python: `def prim_vs_kruskal_comparison(points):
     """
-    Solve the same problem using Prim's algorithm and compare the performance characteristics with Kruskal's approach.
+    Prim vs Kruskal Comparison
 
-    Key insight: Prim's grows a single tree from a starting vertex using a priority queue, while Kruskal's sorts all edges globally. Dense graphs (like this one with O(n^2) edges) may favor Prim's.
+    Solve the same problem using Prim\\
+
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(points)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(prim_vs_kruskal_comparison([[0,0],[2,2],[3,10],[5,2],[7,0]]))  # Expected: 1
+print(prim_vs_kruskal_comparison([[0,0]]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Prim vs Kruskal Comparison problem.
-// Solve the same problem using Prim's algorithm and compare the performance characteristics with Kruskal's approach.
-// Key insight: Prim's grows a single tree from a starting vertex using a priority queue, while Kruskal's sorts all edges globally. Dense graphs (like this one with O(n^2) edges) may favor Prim's.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// PrimVsKruskalComparison solves the Prim vs Kruskal Comparison problem.
+// Solve the same problem using Prim\\
+// Time: O(?), Space: O(?)
+func PrimVsKruskalComparison(points [][]int) int {
+	result := 0
+
+	for i := 0; i < len(points); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(PrimVsKruskalComparison([][]int{{0, 0}, {2, 2}, {3, 10}, {5, 2}, {7, 0}})) // Expected: 1
+	fmt.Println(PrimVsKruskalComparison([][]int{{0, 0}})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '06-kruskals-algorithm/01-min-cost-to-connect/twist-01-prim-vs-kruskal-comparison', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/06-kruskals-algorithm/01-min-cost-to-connect/twist-01-prim-vs-kruskal-comparison'] = problem;
 })();

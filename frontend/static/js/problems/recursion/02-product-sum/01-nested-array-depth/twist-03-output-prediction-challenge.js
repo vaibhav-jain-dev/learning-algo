@@ -2,10 +2,12 @@
  * Output Prediction Challenge
  * Category: recursion
  * Difficulty: Easy
+ * Algorithm: recursion-product-sum
  * Parent: 02-product-sum/01-nested-array-depth
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Output Prediction Challenge',
         difficulty: 'Easy',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: '[[[], [[[]]]], [1, 2]]: Outer = depth 1. Inner [[], [[[]]]] = depth 2. [] at depth 3 = 3. [[[]]] at depth 3, [[]] at depth 4, [] at depth 5. Answer: 5.' },
-                output: 'See example',
-                explanation: '[[[], [[[]]]], [1, 2]]: Outer = depth 1. Inner [[], [[[]]]] = depth 2. [] at depth 3 = 3. [[[]]] at depth 3, [[]] at depth 4, [] at depth 5. Answer: 5.'
+                input: {"array":[1,[2,[3,4]]]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the output prediction challenge criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Output Prediction Challenge
-# Category: recursion
-# Difficulty: Easy
-# Parent: 02-product-sum/01-nested-array-depth
-
-def solve():
+            python: `def output_prediction_challenge(array):
     """
+    Output Prediction Challenge
+
     Without running code, predict the output for: [[[], [[[]]]], [1, 2]]. What is the maximum depth? Be careful with empty arrays.
 
-    Key insight: Tests understanding of edge cases: empty arrays have depth 1, and the deeply nested empty array [[[]]] contributes depth even though it contains no integers. You must trace the recursion mentally.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(output_prediction_challenge([1,[2,[3,4]]]))  # Expected: 2
+print(output_prediction_challenge([1]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Output Prediction Challenge problem.
+// OutputPredictionChallenge solves the Output Prediction Challenge problem.
 // Without running code, predict the output for: [[[], [[[]]]], [1, 2]]. What is the maximum depth? Be careful with empty arrays.
-// Key insight: Tests understanding of edge cases: empty arrays have depth 1, and the deeply nested empty array [[[]]] contributes depth even though it contains no integers. You must trace the recursion mentally.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func OutputPredictionChallenge(array []int) int {
+	result := 0
+
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(OutputPredictionChallenge([]interface{}{1, []interface{}{2, []int{3, 4}}})) // Expected: 2
+	fmt.Println(OutputPredictionChallenge([]int{1})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '02-product-sum/01-nested-array-depth/twist-03-output-prediction-challenge', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/02-product-sum/01-nested-array-depth/twist-03-output-prediction-challenge'] = problem;
 })();

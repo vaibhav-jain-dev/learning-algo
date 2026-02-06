@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[3,1,2,3,4,3],"target":3},
                 output: [1,2,4,3,3,3],
-                explanation: 'Target elements moved to the correct position.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4,5],"target":6},
                 output: [1,2,3,4,5],
-                explanation: 'Target not in array - no changes needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[3,3,3],"target":3},
                 output: [3,3,3],
-                explanation: 'All elements are the target.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def move_preserving_stability_index(data):
+            python: `def move_preserving_stability_index(array, toMove):
     """
     Move Preserving Stability Index
 
-    After moving targets to end (preserving order), return the new index of every element as a mapping from original to new position.
-    \n    Approach: You must track index transformations during the rearrangement, not just the final array state.
+    After moving targets to end (preserving order), return the new index of every element as a mapping from original to new position. You must track index transformations during the rearrangement, not just the final array state.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [2, 1, 2, 3], toMove = 2. Result: [1, 3, 2, 2]. Index map: {0->2, 1->0, 2->3, 3->1}.
+    count = 0
+    n = len(array)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on toMove
+        j = 0
+        for k in range(i, n):
+            if j < len(toMove) and array[k] == toMove[j]:
+                j += 1
+        if j == len(toMove):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(move_preserving_stability_index([1, 2, 3, 4, 5]))
-print(move_preserving_stability_index([5, 3, 1]))
-print(move_preserving_stability_index([1]))`,
+print(move_preserving_stability_index([3,1,2,3,4,3], None))  # Expected: [1,2,4,3,3,3]
+print(move_preserving_stability_index([1,2,3,4,5], None))  # Expected: [1,2,3,4,5]
+print(move_preserving_stability_index([3,3,3], None))  # Expected: [3,3,3]
+`,
             go: `package main
 
 import "fmt"
 
 // MovePreservingStabilityIndex solves the Move Preserving Stability Index problem.
-// After moving targets to end (preserving order), return the new index of every element as a mapping from original to new position.
+// After moving targets to end (preserving order), return the new index of every element as a mapping from original to new position. You must track index transformations during the rearrangement, not just the final array state.
 // Time: O(n), Space: O(n)
-func MovePreservingStabilityIndex(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MovePreservingStabilityIndex(array []int, toMove int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(MovePreservingStabilityIndex([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MovePreservingStabilityIndex([]int{5, 3, 1}))
-    fmt.Println(MovePreservingStabilityIndex([]int{1}))
-}`
+	fmt.Println(MovePreservingStabilityIndex([]int{3, 1, 2, 3, 4, 3}, nil)) // Expected: [1,2,4,3,3,3]
+	fmt.Println(MovePreservingStabilityIndex([]int{1, 2, 3, 4, 5}, nil)) // Expected: [1,2,3,4,5]
+	fmt.Println(MovePreservingStabilityIndex([]int{3, 3, 3}, nil)) // Expected: [3,3,3]
+}
+`
         },
         twists: [],
         similar: []

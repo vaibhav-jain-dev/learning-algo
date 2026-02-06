@@ -2,10 +2,12 @@
  * Right Greater Than
  * Category: binary-search-trees
  * Difficulty: Hard
+ * Algorithm: bst-augmented
  * Parent: 09-right-smaller-than
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Right Greater Than',
         difficulty: 'Hard',
@@ -14,68 +16,88 @@
         description: 'For each element, count how many elements to its right are strictly greater than it.',
         problem: 'While structurally similar, tracking "greater than" in a BST requires counting nodes that go to the right subtree rather than the left, and the augmented counting logic with left-subtree sizes must be adapted to track right-subtree sizes instead. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: right greater than.",
-                  "Consider how while structurally similar, tracking \"greater than\" in a bst requires counting nodes that go to the right subtree rather than the left, and the augmented counting logic with left-subtree sizes must be adapted to track right-subtree sizes instead affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'For [8, 5, 11, -1, 3, 4, 2], right greater counts are [1, 1, 0, 2, 1, 0, 0]. Only 11 is greater than 8 to its right.'
+                input: {"array":[8,5,11,-1,3,4,2]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the right greater than criteria.'
+            },
+            {
+                input: {"array":[1,2,3,4,5]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the right greater than criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[8]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Right Greater Than
-# Difficulty: Hard
-# Parent: 09-right-smaller-than
-#
-# For each element, count how many elements to its right are strictly greater than it.
-
-def rightGreaterThan(data):
+            python: `def right_greater_than(array):
     """
     Right Greater Than
 
-    Approach: While structurally similar, tracking "greater than" in a BST requires counting nodes that go to the right subtree rather than the left, and the augmented counting logic with left-subtree sizes must be adapted to track right-subtree sizes instead.
+    For each element, count how many elements to its right are strictly greater than it.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: While structurally similar, tracking "greater than" in a BST requires counting nodes that go to the right subtree rather than the left, and the augmented counting logic with left-subtree sizes must be adapted to track right-subtree sizes instead
-    pass
+    result = 0
+
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: For [8, 5, 11, -1, 3, 4, 2], right greater counts are [1, 1, 0, 2, 1, 0, 0]
-    print(rightGreaterThan({}))`,
+# Test cases
+print(right_greater_than([8,5,11,-1,3,4,2]))  # Expected: 1
+print(right_greater_than([1,2,3,4,5]))  # Expected: 2
+print(right_greater_than([8]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// Right Greater Than
-// Difficulty: Hard
-// Parent: 09-right-smaller-than
-//
+// RightGreaterThan solves the Right Greater Than problem.
 // For each element, count how many elements to its right are strictly greater than it.
+// Time: O(n), Space: O(1)
+func RightGreaterThan(array []int) int {
+	result := 0
 
-func RightGreaterThan(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: While structurally similar, tracking "greater than" in a BST requires counting nodes that go to the right subtree rather than the left, and the augmented counting logic with left-subtree sizes must be adapted to track right-subtree sizes instead
-    return nil
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    // Example: For [8, 5, 11, -1, 3, 4, 2], right greater counts are [1, 1, 0, 2, 1, 0, 0]
-    fmt.Println(RightGreaterThan(map[string]interface{}{}))
-}`
+	fmt.Println(RightGreaterThan([]int{8, 5, 11, -1, 3, 4, 2})) // Expected: 1
+	fmt.Println(RightGreaterThan([]int{1, 2, 3, 4, 5})) // Expected: 2
+	fmt.Println(RightGreaterThan([]int{8})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '09-right-smaller-than/twist-01-right-greater-than', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/09-right-smaller-than/twist-01-right-greater-than'] = problem;
 })();

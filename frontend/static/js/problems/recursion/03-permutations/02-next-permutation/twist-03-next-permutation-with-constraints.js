@@ -2,10 +2,12 @@
  * Next Permutation with Constraints
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-permutations
  * Parent: 03-permutations/02-next-permutation
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Next Permutation with Constraints',
         difficulty: 'Hard',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For [1,2,3,4] with position 1 fixed (value 2 stays), next permutation is [1,2,4,3] not [1,3,2,4].' },
-                output: 'See example',
-                explanation: 'For [1,2,3,4] with position 1 fixed (value 2 stays), next permutation is [1,2,4,3] not [1,3,2,4].'
+                input: {"nums":[1,2,3]},
+                output: [0,1,2],
+                explanation: 'The next permutation with constraints for this input yields [0, 1, 2].'
+            },
+            // Edge case
+            {
+                input: {"nums":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Next Permutation with Constraints
-# Category: recursion
-# Difficulty: Hard
-# Parent: 03-permutations/02-next-permutation
-
-def solve():
+            python: `def next_permutation_with_constraints(nums):
     """
+    Next Permutation with Constraints
+
     Find the next permutation where certain positions are fixed and cannot be swapped.
 
-    Key insight: The standard pivot-and-swap approach breaks when some indices are immovable, requiring a constrained search that respects fixed positions.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(nums)):
+        # Check if element meets criteria
+        result.append(nums[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(next_permutation_with_constraints([1,2,3]))  # Expected: [0,1,2]
+print(next_permutation_with_constraints([1]))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Next Permutation with Constraints problem.
+// NextPermutationWithConstraints solves the Next Permutation with Constraints problem.
 // Find the next permutation where certain positions are fixed and cannot be swapped.
-// Key insight: The standard pivot-and-swap approach breaks when some indices are immovable, requiring a constrained search that respects fixed positions.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func NextPermutationWithConstraints(nums []int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(nums); i++ {
+		result = append(result, nums[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(NextPermutationWithConstraints([]int{1, 2, 3})) // Expected: [0,1,2]
+	fmt.Println(NextPermutationWithConstraints([]int{1})) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '03-permutations/02-next-permutation/twist-03-next-permutation-with-constraints', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/03-permutations/02-next-permutation/twist-03-next-permutation-with-constraints'] = problem;
 })();

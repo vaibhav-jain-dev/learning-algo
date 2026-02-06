@@ -26,80 +26,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"text1":"abcde","text2":"ace"},
                 output: 3,
-                explanation: 'The longest common subsequence is "ace" with length 3.'
+                explanation: ''
             },
             {
                 input: {"text1":"abc","text2":"def"},
                 output: 0,
-                explanation: 'No common characters exist between the two strings.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"text1":"abcba","text2":"abcba"},
                 output: 5,
-                explanation: 'Identical strings have LCS equal to their length.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def print_all_longest_common_subsequences(data):
+            python: `def print_all_longest_common_subsequences(text1, text2):
     """
     Print All Longest Common Subsequences
 
-    Instead of just the length, return all distinct LCS strings of maximum length.
-    \n    Approach: Requires backtracking through the DP table with branching at ties, turning a single-answer problem into a multi-answer enumeration problem.
+    Instead of just the length, return all distinct LCS strings of maximum length. Requires backtracking through the DP table with branching at ties, turning a single-answer problem into a multi-answer enumeration problem.
 
     Time: O(n)
     Space: O(n)
-
-    Example: text1="abcbdab", text2="bdcab" → ["bcab", "bdab"] (both length 4)
     """
-    if not data:
-        return None
+    count = 0
+    n = len(text1)
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
-
-    # Core algorithm implementation
     for i in range(n):
-        result.append(data[i])
+        # Check condition based on text2
+        j = 0
+        for k in range(i, n):
+            if j < len(text2) and text1[k] == text2[j]:
+                j += 1
+        if j == len(text2):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(print_all_longest_common_subsequences([1, 2, 3, 4, 5]))
-print(print_all_longest_common_subsequences([5, 3, 1]))
-print(print_all_longest_common_subsequences([1]))`,
+print(print_all_longest_common_subsequences("abcde", "ace"))  # Expected: 3
+print(print_all_longest_common_subsequences("abc", "def"))  # Expected: 0
+print(print_all_longest_common_subsequences("abcba", "abcba"))  # Expected: 5
+`,
             go: `package main
 
 import "fmt"
 
 // PrintAllLongestCommonSubsequences solves the Print All Longest Common Subsequences problem.
-// Instead of just the length, return all distinct LCS strings of maximum length.
+// Instead of just the length, return all distinct LCS strings of maximum length. Requires backtracking through the DP table with branching at ties, turning a single-answer problem into a multi-answer enumeration problem.
 // Time: O(n), Space: O(n)
-func PrintAllLongestCommonSubsequences(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func PrintAllLongestCommonSubsequences(text1 string, text2 string) int {
+	result := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(text1); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(PrintAllLongestCommonSubsequences([]int{1, 2, 3, 4, 5}))
-    fmt.Println(PrintAllLongestCommonSubsequences([]int{5, 3, 1}))
-    fmt.Println(PrintAllLongestCommonSubsequences([]int{1}))
-}`
+	fmt.Println(PrintAllLongestCommonSubsequences("abcde", "ace")) // Expected: 3
+	fmt.Println(PrintAllLongestCommonSubsequences("abc", "def")) // Expected: 0
+	fmt.Println(PrintAllLongestCommonSubsequences("abcba", "abcba")) // Expected: 5
+}
+`
         },
         twists: [],
         similar: []

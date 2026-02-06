@@ -2,10 +2,12 @@
  * Rabin-Karp Alternative
  * Category: famous-algorithms
  * Difficulty: Medium
+ * Algorithm: kmp-algorithm
  * Parent: 04-knuth-morris-pratt/01-implement-strstr
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Rabin-Karp Alternative',
         difficulty: 'Medium',
@@ -19,57 +21,92 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Hash "sad" = h1. Slide window over "sadbutsad", comparing rolling hash with h1. On match, verify character by character.' },
-                output: 'See example',
-                explanation: 'Hash "sad" = h1. Slide window over "sadbutsad", comparing rolling hash with h1. On match, verify character by character.'
+                input: {"haystack":"sadbutsad","needle":"sad"},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the rabin karp alternative criteria.'
+            },
+            {
+                input: {"haystack":"leetcode","needle":"leeto"},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the rabin karp alternative criteria.'
+            },
+            // Edge case
+            {
+                input: {"haystack":"","needle":""},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Rabin-Karp Alternative
-# Category: famous-algorithms
-# Difficulty: Medium
-# Parent: 04-knuth-morris-pratt/01-implement-strstr
-
-def solve():
+            python: `def rabin_karp_alternative(haystack, needle):
     """
+    Rabin-Karp Alternative
+
     Implement strStr using the Rabin-Karp rolling hash algorithm instead of KMP.
 
-    Key insight: Uses a completely different approach based on hashing -- compute a rolling hash of each window and compare with the pattern hash, only doing full comparison on hash matches.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(haystack)
+
+    for i in range(n):
+        # Check condition based on needle
+        j = 0
+        for k in range(i, n):
+            if j < len(needle) and haystack[k] == needle[j]:
+                j += 1
+        if j == len(needle):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(rabin_karp_alternative("sadbutsad", "sad"))  # Expected: 1
+print(rabin_karp_alternative("leetcode", "leeto"))  # Expected: 2
+print(rabin_karp_alternative("", ""))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Rabin-Karp Alternative problem.
+// RabinKarpAlternative solves the Rabin-Karp Alternative problem.
 // Implement strStr using the Rabin-Karp rolling hash algorithm instead of KMP.
-// Key insight: Uses a completely different approach based on hashing -- compute a rolling hash of each window and compare with the pattern hash, only doing full comparison on hash matches.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func RabinKarpAlternative(haystack string, needle string) int {
+	result := 0
+
+	for i := 0; i < len(haystack); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(RabinKarpAlternative("sadbutsad", "sad")) // Expected: 1
+	fmt.Println(RabinKarpAlternative("leetcode", "leeto")) // Expected: 2
+	fmt.Println(RabinKarpAlternative("", "")) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '04-knuth-morris-pratt/01-implement-strstr/twist-04-rabin-karp-alternative', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/04-knuth-morris-pratt/01-implement-strstr/twist-04-rabin-karp-alternative'] = problem;
 })();

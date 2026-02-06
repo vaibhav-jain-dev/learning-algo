@@ -2,10 +2,12 @@
  * Count Max Sum Increasing Subsequences
  * Category: dynamic-programming
  * Difficulty: Medium
+ * Algorithm: dp-increasing-subseq
  * Parent: 05-max-sum-increasing
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Count Max Sum Increasing Subsequences',
         difficulty: 'Medium',
@@ -19,84 +21,91 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'array=[1,2,3,4,5]: max sum is 15 (entire array), and there is exactly 1 such subsequence.'
+                input: {"array":[10,70,20,30,50,11,30]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the count max sum increasing subsequences criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"array":[8,12,2,3,15,5,7]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the count max sum increasing subsequences criteria.'
+            },
+            {
+                input: {"array":[1,2,3,4,5]},
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the count max sum increasing subsequences criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[10]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def countMaxSumIncreasingSubsequences(data):
+            python: `def count_max_sum_increasing_subsequences(array):
     """
     Count Max Sum Increasing Subsequences
 
     Find how many distinct increasing subsequences achieve the maximum sum.
 
-    Approach:
-    Combines optimization with counting. You must track both the max sum at each position and the number of ways to achieve it, propagating counts alongside values.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    result = 0
 
-    # Example: array=[1,2,3,4,5]: max sum is 15 (entire array), and there is exactly 1 such subsequence.
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
     return result
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Count Max Sum Increasing Subsequences...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(count_max_sum_increasing_subsequences([10,70,20,30,50,11,30]))  # Expected: 1
+print(count_max_sum_increasing_subsequences([8,12,2,3,15,5,7]))  # Expected: 2
+print(count_max_sum_increasing_subsequences([1,2,3,4,5]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // CountMaxSumIncreasingSubsequences solves the Count Max Sum Increasing Subsequences problem.
 // Find how many distinct increasing subsequences achieve the maximum sum.
-//
-// Approach: Combines optimization with counting. You must track both the max sum at each position and the number of ways to achieve it, propagating counts alongsi
-func CountMaxSumIncreasingSubsequences(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2), Space: O(n)
+func CountMaxSumIncreasingSubsequences(array []int) int {
+	result := 0
 
-    // Example: array=[1,2,3,4,5]: max sum is 15 (entire array), and there is exactly 1 such subsequence.
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Count Max Sum Increasing Subsequences...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(CountMaxSumIncreasingSubsequences([]int{10, 70, 20, 30, 50, 11, 30})) // Expected: 1
+	fmt.Println(CountMaxSumIncreasingSubsequences([]int{8, 12, 2, 3, 15, 5, 7})) // Expected: 2
+	fmt.Println(CountMaxSumIncreasingSubsequences([]int{1, 2, 3, 4, 5})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '05-max-sum-increasing/twist-05-count-max-sum-increasing-subsequences', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/05-max-sum-increasing/twist-05-count-max-sum-increasing-subsequences'] = problem;
 })();

@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,3,5,2,4]},
                 output: 1,
-                explanation: 'Only one operation needed to achieve the goal.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4]},
                 output: 0,
-                explanation: 'Already satisfies the condition, no operations needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[5,3,1,4,2]},
                 output: 2,
-                explanation: 'Two operations needed to satisfy the condition.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def min_matches_with_bonus_points(data):
+            python: `def min_matches_with_bonus_points(scores):
     """
     Min Matches with Bonus Points
 
-    Some matches award bonus points (e.g., 4 points instead of 3 for a decisive victory). Factor this into the guarantee calculation.
-    \n    Approach: Variable point awards mean worst-case analysis must consider opponents potentially earning bonus points, widening the gap needed.
+    Some matches award bonus points (e.g., 4 points instead of 3 for a decisive victory). Factor this into the guarantee calculation. Variable point awards mean worst-case analysis must consider opponents potentially earning bonus points, widening the gap needed.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # scores=[10,7], base=3, bonus=4 → second place could gain 4 per match, need bigger lead to guarantee
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in scores:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(min_matches_with_bonus_points([1, 2, 3, 4, 5]))
-print(min_matches_with_bonus_points([5, 3, 1]))
-print(min_matches_with_bonus_points([1]))`,
+print(min_matches_with_bonus_points(None))  # Expected: 1
+print(min_matches_with_bonus_points(None))  # Expected: 0
+print(min_matches_with_bonus_points(None))  # Expected: 2
+`,
             go: `package main
 
 import "fmt"
 
 // MinMatchesWithBonusPoints solves the Min Matches with Bonus Points problem.
-// Some matches award bonus points (e.g., 4 points instead of 3 for a decisive victory). Factor this into the guarantee calculation.
+// Some matches award bonus points (e.g., 4 points instead of 3 for a decisive victory). Factor this into the guarantee calculation. Variable point awards mean worst-case analysis must consider opponents potentially earning bonus points, widening the gap needed.
 // Time: O(n), Space: O(n)
-func MinMatchesWithBonusPoints(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MinMatchesWithBonusPoints(scores []int) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range scores {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(MinMatchesWithBonusPoints([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MinMatchesWithBonusPoints([]int{5, 3, 1}))
-    fmt.Println(MinMatchesWithBonusPoints([]int{1}))
-}`
+	fmt.Println(MinMatchesWithBonusPoints(nil)) // Expected: 1
+	fmt.Println(MinMatchesWithBonusPoints(nil)) // Expected: 0
+	fmt.Println(MinMatchesWithBonusPoints(nil)) // Expected: 2
+}
+`
         },
         twists: [],
         similar: []

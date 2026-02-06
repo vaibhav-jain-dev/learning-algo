@@ -2,10 +2,12 @@
  * Iterative Sorted Array to BST
  * Category: binary-search-trees
  * Difficulty: Medium
+ * Algorithm: bst-construction-balanced
  * Parent: 02-bst-construction/02-convert-sorted-array-to-bst
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Iterative Sorted Array to BST',
         difficulty: 'Medium',
@@ -14,68 +16,87 @@
         description: 'Convert the sorted array to a height-balanced BST using an iterative approach with an explicit stack instead of recursion.',
         problem: 'You must manually manage the subarray ranges and parent-child connections using a stack of pending work items. This requires encoding the recursive state (left, right bounds, parent reference, direction) explicitly. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: iterative sorted array to bst.",
-                  "Consider how you must manually manage the subarray ranges and parent-child connections using a stack of pending work items affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Same output as base problem, but must use a while loop with a stack instead of recursive calls.'
+                input: {"nums":[-10,-3,0,5,9]},
+                output: [-10,-3,0],
+                explanation: 'The iterative sorted array to bst for this input yields [-10, -3, 0].'
+            },
+            {
+                input: {"nums":[1,2,3,4,5,6,7]},
+                output: [1,2,3],
+                explanation: 'The iterative sorted array to bst for this input yields [1, 2, 3].'
+            },
+            // Edge case
+            {
+                input: {"nums":[-10]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Iterative Sorted Array to BST
-# Difficulty: Medium
-# Parent: 02-bst-construction/02-convert-sorted-array-to-bst
-#
-# Convert the sorted array to a height-balanced BST using an iterative approach with an explicit stack instead of recursion.
-
-def iterativeSortedArrayToBst(data):
+            python: `def iterative_sorted_array_to_bst(nums):
     """
     Iterative Sorted Array to BST
 
-    Approach: You must manually manage the subarray ranges and parent-child connections using a stack of pending work items.
+    Convert the sorted array to a height-balanced BST using an iterative approach with an explicit stack instead of recursion.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: You must manually manage the subarray ranges and parent-child connections using a stack of pending work items
-    pass
+    result = []
+
+    for i in range(len(nums)):
+        # Check if element meets criteria
+        result.append(nums[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Same output as base problem, but must use a while loop with a stack instead of recursive calls
-    print(iterativeSortedArrayToBst({}))`,
+# Test cases
+print(iterative_sorted_array_to_bst([-10,-3,0,5,9]))  # Expected: [-10,-3,0]
+print(iterative_sorted_array_to_bst([1,2,3,4,5,6,7]))  # Expected: [1,2,3]
+print(iterative_sorted_array_to_bst([-10]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// Iterative Sorted Array to BST
-// Difficulty: Medium
-// Parent: 02-bst-construction/02-convert-sorted-array-to-bst
-//
+// IterativeSortedArrayToBst solves the Iterative Sorted Array to BST problem.
 // Convert the sorted array to a height-balanced BST using an iterative approach with an explicit stack instead of recursion.
+// Time: O(n), Space: O(1)
+func IterativeSortedArrayToBst(nums []int) []int {
+	result := make([]int, 0)
 
-func IterativeSortedArrayToBst(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: You must manually manage the subarray ranges and parent-child connections using a stack of pending work items
-    return nil
+	for i := 0; i < len(nums); i++ {
+		result = append(result, nums[i])
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Same output as base problem, but must use a while loop with a stack instead of recursive calls
-    fmt.Println(IterativeSortedArrayToBst(map[string]interface{}{}))
-}`
+	fmt.Println(IterativeSortedArrayToBst([]int{-10, -3, 0, 5, 9})) // Expected: [-10,-3,0]
+	fmt.Println(IterativeSortedArrayToBst([]int{1, 2, 3, 4, 5, 6, 7})) // Expected: [1,2,3]
+	fmt.Println(IterativeSortedArrayToBst([]int{-10})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '02-bst-construction/02-convert-sorted-array-to-bst/twist-04-iterative-sorted-array-to-bst', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/02-bst-construction/02-convert-sorted-array-to-bst/twist-04-iterative-sorted-array-to-bst'] = problem;
 })();

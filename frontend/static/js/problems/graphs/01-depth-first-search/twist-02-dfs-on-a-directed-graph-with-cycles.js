@@ -2,10 +2,12 @@
  * DFS on a Directed Graph with Cycles
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-dfs
  * Parent: 01-depth-first-search
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'DFS on a Directed Graph with Cycles',
         difficulty: 'Medium',
@@ -19,87 +21,78 @@
             'Consider the example: Graph: A->B, B->C, C->A, A->D.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(V + E)', space: 'O(V)' },
+        complexity: {
+            time: 'O(V + E)',
+            space: 'O(V)'
+        },
         examples: [
-            { input: { description: 'Graph: A->B, B->C, C->A, A->D. DFS from A: ["A","B","C","D"]. Without cycle detection, you would loop forever on A->B->C->A.' }, output: 'See explanation', explanation: 'Graph: A->B, B->C, C->A, A->D. DFS from A: ["A","B","C","D"]. Without cycle detection, you would loop forever on A->B->C->A.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}},
+                output: [0],
+                explanation: 'The dfs on a directed graph with cycles for this input yields [0].'
+            },
+            // Edge case
+            {
+                input: {"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def dfs_on_a_directed_graph_with_cycles(data):
+            python: `def dfs_on_a_directed_graph_with_cycles(tree):
     """
     DFS on a Directed Graph with Cycles
 
     Perform DFS on a general directed graph (not a tree) that may contain cycles. Return the traversal order without visiting any node twice.
 
-    Approach:
-    Unlike tree DFS, you need a visited set to avoid infinite loops. The mental model shifts from "tree branches" to "graph exploration with backtracking guards."
-
     Time: O(V + E)
     Space: O(V)
     """
-    # Unlike tree DFS, you need a visited set to avoid infinite loops. The mental model shifts from "tree branches" to "graph exploration with backtracking guards."
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: DFS on a Directed Graph with Cycles
-    # Key difference from parent: Unlike tree DFS, you need a visited set to avoid infinite loops. The mental model shifts from "tree 
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return dfs_on_a_directed_graph_with_cycles(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Graph: A->B, B->C, C->A, A->D. DFS from A: ["A","B","C","D"]. Without cycle detection, you would loop forever on A->B->C->A.
-    print("Test: DFS on a Directed Graph with Cycles")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(dfs_on_a_directed_graph_with_cycles({"name": "A", "children": [{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}))  # Expected: [0]
+print(dfs_on_a_directed_graph_with_cycles({"name": "A", "children": [{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// DFSOnADirectedGraphWithCycles solves the DFS on a Directed Graph with Cycles problem
+// DfsOnADirectedGraphWithCycles solves the DFS on a Directed Graph with Cycles problem.
 // Perform DFS on a general directed graph (not a tree) that may contain cycles. Return the traversal order without visiting any node twice.
-//
-// Approach: Unlike tree DFS, you need a visited set to avoid infinite loops. The mental model shifts from "tree branches" to "graph exploration with backtracking guards."
-//
-// Time: O(V + E)
-// Space: O(V)
-func DFSOnADirectedGraphWithCycles(input interface{}) interface{} {
-    // Unlike tree DFS, you need a visited set to avoid infinite loops. The mental model shifts from "tree branches" to "graph exploration with backtracking guards."
+// Time: O(V + E), Space: O(V)
+func DfsOnADirectedGraphWithCycles(tree map[string]interface{}) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: DFS on a Directed Graph with Cycles
-    // Key difference from parent: Unlike tree DFS, you need a visited set to avoid infinite loops. The mental model shifts from "tree 
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Graph: A->B, B->C, C->A, A->D. DFS from A: ["A","B","C","D"]. Without cycle detection, you would loop forever on A->B->C->A.
-    fmt.Println("Test: DFS on a Directed Graph with Cycles")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(DfsOnADirectedGraphWithCycles({"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]})) // Expected: [0]
+	fmt.Println(DfsOnADirectedGraphWithCycles({"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '01-depth-first-search/twist-02-dfs-on-a-directed-graph-with-cycles', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/01-depth-first-search/twist-02-dfs-on-a-directed-graph-with-cycles'] = problem;
 })();

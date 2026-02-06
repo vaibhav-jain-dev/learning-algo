@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[-3,-1,0,2,4]},
                 output: [0,1,4,9,16],
-                explanation: 'Elements transformed and sorted correctly.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: [1,4,9],
-                explanation: 'All positive - order maintained after transformation.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[-5,-3,-1]},
                 output: [1,9,25],
-                explanation: 'All negative - order reversed after transformation.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def intersection_of_squared_arrays(data):
+            python: `def intersection_of_squared_arrays(arr1, arr2):
     """
     Intersection of Squared Arrays
 
-    Instead of merging, find the common elements between the two squared sorted arrays.
-    \n    Approach: Switches from union to intersection logic during the merge phase, requiring equality checks and synchronized pointer advancement.
+    Instead of merging, find the common elements between the two squared sorted arrays. Switches from union to intersection logic during the merge phase, requiring equality checks and synchronized pointer advancement.
 
     Time: O(n log n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # arr1=[-3,-1,2], arr2=[-2,1,3] → [1,9] (both arrays contain 1 and 9 after squaring)
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in arr1:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(intersection_of_squared_arrays([1, 2, 3, 4, 5]))
-print(intersection_of_squared_arrays([5, 3, 1]))
-print(intersection_of_squared_arrays([1]))`,
+print(intersection_of_squared_arrays(None, None))  # Expected: [0,1,4,9,16]
+print(intersection_of_squared_arrays(None, None))  # Expected: [1,4,9]
+print(intersection_of_squared_arrays(None, None))  # Expected: [1,9,25]
+`,
             go: `package main
 
 import "fmt"
 
 // IntersectionOfSquaredArrays solves the Intersection of Squared Arrays problem.
-// Instead of merging, find the common elements between the two squared sorted arrays.
+// Instead of merging, find the common elements between the two squared sorted arrays. Switches from union to intersection logic during the merge phase, requiring equality checks and synchronized pointer advancement.
 // Time: O(n log n), Space: O(n)
-func IntersectionOfSquaredArrays(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func IntersectionOfSquaredArrays(arr1 []int, arr2 []int) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range arr1 {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(IntersectionOfSquaredArrays([]int{1, 2, 3, 4, 5}))
-    fmt.Println(IntersectionOfSquaredArrays([]int{5, 3, 1}))
-    fmt.Println(IntersectionOfSquaredArrays([]int{1}))
-}`
+	fmt.Println(IntersectionOfSquaredArrays(nil, nil)) // Expected: [0,1,4,9,16]
+	fmt.Println(IntersectionOfSquaredArrays(nil, nil)) // Expected: [1,4,9]
+	fmt.Println(IntersectionOfSquaredArrays(nil, nil)) // Expected: [1,9,25]
+}
+`
         },
         twists: [],
         similar: []

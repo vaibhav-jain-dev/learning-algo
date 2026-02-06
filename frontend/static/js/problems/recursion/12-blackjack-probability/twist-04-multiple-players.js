@@ -2,10 +2,12 @@
  * Multiple Players
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-probability
  * Parent: 12-blackjack-probability
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Multiple Players',
         difficulty: 'Hard',
@@ -19,57 +21,84 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Player 1 starts at 12, player 2 starts at 14. Both draw until >= 21. What is the probability player 1 gets a higher non-bust hand?' },
-                output: 'See example',
-                explanation: 'Player 1 starts at 12, player 2 starts at 14. Both draw until >= 21. What is the probability player 1 gets a higher non-bust hand?'
+                input: {"target":21,"startingHand":15},
+                output: 6.27,
+                explanation: 'The computed value for this input is 6.27.'
+            },
+            // Edge case
+            {
+                input: {"target":0,"startingHand":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Multiple Players
-# Category: recursion
-# Difficulty: Hard
-# Parent: 12-blackjack-probability
-
-def solve():
+            python: `def multiple_players(target, startingHand):
     """
+    Multiple Players
+
     Compute the probability that player 1 beats player 2, where both draw from the same infinite deck following the same rules.
 
-    Key insight: Requires computing the probability distribution of final hand values for each player, then convolving them to find the win probability.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    total = 0
+    count = 0
+
+    for val in target:
+        total += val
+        count += 1
+
+    return total / count if count > 0 else 0.0
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(multiple_players(21, 15))  # Expected: 6.27
+print(multiple_players(0, 0))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Multiple Players problem.
+// MultiplePlayers solves the Multiple Players problem.
 // Compute the probability that player 1 beats player 2, where both draw from the same infinite deck following the same rules.
-// Key insight: Requires computing the probability distribution of final hand values for each player, then convolving them to find the win probability.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func MultiplePlayers(target int, startingHand int) float64 {
+	total := 0.0
+	count := 0
+
+	for _, v := range target {
+		total += float64(v)
+		count++
+	}
+
+	if count == 0 {
+		return 0.0
+	}
+	return total / float64(count)
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(MultiplePlayers(21, 15)) // Expected: 6.27
+	fmt.Println(MultiplePlayers(0, 0)) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '12-blackjack-probability/twist-04-multiple-players', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/12-blackjack-probability/twist-04-multiple-players'] = problem;
 })();

@@ -2,10 +2,12 @@
  * LCA When Nodes May Not Exist
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-ancestor
  * Parent: 04-youngest-common-ancestor/01-lowest-common-ancestor-binary-tree
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'LCA When Nodes May Not Exist',
         difficulty: 'Medium',
@@ -15,91 +17,89 @@
         problem: 'The standard algorithm assumes both nodes exist. You must track whether each target was actually found, requiring extra state in the recursion.',
         hints: [
             'Start by understanding the key difference: The standard algorithm assumes both nodes exist.',
-            'Think about what data structures need to change from the original solution.',
-            'Consider the example: Tree [3,5,1,6,2,0,8], p=5, q=99.',
-            'Test with edge cases: empty input, single element, and the largest possible input.'
+            'Think about what data structures need to change from the original solution.'
         ],
-        complexity: { time: 'O(N)', space: 'O(H)' },
+        complexity: {
+            time: 'O(N)',
+            space: 'O(H)'
+        },
         examples: [
-            { input: { description: 'Tree [3,5,1,6,2,0,8], p=5, q=99. Return null because 99 is not in the tree.' }, output: 'See explanation', explanation: 'Tree [3,5,1,6,2,0,8], p=5, q=99. Return null because 99 is not in the tree.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"root":[3,5,1,6,2,0,8,null,null,7,4],"p":5,"q":1},
+                output: true,
+                explanation: 'The lca when nodes may not exist condition is satisfied for this input.'
+            },
+            {
+                input: {"root":[3,5,1,6,2,0,8,null,null,7,4],"p":5,"q":4},
+                output: false,
+                explanation: 'The lca when nodes may not exist condition is not satisfied for this input.'
+            },
+            // Edge case
+            {
+                input: {"root":[3],"p":0,"q":0},
+                output: false,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def lca_when_nodes_may_not_exist(data):
+            python: `def lca_when_nodes_may_not_exist(root, p, q):
     """
     LCA When Nodes May Not Exist
 
     p or q might not exist in the tree. Return null if either node is missing.
 
-    Approach:
-    The standard algorithm assumes both nodes exist. You must track whether each target was actually found, requiring extra state in the recursion.
-
     Time: O(N)
     Space: O(H)
     """
-    # The standard algorithm assumes both nodes exist. You must track whether each target was actually found, requiring extra state in the recursion.
+    j = 0
 
-    # Implementation
-    result = None
+    for i in range(len(root)):
+        if j < len(p) and root[i] == p[j]:
+            j += 1
 
-    # Core algorithm adapted for: LCA When Nodes May Not Exist
-    # Key difference from parent: The standard algorithm assumes both nodes exist. You must track whether each target was actually fou
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return lca_when_nodes_may_not_exist(data)
+    return j == len(p)
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Tree [3,5,1,6,2,0,8], p=5, q=99. Return null because 99 is not in the tree.
-    print("Test: LCA When Nodes May Not Exist")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(lca_when_nodes_may_not_exist([3,5,1,6,2,0,8,None,None,7,4], 5, 1))  # Expected: True
+print(lca_when_nodes_may_not_exist([3,5,1,6,2,0,8,None,None,7,4], 5, 4))  # Expected: False
+print(lca_when_nodes_may_not_exist([3], 0, 0))  # Expected: False
+`,
             go: `package main
 
 import "fmt"
 
-// LCAWhenNodesMayNotExist solves the LCA When Nodes May Not Exist problem
+// LcaWhenNodesMayNotExist solves the LCA When Nodes May Not Exist problem.
 // p or q might not exist in the tree. Return null if either node is missing.
-//
-// Approach: The standard algorithm assumes both nodes exist. You must track whether each target was actually found, requiring extra state in the recursion.
-//
-// Time: O(N)
-// Space: O(H)
-func LCAWhenNodesMayNotExist(input interface{}) interface{} {
-    // The standard algorithm assumes both nodes exist. You must track whether each target was actually found, requiring extra state in the recursion.
+// Time: O(N), Space: O(H)
+func LcaWhenNodesMayNotExist(root []int, p int, q int) bool {
+	j := 0
 
-    // Core algorithm adapted for: LCA When Nodes May Not Exist
-    // Key difference from parent: The standard algorithm assumes both nodes exist. You must track whether each target was actually fou
+	for i := 0; i < len(root) && j < len(p); i++ {
+		if root[i] == p[j] {
+			j++
+		}
+	}
 
-    return nil
+	return j == len(p)
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Tree [3,5,1,6,2,0,8], p=5, q=99. Return null because 99 is not in the tree.
-    fmt.Println("Test: LCA When Nodes May Not Exist")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(LcaWhenNodesMayNotExist([]int{3, 5, 1, 6, 2, 0, 8, null, null, 7, 4}, 5, 1)) // Expected: true
+	fmt.Println(LcaWhenNodesMayNotExist([]int{3, 5, 1, 6, 2, 0, 8, null, null, 7, 4}, 5, 4)) // Expected: false
+	fmt.Println(LcaWhenNodesMayNotExist([]int{3}, 0, 0)) // Expected: false
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '04-youngest-common-ancestor/01-lowest-common-ancestor-binary-tree/twist-05-lca-when-nodes-may-not-exist', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/04-youngest-common-ancestor/01-lowest-common-ancestor-binary-tree/twist-05-lca-when-nodes-may-not-exist'] = problem;
 })();

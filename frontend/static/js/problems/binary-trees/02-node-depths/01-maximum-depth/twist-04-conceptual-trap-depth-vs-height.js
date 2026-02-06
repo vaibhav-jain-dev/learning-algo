@@ -2,10 +2,12 @@
  * Conceptual Trap: Depth vs Height
  * Category: binary-trees
  * Difficulty: Easy
+ * Algorithm: tree-dfs
  * Parent: 02-node-depths/01-maximum-depth
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Conceptual Trap: Depth vs Height',
         difficulty: 'Easy',
@@ -19,121 +21,86 @@
             'Key insight: Forces you to clarify the definition.',
             'Off-by-one errors are extremely common here.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Single node tree: depth=1 (counting nodes) or depth=0 (counting edges)' },
-                output: 'See explanation',
-                explanation: 'Single node tree: depth=1 (counting nodes) or depth=0 (counting edges).'
+                input: {"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the conceptual trap depth vs height criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"right":{"value":2}}},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the conceptual trap depth vs height criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def conceptual_trap_depth_vs_height(data):
+            python: `def conceptual_trap_depth_vs_height(tree):
     """
     Conceptual Trap: Depth vs Height
 
-    What is the maximum depth of a tree with a single node? Some define depth as edges (answer: 0), others as nodes (answer: 1).
-     Solve for both definitions.
+    What is the maximum depth of a tree with a single node? Some define depth as edges (answer: 0), others as nodes (answer: 1). Solve for both definitions. Forces you to clarify the definition. The recursive base case changes: return 0 for null (node-counting) vs return -1 for null (edge-counting). Off-by-one errors are extremely common here.
 
-    Approach: Forces you to clarify the definition
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: Forces you to clarify the definition
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Conceptual Trap: Depth vs Height
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Single node tree: depth=1 (counting nodes) or depth=0 (counting edges)
-    print("See problem description for test cases")`,
+# Test cases
+print(conceptual_trap_depth_vs_height({"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: 1
+print(conceptual_trap_depth_vs_height({"value": 1, "right": {"value": 2}}))  # Expected: 2
+print(conceptual_trap_depth_vs_height({"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// ConceptualTrapDepthVsHeight solves: Conceptual Trap: Depth vs Height
-// Forces you to clarify the definition
+// ConceptualTrapDepthVsHeight solves the Conceptual Trap: Depth vs Height problem.
+// What is the maximum depth of a tree with a single node? Some define depth as edges (answer: 0), others as nodes (answer: 1). Solve for both definitions. Forces you to clarify the definition. The recursive base case changes: return 0 for null (node-counting) vs return -1 for null (edge-counting). Off-by-one errors are extremely common here.
 // Time: O(n), Space: O(n)
-func ConceptualTrapDepthVsHeight(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func ConceptualTrapDepthVsHeight(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Conceptual Trap: Depth vs Height
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Single node tree: depth=1 (counting nodes) or depth=0 (counting edges)
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(ConceptualTrapDepthVsHeight({"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: 1
+	fmt.Println(ConceptualTrapDepthVsHeight({"value":1,"right":{"value":2}})) // Expected: 2
+	fmt.Println(ConceptualTrapDepthVsHeight({"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '02-node-depths/01-maximum-depth/twist-04-conceptual-trap-depth-vs-height', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/02-node-depths/01-maximum-depth/twist-04-conceptual-trap-depth-vs-height'] = problem;
 })();

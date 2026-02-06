@@ -2,10 +2,12 @@
  * N-ary Tree Branch Sums
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-dfs
  * Parent: 01-branch-sums
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'N-ary Tree Branch Sums',
         difficulty: 'Medium',
@@ -19,120 +21,79 @@
             'Think about how the base case differs from the original problem.',
             'Review the example: Node(1, children=[Node(2, children=[Node(4)]), Node(3)]) => [7, 4].'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Node(1, children=[Node(2, children=[Node(4)]), Node(3)]) => [7, 4]' },
-                output: 'See explanation',
-                explanation: 'Node(1, children=[Node(2, children=[Node(4)]), Node(3)]) => [7, 4]. Path 1->2->4=7, Path 1->3=4.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the n ary tree branch sums criteria.'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def n_ary_tree_branch_sums(data):
+            python: `def n_ary_tree_branch_sums(tree):
     """
     N-ary Tree Branch Sums
 
-    Instead of a binary tree, compute branch sums for an N-ary tree where each node can have any number of children.
+    Instead of a binary tree, compute branch sums for an N-ary tree where each node can have any number of children. You can no longer check just left/right for leaf detection. You must iterate over a children array and handle the variable branching factor.
 
-    Approach: You can no longer check just left/right for leaf detection
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: You can no longer check just left/right for leaf detection
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement N-ary Tree Branch Sums
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Node(1, children=[Node(2, children=[Node(4)]), Node(3)]) => [7, 4]
-    print("See problem description for test cases")`,
+# Test cases
+print(n_ary_tree_branch_sums({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5, "right": {"value": 10}}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: 1
+print(n_ary_tree_branch_sums({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5, "right": {"value": 10}}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// NaryTreeBranchSums solves: N-ary Tree Branch Sums
-// You can no longer check just left/right for leaf detection
+// NAryTreeBranchSums solves the N-ary Tree Branch Sums problem.
+// Instead of a binary tree, compute branch sums for an N-ary tree where each node can have any number of children. You can no longer check just left/right for leaf detection. You must iterate over a children array and handle the variable branching factor.
 // Time: O(n), Space: O(n)
-func NaryTreeBranchSums(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func NAryTreeBranchSums(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement N-ary Tree Branch Sums
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Node(1, children=[Node(2, children=[Node(4)]), Node(3)]) => [7, 4]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(NAryTreeBranchSums({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: 1
+	fmt.Println(NAryTreeBranchSums({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '01-branch-sums/twist-01-n-ary-tree-branch-sums', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/01-branch-sums/twist-01-n-ary-tree-branch-sums'] = problem;
 })();

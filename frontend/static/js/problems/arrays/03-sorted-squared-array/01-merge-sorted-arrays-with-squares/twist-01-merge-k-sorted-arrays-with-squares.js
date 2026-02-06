@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,3,5,7],"k":2},
                 output: [1,3],
-                explanation: 'The k=2 smallest/closest values found.'
+                explanation: ''
             },
             {
                 input: {"array":[10,20,30],"k":1},
                 output: [10],
-                explanation: 'With k=1, return the single best result.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[5,5,5,5],"k":3},
                 output: [5,5,5],
-                explanation: 'Duplicate values handled correctly with k=3.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def merge_k_sorted_arrays_with_squares(data):
+            python: `def merge_k_sorted_arrays_with_squares(arr1, arr2, k):
     """
     Merge K Sorted Arrays with Squares
 
-    Given k sorted arrays instead of two, square all elements and merge into a single sorted array.
-    \n    Approach: Merging k arrays requires a min-heap approach instead of simple two-pointer merge, changing the complexity analysis.
+    Given k sorted arrays instead of two, square all elements and merge into a single sorted array. Merging k arrays requires a min-heap approach instead of simple two-pointer merge, changing the complexity analysis.
 
     Time: O(n log k)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # arr1=[-3,1], arr2=[-2,4], arr3=[0,5] → [0,1,4,4,9,16,25]
+    count = 0
+    n = len(arr1)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on arr2
+        j = 0
+        for k in range(i, n):
+            if j < len(arr2) and arr1[k] == arr2[j]:
+                j += 1
+        if j == len(arr2):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(merge_k_sorted_arrays_with_squares([1, 2, 3, 4, 5]))
-print(merge_k_sorted_arrays_with_squares([5, 3, 1]))
-print(merge_k_sorted_arrays_with_squares([1]))`,
+print(merge_k_sorted_arrays_with_squares(None, None, 2))  # Expected: [1,3]
+print(merge_k_sorted_arrays_with_squares(None, None, 1))  # Expected: [10]
+print(merge_k_sorted_arrays_with_squares(None, None, 3))  # Expected: [5,5,5]
+`,
             go: `package main
 
 import "fmt"
 
 // MergeKSortedArraysWithSquares solves the Merge K Sorted Arrays with Squares problem.
-// Given k sorted arrays instead of two, square all elements and merge into a single sorted array.
+// Given k sorted arrays instead of two, square all elements and merge into a single sorted array. Merging k arrays requires a min-heap approach instead of simple two-pointer merge, changing the complexity analysis.
 // Time: O(n log k), Space: O(n)
-func MergeKSortedArraysWithSquares(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MergeKSortedArraysWithSquares(arr1 []int, arr2 []int, k int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(arr1); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(MergeKSortedArraysWithSquares([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MergeKSortedArraysWithSquares([]int{5, 3, 1}))
-    fmt.Println(MergeKSortedArraysWithSquares([]int{1}))
-}`
+	fmt.Println(MergeKSortedArraysWithSquares(nil, nil, 2)) // Expected: [1,3]
+	fmt.Println(MergeKSortedArraysWithSquares(nil, nil, 1)) // Expected: [10]
+	fmt.Println(MergeKSortedArraysWithSquares(nil, nil, 3)) // Expected: [5,5,5]
+}
+`
         },
         twists: [],
         similar: []

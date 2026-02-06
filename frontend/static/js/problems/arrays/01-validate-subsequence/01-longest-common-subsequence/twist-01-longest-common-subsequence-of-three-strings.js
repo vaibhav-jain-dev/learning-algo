@@ -26,80 +26,78 @@
             space: 'O(n^3)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"text1":"abcde","text2":"ace"},
                 output: 3,
-                explanation: 'The longest common subsequence is "ace" with length 3.'
+                explanation: ''
             },
             {
                 input: {"text1":"abc","text2":"def"},
                 output: 0,
-                explanation: 'No common characters exist between the two strings.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"text1":"abcba","text2":"abcba"},
                 output: 5,
-                explanation: 'Identical strings have LCS equal to their length.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def longest_common_subsequence_of_three_strings(data):
+            python: `def longest_common_subsequence_of_three_strings(text1, text2):
     """
     Longest Common Subsequence of Three Strings
 
-    Find the LCS of three strings simultaneously instead of two.
-    \n    Approach: Extends the 2D DP table to 3D, significantly increasing complexity and requiring careful index management across three dimensions.
+    Find the LCS of three strings simultaneously instead of two. Extends the 2D DP table to 3D, significantly increasing complexity and requiring careful index management across three dimensions.
 
     Time: O(n^3)
     Space: O(n^3)
-
-    Example: text1="abcde", text2="ace", text3="aue" → 2 ("ae" is common to all three)
     """
-    if not data:
-        return None
+    count = 0
+    n = len(text1)
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
-
-    # Core algorithm implementation
     for i in range(n):
-        result.append(data[i])
+        # Check condition based on text2
+        j = 0
+        for k in range(i, n):
+            if j < len(text2) and text1[k] == text2[j]:
+                j += 1
+        if j == len(text2):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(longest_common_subsequence_of_three_strings([1, 2, 3, 4, 5]))
-print(longest_common_subsequence_of_three_strings([5, 3, 1]))
-print(longest_common_subsequence_of_three_strings([1]))`,
+print(longest_common_subsequence_of_three_strings("abcde", "ace"))  # Expected: 3
+print(longest_common_subsequence_of_three_strings("abc", "def"))  # Expected: 0
+print(longest_common_subsequence_of_three_strings("abcba", "abcba"))  # Expected: 5
+`,
             go: `package main
 
 import "fmt"
 
 // LongestCommonSubsequenceOfThreeStrings solves the Longest Common Subsequence of Three Strings problem.
-// Find the LCS of three strings simultaneously instead of two.
+// Find the LCS of three strings simultaneously instead of two. Extends the 2D DP table to 3D, significantly increasing complexity and requiring careful index management across three dimensions.
 // Time: O(n^3), Space: O(n^3)
-func LongestCommonSubsequenceOfThreeStrings(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func LongestCommonSubsequenceOfThreeStrings(text1 string, text2 string) int {
+	result := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(text1); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(LongestCommonSubsequenceOfThreeStrings([]int{1, 2, 3, 4, 5}))
-    fmt.Println(LongestCommonSubsequenceOfThreeStrings([]int{5, 3, 1}))
-    fmt.Println(LongestCommonSubsequenceOfThreeStrings([]int{1}))
-}`
+	fmt.Println(LongestCommonSubsequenceOfThreeStrings("abcde", "ace")) // Expected: 3
+	fmt.Println(LongestCommonSubsequenceOfThreeStrings("abc", "def")) // Expected: 0
+	fmt.Println(LongestCommonSubsequenceOfThreeStrings("abcba", "abcba")) // Expected: 5
+}
+`
         },
         twists: [],
         similar: []

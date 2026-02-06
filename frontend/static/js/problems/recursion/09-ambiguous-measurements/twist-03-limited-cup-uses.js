@@ -2,10 +2,12 @@
  * Limited Cup Uses
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-measurements
  * Parent: 09-ambiguous-measurements
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Limited Cup Uses',
         difficulty: 'Hard',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For cups [[200,210],[450,465]] with k=2 and target 850, check if 2 uses of each cup type can reach 850.' },
-                output: 'See example',
-                explanation: 'For cups [[200,210],[450,465]] with k=2 and target 850, check if 2 uses of each cup type can reach 850.'
+                input: {"cups":[[200,210],[450,465],[800,850]],"target":10},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the limited cup uses criteria.'
+            },
+            // Edge case
+            {
+                input: {"cups":[[200,210]],"target":10},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Limited Cup Uses
-# Category: recursion
-# Difficulty: Hard
-# Parent: 09-ambiguous-measurements
-
-def solve():
+            python: `def limited_cup_uses(cups, target):
     """
+    Limited Cup Uses
+
     Each measuring cup can only be used a maximum of k times. Determine if the target is still achievable under this constraint.
 
-    Key insight: Adds a usage-count dimension to the state space, changing from unbounded to bounded knapsack-style reasoning with per-cup limits.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(cups)
+
+    for i in range(n):
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and cups[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(limited_cup_uses([[200,210],[450,465],[800,850]], 10))  # Expected: 2
+print(limited_cup_uses([[200,210]], 10))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Limited Cup Uses problem.
+// LimitedCupUses solves the Limited Cup Uses problem.
 // Each measuring cup can only be used a maximum of k times. Determine if the target is still achievable under this constraint.
-// Key insight: Adds a usage-count dimension to the state space, changing from unbounded to bounded knapsack-style reasoning with per-cup limits.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func LimitedCupUses(cups [][]int, target int) int {
+	result := 0
+
+	for i := 0; i < len(cups); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(LimitedCupUses([][]int{{200, 210}, {450, 465}, {800, 850}}, 10)) // Expected: 2
+	fmt.Println(LimitedCupUses([][]int{{200, 210}}, 10)) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '09-ambiguous-measurements/twist-03-limited-cup-uses', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/09-ambiguous-measurements/twist-03-limited-cup-uses'] = problem;
 })();

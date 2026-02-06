@@ -2,10 +2,12 @@
  * Same BSTs for N Arrays
  * Category: binary-search-trees
  * Difficulty: Hard
+ * Algorithm: bst-comparison
  * Parent: 08-same-bsts
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Same BSTs for N Arrays',
         difficulty: 'Hard',
@@ -14,68 +16,89 @@
         description: 'Given N arrays (not just two), determine which arrays among them produce the same BST. Group them into equivalence classes.',
         problem: 'Pairwise comparison of all N arrays is O(N^2 * n^2). You need a canonical form or hash for each BST to group arrays efficiently, requiring you to think about BST fingerprinting. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: same bsts for n arrays.",
-                  "Consider how pairwise comparison of all n arrays is o(n^2 * n^2) affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Arrays: [3,1,5,2,4], [3,5,1,4,2], [3,1,5,4,2], [3,5,1,2,4]. Group 1: {[3,1,5,2,4], [3,1,5,4,2]} produce the same BST. Group 2: {[3,5,1,4,2], [3,5,1,2,4]} produce the same BST.'
+                input: {"arrayOne":[10,15,8,12,94,81,5,2,11],"arrayTwo":[10,8,5,15,2,12,11,94,81]},
+                output: true,
+                explanation: 'The same bsts for n arrays condition is satisfied for this input.'
+            },
+            {
+                input: {"arrayOne":[10,15,8,12,94,81,5,2,11],"arrayTwo":[10,8,5,15,2,12,94,81,11]},
+                output: false,
+                explanation: 'The same bsts for n arrays condition is not satisfied for this input.'
+            },
+            // Edge case
+            {
+                input: {"arrayOne":[10],"arrayTwo":[10]},
+                output: false,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Same BSTs for N Arrays
-# Difficulty: Hard
-# Parent: 08-same-bsts
-#
-# Given N arrays (not just two), determine which arrays among them produce the same BST. Group them into equivalence classes.
-
-def sameBstsForNArrays(data):
+            python: `def same_bsts_for_n_arrays(arrayOne, arrayTwo):
     """
     Same BSTs for N Arrays
 
-    Approach: Pairwise comparison of all N arrays is O(N^2 * n^2).
+    Given N arrays (not just two), determine which arrays among them produce the same BST. Group them into equivalence classes.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Pairwise comparison of all N arrays is O(N^2 * n^2)
-    pass
+    j = 0
+
+    for i in range(len(arrayOne)):
+        if j < len(arrayTwo) and arrayOne[i] == arrayTwo[j]:
+            j += 1
+
+    return j == len(arrayTwo)
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Arrays: [3,1,5,2,4], [3,5,1,4,2], [3,1,5,4,2], [3,5,1,2,4]
-    print(sameBstsForNArrays({}))`,
+# Test cases
+print(same_bsts_for_n_arrays([10,15,8,12,94,81,5,2,11], [10,8,5,15,2,12,11,94,81]))  # Expected: True
+print(same_bsts_for_n_arrays([10,15,8,12,94,81,5,2,11], [10,8,5,15,2,12,94,81,11]))  # Expected: False
+print(same_bsts_for_n_arrays([10], [10]))  # Expected: False
+`,
             go: `package main
 
 import "fmt"
 
-// Same BSTs for N Arrays
-// Difficulty: Hard
-// Parent: 08-same-bsts
-//
+// SameBstsForNArrays solves the Same BSTs for N Arrays problem.
 // Given N arrays (not just two), determine which arrays among them produce the same BST. Group them into equivalence classes.
+// Time: O(n), Space: O(1)
+func SameBstsForNArrays(arrayOne []int, arrayTwo []int) bool {
+	j := 0
 
-func SameBstsForNArrays(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Pairwise comparison of all N arrays is O(N^2 * n^2)
-    return nil
+	for i := 0; i < len(arrayOne) && j < len(arrayTwo); i++ {
+		if arrayOne[i] == arrayTwo[j] {
+			j++
+		}
+	}
+
+	return j == len(arrayTwo)
 }
 
 func main() {
-    // Example: Arrays: [3,1,5,2,4], [3,5,1,4,2], [3,1,5,4,2], [3,5,1,2,4]
-    fmt.Println(SameBstsForNArrays(map[string]interface{}{}))
-}`
+	fmt.Println(SameBstsForNArrays([]int{10, 15, 8, 12, 94, 81, 5, 2, 11}, []int{10, 8, 5, 15, 2, 12, 11, 94, 81})) // Expected: true
+	fmt.Println(SameBstsForNArrays([]int{10, 15, 8, 12, 94, 81, 5, 2, 11}, []int{10, 8, 5, 15, 2, 12, 94, 81, 11})) // Expected: false
+	fmt.Println(SameBstsForNArrays([]int{10}, []int{10})) // Expected: false
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '08-same-bsts/twist-03-same-bsts-for-n-arrays', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/08-same-bsts/twist-03-same-bsts-for-n-arrays'] = problem;
 })();

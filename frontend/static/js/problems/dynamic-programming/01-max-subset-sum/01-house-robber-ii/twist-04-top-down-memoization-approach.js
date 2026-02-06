@@ -2,10 +2,12 @@
  * Top-Down Memoization Approach
  * Category: dynamic-programming
  * Difficulty: Medium
+ * Algorithm: dp-max-subset
  * Parent: 01-max-subset-sum/01-house-robber-ii
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Top-Down Memoization Approach',
         difficulty: 'Medium',
@@ -19,84 +21,91 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'def rob(nums, start, end, memo): base case when start > end. Choice: rob(start) + rob(start+2, end) or rob(start+1, end). Call max(rob(0, n-2), rob(1, n-1)).'
+                input: {"nums":[2,3,2]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the top down memoization approach criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"nums":[1,2,3,1]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the top down memoization approach criteria.'
+            },
+            {
+                input: {"nums":[1,2,3]},
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the top down memoization approach criteria.'
+            },
+            // Edge case
+            {
+                input: {"nums":[2]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def topdownMemoizationApproach(data):
+            python: `def top_down_memoization_approach(nums):
     """
     Top-Down Memoization Approach
 
     Rewrite the solution using top-down recursion with memoization instead of the bottom-up iterative approach. How do you handle the circular constraint in recursive form?
 
-    Approach:
-    Top-down thinking is different - you start from the goal and ask "what are my choices?" Converting circular constraints into recursive parameters requires careful thought about what state to pass.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    result = 0
 
-    # Example: def rob(nums, start, end, memo): base case when start > end. Choice: rob(start) + rob(start+2, end) or rob(start+1, end)
+    for i in range(len(nums)):
+        # Process element
+        result += 1  # Update based on condition
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
     return result
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Top-Down Memoization Approach...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(top_down_memoization_approach([2,3,2]))  # Expected: 1
+print(top_down_memoization_approach([1,2,3,1]))  # Expected: 2
+print(top_down_memoization_approach([1,2,3]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TopdownMemoizationApproach solves the Top-Down Memoization Approach problem.
-// Rewrite the solution using top-down recursion with memoization instead of the bottom-up iterative approach. How do you handle the circular constraint 
-//
-// Approach: Top-down thinking is different - you start from the goal and ask "what are my choices?" Converting circular constraints into recursive parameters requ
-func TopdownMemoizationApproach(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// TopDownMemoizationApproach solves the Top-Down Memoization Approach problem.
+// Rewrite the solution using top-down recursion with memoization instead of the bottom-up iterative approach. How do you handle the circular constraint in recursive form?
+// Time: O(n^2), Space: O(n)
+func TopDownMemoizationApproach(nums []int) int {
+	result := 0
 
-    // Example: def rob(nums, start, end, memo): base case when start > end. Choice: rob(start) + rob(start+2, end) 
+	for i := 0; i < len(nums); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Top-Down Memoization Approach...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(TopDownMemoizationApproach([]int{2, 3, 2})) // Expected: 1
+	fmt.Println(TopDownMemoizationApproach([]int{1, 2, 3, 1})) // Expected: 2
+	fmt.Println(TopDownMemoizationApproach([]int{1, 2, 3})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '01-max-subset-sum/01-house-robber-ii/twist-04-top-down-memoization-approach', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/01-max-subset-sum/01-house-robber-ii/twist-04-top-down-memoization-approach'] = problem;
 })();

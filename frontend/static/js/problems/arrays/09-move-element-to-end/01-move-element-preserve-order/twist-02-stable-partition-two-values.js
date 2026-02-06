@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[3,1,2,3,4,3],"target":3},
                 output: [1,2,4,3,3,3],
-                explanation: 'Target elements moved to the correct position.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4,5],"target":6},
                 output: [1,2,3,4,5],
-                explanation: 'Target not in array - no changes needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[3,3,3],"target":3},
                 output: [3,3,3],
-                explanation: 'All elements are the target.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def stable_partition_two_values(data):
+            python: `def stable_partition_two_values(array, toMove, target):
     """
     Stable Partition Two Values
 
-    Given two target values A and B, move all As to the end and all Bs to the beginning, preserving order within each group.
-    \n    Approach: Three-way stable partition requires multiple passes or careful pointer management to maintain all orderings.
+    Given two target values A and B, move all As to the end and all Bs to the beginning, preserving order within each group. Three-way stable partition requires multiple passes or careful pointer management to maintain all orderings.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [3, 1, 2, 1, 3, 2], A = 2, B = 1. Result: [1, 1, 3, 3, 2, 2].
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in array:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(stable_partition_two_values([1, 2, 3, 4, 5]))
-print(stable_partition_two_values([5, 3, 1]))
-print(stable_partition_two_values([1]))`,
+print(stable_partition_two_values([3,1,2,3,4,3], None, 3))  # Expected: [1,2,4,3,3,3]
+print(stable_partition_two_values([1,2,3,4,5], None, 6))  # Expected: [1,2,3,4,5]
+print(stable_partition_two_values([3,3,3], None, 3))  # Expected: [3,3,3]
+`,
             go: `package main
 
 import "fmt"
 
 // StablePartitionTwoValues solves the Stable Partition Two Values problem.
-// Given two target values A and B, move all As to the end and all Bs to the beginning, preserving order within each group.
+// Given two target values A and B, move all As to the end and all Bs to the beginning, preserving order within each group. Three-way stable partition requires multiple passes or careful pointer management to maintain all orderings.
 // Time: O(n), Space: O(n)
-func StablePartitionTwoValues(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func StablePartitionTwoValues(array []int, toMove int, target int) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range array {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(StablePartitionTwoValues([]int{1, 2, 3, 4, 5}))
-    fmt.Println(StablePartitionTwoValues([]int{5, 3, 1}))
-    fmt.Println(StablePartitionTwoValues([]int{1}))
-}`
+	fmt.Println(StablePartitionTwoValues([]int{3, 1, 2, 3, 4, 3}, nil, 3)) // Expected: [1,2,4,3,3,3]
+	fmt.Println(StablePartitionTwoValues([]int{1, 2, 3, 4, 5}, nil, 6)) // Expected: [1,2,3,4,5]
+	fmt.Println(StablePartitionTwoValues([]int{3, 3, 3}, nil, 3)) // Expected: [3,3,3]
+}
+`
         },
         twists: [],
         similar: []

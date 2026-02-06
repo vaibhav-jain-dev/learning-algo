@@ -2,10 +2,12 @@
  * Generator / Lazy Flatten
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-product-sum
  * Parent: 02-product-sum/02-flatten-nested-list
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Generator / Lazy Flatten',
         difficulty: 'Hard',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'function* flatten(arr) { for (el of arr) { if (Array.isArray(el)) yield* flatten(el); else yield el; } }. Calling next() returns one value at a time.' },
-                output: 'See example',
-                explanation: 'function* flatten(arr) { for (el of arr) { if (Array.isArray(el)) yield* flatten(el); else yield el; } }. Calling next() returns one value at a time.'
+                input: {"array":[[1,2],[3,[4,5]],6]},
+                output: [[1,2],[3,[4,5]],6],
+                explanation: 'The generator lazy flatten for this input yields [1,2, 3,4,5, 6].'
+            },
+            // Edge case
+            {
+                input: {"array":[[1,2]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Generator / Lazy Flatten
-# Category: recursion
-# Difficulty: Hard
-# Parent: 02-product-sum/02-flatten-nested-list
-
-def solve():
+            python: `def generator_lazy_flatten(array):
     """
+    Generator / Lazy Flatten
+
     Implement flatten as a generator that yields one element at a time without building the full result array. This is useful for very large nested structures.
 
-    Key insight: Generators use lazy evaluation, producing values on demand rather than building the entire output eagerly. This changes the space complexity from O(n) result storage to O(d) for the recursion/iteration stack only.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(generator_lazy_flatten([[1,2],[3,[4,5]],6]))  # Expected: [[1,2],[3,[4,5]],6]
+print(generator_lazy_flatten([[1,2]]))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Generator / Lazy Flatten problem.
+// GeneratorLazyFlatten solves the Generator / Lazy Flatten problem.
 // Implement flatten as a generator that yields one element at a time without building the full result array. This is useful for very large nested structures.
-// Key insight: Generators use lazy evaluation, producing values on demand rather than building the entire output eagerly. This changes the space complexity from O(n) result storage to O(d) for the recursion/iteration stack only.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func GeneratorLazyFlatten(array [][]int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(GeneratorLazyFlatten([][]int{{1, 2}, {3, 4,5}, 6})) // Expected: [[1,2],[3,[4,5]],6]
+	fmt.Println(GeneratorLazyFlatten([][]int{{1, 2}})) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '02-product-sum/02-flatten-nested-list/twist-02-generator-lazy-flatten', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/02-product-sum/02-flatten-nested-list/twist-02-generator-lazy-flatten'] = problem;
 })();

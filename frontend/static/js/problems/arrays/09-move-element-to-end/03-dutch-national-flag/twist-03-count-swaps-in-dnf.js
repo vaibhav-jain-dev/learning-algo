@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,1,2,3]},
                 output: 2,
-                explanation: 'Two valid configurations found in the input.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: 1,
-                explanation: 'Only one valid configuration exists.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1,1,1]},
                 output: 3,
-                explanation: 'Multiple identical elements create multiple valid configurations.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def count_swaps_in_dnf(data):
+            python: `def count_swaps_in_dnf(array, pivot):
     """
     Count Swaps in DNF
 
-    Perform the Dutch National Flag partition and return the exact number of swaps performed.
-    \n    Approach: Forces careful analysis of when swaps actually occur vs. when mid pointer simply advances.
+    Perform the Dutch National Flag partition and return the exact number of swaps performed. Forces careful analysis of when swaps actually occur vs. when mid pointer simply advances.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [2, 0, 1, 2, 1, 0], pivot = 1. After partition, count exactly how many swaps were made.
+    count = 0
+    n = len(array)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on pivot
+        j = 0
+        for k in range(i, n):
+            if j < len(pivot) and array[k] == pivot[j]:
+                j += 1
+        if j == len(pivot):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(count_swaps_in_dnf([1, 2, 3, 4, 5]))
-print(count_swaps_in_dnf([5, 3, 1]))
-print(count_swaps_in_dnf([1]))`,
+print(count_swaps_in_dnf([1,2,1,2,3], None))  # Expected: 2
+print(count_swaps_in_dnf([1,2,3], None))  # Expected: 1
+print(count_swaps_in_dnf([1,1,1], None))  # Expected: 3
+`,
             go: `package main
 
 import "fmt"
 
-// CountSwapsInDNF solves the Count Swaps in DNF problem.
-// Perform the Dutch National Flag partition and return the exact number of swaps performed.
+// CountSwapsInDnf solves the Count Swaps in DNF problem.
+// Perform the Dutch National Flag partition and return the exact number of swaps performed. Forces careful analysis of when swaps actually occur vs. when mid pointer simply advances.
 // Time: O(n), Space: O(n)
-func CountSwapsInDNF(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func CountSwapsInDnf(array []int, pivot int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(CountSwapsInDNF([]int{1, 2, 3, 4, 5}))
-    fmt.Println(CountSwapsInDNF([]int{5, 3, 1}))
-    fmt.Println(CountSwapsInDNF([]int{1}))
-}`
+	fmt.Println(CountSwapsInDnf([]int{1, 2, 1, 2, 3}, nil)) // Expected: 2
+	fmt.Println(CountSwapsInDnf([]int{1, 2, 3}, nil)) // Expected: 1
+	fmt.Println(CountSwapsInDnf([]int{1, 1, 1}, nil)) // Expected: 3
+}
+`
         },
         twists: [],
         similar: []

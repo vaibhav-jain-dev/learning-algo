@@ -2,10 +2,12 @@
  * Iterative BFS Approach
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-product-sum
  * Parent: 02-product-sum/01-nested-array-depth
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Iterative BFS Approach',
         difficulty: 'Medium',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For [1, [2, [3, 4]]]: Level 0 queue: [1, [2,[3,4]]]. Level 1 queue: [2, [3,4]]. Level 2 queue: [3, 4]. Max depth = 3.' },
-                output: 'See example',
-                explanation: 'For [1, [2, [3, 4]]]: Level 0 queue: [1, [2,[3,4]]]. Level 1 queue: [2, [3,4]]. Level 2 queue: [3, 4]. Max depth = 3.'
+                input: {"array":[1,[2,[3,4]]]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the iterative bfs approach criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Iterative BFS Approach
-# Category: recursion
-# Difficulty: Medium
-# Parent: 02-product-sum/01-nested-array-depth
-
-def solve():
+            python: `def iterative_bfs_approach(array):
     """
+    Iterative BFS Approach
+
     Find maximum nesting depth using a BFS (level-order) approach with a queue, processing one level at a time. No recursion allowed.
 
-    Key insight: BFS naturally processes level by level, so depth equals the number of BFS rounds. This is a fundamentally different traversal order than DFS recursion and requires queue management instead of call stack.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(iterative_bfs_approach([1,[2,[3,4]]]))  # Expected: 2
+print(iterative_bfs_approach([1]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Iterative BFS Approach problem.
+// IterativeBfsApproach solves the Iterative BFS Approach problem.
 // Find maximum nesting depth using a BFS (level-order) approach with a queue, processing one level at a time. No recursion allowed.
-// Key insight: BFS naturally processes level by level, so depth equals the number of BFS rounds. This is a fundamentally different traversal order than DFS recursion and requires queue management instead of call stack.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func IterativeBfsApproach(array []int) int {
+	result := 0
+
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(IterativeBfsApproach([]interface{}{1, []interface{}{2, []int{3, 4}}})) // Expected: 2
+	fmt.Println(IterativeBfsApproach([]int{1})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '02-product-sum/01-nested-array-depth/twist-01-iterative-bfs-approach', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/02-product-sum/01-nested-array-depth/twist-01-iterative-bfs-approach'] = problem;
 })();

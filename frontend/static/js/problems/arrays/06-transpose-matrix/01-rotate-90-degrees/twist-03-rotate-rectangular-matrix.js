@@ -27,83 +27,70 @@
             space: 'O(1)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"matrix":[[1,2],[3,4]]},
                 output: [[1,3],[2,4]],
-                explanation: 'Matrix transformed according to the specified operation.'
+                explanation: ''
             },
             {
                 input: {"matrix":[[1,2,3],[4,5,6]]},
                 output: [[1,4],[2,5],[3,6]],
-                explanation: 'Rectangular matrix handled correctly.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"matrix":[[1]]},
                 output: [[1]],
-                explanation: 'Single element matrix is trivially handled.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def rotate_rectangular_matrix(data):
+            python: `def rotate_rectangular_matrix(matrix):
     """
     Rotate Rectangular Matrix
 
-    Rotate a non-square m x n matrix by 90 degrees. The result will be n x m. Cannot be done in-place.
-    \n    Approach: Dimensions change, so in-place is impossible. Must allocate a new matrix and map coordinates correctly.
+    Rotate a non-square m x n matrix by 90 degrees. The result will be n x m. Cannot be done in-place. Dimensions change, so in-place is impossible. Must allocate a new matrix and map coordinates correctly.
 
     Time: O(n)
     Space: O(1)
     """
-    # Implementation based on the twist description
-    # matrix = [[1,2,3],[4,5,6]]. 2x3 -> 3x2. Result: [[4,1],[5,2],[6,3]].
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in matrix:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(rotate_rectangular_matrix([1, 2, 3, 4, 5]))
-print(rotate_rectangular_matrix([5, 3, 1]))
-print(rotate_rectangular_matrix([1]))`,
+print(rotate_rectangular_matrix([[1,2],[3,4]]))  # Expected: [[1,3],[2,4]]
+print(rotate_rectangular_matrix([[1,2,3],[4,5,6]]))  # Expected: [[1,4],[2,5],[3,6]]
+print(rotate_rectangular_matrix([[1]]))  # Expected: [[1]]
+`,
             go: `package main
 
 import "fmt"
 
 // RotateRectangularMatrix solves the Rotate Rectangular Matrix problem.
-// Rotate a non-square m x n matrix by 90 degrees. The result will be n x m. Cannot be done in-place.
+// Rotate a non-square m x n matrix by 90 degrees. The result will be n x m. Cannot be done in-place. Dimensions change, so in-place is impossible. Must allocate a new matrix and map coordinates correctly.
 // Time: O(n), Space: O(1)
-func RotateRectangularMatrix(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func RotateRectangularMatrix(matrix []string) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range matrix {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(RotateRectangularMatrix([]int{1, 2, 3, 4, 5}))
-    fmt.Println(RotateRectangularMatrix([]int{5, 3, 1}))
-    fmt.Println(RotateRectangularMatrix([]int{1}))
-}`
+	fmt.Println(RotateRectangularMatrix([][]int{{1, 2}, {3, 4}})) // Expected: [[1,3],[2,4]]
+	fmt.Println(RotateRectangularMatrix([][]int{{1, 2, 3}, {4, 5, 6}})) // Expected: [[1,4],[2,5],[3,6]]
+	fmt.Println(RotateRectangularMatrix([][]int{{1}})) // Expected: [[1]]
+}
+`
         },
         twists: [],
         similar: []

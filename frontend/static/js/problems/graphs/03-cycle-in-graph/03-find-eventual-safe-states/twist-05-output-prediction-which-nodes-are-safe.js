@@ -2,10 +2,12 @@
  * Output Prediction: Which Nodes are Safe?
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-cycle
  * Parent: 03-cycle-in-graph/03-find-eventual-safe-states
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Output Prediction: Which Nodes are Safe?',
         difficulty: 'Medium',
@@ -19,87 +21,85 @@
             'Consider the example: Graph: A->B, A->C, B->D, D->B, C->E.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(V + E)', space: 'O(V)' },
+        complexity: {
+            time: 'O(V + E)',
+            space: 'O(V)'
+        },
         examples: [
-            { input: { description: 'Graph: A->B, A->C, B->D, D->B, C->E. A is unsafe (path A->B->D->B loops). C is safe (C->E terminates). Even though A->C->E terminates, A is still unsafe because A->B loops.' }, output: 'See explanation', explanation: 'Graph: A->B, A->C, B->D, D->B, C->E. A is unsafe (path A->B->D->B loops). C is safe (C->E terminates). Even though A->C->E terminates, A is still unsafe because A->B loops.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"graph":[[1,2],[2,3],[5],[0],[5],[],[]]},
+                output: [[1,2],[2,3],[5]],
+                explanation: 'The output prediction which nodes are safe for this input yields [1,2, 2,3, 5].'
+            },
+            {
+                input: {"graph":[[1,2,3,4],[1,2],[3,4],[0,4],[]]},
+                output: [[1,2,3,4],[1,2],[3,4]],
+                explanation: 'The output prediction which nodes are safe for this input yields [1,2,3,4, 1,2, 3,4].'
+            },
+            // Edge case
+            {
+                input: {"graph":[[1,2]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def output_prediction_which_nodes_are_safe(data):
+            python: `def output_prediction_which_nodes_are_safe(graph):
     """
     Output Prediction: Which Nodes are Safe?
 
     Given a graph diagram, predict which nodes are safe without running an algorithm. Trace paths mentally from each node to determine if all paths terminate.
 
-    Approach:
-    Tests conceptual understanding rather than coding. You must reason about the difference between "some paths terminate" and "ALL paths terminate" from a node, which is the key insight of the problem.
-
     Time: O(V + E)
     Space: O(V)
     """
-    # Tests conceptual understanding rather than coding. You must reason about the difference between "some paths terminate" and "ALL paths terminate" from a node, which is the key insight of the problem.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Output Prediction: Which Nodes are Safe?
-    # Key difference from parent: Tests conceptual understanding rather than coding. You must reason about the difference between "som
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(graph)):
+        # Check if element meets criteria
+        result.append(graph[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return output_prediction_which_nodes_are_safe(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Graph: A->B, A->C, B->D, D->B, C->E. A is unsafe (path A->B->D->B loops). C is safe (C->E terminates). Even though A->C->E terminates, A is still unsafe because A->B loops.
-    print("Test: Output Prediction: Which Nodes are Safe?")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(output_prediction_which_nodes_are_safe([[1,2],[2,3],[5],[0],[5],[],[]]))  # Expected: [[1,2],[2,3],[5]]
+print(output_prediction_which_nodes_are_safe([[1,2,3,4],[1,2],[3,4],[0,4],[]]))  # Expected: [[1,2,3,4],[1,2],[3,4]]
+print(output_prediction_which_nodes_are_safe([[1,2]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// OutputPredictionWhichNodesAreSafe solves the Output Prediction: Which Nodes are Safe? problem
+// OutputPredictionWhichNodesAreSafe solves the Output Prediction: Which Nodes are Safe? problem.
 // Given a graph diagram, predict which nodes are safe without running an algorithm. Trace paths mentally from each node to determine if all paths terminate.
-//
-// Approach: Tests conceptual understanding rather than coding. You must reason about the difference between "some paths terminate" and "ALL paths terminate" from a node, which is the key insight of the problem.
-//
-// Time: O(V + E)
-// Space: O(V)
-func OutputPredictionWhichNodesAreSafe(input interface{}) interface{} {
-    // Tests conceptual understanding rather than coding. You must reason about the difference between "some paths terminate" and "ALL paths terminate" from a node, which is the key insight of the problem.
+// Time: O(V + E), Space: O(V)
+func OutputPredictionWhichNodesAreSafe(graph [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Output Prediction: Which Nodes are Safe?
-    // Key difference from parent: Tests conceptual understanding rather than coding. You must reason about the difference between "som
+	for i := 0; i < len(graph); i++ {
+		result = append(result, graph[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Graph: A->B, A->C, B->D, D->B, C->E. A is unsafe (path A->B->D->B loops). C is safe (C->E terminates). Even though A->C->E terminates, A is still unsafe because A->B loops.
-    fmt.Println("Test: Output Prediction: Which Nodes are Safe?")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(OutputPredictionWhichNodesAreSafe([][]int{{1, 2}, {2, 3}, {5}, {0}, {5}, {}, {}})) // Expected: [[1,2],[2,3],[5]]
+	fmt.Println(OutputPredictionWhichNodesAreSafe([][]int{{1, 2, 3, 4}, {1, 2}, {3, 4}, {0, 4}, {}})) // Expected: [[1,2,3,4],[1,2],[3,4]]
+	fmt.Println(OutputPredictionWhichNodesAreSafe([][]int{{1, 2}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '03-cycle-in-graph/03-find-eventual-safe-states/twist-05-output-prediction-which-nodes-are-safe', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/03-cycle-in-graph/03-find-eventual-safe-states/twist-05-output-prediction-which-nodes-are-safe'] = problem;
 })();

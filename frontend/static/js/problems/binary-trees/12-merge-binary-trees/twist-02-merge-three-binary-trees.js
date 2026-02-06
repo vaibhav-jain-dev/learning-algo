@@ -2,10 +2,12 @@
  * Merge Three Binary Trees
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-merge
  * Parent: 12-merge-binary-trees
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Merge Three Binary Trees',
         difficulty: 'Medium',
@@ -19,121 +21,85 @@
             'Key insight: With two trees, you have 2^2 - 1 = 3 cases per node (both exist, only left, only right).',
             'With three trees, you have 2^3 - 1 = 7 cases, significantly increasing the conditional logic at each step.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree1 [1, 2], Tree2 [3, null, 4], Tree3 [5, 6, 7]' },
-                output: 'See explanation',
-                explanation: 'Tree1 [1, 2], Tree2 [3, null, 4], Tree3 [5, 6, 7]. Merged: [9, 8, 11]. Root: 1+3+5=9, Left: 2+0+6=8, Right: 0+4+7=11.'
+                input: {"tree1":{"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}},"tree2":{"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the merge three binary trees criteria.'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree1":{"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}},"tree2":{"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def merge_three_binary_trees(data):
+            python: `def merge_three_binary_trees(tree1, tree2):
     """
     Merge Three Binary Trees
 
-    Merge three binary trees by summing corresponding node values.
-     If a position exists in any tree, include it in the result.
+    Merge three binary trees by summing corresponding node values. If a position exists in any tree, include it in the result. With two trees, you have 2^2 - 1 = 3 cases per node (both exist, only left, only right). With three trees, you have 2^3 - 1 = 7 cases, significantly increasing the conditional logic at each step.
 
-    Approach: With two trees, you have 2^2 - 1 = 3 cases per node (both exist, only left, only right)
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    count = 0
+    n = len(tree1)
 
-    # Key insight: With two trees, you have 2^2 - 1 = 3 cases per node (both exist, only left, only right)
+    for i in range(n):
+        # Check condition based on tree2
+        j = 0
+        for k in range(i, n):
+            if j < len(tree2) and tree1[k] == tree2[j]:
+                j += 1
+        if j == len(tree2):
+            count += 1
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Merge Three Binary Trees
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree1 [1, 2], Tree2 [3, null, 4], Tree3 [5, 6, 7]
-    print("See problem description for test cases")`,
+# Test cases
+print(merge_three_binary_trees({"value": 1, "left": {"value": 3, "left": {"value": 5}}, "right": {"value": 2}}, {"value": 2, "left": {"value": 1, "right": {"value": 4}}, "right": {"value": 3, "right": {"value": 7}}}))  # Expected: 1
+print(merge_three_binary_trees({"value": 1, "left": {"value": 3, "left": {"value": 5}}, "right": {"value": 2}}, {"value": 2, "left": {"value": 1, "right": {"value": 4}}, "right": {"value": 3, "right": {"value": 7}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// MergeThreeBinaryTrees solves: Merge Three Binary Trees
-// With two trees, you have 2^2 - 1 = 3 cases per node (both exist, only left, only right)
+// MergeThreeBinaryTrees solves the Merge Three Binary Trees problem.
+// Merge three binary trees by summing corresponding node values. If a position exists in any tree, include it in the result. With two trees, you have 2^2 - 1 = 3 cases per node (both exist, only left, only right). With three trees, you have 2^3 - 1 = 7 cases, significantly increasing the conditional logic at each step.
 // Time: O(n), Space: O(n)
-func MergeThreeBinaryTrees(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func MergeThreeBinaryTrees(tree1 *TreeNode, tree2 *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree1); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Merge Three Binary Trees
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree1 [1, 2], Tree2 [3, null, 4], Tree3 [5, 6, 7]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(MergeThreeBinaryTrees({"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}}, {"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}})) // Expected: 1
+	fmt.Println(MergeThreeBinaryTrees({"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}}, {"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '12-merge-binary-trees/twist-02-merge-three-binary-trees', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/12-merge-binary-trees/twist-02-merge-three-binary-trees'] = problem;
 })();

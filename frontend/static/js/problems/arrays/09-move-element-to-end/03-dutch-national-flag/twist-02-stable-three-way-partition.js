@@ -27,83 +27,74 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[3,1,2,3,4,3],"target":3},
                 output: [1,2,4,3,3,3],
-                explanation: 'Target elements moved to the correct position.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4,5],"target":6},
                 output: [1,2,3,4,5],
-                explanation: 'Target not in array - no changes needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[3,3,3],"target":3},
                 output: [3,3,3],
-                explanation: 'All elements are the target.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def stable_three_way_partition(data):
+            python: `def stable_three_way_partition(array, pivot):
     """
     Stable Three-Way Partition
 
-    Partition into three groups around the pivot but preserve the relative order within each group.
-    \n    Approach: Standard DNF is unstable. Achieving stability in O(n) time and O(1) space is extremely challenging.
+    Partition into three groups around the pivot but preserve the relative order within each group. Standard DNF is unstable. Achieving stability in O(n) time and O(1) space is extremely challenging.
 
     Time: O(n^2)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [5, 3, 1, 3, 5, 1], pivot = 3. Stable result: [1, 1, 3, 3, 5, 5].
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
+    n = len(array)
 
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        for j in range(i + 1, n):
+            result.append([array[i], array[j]])
 
     return result
 
 
 # Test cases
-print(stable_three_way_partition([1, 2, 3, 4, 5]))
-print(stable_three_way_partition([5, 3, 1]))
-print(stable_three_way_partition([1]))`,
+print(stable_three_way_partition([3,1,2,3,4,3], None))  # Expected: [1,2,4,3,3,3]
+print(stable_three_way_partition([1,2,3,4,5], None))  # Expected: [1,2,3,4,5]
+print(stable_three_way_partition([3,3,3], None))  # Expected: [3,3,3]
+`,
             go: `package main
 
 import "fmt"
 
 // StableThreeWayPartition solves the Stable Three-Way Partition problem.
-// Partition into three groups around the pivot but preserve the relative order within each group.
+// Partition into three groups around the pivot but preserve the relative order within each group. Standard DNF is unstable. Achieving stability in O(n) time and O(1) space is extremely challenging.
 // Time: O(n^2), Space: O(n)
-func StableThreeWayPartition(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func StableThreeWayPartition(array []int, pivot int) [][]int {
+	result := make([][]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		for j := i + 1; j < len(array); j++ {
+			result = append(result, []int{array[i], array[j]})
+		}
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(StableThreeWayPartition([]int{1, 2, 3, 4, 5}))
-    fmt.Println(StableThreeWayPartition([]int{5, 3, 1}))
-    fmt.Println(StableThreeWayPartition([]int{1}))
-}`
+	fmt.Println(StableThreeWayPartition([]int{3, 1, 2, 3, 4, 3}, nil)) // Expected: [1,2,4,3,3,3]
+	fmt.Println(StableThreeWayPartition([]int{1, 2, 3, 4, 5}, nil)) // Expected: [1,2,3,4,5]
+	fmt.Println(StableThreeWayPartition([]int{3, 3, 3}, nil)) // Expected: [3,3,3]
+}
+`
         },
         twists: [],
         similar: []

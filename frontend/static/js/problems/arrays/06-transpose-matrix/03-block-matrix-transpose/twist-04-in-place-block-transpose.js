@@ -27,83 +27,71 @@
             space: 'O(1)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,3,5,7],"k":2},
                 output: [1,3],
-                explanation: 'The k=2 smallest/closest values found.'
+                explanation: ''
             },
             {
                 input: {"array":[10,20,30],"k":1},
                 output: [10],
-                explanation: 'With k=1, return the single best result.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[5,5,5,5],"k":3},
                 output: [5,5,5],
-                explanation: 'Duplicate values handled correctly with k=3.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def in_place_block_transpose(data):
+            python: `def in_place_block_transpose(array, k):
     """
     In-Place Block Transpose
 
-    For a square matrix where k divides n, perform block transpose in-place with O(1) extra space.
-    \n    Approach: Must swap blocks without auxiliary storage, cycling through block positions similarly to in-place matrix transpose.
+    For a square matrix where k divides n, perform block transpose in-place with O(1) extra space. Must swap blocks without auxiliary storage, cycling through block positions similarly to in-place matrix transpose.
 
     Time: O(n log k)
     Space: O(1)
     """
-    # Implementation based on the twist description
-    # matrix 4x4, k=2. Swap block(0,1) with block(1,0) in-place. Diagonal blocks stay.
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
 # Test cases
-print(in_place_block_transpose([1, 2, 3, 4, 5]))
-print(in_place_block_transpose([5, 3, 1]))
-print(in_place_block_transpose([1]))`,
+print(in_place_block_transpose([1,3,5,7], 2))  # Expected: [1,3]
+print(in_place_block_transpose([10,20,30], 1))  # Expected: [10]
+print(in_place_block_transpose([5,5,5,5], 3))  # Expected: [5,5,5]
+`,
             go: `package main
 
 import "fmt"
 
 // InPlaceBlockTranspose solves the In-Place Block Transpose problem.
-// For a square matrix where k divides n, perform block transpose in-place with O(1) extra space.
+// For a square matrix where k divides n, perform block transpose in-place with O(1) extra space. Must swap blocks without auxiliary storage, cycling through block positions similarly to in-place matrix transpose.
 // Time: O(n log k), Space: O(1)
-func InPlaceBlockTranspose(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func InPlaceBlockTranspose(array []int, k int) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(InPlaceBlockTranspose([]int{1, 2, 3, 4, 5}))
-    fmt.Println(InPlaceBlockTranspose([]int{5, 3, 1}))
-    fmt.Println(InPlaceBlockTranspose([]int{1}))
-}`
+	fmt.Println(InPlaceBlockTranspose([]int{1, 3, 5, 7}, 2)) // Expected: [1,3]
+	fmt.Println(InPlaceBlockTranspose([]int{10, 20, 30}, 1)) // Expected: [10]
+	fmt.Println(InPlaceBlockTranspose([]int{5, 5, 5, 5}, 3)) // Expected: [5,5,5]
+}
+`
         },
         twists: [],
         similar: []

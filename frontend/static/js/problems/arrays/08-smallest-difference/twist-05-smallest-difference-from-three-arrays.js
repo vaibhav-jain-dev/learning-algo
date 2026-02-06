@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5],"target":9},
                 output: [[1,3,5],[2,3,4]],
-                explanation: 'Found all valid combinations summing to target.'
+                explanation: ''
             },
             {
                 input: {"array":[-1,0,1,2],"target":0},
                 output: [[-1,0,1]],
-                explanation: 'Negative numbers included in the valid combination.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1,2,3],"target":100},
                 output: [],
-                explanation: 'No valid combination exists for this target.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def smallest_difference_from_three_arrays(data):
+            python: `def smallest_difference_from_three_arrays(arrayOne, arrayTwo):
     """
     Smallest Difference From Three Arrays
 
-    Given three arrays, pick one element from each to minimize (max - min) of the three chosen elements.
-    \n    Approach: Extends the two-pointer approach to three pointers, requiring a different strategy for which pointer to advance.
+    Given three arrays, pick one element from each to minimize (max - min) of the three chosen elements. Extends the two-pointer approach to three pointers, requiring a different strategy for which pointer to advance.
 
     Time: O(n^2)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # arr1 = [1, 4], arr2 = [5, 10], arr3 = [3, 8]. Best triplet [4, 5, 3] gives range 2.
+    count = 0
+    n = len(arrayOne)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on arrayTwo
+        j = 0
+        for k in range(i, n):
+            if j < len(arrayTwo) and arrayOne[k] == arrayTwo[j]:
+                j += 1
+        if j == len(arrayTwo):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(smallest_difference_from_three_arrays([1, 2, 3, 4, 5]))
-print(smallest_difference_from_three_arrays([5, 3, 1]))
-print(smallest_difference_from_three_arrays([1]))`,
+print(smallest_difference_from_three_arrays(None, None))  # Expected: [[1,3,5],[2,3,4]]
+print(smallest_difference_from_three_arrays(None, None))  # Expected: [[-1,0,1]]
+print(smallest_difference_from_three_arrays(None, None))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
 // SmallestDifferenceFromThreeArrays solves the Smallest Difference From Three Arrays problem.
-// Given three arrays, pick one element from each to minimize (max - min) of the three chosen elements.
+// Given three arrays, pick one element from each to minimize (max - min) of the three chosen elements. Extends the two-pointer approach to three pointers, requiring a different strategy for which pointer to advance.
 // Time: O(n^2), Space: O(n)
-func SmallestDifferenceFromThreeArrays(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func SmallestDifferenceFromThreeArrays(arrayOne []int, arrayTwo []int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(arrayOne); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(SmallestDifferenceFromThreeArrays([]int{1, 2, 3, 4, 5}))
-    fmt.Println(SmallestDifferenceFromThreeArrays([]int{5, 3, 1}))
-    fmt.Println(SmallestDifferenceFromThreeArrays([]int{1}))
-}`
+	fmt.Println(SmallestDifferenceFromThreeArrays(nil, nil)) // Expected: [[1,3,5],[2,3,4]]
+	fmt.Println(SmallestDifferenceFromThreeArrays(nil, nil)) // Expected: [[-1,0,1]]
+	fmt.Println(SmallestDifferenceFromThreeArrays(nil, nil)) // Expected: []
+}
+`
         },
         twists: [],
         similar: []

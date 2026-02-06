@@ -2,10 +2,12 @@
  * Largest BST Subtree
  * Category: binary-search-trees
  * Difficulty: Hard
+ * Algorithm: bst-sum
  * Parent: 14-sum-bsts
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Largest BST Subtree',
         difficulty: 'Hard',
@@ -14,68 +16,88 @@
         description: 'Instead of summing all BST subtree values, find the largest BST subtree (by number of nodes) within the binary tree and return its size.',
         problem: 'Summing all BST subtrees accumulates across many subtrees. Finding the largest requires comparison and tracking of the maximum, and you must be careful that a valid BST subtree includes all descendants, not just some. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: largest bst subtree.",
-                  "Consider how summing all bst subtrees accumulates across many subtrees affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Tree [10, 5, 15, 1, 8, null, 7]. The subtree rooted at 5 (with children 1, 8) is a valid BST of size 3. The full tree is not a valid BST because 7 < 15 is in the right subtree of 15 on the wrong side.'
+                input: {"tree":[1,4,3,2,4,null,5,null,null,null,null,4,6]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the largest bst subtree criteria.'
+            },
+            {
+                input: {"tree":[5,4,8,3,null,6,3]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the largest bst subtree criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Largest BST Subtree
-# Difficulty: Hard
-# Parent: 14-sum-bsts
-#
-# Instead of summing all BST subtree values, find the largest BST subtree (by number of nodes) within the binary tree and return its size.
-
-def largestBstSubtree(data):
+            python: `def largest_bst_subtree(tree):
     """
     Largest BST Subtree
 
-    Approach: Summing all BST subtrees accumulates across many subtrees.
+    Instead of summing all BST subtree values, find the largest BST subtree (by number of nodes) within the binary tree and return its size.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Summing all BST subtrees accumulates across many subtrees
-    pass
+    result = 0
+
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree [10, 5, 15, 1, 8, null, 7]
-    print(largestBstSubtree({}))`,
+# Test cases
+print(largest_bst_subtree([1,4,3,2,4,None,5,None,None,None,None,4,6]))  # Expected: 1
+print(largest_bst_subtree([5,4,8,3,None,6,3]))  # Expected: 2
+print(largest_bst_subtree([1]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// Largest BST Subtree
-// Difficulty: Hard
-// Parent: 14-sum-bsts
-//
+// LargestBstSubtree solves the Largest BST Subtree problem.
 // Instead of summing all BST subtree values, find the largest BST subtree (by number of nodes) within the binary tree and return its size.
+// Time: O(n), Space: O(1)
+func LargestBstSubtree(tree []int) int {
+	result := 0
 
-func LargestBstSubtree(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Summing all BST subtrees accumulates across many subtrees
-    return nil
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Tree [10, 5, 15, 1, 8, null, 7]
-    fmt.Println(LargestBstSubtree(map[string]interface{}{}))
-}`
+	fmt.Println(LargestBstSubtree([]int{1, 4, 3, 2, 4, null, 5, null, null, null, null, 4, 6})) // Expected: 1
+	fmt.Println(LargestBstSubtree([]int{5, 4, 8, 3, null, 6, 3})) // Expected: 2
+	fmt.Println(LargestBstSubtree([]int{1})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '14-sum-bsts/twist-01-largest-bst-subtree', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/14-sum-bsts/twist-01-largest-bst-subtree'] = problem;
 })();

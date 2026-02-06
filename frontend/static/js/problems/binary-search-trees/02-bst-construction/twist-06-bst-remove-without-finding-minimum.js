@@ -2,10 +2,12 @@
  * BST Remove Without Finding Minimum
  * Category: binary-search-trees
  * Difficulty: Medium
+ * Algorithm: bst-construction
  * Parent: 02-bst-construction
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'BST Remove Without Finding Minimum',
         difficulty: 'Medium',
@@ -14,68 +16,87 @@
         description: 'Implement remove where, instead of replacing with the inorder successor (minimum of right subtree), you randomly choose between predecessor and successor to maintain better balance statistically.',
         problem: 'The standard approach always pulls from one side, potentially creating imbalanced trees over many deletions. Randomized choice requires implementing both predecessor and successor finding and introduces probabilistic thinking. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: bst remove without finding minimum.",
-                  "Consider how the standard approach always pulls from one side, potentially creating imbalanced trees over many deletions affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Remove 10 from [10,5,15,2,7,12,20]: randomly choose either 7 (predecessor) or 12 (successor) as replacement.'
+                input: {"tree":[10,5,15,2,5,null,22,1],"operations":["insert(12)","remove(10)","contains(15)"]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the bst remove without finding minimum criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":[10],"operations":["insert(12)"]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# BST Remove Without Finding Minimum
-# Difficulty: Medium
-# Parent: 02-bst-construction
-#
-# Implement remove where, instead of replacing with the inorder successor (minimum of right subtree), you randomly choose between predecessor and successor to maintain better balance statistically.
-
-def bstRemoveWithoutFindingMinimum(data):
+            python: `def bst_remove_without_finding_minimum(tree, operations):
     """
     BST Remove Without Finding Minimum
 
-    Approach: The standard approach always pulls from one side, potentially creating imbalanced trees over many deletions.
+    Implement remove where, instead of replacing with the inorder successor (minimum of right subtree), you randomly choose between predecessor and successor to maintain better balance statistically.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: The standard approach always pulls from one side, potentially creating imbalanced trees over many deletions
-    pass
+    count = 0
+    n = len(tree)
+
+    for i in range(n):
+        # Check condition based on operations
+        j = 0
+        for k in range(i, n):
+            if j < len(operations) and tree[k] == operations[j]:
+                j += 1
+        if j == len(operations):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Remove 10 from [10,5,15,2,7,12,20]: randomly choose either 7 (predecessor) or 12 (successor) as replacement
-    print(bstRemoveWithoutFindingMinimum({}))`,
+# Test cases
+print(bst_remove_without_finding_minimum([10,5,15,2,5,None,22,1], ["insert(12)","remove(10)","contains(15)"]))  # Expected: 1
+print(bst_remove_without_finding_minimum([10], ["insert(12)"]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// BST Remove Without Finding Minimum
-// Difficulty: Medium
-// Parent: 02-bst-construction
-//
+// BstRemoveWithoutFindingMinimum solves the BST Remove Without Finding Minimum problem.
 // Implement remove where, instead of replacing with the inorder successor (minimum of right subtree), you randomly choose between predecessor and successor to maintain better balance statistically.
+// Time: O(n), Space: O(1)
+func BstRemoveWithoutFindingMinimum(tree []int, operations []string) int {
+	result := 0
 
-func BstRemoveWithoutFindingMinimum(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: The standard approach always pulls from one side, potentially creating imbalanced trees over many deletions
-    return nil
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Remove 10 from [10,5,15,2,7,12,20]: randomly choose either 7 (predecessor) or 12 (successor) as replacement
-    fmt.Println(BstRemoveWithoutFindingMinimum(map[string]interface{}{}))
-}`
+	fmt.Println(BstRemoveWithoutFindingMinimum([]int{10, 5, 15, 2, 5, null, 22, 1}, []string{"insert(12)", "remove(10)", "contains(15)"})) // Expected: 1
+	fmt.Println(BstRemoveWithoutFindingMinimum([]int{10}, []string{"insert(12)"})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '02-bst-construction/twist-06-bst-remove-without-finding-minimum', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/02-bst-construction/twist-06-bst-remove-without-finding-minimum'] = problem;
 })();

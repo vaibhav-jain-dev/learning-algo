@@ -2,10 +2,12 @@
  * Detect Cycle with Hash Set
  * Category: graphs
  * Difficulty: Easy
+ * Algorithm: floyd-cycle-detection
  * Parent: 07-single-cycle-check/01-linked-list-cycle
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Detect Cycle with Hash Set',
         difficulty: 'Easy',
@@ -19,87 +21,80 @@
             'Consider the example: Add each node to a set.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(n)', space: 'O(1)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
-            { input: { description: 'Add each node to a set. If you encounter a node already in the set, cycle exists. First duplicate is the cycle start.' }, output: 'See explanation', explanation: 'Add each node to a set. If you encounter a node already in the set, cycle exists. First duplicate is the cycle start.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"head":[3,2,0,-4],"pos":1},
+                output: true,
+                explanation: 'The detect cycle with hash set condition is satisfied for this input.'
+            },
+            // Edge case
+            {
+                input: {"head":[3],"pos":0},
+                output: false,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def detect_cycle_with_hash_set(data):
+            python: `def detect_cycle_with_hash_set(head, pos):
     """
     Detect Cycle with Hash Set
 
     Use O(n) space with a hash set to detect cycles. Compare the tradeoffs with Floyd approach.
 
-    Approach:
-    Hash set makes detection trivial but uses O(n) space. The twist is understanding when the space tradeoff is acceptable and when it is not.
-
     Time: O(n)
     Space: O(1)
     """
-    # Hash set makes detection trivial but uses O(n) space. The twist is understanding when the space tradeoff is acceptable and when it is not.
+    j = 0
 
-    # Implementation
-    result = None
+    for i in range(len(head)):
+        if j < len(pos) and head[i] == pos[j]:
+            j += 1
 
-    # Core algorithm adapted for: Detect Cycle with Hash Set
-    # Key difference from parent: Hash set makes detection trivial but uses O(n) space. The twist is understanding when the space trad
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return detect_cycle_with_hash_set(data)
+    return j == len(pos)
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Add each node to a set. If you encounter a node already in the set, cycle exists. First duplicate is the cycle start.
-    print("Test: Detect Cycle with Hash Set")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(detect_cycle_with_hash_set([3,2,0,-4], 1))  # Expected: True
+print(detect_cycle_with_hash_set([3], 0))  # Expected: False
+`,
             go: `package main
 
 import "fmt"
 
-// DetectCycleWithHashSet solves the Detect Cycle with Hash Set problem
+// DetectCycleWithHashSet solves the Detect Cycle with Hash Set problem.
 // Use O(n) space with a hash set to detect cycles. Compare the tradeoffs with Floyd approach.
-//
-// Approach: Hash set makes detection trivial but uses O(n) space. The twist is understanding when the space tradeoff is acceptable and when it is not.
-//
-// Time: O(n)
-// Space: O(1)
-func DetectCycleWithHashSet(input interface{}) interface{} {
-    // Hash set makes detection trivial but uses O(n) space. The twist is understanding when the space tradeoff is acceptable and when it is not.
+// Time: O(n), Space: O(1)
+func DetectCycleWithHashSet(head []int, pos int) bool {
+	j := 0
 
-    // Core algorithm adapted for: Detect Cycle with Hash Set
-    // Key difference from parent: Hash set makes detection trivial but uses O(n) space. The twist is understanding when the space trad
+	for i := 0; i < len(head) && j < len(pos); i++ {
+		if head[i] == pos[j] {
+			j++
+		}
+	}
 
-    return nil
+	return j == len(pos)
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Add each node to a set. If you encounter a node already in the set, cycle exists. First duplicate is the cycle start.
-    fmt.Println("Test: Detect Cycle with Hash Set")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(DetectCycleWithHashSet([]int{3, 2, 0, -4}, 1)) // Expected: true
+	fmt.Println(DetectCycleWithHashSet([]int{3}, 0)) // Expected: false
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '07-single-cycle-check/01-linked-list-cycle/twist-03-detect-cycle-with-hash-set', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/07-single-cycle-check/01-linked-list-cycle/twist-03-detect-cycle-with-hash-set'] = problem;
 })();

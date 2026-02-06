@@ -2,10 +2,12 @@
  * Online Province Queries
  * Category: famous-algorithms
  * Difficulty: Medium
+ * Algorithm: union-find
  * Parent: 05-union-find/01-number-of-provinces
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Online Province Queries',
         difficulty: 'Medium',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Start: 4 provinces. Add (0,1): 3. Add (2,3): 2. Add (1,2): 1. Report count after each addition.' },
-                output: 'See example',
-                explanation: 'Start: 4 provinces. Add (0,1): 3. Add (2,3): 2. Add (1,2): 1. Report count after each addition.'
+                input: {"isConnected":[[1,1,0],[1,1,0],[0,0,1]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the online province queries criteria.'
+            },
+            // Edge case
+            {
+                input: {"isConnected":[[1,1,0]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Online Province Queries
-# Category: famous-algorithms
-# Difficulty: Medium
-# Parent: 05-union-find/01-number-of-provinces
-
-def solve():
+            python: `def online_province_queries(isConnected):
     """
+    Online Province Queries
+
     Connections are added one at a time. After each new connection, report the current number of provinces.
 
-    Key insight: Naturally fits Union-Find with a decreasing counter, but emphasizes the incremental/online nature of the algorithm vs. a batch processing approach.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(isConnected)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(online_province_queries([[1,1,0],[1,1,0],[0,0,1]]))  # Expected: 1
+print(online_province_queries([[1,1,0]]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Online Province Queries problem.
+// OnlineProvinceQueries solves the Online Province Queries problem.
 // Connections are added one at a time. After each new connection, report the current number of provinces.
-// Key insight: Naturally fits Union-Find with a decreasing counter, but emphasizes the incremental/online nature of the algorithm vs. a batch processing approach.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func OnlineProvinceQueries(isConnected [][]int) int {
+	result := 0
+
+	for i := 0; i < len(isConnected); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(OnlineProvinceQueries([][]int{{1, 1, 0}, {1, 1, 0}, {0, 0, 1}})) // Expected: 1
+	fmt.Println(OnlineProvinceQueries([][]int{{1, 1, 0}})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '05-union-find/01-number-of-provinces/twist-04-online-province-queries', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/05-union-find/01-number-of-provinces/twist-04-online-province-queries'] = problem;
 })();

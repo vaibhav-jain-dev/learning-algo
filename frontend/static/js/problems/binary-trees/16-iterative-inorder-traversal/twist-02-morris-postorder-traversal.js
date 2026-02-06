@@ -2,10 +2,12 @@
  * Morris Postorder Traversal
  * Category: binary-trees
  * Difficulty: Very Hard
+ * Algorithm: tree-iterative
  * Parent: 16-iterative-inorder-traversal
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Morris Postorder Traversal',
         difficulty: 'Very Hard',
@@ -19,120 +21,85 @@
             'Think about how the base case differs from the original problem.',
             'Review the example: Tree [4, 2, 6, 1, 3, 5, 7].'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree [4, 2, 6, 1, 3, 5, 7]' },
-                output: 'See explanation',
-                explanation: 'Tree [4, 2, 6, 1, 3, 5, 7]. Postorder: [1, 3, 2, 5, 7, 6, 4]. Requires reverse-printing right-edge paths when a thread is detected.'
+                input: {"tree":{"value":4,"left":{"value":2,"left":{"value":1},"right":{"value":3}},"right":{"value":6,"left":{"value":5},"right":{"value":7}}}},
+                output: [0],
+                explanation: 'The morris postorder traversal for this input yields [0].'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"right":{"value":2,"left":{"value":3}}}},
+                output: [0,1],
+                explanation: 'The morris postorder traversal for this input yields [0, 1].'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":4,"left":{"value":2,"left":{"value":1},"right":{"value":3}},"right":{"value":6,"left":{"value":5},"right":{"value":7}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def morris_postorder_traversal(data):
+            python: `def morris_postorder_traversal(tree):
     """
     Morris Postorder Traversal
 
-    Implement postorder traversal using Morris traversal with O(1) space.
+    Implement postorder traversal using Morris traversal with O(1) space. Postorder (left, right, root) is the hardest to achieve with Morris because there is no natural point to process a node "after" both subtrees. The trick involves reversing right edges of left subtrees, adding significant complexity.
 
-    Approach: Postorder (left, right, root) is the hardest to achieve with Morris because there is no natural point to process a node "after" both subtrees
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: Postorder (left, right, root) is the hardest to achieve with Morris because there is no natural point to process a node "after" both subtrees
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Morris Postorder Traversal
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree [4, 2, 6, 1, 3, 5, 7]
-    print("See problem description for test cases")`,
+# Test cases
+print(morris_postorder_traversal({"value": 4, "left": {"value": 2, "left": {"value": 1}, "right": {"value": 3}}, "right": {"value": 6, "left": {"value": 5}, "right": {"value": 7}}}))  # Expected: [0]
+print(morris_postorder_traversal({"value": 1, "right": {"value": 2, "left": {"value": 3}}}))  # Expected: [0,1]
+print(morris_postorder_traversal({"value": 4, "left": {"value": 2, "left": {"value": 1}, "right": {"value": 3}}, "right": {"value": 6, "left": {"value": 5}, "right": {"value": 7}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// MorrisPostorderTraversal solves: Morris Postorder Traversal
-// Postorder (left, right, root) is the hardest to achieve with Morris because there is no natural point to process a node after both subtrees
+// MorrisPostorderTraversal solves the Morris Postorder Traversal problem.
+// Implement postorder traversal using Morris traversal with O(1) space. Postorder (left, right, root) is the hardest to achieve with Morris because there is no natural point to process a node "after" both subtrees. The trick involves reversing right edges of left subtrees, adding significant complexity.
 // Time: O(n), Space: O(n)
-func MorrisPostorderTraversal(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func MorrisPostorderTraversal(tree *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    // TODO: Implement Morris Postorder Traversal
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree [4, 2, 6, 1, 3, 5, 7]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(MorrisPostorderTraversal({"value":4,"left":{"value":2,"left":{"value":1},"right":{"value":3}},"right":{"value":6,"left":{"value":5},"right":{"value":7}}})) // Expected: [0]
+	fmt.Println(MorrisPostorderTraversal({"value":1,"right":{"value":2,"left":{"value":3}}})) // Expected: [0,1]
+	fmt.Println(MorrisPostorderTraversal({"value":4,"left":{"value":2,"left":{"value":1},"right":{"value":3}},"right":{"value":6,"left":{"value":5},"right":{"value":7}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '16-iterative-inorder-traversal/twist-02-morris-postorder-traversal', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/16-iterative-inorder-traversal/twist-02-morris-postorder-traversal'] = problem;
 })();

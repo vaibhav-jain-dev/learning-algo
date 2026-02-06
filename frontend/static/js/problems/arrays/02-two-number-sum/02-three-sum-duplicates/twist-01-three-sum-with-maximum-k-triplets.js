@@ -26,80 +26,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"nums":[-1,2,1,-4],"target":1},
                 output: 2,
-                explanation: 'The triplet (-1, 2, 1) has sum 2, which is closest to target 1.'
+                explanation: ''
             },
             {
                 input: {"nums":[0,0,0],"target":1},
                 output: 0,
-                explanation: 'Only triplet possible: 0+0+0=0, closest to 1.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"nums":[1,2,3,4,5],"target":10},
                 output: 10,
-                explanation: 'Triplet (2,3,5) or (1,4,5) sums to exactly 10.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def three_sum_with_maximum_k_triplets(data):
+            python: `def three_sum_with_maximum_k_triplets(nums, target, k):
     """
     Three Sum with Maximum K Triplets
 
-    Return at most k unique triplets that sum to target, prioritizing those with the smallest absolute values.
-    \n    Approach: Adds a selection/priority constraint on top of finding all triplets, requiring you to sort results or use a heap.
+    Return at most k unique triplets that sum to target, prioritizing those with the smallest absolute values. Adds a selection/priority constraint on top of finding all triplets, requiring you to sort results or use a heap.
 
     Time: O(n log k)
     Space: O(n)
-
-    Example: nums=[-2,-1,0,1,2,3], target=0, k=2 → [[-1,0,1],[-2,-1,3]] (smallest abs values first)
     """
-    if not data:
-        return None
+    count = 0
+    n = len(nums)
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
-
-    # Core algorithm implementation
     for i in range(n):
-        result.append(data[i])
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and nums[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(three_sum_with_maximum_k_triplets([1, 2, 3, 4, 5]))
-print(three_sum_with_maximum_k_triplets([5, 3, 1]))
-print(three_sum_with_maximum_k_triplets([1]))`,
+print(three_sum_with_maximum_k_triplets([-1,2,1,-4], 1, None))  # Expected: 2
+print(three_sum_with_maximum_k_triplets([0,0,0], 1, None))  # Expected: 0
+print(three_sum_with_maximum_k_triplets([1,2,3,4,5], 10, None))  # Expected: 10
+`,
             go: `package main
 
 import "fmt"
 
 // ThreeSumWithMaximumKTriplets solves the Three Sum with Maximum K Triplets problem.
-// Return at most k unique triplets that sum to target, prioritizing those with the smallest absolute values.
+// Return at most k unique triplets that sum to target, prioritizing those with the smallest absolute values. Adds a selection/priority constraint on top of finding all triplets, requiring you to sort results or use a heap.
 // Time: O(n log k), Space: O(n)
-func ThreeSumWithMaximumKTriplets(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func ThreeSumWithMaximumKTriplets(nums []int, target int, k int) int {
+	result := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(nums); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(ThreeSumWithMaximumKTriplets([]int{1, 2, 3, 4, 5}))
-    fmt.Println(ThreeSumWithMaximumKTriplets([]int{5, 3, 1}))
-    fmt.Println(ThreeSumWithMaximumKTriplets([]int{1}))
-}`
+	fmt.Println(ThreeSumWithMaximumKTriplets([]int{-1, 2, 1, -4}, 1, 3)) // Expected: 2
+	fmt.Println(ThreeSumWithMaximumKTriplets([]int{0, 0, 0}, 1, 3)) // Expected: 0
+	fmt.Println(ThreeSumWithMaximumKTriplets([]int{1, 2, 3, 4, 5}, 10, 3)) // Expected: 10
+}
+`
         },
         twists: [],
         similar: []

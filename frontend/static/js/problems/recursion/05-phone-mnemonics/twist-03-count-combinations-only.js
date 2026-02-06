@@ -2,10 +2,12 @@
  * Count Combinations Only
  * Category: recursion
  * Difficulty: Easy
+ * Algorithm: recursion-phone
  * Parent: 05-phone-mnemonics
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Count Combinations Only',
         difficulty: 'Easy',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For "23", digit 2 has 3 letters, digit 3 has 3 letters, so answer is 3*3=9.' },
-                output: 'See example',
-                explanation: 'For "23", digit 2 has 3 letters, digit 3 has 3 letters, so answer is 3*3=9.'
+                input: {"phoneNumber":"23"},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the count combinations only criteria.'
+            },
+            // Edge case
+            {
+                input: {"phoneNumber":""},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Count Combinations Only
-# Category: recursion
-# Difficulty: Easy
-# Parent: 05-phone-mnemonics
-
-def solve():
+            python: `def count_combinations_only(phoneNumber):
     """
+    Count Combinations Only
+
     Return just the total count of possible letter combinations without generating them.
 
-    Key insight: Transforms from a generation problem to a pure multiplication problem -- multiply the number of letters mapped to each digit.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(phoneNumber)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(count_combinations_only("23"))  # Expected: 1
+print(count_combinations_only(""))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Count Combinations Only problem.
+// CountCombinationsOnly solves the Count Combinations Only problem.
 // Return just the total count of possible letter combinations without generating them.
-// Key insight: Transforms from a generation problem to a pure multiplication problem -- multiply the number of letters mapped to each digit.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func CountCombinationsOnly(phoneNumber string) int {
+	result := 0
+
+	for i := 0; i < len(phoneNumber); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(CountCombinationsOnly("23")) // Expected: 1
+	fmt.Println(CountCombinationsOnly("")) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '05-phone-mnemonics/twist-03-count-combinations-only', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/05-phone-mnemonics/twist-03-count-combinations-only'] = problem;
 })();

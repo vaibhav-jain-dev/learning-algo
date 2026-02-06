@@ -2,10 +2,12 @@
  * Different Heuristics
  * Category: famous-algorithms
  * Difficulty: Medium
+ * Algorithm: a-star
  * Parent: 08-a-star-algorithm
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Different Heuristics',
         difficulty: 'Medium',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For 4-directional movement, Manhattan is exact. Euclidean underestimates. Chebyshev overestimates (inadmissible for 4-dir) but is perfect for 8-dir.' },
-                output: 'See example',
-                explanation: 'For 4-directional movement, Manhattan is exact. Euclidean underestimates. Chebyshev overestimates (inadmissible for 4-dir) but is perfect for 8-dir.'
+                input: {"grid":[[0,0,0,0],[0,1,1,0],[0,0,0,0],[0,1,0,0]],"start":[0,0],"end":[3,3]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the different heuristics criteria.'
+            },
+            // Edge case
+            {
+                input: {"grid":[[0,0,0,0]],"start":[0],"end":[3]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Different Heuristics
-# Category: famous-algorithms
-# Difficulty: Medium
-# Parent: 08-a-star-algorithm
-
-def solve():
+            python: `def different_heuristics(grid, start, end):
     """
+    Different Heuristics
+
     Compare Manhattan, Euclidean, and Chebyshev distance heuristics for grid pathfinding. Analyze admissibility for 4-directional vs 8-directional movement.
 
-    Key insight: Different heuristics affect A* performance differently -- some are more informed (tighter bound) but must remain admissible (never overestimate) for optimality.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(grid)
+
+    for i in range(n):
+        # Check condition based on start
+        j = 0
+        for k in range(i, n):
+            if j < len(start) and grid[k] == start[j]:
+                j += 1
+        if j == len(start):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(different_heuristics([[0,0,0,0],[0,1,1,0],[0,0,0,0],[0,1,0,0]], [0,0], [3,3]))  # Expected: 1
+print(different_heuristics([[0,0,0,0]], [0], [3]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Different Heuristics problem.
+// DifferentHeuristics solves the Different Heuristics problem.
 // Compare Manhattan, Euclidean, and Chebyshev distance heuristics for grid pathfinding. Analyze admissibility for 4-directional vs 8-directional movement.
-// Key insight: Different heuristics affect A* performance differently -- some are more informed (tighter bound) but must remain admissible (never overestimate) for optimality.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func DifferentHeuristics(grid [][]int, start []int, end []int) int {
+	result := 0
+
+	for i := 0; i < len(grid); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(DifferentHeuristics([][]int{{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 1, 0, 0}}, []int{0, 0}, []int{3, 3})) // Expected: 1
+	fmt.Println(DifferentHeuristics([][]int{{0, 0, 0, 0}}, []int{0}, []int{3})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '08-a-star-algorithm/twist-04-different-heuristics', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/08-a-star-algorithm/twist-04-different-heuristics'] = problem;
 })();

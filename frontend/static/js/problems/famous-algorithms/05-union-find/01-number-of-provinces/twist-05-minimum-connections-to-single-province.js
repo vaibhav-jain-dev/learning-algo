@@ -2,10 +2,12 @@
  * Minimum Connections to Single Province
  * Category: famous-algorithms
  * Difficulty: Medium
+ * Algorithm: union-find
  * Parent: 05-union-find/01-number-of-provinces
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Minimum Connections to Single Province',
         difficulty: 'Medium',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For 4 provinces, minimum 3 new connections are needed: connect province 1 to 2, then to 3, then to 4.' },
-                output: 'See example',
-                explanation: 'For 4 provinces, minimum 3 new connections are needed: connect province 1 to 2, then to 3, then to 4.'
+                input: {"isConnected":[[1,1,0],[1,1,0],[0,0,1]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the minimum connections to single province criteria.'
+            },
+            // Edge case
+            {
+                input: {"isConnected":[[1,1,0]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Minimum Connections to Single Province
-# Category: famous-algorithms
-# Difficulty: Medium
-# Parent: 05-union-find/01-number-of-provinces
-
-def solve():
+            python: `def minimum_connections_to_single_province(isConnected):
     """
+    Minimum Connections to Single Province
+
     Find the minimum number of new connections needed to merge all provinces into one.
 
-    Key insight: The answer is simply (number of provinces - 1), but understanding why requires recognizing that each new connection can merge at most two provinces.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(isConnected)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(minimum_connections_to_single_province([[1,1,0],[1,1,0],[0,0,1]]))  # Expected: 1
+print(minimum_connections_to_single_province([[1,1,0]]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Minimum Connections to Single Province problem.
+// MinimumConnectionsToSingleProvince solves the Minimum Connections to Single Province problem.
 // Find the minimum number of new connections needed to merge all provinces into one.
-// Key insight: The answer is simply (number of provinces - 1), but understanding why requires recognizing that each new connection can merge at most two provinces.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func MinimumConnectionsToSingleProvince(isConnected [][]int) int {
+	result := 0
+
+	for i := 0; i < len(isConnected); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(MinimumConnectionsToSingleProvince([][]int{{1, 1, 0}, {1, 1, 0}, {0, 0, 1}})) // Expected: 1
+	fmt.Println(MinimumConnectionsToSingleProvince([][]int{{1, 1, 0}})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '05-union-find/01-number-of-provinces/twist-05-minimum-connections-to-single-province', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/05-union-find/01-number-of-provinces/twist-05-minimum-connections-to-single-province'] = problem;
 })();

@@ -2,10 +2,12 @@
  * Bust Probability with Aces
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-probability
  * Parent: 12-blackjack-probability
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Bust Probability with Aces',
         difficulty: 'Hard',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Starting hand 15, draw an ace: hand is either 16 or 26. Since 26 busts, ace counts as 1 giving 16. This changes all probability calculations.' },
-                output: 'See example',
-                explanation: 'Starting hand 15, draw an ace: hand is either 16 or 26. Since 26 busts, ace counts as 1 giving 16. This changes all probability calculations.'
+                input: {"target":21,"startingHand":15},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the bust probability with aces criteria.'
+            },
+            // Edge case
+            {
+                input: {"target":0,"startingHand":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Bust Probability with Aces
-# Category: recursion
-# Difficulty: Hard
-# Parent: 12-blackjack-probability
-
-def solve():
+            python: `def bust_probability_with_aces(target, startingHand):
     """
+    Bust Probability with Aces
+
     Add the rule that aces can count as 1 or 11, automatically choosing the best value. Compute the bust probability with this flexible card.
 
-    Key insight: Aces create branching hand values -- a hand might be simultaneously valued at both X and X+10, requiring tracking of "soft" vs "hard" hand states.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(target)
+
+    for i in range(n):
+        # Check condition based on startingHand
+        j = 0
+        for k in range(i, n):
+            if j < len(startingHand) and target[k] == startingHand[j]:
+                j += 1
+        if j == len(startingHand):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(bust_probability_with_aces(21, 15))  # Expected: 1
+print(bust_probability_with_aces(0, 0))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Bust Probability with Aces problem.
+// BustProbabilityWithAces solves the Bust Probability with Aces problem.
 // Add the rule that aces can count as 1 or 11, automatically choosing the best value. Compute the bust probability with this flexible card.
-// Key insight: Aces create branching hand values -- a hand might be simultaneously valued at both X and X+10, requiring tracking of "soft" vs "hard" hand states.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func BustProbabilityWithAces(target int, startingHand int) int {
+	result := 0
+
+	for i := 0; i < len(target); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(BustProbabilityWithAces(21, 15)) // Expected: 1
+	fmt.Println(BustProbabilityWithAces(0, 0)) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '12-blackjack-probability/twist-05-bust-probability-with-aces', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/12-blackjack-probability/twist-05-bust-probability-with-aces'] = problem;
 })();

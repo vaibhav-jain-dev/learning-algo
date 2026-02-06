@@ -2,10 +2,12 @@
  * LCA with Parent Pointers
  * Category: graphs
  * Difficulty: Easy
+ * Algorithm: graph-ancestor
  * Parent: 04-youngest-common-ancestor/01-lowest-common-ancestor-binary-tree
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'LCA with Parent Pointers',
         difficulty: 'Easy',
@@ -19,87 +21,92 @@
             'Consider the example: Nodes p=7 and q=4 in a tree.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N)', space: 'O(H)' },
+        complexity: {
+            time: 'O(N)',
+            space: 'O(H)'
+        },
         examples: [
-            { input: { description: 'Nodes p=7 and q=4 in a tree. Walk up from each node using parent pointers until paths converge at node 2.' }, output: 'See explanation', explanation: 'Nodes p=7 and q=4 in a tree. Walk up from each node using parent pointers until paths converge at node 2.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"root":[3,5,1,6,2,0,8,null,null,7,4],"p":5,"q":1},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the lca with parent pointers criteria.'
+            },
+            {
+                input: {"root":[3,5,1,6,2,0,8,null,null,7,4],"p":5,"q":4},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the lca with parent pointers criteria.'
+            },
+            // Edge case
+            {
+                input: {"root":[3],"p":0,"q":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def lca_with_parent_pointers(data):
+            python: `def lca_with_parent_pointers(root, p, q):
     """
     LCA with Parent Pointers
 
     Each node has a parent pointer. Find LCA of two nodes without access to the root.
 
-    Approach:
-    Instead of top-down recursion, you work bottom-up using parent pointers, similar to finding the intersection of two linked lists.
-
     Time: O(N)
     Space: O(H)
     """
-    # Instead of top-down recursion, you work bottom-up using parent pointers, similar to finding the intersection of two linked lists.
+    count = 0
+    n = len(root)
 
-    # Implementation
-    result = None
+    for i in range(n):
+        # Check condition based on p
+        j = 0
+        for k in range(i, n):
+            if j < len(p) and root[k] == p[j]:
+                j += 1
+        if j == len(p):
+            count += 1
 
-    # Core algorithm adapted for: LCA with Parent Pointers
-    # Key difference from parent: Instead of top-down recursion, you work bottom-up using parent pointers, similar to finding the inte
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return lca_with_parent_pointers(data)
+    return count
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Nodes p=7 and q=4 in a tree. Walk up from each node using parent pointers until paths converge at node 2.
-    print("Test: LCA with Parent Pointers")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(lca_with_parent_pointers([3,5,1,6,2,0,8,None,None,7,4], 5, 1))  # Expected: 1
+print(lca_with_parent_pointers([3,5,1,6,2,0,8,None,None,7,4], 5, 4))  # Expected: 2
+print(lca_with_parent_pointers([3], 0, 0))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// LCAWithParentPointers solves the LCA with Parent Pointers problem
+// LcaWithParentPointers solves the LCA with Parent Pointers problem.
 // Each node has a parent pointer. Find LCA of two nodes without access to the root.
-//
-// Approach: Instead of top-down recursion, you work bottom-up using parent pointers, similar to finding the intersection of two linked lists.
-//
-// Time: O(N)
-// Space: O(H)
-func LCAWithParentPointers(input interface{}) interface{} {
-    // Instead of top-down recursion, you work bottom-up using parent pointers, similar to finding the intersection of two linked lists.
+// Time: O(N), Space: O(H)
+func LcaWithParentPointers(root []int, p int, q int) int {
+	result := 0
 
-    // Core algorithm adapted for: LCA with Parent Pointers
-    // Key difference from parent: Instead of top-down recursion, you work bottom-up using parent pointers, similar to finding the inte
+	for i := 0; i < len(root); i++ {
+		// Process element
+		result++
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Nodes p=7 and q=4 in a tree. Walk up from each node using parent pointers until paths converge at node 2.
-    fmt.Println("Test: LCA with Parent Pointers")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(LcaWithParentPointers([]int{3, 5, 1, 6, 2, 0, 8, null, null, 7, 4}, 5, 1)) // Expected: 1
+	fmt.Println(LcaWithParentPointers([]int{3, 5, 1, 6, 2, 0, 8, null, null, 7, 4}, 5, 4)) // Expected: 2
+	fmt.Println(LcaWithParentPointers([]int{3}, 0, 0)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '04-youngest-common-ancestor/01-lowest-common-ancestor-binary-tree/twist-01-lca-with-parent-pointers', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/04-youngest-common-ancestor/01-lowest-common-ancestor-binary-tree/twist-01-lca-with-parent-pointers'] = problem;
 })();

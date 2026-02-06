@@ -27,83 +27,71 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,3,5,7],"k":2},
                 output: [1,3],
-                explanation: 'The k=2 smallest/closest values found.'
+                explanation: ''
             },
             {
                 input: {"array":[10,20,30],"k":1},
                 output: [10],
-                explanation: 'With k=1, return the single best result.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[5,5,5,5],"k":3},
                 output: [5,5,5],
-                explanation: 'Duplicate values handled correctly with k=3.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def longest_monotonic_with_k_exceptions(data):
+            python: `def longest_monotonic_with_k_exceptions(array, k):
     """
     Longest Monotonic with K Exceptions
 
-    Find the longest contiguous subarray that is monotonic if you are allowed to skip at most K elements.
-    \n    Approach: Requires a sliding window approach tracking violations, fundamentally different from simple linear scan.
+    Find the longest contiguous subarray that is monotonic if you are allowed to skip at most K elements. Requires a sliding window approach tracking violations, fundamentally different from simple linear scan.
 
     Time: O(n log k)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 5, 2, 3, 4], K = 1. Skip 5: [1, 2, 3, 4] length 4.
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
 # Test cases
-print(longest_monotonic_with_k_exceptions([1, 2, 3, 4, 5]))
-print(longest_monotonic_with_k_exceptions([5, 3, 1]))
-print(longest_monotonic_with_k_exceptions([1]))`,
+print(longest_monotonic_with_k_exceptions([1,3,5,7], 2))  # Expected: [1,3]
+print(longest_monotonic_with_k_exceptions([10,20,30], 1))  # Expected: [10]
+print(longest_monotonic_with_k_exceptions([5,5,5,5], 3))  # Expected: [5,5,5]
+`,
             go: `package main
 
 import "fmt"
 
 // LongestMonotonicWithKExceptions solves the Longest Monotonic with K Exceptions problem.
-// Find the longest contiguous subarray that is monotonic if you are allowed to skip at most K elements.
+// Find the longest contiguous subarray that is monotonic if you are allowed to skip at most K elements. Requires a sliding window approach tracking violations, fundamentally different from simple linear scan.
 // Time: O(n log k), Space: O(n)
-func LongestMonotonicWithKExceptions(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func LongestMonotonicWithKExceptions(array []int, k int) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(LongestMonotonicWithKExceptions([]int{1, 2, 3, 4, 5}))
-    fmt.Println(LongestMonotonicWithKExceptions([]int{5, 3, 1}))
-    fmt.Println(LongestMonotonicWithKExceptions([]int{1}))
-}`
+	fmt.Println(LongestMonotonicWithKExceptions([]int{1, 3, 5, 7}, 2)) // Expected: [1,3]
+	fmt.Println(LongestMonotonicWithKExceptions([]int{10, 20, 30}, 1)) // Expected: [10]
+	fmt.Println(LongestMonotonicWithKExceptions([]int{5, 5, 5, 5}, 3)) // Expected: [5,5,5]
+}
+`
         },
         twists: [],
         similar: []

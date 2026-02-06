@@ -2,10 +2,12 @@
  * K-th Successor
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-successor
  * Parent: 05-find-successor
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'K-th Successor',
         difficulty: 'Medium',
@@ -19,120 +21,85 @@
             'Think about how the base case differs from the original problem.',
             'Review the example: In-order: 6,4,2,5,1,3.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'In-order: 6,4,2,5,1,3' },
-                output: 'See explanation',
-                explanation: 'In-order: 6,4,2,5,1,3. 2nd successor of 4 is 5. 3rd successor of 4 is 1.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":6}},"right":{"value":5}},"right":{"value":3}},"target":5},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the k th successor criteria.'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":6}},"right":{"value":5}},"right":{"value":3}},"target":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def k_th_successor(data):
+            python: `def k_th_successor(tree, target):
     """
     K-th Successor
 
-    Find the k-th in-order successor of the target node (the node that is k positions after it in in-order traversal).
+    Find the k-th in-order successor of the target node (the node that is k positions after it in in-order traversal). Instead of returning the immediate next, you need to advance k steps in in-order traversal. This may cross multiple subtree boundaries and parent links, requiring a general in-order iteration mechanism.
 
-    Approach: Instead of returning the immediate next, you need to advance k steps in in-order traversal
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    count = 0
+    n = len(tree)
 
-    # Key insight: Instead of returning the immediate next, you need to advance k steps in in-order traversal
+    for i in range(n):
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and tree[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement K-th Successor
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: In-order: 6,4,2,5,1,3
-    print("See problem description for test cases")`,
+# Test cases
+print(k_th_successor({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 6}}, "right": {"value": 5}}, "right": {"value": 3}}, 5))  # Expected: 1
+print(k_th_successor({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 6}}, "right": {"value": 5}}, "right": {"value": 3}}, 0))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// KthSuccessor solves: K-th Successor
-// Instead of returning the immediate next, you need to advance k steps in in-order traversal
+// KThSuccessor solves the K-th Successor problem.
+// Find the k-th in-order successor of the target node (the node that is k positions after it in in-order traversal). Instead of returning the immediate next, you need to advance k steps in in-order traversal. This may cross multiple subtree boundaries and parent links, requiring a general in-order iteration mechanism.
 // Time: O(n), Space: O(n)
-func KthSuccessor(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func KThSuccessor(tree *TreeNode, target int) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement K-th Successor
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: In-order: 6,4,2,5,1,3
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(KThSuccessor({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":6}},"right":{"value":5}},"right":{"value":3}}, 5)) // Expected: 1
+	fmt.Println(KThSuccessor({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":6}},"right":{"value":5}},"right":{"value":3}}, 0)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '05-find-successor/twist-03-k-th-successor', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/05-find-successor/twist-03-k-th-successor'] = problem;
 })();

@@ -2,10 +2,12 @@
  * Interleaved Leaf Comparison
  * Category: binary-trees
  * Difficulty: Hard
+ * Algorithm: tree-dfs
  * Parent: 11-compare-leaf-traversal
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Interleaved Leaf Comparison',
         difficulty: 'Hard',
@@ -19,120 +21,80 @@
             'Key insight: Using coroutines or iterators, you yield one leaf at a time from each tree and compare lazily.',
             'This is an exercise in generator-based thinking and early termination.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree1 has 1000 leaves, Tree2 has 1000 leaves but the first leaf differs' },
-                output: 'See explanation',
-                explanation: 'Tree1 has 1000 leaves, Tree2 has 1000 leaves but the first leaf differs. The iterator approach compares just the first leaf and returns false immediately without traversing either full tree.'
+                input: {"tree1":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"tree2":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}}},
+                output: true,
+                explanation: 'The interleaved leaf comparison condition is satisfied for this input.'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree1":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"tree2":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}}},
+                output: false,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def interleaved_leaf_comparison(data):
+            python: `def interleaved_leaf_comparison(tree1, tree2):
     """
     Interleaved Leaf Comparison
 
-    Compare leaf traversals of two trees one leaf at a time using iterators (generators), stopping as soon as a mismatch is found, without collecting all leaves first.
+    Compare leaf traversals of two trees one leaf at a time using iterators (generators), stopping as soon as a mismatch is found, without collecting all leaves first. Collecting all leaves uses O(n) space. Using coroutines or iterators, you yield one leaf at a time from each tree and compare lazily. This is an exercise in generator-based thinking and early termination.
 
-    Approach: Collecting all leaves uses O(n) space
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    j = 0
 
-    # Key insight: Collecting all leaves uses O(n) space
+    for i in range(len(tree1)):
+        if j < len(tree2) and tree1[i] == tree2[j]:
+            j += 1
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Interleaved Leaf Comparison
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return j == len(tree2)
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree1 has 1000 leaves, Tree2 has 1000 leaves but the first leaf differs
-    print("See problem description for test cases")`,
+# Test cases
+print(interleaved_leaf_comparison({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5, "left": {"value": 7}, "right": {"value": 8}}}, "right": {"value": 3, "right": {"value": 6}}}, {"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 7, "right": {"value": 5, "right": {"value": 6}}}}, "right": {"value": 3, "left": {"value": 8}}}))  # Expected: True
+print(interleaved_leaf_comparison({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5, "left": {"value": 7}, "right": {"value": 8}}}, "right": {"value": 3, "right": {"value": 6}}}, {"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 7, "right": {"value": 5, "right": {"value": 6}}}}, "right": {"value": 3, "left": {"value": 8}}}))  # Expected: False
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// InterleavedLeafComparison solves: Interleaved Leaf Comparison
-// Collecting all leaves uses O(n) space
+// InterleavedLeafComparison solves the Interleaved Leaf Comparison problem.
+// Compare leaf traversals of two trees one leaf at a time using iterators (generators), stopping as soon as a mismatch is found, without collecting all leaves first. Collecting all leaves uses O(n) space. Using coroutines or iterators, you yield one leaf at a time from each tree and compare lazily. This is an exercise in generator-based thinking and early termination.
 // Time: O(n), Space: O(n)
-func InterleavedLeafComparison(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func InterleavedLeafComparison(tree1 *TreeNode, tree2 *TreeNode) bool {
+	j := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree1) && j < len(tree2); i++ {
+		if tree1[i] == tree2[j] {
+			j++
+		}
+	}
 
-    // TODO: Implement Interleaved Leaf Comparison
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return j == len(tree2)
 }
 
 func main() {
-    // Example: Tree1 has 1000 leaves, Tree2 has 1000 leaves but the first leaf differs
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(InterleavedLeafComparison({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}}, {"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}})) // Expected: true
+	fmt.Println(InterleavedLeafComparison({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}}, {"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}})) // Expected: false
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '11-compare-leaf-traversal/twist-04-interleaved-leaf-comparison', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/11-compare-leaf-traversal/twist-04-interleaved-leaf-comparison'] = problem;
 })();

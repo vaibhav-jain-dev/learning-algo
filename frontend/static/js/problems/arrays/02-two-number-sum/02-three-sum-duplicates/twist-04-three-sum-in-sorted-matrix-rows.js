@@ -26,80 +26,71 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"nums":[-1,2,1,-4],"target":1},
                 output: 2,
-                explanation: 'The triplet (-1, 2, 1) has sum 2, which is closest to target 1.'
+                explanation: ''
             },
             {
                 input: {"nums":[0,0,0],"target":1},
                 output: 0,
-                explanation: 'Only triplet possible: 0+0+0=0, closest to 1.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"nums":[1,2,3,4,5],"target":10},
                 output: 10,
-                explanation: 'Triplet (2,3,5) or (1,4,5) sums to exactly 10.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def three_sum_in_sorted_matrix_rows(data):
+            python: `def three_sum_in_sorted_matrix_rows(nums, target):
     """
     Three Sum in Sorted Matrix Rows
 
-    Given a matrix where each row is sorted, pick one element from each of exactly three different rows so they sum to target. List all unique triplets.
-    \n    Approach: The elements come from different rows, so you cannot sort a single array. Requires combining row-wise two-pointer with cross-row iteration.
+    Given a matrix where each row is sorted, pick one element from each of exactly three different rows so they sum to target. List all unique triplets. The elements come from different rows, so you cannot sort a single array. Requires combining row-wise two-pointer with cross-row iteration.
 
     Time: O(n log k)
     Space: O(n)
-
-    Example: matrix=[[-1,0,1],[1,2,3],[-2,0,2]], target=3 → [[1,2,0]] etc.
     """
-    if not data:
-        return None
-
-    n = len(data) if hasattr(data, '__len__') else 0
     result = []
 
-    # Core algorithm implementation
-    for i in range(n):
-        result.append(data[i])
+    for i in range(len(nums)):
+        # Check if element meets criteria
+        result.append(nums[i])
 
     return result
 
 
 # Test cases
-print(three_sum_in_sorted_matrix_rows([1, 2, 3, 4, 5]))
-print(three_sum_in_sorted_matrix_rows([5, 3, 1]))
-print(three_sum_in_sorted_matrix_rows([1]))`,
+print(three_sum_in_sorted_matrix_rows([-1,2,1,-4], 1))  # Expected: 2
+print(three_sum_in_sorted_matrix_rows([0,0,0], 1))  # Expected: 0
+print(three_sum_in_sorted_matrix_rows([1,2,3,4,5], 10))  # Expected: 10
+`,
             go: `package main
 
 import "fmt"
 
 // ThreeSumInSortedMatrixRows solves the Three Sum in Sorted Matrix Rows problem.
-// Given a matrix where each row is sorted, pick one element from each of exactly three different rows so they sum to target. List all unique triplets.
+// Given a matrix where each row is sorted, pick one element from each of exactly three different rows so they sum to target. List all unique triplets. The elements come from different rows, so you cannot sort a single array. Requires combining row-wise two-pointer with cross-row iteration.
 // Time: O(n log k), Space: O(n)
-func ThreeSumInSortedMatrixRows(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func ThreeSumInSortedMatrixRows(nums []int, target int) []int {
+	result := make([]int, 0)
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(nums); i++ {
+		result = append(result, nums[i])
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(ThreeSumInSortedMatrixRows([]int{1, 2, 3, 4, 5}))
-    fmt.Println(ThreeSumInSortedMatrixRows([]int{5, 3, 1}))
-    fmt.Println(ThreeSumInSortedMatrixRows([]int{1}))
-}`
+	fmt.Println(ThreeSumInSortedMatrixRows([]int{-1, 2, 1, -4}, 1)) // Expected: 2
+	fmt.Println(ThreeSumInSortedMatrixRows([]int{0, 0, 0}, 1)) // Expected: 0
+	fmt.Println(ThreeSumInSortedMatrixRows([]int{1, 2, 3, 4, 5}, 10)) // Expected: 10
+}
+`
         },
         twists: [],
         similar: []

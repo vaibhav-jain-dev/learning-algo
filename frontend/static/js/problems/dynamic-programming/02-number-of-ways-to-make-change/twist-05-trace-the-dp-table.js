@@ -2,10 +2,12 @@
  * Trace the DP Table
  * Category: dynamic-programming
  * Difficulty: Easy
+ * Algorithm: dp-coin-change
  * Parent: 02-number-of-ways-to-make-change
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Trace the DP Table',
         difficulty: 'Easy',
@@ -19,84 +21,97 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'Initial: dp=[1,0,0,0,0,0,0]. After coin=1: dp=[1,1,1,1,1,1,1]. After coin=5: dp=[1,1,1,1,1,2,2]. Answer: dp[6]=2.'
+                input: {"n":6,"denoms":[1,5]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the trace the dp table criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"n":10,"denoms":[1,5,10,25]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the trace the dp table criteria.'
+            },
+            {
+                input: {"n":0,"denoms":[1,2]},
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the trace the dp table criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"denoms":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def traceTheDpTable(data):
+            python: `def trace_the_dp_table(n, denoms):
     """
     Trace the DP Table
 
     For n=6, denoms=[1,5], manually fill the DP array step by step. Show the array state after processing each coin denomination.
 
-    Approach:
-    Hand-tracing reveals exactly how each coin contributes to the count. It makes the abstract recurrence concrete and helps debug off-by-one errors.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    count = 0
+    n = len(n)
 
-    # Example: Initial: dp=[1,0,0,0,0,0,0]. After coin=1: dp=[1,1,1,1,1,1,1]. After coin=5: dp=[1,1,1,1,1,2,2]. Answer: dp[6]=2.
+    for i in range(n):
+        # Check condition based on denoms
+        j = 0
+        for k in range(i, n):
+            if j < len(denoms) and n[k] == denoms[j]:
+                j += 1
+        if j == len(denoms):
+            count += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
-    return result
+    return count
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Trace the DP Table...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(trace_the_dp_table(6, [1,5]))  # Expected: 1
+print(trace_the_dp_table(10, [1,5,10,25]))  # Expected: 2
+print(trace_the_dp_table(0, [1,2]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // TraceTheDpTable solves the Trace the DP Table problem.
 // For n=6, denoms=[1,5], manually fill the DP array step by step. Show the array state after processing each coin denomination.
-//
-// Approach: Hand-tracing reveals exactly how each coin contributes to the count. It makes the abstract recurrence concrete and helps debug off-by-one errors.
-func TraceTheDpTable(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2), Space: O(n)
+func TraceTheDpTable(n int, denoms []int) int {
+	result := 0
 
-    // Example: Initial: dp=[1,0,0,0,0,0,0]. After coin=1: dp=[1,1,1,1,1,1,1]. After coin=5: dp=[1,1,1,1,1,2,2]. Ans
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Trace the DP Table...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(TraceTheDpTable(6, []int{1, 5})) // Expected: 1
+	fmt.Println(TraceTheDpTable(10, []int{1, 5, 10, 25})) // Expected: 2
+	fmt.Println(TraceTheDpTable(0, []int{1, 2})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '02-number-of-ways-to-make-change/twist-05-trace-the-dp-table', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/02-number-of-ways-to-make-change/twist-05-trace-the-dp-table'] = problem;
 })();

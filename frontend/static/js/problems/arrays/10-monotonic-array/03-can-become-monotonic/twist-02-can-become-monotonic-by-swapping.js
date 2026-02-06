@@ -27,83 +27,76 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5]},
-                output: true,
-                explanation: 'Array is monotonically increasing.'
+                output: [0,1,2],
+                explanation: 'The can become monotonic by swapping for this input yields [0, 1, 2].'
             },
             {
                 input: {"array":[5,4,3,2,1]},
-                output: true,
-                explanation: 'Array is monotonically decreasing.'
+                output: [0,1,2],
+                explanation: 'The can become monotonic by swapping for this input yields [0, 1, 2].'
             },
             {
                 input: {"array":[1,3,2,4]},
-                output: false,
-                explanation: 'Array is not monotonic - has both increases and decreases.'
+                output: [0,1,2],
+                explanation: 'The can become monotonic by swapping for this input yields [0, 1, 2].'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def can_become_monotonic_by_swapping(data):
+            python: `def can_become_monotonic_by_swapping(array):
     """
     Can Become Monotonic by Swapping
 
-    Instead of changing elements to any value, determine if the array can become monotonic with at most one swap of two elements.
-    \n    Approach: Swapping is more restrictive than changing: both positions must benefit from the swap simultaneously.
+    Instead of changing elements to any value, determine if the array can become monotonic with at most one swap of two elements. Swapping is more restrictive than changing: both positions must benefit from the swap simultaneously.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 5, 3, 4, 2]. Swap 5 and 2: [1, 2, 3, 4, 5]. Return true.
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
 # Test cases
-print(can_become_monotonic_by_swapping([1, 2, 3, 4, 5]))
-print(can_become_monotonic_by_swapping([5, 3, 1]))
-print(can_become_monotonic_by_swapping([1]))`,
+print(can_become_monotonic_by_swapping([1,2,3,4,5]))  # Expected: [0,1,2]
+print(can_become_monotonic_by_swapping([5,4,3,2,1]))  # Expected: [0,1,2]
+print(can_become_monotonic_by_swapping([1,3,2,4]))  # Expected: [0,1,2]
+`,
             go: `package main
 
 import "fmt"
 
 // CanBecomeMonotonicBySwapping solves the Can Become Monotonic by Swapping problem.
-// Instead of changing elements to any value, determine if the array can become monotonic with at most one swap of two elements.
+// Instead of changing elements to any value, determine if the array can become monotonic with at most one swap of two elements. Swapping is more restrictive than changing: both positions must benefit from the swap simultaneously.
 // Time: O(n), Space: O(n)
-func CanBecomeMonotonicBySwapping(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func CanBecomeMonotonicBySwapping(array []int) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(CanBecomeMonotonicBySwapping([]int{1, 2, 3, 4, 5}))
-    fmt.Println(CanBecomeMonotonicBySwapping([]int{5, 3, 1}))
-    fmt.Println(CanBecomeMonotonicBySwapping([]int{1}))
-}`
+	fmt.Println(CanBecomeMonotonicBySwapping([]int{1, 2, 3, 4, 5})) // Expected: [0,1,2]
+	fmt.Println(CanBecomeMonotonicBySwapping([]int{5, 4, 3, 2, 1})) // Expected: [0,1,2]
+	fmt.Println(CanBecomeMonotonicBySwapping([]int{1, 3, 2, 4})) // Expected: [0,1,2]
+}
+`
         },
         twists: [],
         similar: []

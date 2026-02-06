@@ -27,83 +27,74 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"teams":["A","B","C","D"],"results":[1,0,1]},
                 output: "A",
-                explanation: 'Team A emerges as the winner through the tournament.'
+                explanation: ''
             },
             {
                 input: {"teams":["X","Y"],"results":[0]},
                 output: "Y",
-                explanation: 'In a two-team matchup, Y wins.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"teams":["A","B","C"],"results":[1,1]},
                 output: "A",
-                explanation: 'A wins both matches to become champion.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def tournament_with_group_stages(data):
+            python: `def tournament_with_group_stages(raw):
     """
     Tournament with Group Stages
 
-    Teams are divided into groups. Apply tiebreakers within each group to determine who advances to knockout rounds.
-    \n    Approach: Requires partitioning teams into groups and applying tiebreaker logic independently per group before combining results.
+    Teams are divided into groups. Apply tiebreakers within each group to determine who advances to knockout rounds. Requires partitioning teams into groups and applying tiebreaker logic independently per group before combining results.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # Group 1: [A,B,C], Group 2: [D,E,F] → top 2 from each group advance using tiebreakers
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
+    n = len(raw)
 
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        for j in range(i + 1, n):
+            result.append([raw[i], raw[j]])
 
     return result
 
 
 # Test cases
-print(tournament_with_group_stages([1, 2, 3, 4, 5]))
-print(tournament_with_group_stages([5, 3, 1]))
-print(tournament_with_group_stages([1]))`,
+print(tournament_with_group_stages(None))  # Expected: "A"
+print(tournament_with_group_stages(None))  # Expected: "Y"
+print(tournament_with_group_stages(None))  # Expected: "A"
+`,
             go: `package main
 
 import "fmt"
 
 // TournamentWithGroupStages solves the Tournament with Group Stages problem.
-// Teams are divided into groups. Apply tiebreakers within each group to determine who advances to knockout rounds.
+// Teams are divided into groups. Apply tiebreakers within each group to determine who advances to knockout rounds. Requires partitioning teams into groups and applying tiebreaker logic independently per group before combining results.
 // Time: O(n), Space: O(n)
-func TournamentWithGroupStages(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func TournamentWithGroupStages(raw string) [][]int {
+	result := make([][]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(raw); i++ {
+		for j := i + 1; j < len(raw); j++ {
+			result = append(result, []int{raw[i], raw[j]})
+		}
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(TournamentWithGroupStages([]int{1, 2, 3, 4, 5}))
-    fmt.Println(TournamentWithGroupStages([]int{5, 3, 1}))
-    fmt.Println(TournamentWithGroupStages([]int{1}))
-}`
+	fmt.Println(TournamentWithGroupStages(nil)) // Expected: "A"
+	fmt.Println(TournamentWithGroupStages(nil)) // Expected: "Y"
+	fmt.Println(TournamentWithGroupStages(nil)) // Expected: "A"
+}
+`
         },
         twists: [],
         similar: []

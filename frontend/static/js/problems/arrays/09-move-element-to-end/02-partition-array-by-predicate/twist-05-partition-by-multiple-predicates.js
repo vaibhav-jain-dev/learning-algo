@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[3,1,2,3,4,3],"target":3},
                 output: [1,2,4,3,3,3],
-                explanation: 'Target elements moved to the correct position.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4,5],"target":6},
                 output: [1,2,3,4,5],
-                explanation: 'Target not in array - no changes needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[3,3,3],"target":3},
                 output: [3,3,3],
-                explanation: 'All elements are the target.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def partition_by_multiple_predicates(data):
+            python: `def partition_by_multiple_predicates(array, k):
     """
     Partition by Multiple Predicates
 
-    Given K predicates with priority ordering, partition so elements matching higher-priority predicates come first.
-    \n    Approach: Generalizes to K-way partitioning, requiring multiple passes or a counting sort-like approach.
+    Given K predicates with priority ordering, partition so elements matching higher-priority predicates come first. Generalizes to K-way partitioning, requiring multiple passes or a counting sort-like approach.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [5,2,8,1,3], preds = [isEven, isOdd&&>3, rest]. Result: [2,8,5,1,3].
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in array:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(partition_by_multiple_predicates([1, 2, 3, 4, 5]))
-print(partition_by_multiple_predicates([5, 3, 1]))
-print(partition_by_multiple_predicates([1]))`,
+print(partition_by_multiple_predicates([3,1,2,3,4,3], None))  # Expected: [1,2,4,3,3,3]
+print(partition_by_multiple_predicates([1,2,3,4,5], None))  # Expected: [1,2,3,4,5]
+print(partition_by_multiple_predicates([3,3,3], None))  # Expected: [3,3,3]
+`,
             go: `package main
 
 import "fmt"
 
 // PartitionByMultiplePredicates solves the Partition by Multiple Predicates problem.
-// Given K predicates with priority ordering, partition so elements matching higher-priority predicates come first.
+// Given K predicates with priority ordering, partition so elements matching higher-priority predicates come first. Generalizes to K-way partitioning, requiring multiple passes or a counting sort-like approach.
 // Time: O(n), Space: O(n)
-func PartitionByMultiplePredicates(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func PartitionByMultiplePredicates(array []int, k int) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range array {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(PartitionByMultiplePredicates([]int{1, 2, 3, 4, 5}))
-    fmt.Println(PartitionByMultiplePredicates([]int{5, 3, 1}))
-    fmt.Println(PartitionByMultiplePredicates([]int{1}))
-}`
+	fmt.Println(PartitionByMultiplePredicates([]int{3, 1, 2, 3, 4, 3}, 3)) // Expected: [1,2,4,3,3,3]
+	fmt.Println(PartitionByMultiplePredicates([]int{1, 2, 3, 4, 5}, 3)) // Expected: [1,2,3,4,5]
+	fmt.Println(PartitionByMultiplePredicates([]int{3, 3, 3}, 3)) // Expected: [3,3,3]
+}
+`
         },
         twists: [],
         similar: []

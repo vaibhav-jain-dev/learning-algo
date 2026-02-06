@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,3,5,2,4]},
                 output: 1,
-                explanation: 'Only one operation needed to achieve the goal.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4]},
                 output: 0,
-                explanation: 'Already satisfies the condition, no operations needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[5,3,1,4,2]},
                 output: 2,
-                explanation: 'Two operations needed to satisfy the condition.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def predict_minimum_wins_for_victory(data):
+            python: `def predict_minimum_wins_for_victory(competitions, results):
     """
     Predict Minimum Wins for Victory
 
-    Given the schedule but not the results, what is the minimum number of wins a specific team needs to guarantee being the overall winner?
-    \n    Approach: Changes from score tracking to a combinatorial/optimization problem requiring worst-case analysis of opponent wins.
+    Given the schedule but not the results, what is the minimum number of wins a specific team needs to guarantee being the overall winner? Changes from score tracking to a combinatorial/optimization problem requiring worst-case analysis of opponent wins.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # 4 teams, 6 matches each plays 3 → team A needs at least 3 wins to guarantee victory regardless of other results
+    count = 0
+    n = len(competitions)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on results
+        j = 0
+        for k in range(i, n):
+            if j < len(results) and competitions[k] == results[j]:
+                j += 1
+        if j == len(results):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(predict_minimum_wins_for_victory([1, 2, 3, 4, 5]))
-print(predict_minimum_wins_for_victory([5, 3, 1]))
-print(predict_minimum_wins_for_victory([1]))`,
+print(predict_minimum_wins_for_victory(None, None))  # Expected: 1
+print(predict_minimum_wins_for_victory(None, None))  # Expected: 0
+print(predict_minimum_wins_for_victory(None, None))  # Expected: 2
+`,
             go: `package main
 
 import "fmt"
 
 // PredictMinimumWinsForVictory solves the Predict Minimum Wins for Victory problem.
-// Given the schedule but not the results, what is the minimum number of wins a specific team needs to guarantee being the overall winner?
+// Given the schedule but not the results, what is the minimum number of wins a specific team needs to guarantee being the overall winner? Changes from score tracking to a combinatorial/optimization problem requiring worst-case analysis of opponent wins.
 // Time: O(n), Space: O(n)
-func PredictMinimumWinsForVictory(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func PredictMinimumWinsForVictory(competitions [][]int, results []int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(competitions); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(PredictMinimumWinsForVictory([]int{1, 2, 3, 4, 5}))
-    fmt.Println(PredictMinimumWinsForVictory([]int{5, 3, 1}))
-    fmt.Println(PredictMinimumWinsForVictory([]int{1}))
-}`
+	fmt.Println(PredictMinimumWinsForVictory(nil, nil)) // Expected: 1
+	fmt.Println(PredictMinimumWinsForVictory(nil, nil)) // Expected: 0
+	fmt.Println(PredictMinimumWinsForVictory(nil, nil)) // Expected: 2
+}
+`
         },
         twists: [],
         similar: []

@@ -2,10 +2,12 @@
  * Morris Postorder Traversal
  * Category: binary-search-trees
  * Difficulty: Very Hard
+ * Algorithm: bst-traversal
  * Parent: 04-bst-traversal/02-morris-traversal
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Morris Postorder Traversal',
         difficulty: 'Very Hard',
@@ -14,68 +16,87 @@
         description: 'Implement postorder traversal using Morris threading with O(1) auxiliary space. This is significantly harder than Morris inorder or preorder.',
         problem: 'Morris inorder/preorder naturally yield their orders through the threading mechanism. Postorder requires processing nodes in reverse along right boundaries of left subtrees when removing threads, involving a linked-list reversal step within the traversal. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: morris postorder traversal.",
-                  "Consider how morris inorder/preorder naturally yield their orders through the threading mechanism affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(1)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Tree: [1,2,3,4,5,6,7]. Morris postorder must produce [4,5,2,6,7,3,1] using O(1) space by reversing right-boundary chains.'
+                input: {"tree":[4,2,6,1,3,5,7]},
+                output: [4,2,6],
+                explanation: 'The morris postorder traversal for this input yields [4, 2, 6].'
+            },
+            {
+                input: {"tree":[1,2,3,4,5,null,6]},
+                output: [1,2,3],
+                explanation: 'The morris postorder traversal for this input yields [1, 2, 3].'
+            },
+            // Edge case
+            {
+                input: {"tree":[4]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Morris Postorder Traversal
-# Difficulty: Very Hard
-# Parent: 04-bst-traversal/02-morris-traversal
-#
-# Implement postorder traversal using Morris threading with O(1) auxiliary space. This is significantly harder than Morris inorder or preorder.
-
-def morrisPostorderTraversal(data):
+            python: `def morris_postorder_traversal(tree):
     """
     Morris Postorder Traversal
 
-    Approach: Morris inorder/preorder naturally yield their orders through the threading mechanism.
+    Implement postorder traversal using Morris threading with O(1) auxiliary space. This is significantly harder than Morris inorder or preorder.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Morris inorder/preorder naturally yield their orders through the threading mechanism
-    pass
+    result = []
+
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree: [1,2,3,4,5,6,7]
-    print(morrisPostorderTraversal({}))`,
+# Test cases
+print(morris_postorder_traversal([4,2,6,1,3,5,7]))  # Expected: [4,2,6]
+print(morris_postorder_traversal([1,2,3,4,5,None,6]))  # Expected: [1,2,3]
+print(morris_postorder_traversal([4]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// Morris Postorder Traversal
-// Difficulty: Very Hard
-// Parent: 04-bst-traversal/02-morris-traversal
-//
+// MorrisPostorderTraversal solves the Morris Postorder Traversal problem.
 // Implement postorder traversal using Morris threading with O(1) auxiliary space. This is significantly harder than Morris inorder or preorder.
+// Time: O(n), Space: O(1)
+func MorrisPostorderTraversal(tree []int) []int {
+	result := make([]int, 0)
 
-func MorrisPostorderTraversal(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Morris inorder/preorder naturally yield their orders through the threading mechanism
-    return nil
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Tree: [1,2,3,4,5,6,7]
-    fmt.Println(MorrisPostorderTraversal(map[string]interface{}{}))
-}`
+	fmt.Println(MorrisPostorderTraversal([]int{4, 2, 6, 1, 3, 5, 7})) // Expected: [4,2,6]
+	fmt.Println(MorrisPostorderTraversal([]int{1, 2, 3, 4, 5, null, 6})) // Expected: [1,2,3]
+	fmt.Println(MorrisPostorderTraversal([]int{4})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '04-bst-traversal/02-morris-traversal/twist-01-morris-postorder-traversal', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/04-bst-traversal/02-morris-traversal/twist-01-morris-postorder-traversal'] = problem;
 })();

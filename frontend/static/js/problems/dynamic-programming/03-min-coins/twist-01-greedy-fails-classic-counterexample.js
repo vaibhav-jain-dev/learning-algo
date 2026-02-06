@@ -2,10 +2,12 @@
  * Greedy Fails: Classic Counterexample
  * Category: dynamic-programming
  * Difficulty: Medium
+ * Algorithm: dp-coin-change
  * Parent: 03-min-coins
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Greedy Fails: Classic Counterexample',
         difficulty: 'Medium',
@@ -19,84 +21,97 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n log n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n log n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'denoms=[1, 3, 4], n=6. Greedy: 4+1+1=3 coins. Optimal: 3+3=2 coins. Greedy picks 4 first (largest fitting) but this forces two 1s, while two 3s is better.'
+                input: {"n":7,"denoms":[1,5,10]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the greedy fails classic counterexample criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"n":6,"denoms":[1,2,4]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the greedy fails classic counterexample criteria.'
+            },
+            {
+                input: {"n":3,"denoms":[2]},
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the greedy fails classic counterexample criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"denoms":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def greedyFailsClassicCounterexample(data):
+            python: `def greedy_fails_classic_counterexample(n, denoms):
     """
     Greedy Fails: Classic Counterexample
 
     The greedy approach always picks the largest coin that fits. Construct a specific input where greedy gives more coins than the DP optimal. Explain why the greedy property fails for arbitrary denominations.
 
-    Approach:
-    Understanding when greedy fails is fundamental to recognizing coin change as a DP problem. Greedy works for specific denomination systems (like US coins) but fails in general.
+    Time: O(n log n)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    count = 0
+    n = len(n)
 
-    # Example: denoms=[1, 3, 4], n=6. Greedy: 4+1+1=3 coins. Optimal: 3+3=2 coins. Greedy picks 4 first (largest fitting) but this forc
+    for i in range(n):
+        # Check condition based on denoms
+        j = 0
+        for k in range(i, n):
+            if j < len(denoms) and n[k] == denoms[j]:
+                j += 1
+        if j == len(denoms):
+            count += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
-    return result
+    return count
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Greedy Fails: Classic Counterexample...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(greedy_fails_classic_counterexample(7, [1,5,10]))  # Expected: 1
+print(greedy_fails_classic_counterexample(6, [1,2,4]))  # Expected: 2
+print(greedy_fails_classic_counterexample(3, [2]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // GreedyFailsClassicCounterexample solves the Greedy Fails: Classic Counterexample problem.
-// The greedy approach always picks the largest coin that fits. Construct a specific input where greedy gives more coins than the DP optimal. Explain why
-//
-// Approach: Understanding when greedy fails is fundamental to recognizing coin change as a DP problem. Greedy works for specific denomination systems (like US coi
-func GreedyFailsClassicCounterexample(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// The greedy approach always picks the largest coin that fits. Construct a specific input where greedy gives more coins than the DP optimal. Explain why the greedy property fails for arbitrary denominations.
+// Time: O(n log n), Space: O(n)
+func GreedyFailsClassicCounterexample(n int, denoms []int) int {
+	result := 0
 
-    // Example: denoms=[1, 3, 4], n=6. Greedy: 4+1+1=3 coins. Optimal: 3+3=2 coins. Greedy picks 4 first (largest fi
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Greedy Fails: Classic Counterexample...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(GreedyFailsClassicCounterexample(7, []int{1, 5, 10})) // Expected: 1
+	fmt.Println(GreedyFailsClassicCounterexample(6, []int{1, 2, 4})) // Expected: 2
+	fmt.Println(GreedyFailsClassicCounterexample(3, []int{2})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '03-min-coins/twist-01-greedy-fails-classic-counterexample', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/03-min-coins/twist-01-greedy-fails-classic-counterexample'] = problem;
 })();

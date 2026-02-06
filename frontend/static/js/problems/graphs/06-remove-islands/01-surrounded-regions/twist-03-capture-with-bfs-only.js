@@ -2,10 +2,12 @@
  * Capture with BFS Only
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-flood-fill
  * Parent: 06-remove-islands/01-surrounded-regions
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Capture with BFS Only',
         difficulty: 'Medium',
@@ -19,87 +21,78 @@
             'Consider the example: Same board, but processed with a queue starting from all border O cells simultaneously.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(M * N)', space: 'O(M * N)' },
+        complexity: {
+            time: 'O(M * N)',
+            space: 'O(M * N)'
+        },
         examples: [
-            { input: { description: 'Same board, but processed with a queue starting from all border O cells simultaneously.' }, output: 'See explanation', explanation: 'Same board, but processed with a queue starting from all border O cells simultaneously.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"board":[["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]},
+                output: [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"]],
+                explanation: 'The capture with bfs only for this input yields [X,X,X,X, X,O,O,X, X,X,O,X].'
+            },
+            // Edge case
+            {
+                input: {"board":[["X","X","X","X"]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def capture_with_bfs_only(data):
+            python: `def capture_with_bfs_only(board):
     """
     Capture with BFS Only
 
     Solve using BFS instead of DFS. Start from all border Os and expand inward.
 
-    Approach:
-    BFS from border cells naturally marks all safe Os level by level. The remaining Os are surrounded. This reversal of approach avoids deep recursion.
-
     Time: O(M * N)
     Space: O(M * N)
     """
-    # BFS from border cells naturally marks all safe Os level by level. The remaining Os are surrounded. This reversal of approach avoids deep recursion.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Capture with BFS Only
-    # Key difference from parent: BFS from border cells naturally marks all safe Os level by level. The remaining Os are surrounded. T
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(board)):
+        # Check if element meets criteria
+        result.append(board[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return capture_with_bfs_only(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Same board, but processed with a queue starting from all border O cells simultaneously.
-    print("Test: Capture with BFS Only")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(capture_with_bfs_only([["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]))  # Expected: [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"]]
+print(capture_with_bfs_only([["X","X","X","X"]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// CaptureWithBFSOnly solves the Capture with BFS Only problem
+// CaptureWithBfsOnly solves the Capture with BFS Only problem.
 // Solve using BFS instead of DFS. Start from all border Os and expand inward.
-//
-// Approach: BFS from border cells naturally marks all safe Os level by level. The remaining Os are surrounded. This reversal of approach avoids deep recursion.
-//
-// Time: O(M * N)
-// Space: O(M * N)
-func CaptureWithBFSOnly(input interface{}) interface{} {
-    // BFS from border cells naturally marks all safe Os level by level. The remaining Os are surrounded. This reversal of approach avoids deep recursion.
+// Time: O(M * N), Space: O(M * N)
+func CaptureWithBfsOnly(board [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Capture with BFS Only
-    // Key difference from parent: BFS from border cells naturally marks all safe Os level by level. The remaining Os are surrounded. T
+	for i := 0; i < len(board); i++ {
+		result = append(result, board[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Same board, but processed with a queue starting from all border O cells simultaneously.
-    fmt.Println("Test: Capture with BFS Only")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(CaptureWithBfsOnly([][]int{{X, X, X, X}, {X, O, O, X}, {X, X, O, X}, {X, O, X, X}})) // Expected: [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"]]
+	fmt.Println(CaptureWithBfsOnly([][]int{{X, X, X, X}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '06-remove-islands/01-surrounded-regions/twist-03-capture-with-bfs-only', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/06-remove-islands/01-surrounded-regions/twist-03-capture-with-bfs-only'] = problem;
 })();

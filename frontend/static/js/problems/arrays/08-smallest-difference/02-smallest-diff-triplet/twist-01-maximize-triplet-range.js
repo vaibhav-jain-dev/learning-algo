@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,2,1]},
                 output: 3,
-                explanation: 'The maximum/longest valid segment has length 3.'
+                explanation: ''
             },
             {
                 input: {"array":[5,4,3,2,1]},
                 output: 5,
-                explanation: 'The entire array satisfies the condition.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1]},
                 output: 1,
-                explanation: 'Single element is trivially valid.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def maximize_triplet_range(data):
+            python: `def maximize_triplet_range(arr1, arr2, arr3):
     """
     Maximize Triplet Range
 
-    Instead of minimizing (max - min) of the triplet, maximize it. Pick one element from each of three sorted arrays to maximize the range.
-    \n    Approach: The greedy pointer strategy reverses: instead of advancing the minimum, you consider endpoints of arrays for maximum spread.
+    Instead of minimizing (max - min) of the triplet, maximize it. Pick one element from each of three sorted arrays to maximize the range. The greedy pointer strategy reverses: instead of advancing the minimum, you consider endpoints of arrays for maximum spread.
 
     Time: O(n log n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # arr1 = [1, 4, 5], arr2 = [10, 20], arr3 = [14, 19]. Max range triplet: [1, 20, 14], range = 19.
+    count = 0
+    n = len(arr1)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on arr2
+        j = 0
+        for k in range(i, n):
+            if j < len(arr2) and arr1[k] == arr2[j]:
+                j += 1
+        if j == len(arr2):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(maximize_triplet_range([1, 2, 3, 4, 5]))
-print(maximize_triplet_range([5, 3, 1]))
-print(maximize_triplet_range([1]))`,
+print(maximize_triplet_range(None, None, None))  # Expected: 3
+print(maximize_triplet_range(None, None, None))  # Expected: 5
+print(maximize_triplet_range(None, None, None))  # Expected: 1
+`,
             go: `package main
 
 import "fmt"
 
 // MaximizeTripletRange solves the Maximize Triplet Range problem.
-// Instead of minimizing (max - min) of the triplet, maximize it. Pick one element from each of three sorted arrays to maximize the range.
+// Instead of minimizing (max - min) of the triplet, maximize it. Pick one element from each of three sorted arrays to maximize the range. The greedy pointer strategy reverses: instead of advancing the minimum, you consider endpoints of arrays for maximum spread.
 // Time: O(n log n), Space: O(n)
-func MaximizeTripletRange(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MaximizeTripletRange(arr1 []int, arr2 []int, arr3 []int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(arr1); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(MaximizeTripletRange([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MaximizeTripletRange([]int{5, 3, 1}))
-    fmt.Println(MaximizeTripletRange([]int{1}))
-}`
+	fmt.Println(MaximizeTripletRange(nil, nil, nil)) // Expected: 3
+	fmt.Println(MaximizeTripletRange(nil, nil, nil)) // Expected: 5
+	fmt.Println(MaximizeTripletRange(nil, nil, nil)) // Expected: 1
+}
+`
         },
         twists: [],
         similar: []

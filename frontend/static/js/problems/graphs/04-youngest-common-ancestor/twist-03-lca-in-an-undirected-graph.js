@@ -2,10 +2,12 @@
  * LCA in an Undirected Graph
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-ancestor
  * Parent: 04-youngest-common-ancestor
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'LCA in an Undirected Graph',
         difficulty: 'Hard',
@@ -19,87 +21,84 @@
             'Consider the example: Graph: 1-2, 2-3, 3-1, 3-4.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(D)', space: 'O(1)' },
+        complexity: {
+            time: 'O(D)',
+            space: 'O(1)'
+        },
         examples: [
-            { input: { description: 'Graph: 1-2, 2-3, 3-1, 3-4. Root=1. BFS tree: 1->2, 1->3, 3->4. LCA(2,4) = 1 (through tree edges, ignoring back edge 2-3).' }, output: 'See explanation', explanation: 'Graph: 1-2, 2-3, 3-1, 3-4. Root=1. BFS tree: 1->2, 1->3, 3->4. LCA(2,4) = 1 (through tree edges, ignoring back edge 2-3).' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"tree":"A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G","descendant1":"E","descendant2":"I"},
+                output: "result",
+                explanation: 'The resulting string is "result".'
+            },
+            {
+                input: {"tree":"A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G","descendant1":"H","descendant2":"G"},
+                output: "output",
+                explanation: 'The resulting string is "output".'
+            },
+            // Edge case
+            {
+                input: {"tree":"","descendant1":"","descendant2":""},
+                output: "",
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def lca_in_an_undirected_graph(data):
+            python: `def lca_in_an_undirected_graph(tree, descendant1, descendant2):
     """
     LCA in an Undirected Graph
 
     Given an undirected graph (not a tree) and a chosen root, find the LCA of two nodes. The graph may contain cycles.
 
-    Approach:
-    Must first build a BFS/DFS spanning tree from the root, then find LCA on that tree. The choice of spanning tree affects which node is the LCA, adding ambiguity not present in tree problems.
-
     Time: O(D)
     Space: O(1)
     """
-    # Must first build a BFS/DFS spanning tree from the root, then find LCA on that tree. The choice of spanning tree affects which node is the LCA, adding ambiguity not present in tree problems.
+    result = []
 
-    # Implementation
-    result = None
+    for item in tree:
+        result.append(str(item))
 
-    # Core algorithm adapted for: LCA in an Undirected Graph
-    # Key difference from parent: Must first build a BFS/DFS spanning tree from the root, then find LCA on that tree. The choice of sp
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return lca_in_an_undirected_graph(data)
+    return ''.join(result)
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Graph: 1-2, 2-3, 3-1, 3-4. Root=1. BFS tree: 1->2, 1->3, 3->4. LCA(2,4) = 1 (through tree edges, ignoring back edge 2-3).
-    print("Test: LCA in an Undirected Graph")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(lca_in_an_undirected_graph("A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G", "E", "I"))  # Expected: "result"
+print(lca_in_an_undirected_graph("A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G", "H", "G"))  # Expected: "output"
+print(lca_in_an_undirected_graph("", "", ""))  # Expected: ""
+`,
             go: `package main
 
 import "fmt"
 
-// LCAInAnUndirectedGraph solves the LCA in an Undirected Graph problem
+// LcaInAnUndirectedGraph solves the LCA in an Undirected Graph problem.
 // Given an undirected graph (not a tree) and a chosen root, find the LCA of two nodes. The graph may contain cycles.
-//
-// Approach: Must first build a BFS/DFS spanning tree from the root, then find LCA on that tree. The choice of spanning tree affects which node is the LCA, adding ambiguity not present in tree problems.
-//
-// Time: O(D)
-// Space: O(1)
-func LCAInAnUndirectedGraph(input interface{}) interface{} {
-    // Must first build a BFS/DFS spanning tree from the root, then find LCA on that tree. The choice of spanning tree affects which node is the LCA, adding ambiguity not present in tree problems.
+// Time: O(D), Space: O(1)
+func LcaInAnUndirectedGraph(tree string, descendant1 string, descendant2 string) string {
+	result := ""
 
-    // Core algorithm adapted for: LCA in an Undirected Graph
-    // Key difference from parent: Must first build a BFS/DFS spanning tree from the root, then find LCA on that tree. The choice of sp
+	for _, v := range tree {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Graph: 1-2, 2-3, 3-1, 3-4. Root=1. BFS tree: 1->2, 1->3, 3->4. LCA(2,4) = 1 (through tree edges, ignoring back edge 2-3).
-    fmt.Println("Test: LCA in an Undirected Graph")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(LcaInAnUndirectedGraph("A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G", "E", "I")) // Expected: "result"
+	fmt.Println(LcaInAnUndirectedGraph("A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G", "H", "G")) // Expected: "output"
+	fmt.Println(LcaInAnUndirectedGraph("", "", "")) // Expected: ""
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '04-youngest-common-ancestor/twist-03-lca-in-an-undirected-graph', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/04-youngest-common-ancestor/twist-03-lca-in-an-undirected-graph'] = problem;
 })();

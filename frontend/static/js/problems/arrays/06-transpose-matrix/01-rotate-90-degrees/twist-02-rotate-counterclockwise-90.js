@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,1,2,3]},
                 output: 2,
-                explanation: 'Two valid configurations found in the input.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: 1,
-                explanation: 'Only one valid configuration exists.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1,1,1]},
                 output: 3,
-                explanation: 'Multiple identical elements create multiple valid configurations.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def rotate_counterclockwise_90(data):
+            python: `def rotate_counterclockwise_90(matrix):
     """
     Rotate Counterclockwise 90
 
-    Rotate the matrix 90 degrees counterclockwise instead of clockwise.
-    \n    Approach: Transpose + reverse columns (instead of rows), or reverse rows first then transpose. Direction change alters the composition.
+    Rotate the matrix 90 degrees counterclockwise instead of clockwise. Transpose + reverse columns (instead of rows), or reverse rows first then transpose. Direction change alters the composition.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # matrix = [[1,2,3],[4,5,6],[7,8,9]]. Result: [[3,6,9],[2,5,8],[1,4,7]].
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in matrix:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(rotate_counterclockwise_90([1, 2, 3, 4, 5]))
-print(rotate_counterclockwise_90([5, 3, 1]))
-print(rotate_counterclockwise_90([1]))`,
+print(rotate_counterclockwise_90(None))  # Expected: 2
+print(rotate_counterclockwise_90(None))  # Expected: 1
+print(rotate_counterclockwise_90(None))  # Expected: 3
+`,
             go: `package main
 
 import "fmt"
 
 // RotateCounterclockwise90 solves the Rotate Counterclockwise 90 problem.
-// Rotate the matrix 90 degrees counterclockwise instead of clockwise.
+// Rotate the matrix 90 degrees counterclockwise instead of clockwise. Transpose + reverse columns (instead of rows), or reverse rows first then transpose. Direction change alters the composition.
 // Time: O(n), Space: O(n)
-func RotateCounterclockwise90(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func RotateCounterclockwise90(matrix []string) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range matrix {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(RotateCounterclockwise90([]int{1, 2, 3, 4, 5}))
-    fmt.Println(RotateCounterclockwise90([]int{5, 3, 1}))
-    fmt.Println(RotateCounterclockwise90([]int{1}))
-}`
+	fmt.Println(RotateCounterclockwise90(nil)) // Expected: 2
+	fmt.Println(RotateCounterclockwise90(nil)) // Expected: 1
+	fmt.Println(RotateCounterclockwise90(nil)) // Expected: 3
+}
+`
         },
         twists: [],
         similar: []

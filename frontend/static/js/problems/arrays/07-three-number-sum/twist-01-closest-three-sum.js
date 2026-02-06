@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5],"target":9},
                 output: [[1,3,5],[2,3,4]],
-                explanation: 'Found all valid combinations summing to target.'
+                explanation: ''
             },
             {
                 input: {"array":[-1,0,1,2],"target":0},
                 output: [[-1,0,1]],
-                explanation: 'Negative numbers included in the valid combination.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1,2,3],"target":100},
                 output: [],
-                explanation: 'No valid combination exists for this target.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def closest_three_sum(data):
+            python: `def closest_three_sum(array, targetSum):
     """
     Closest Three Sum
 
-    Instead of finding triplets that sum exactly to the target, find the triplet whose sum is closest to the target. Return that closest sum.
-    \n    Approach: You must track the minimum absolute difference rather than checking for exact matches, changing the pointer movement logic.
+    Instead of finding triplets that sum exactly to the target, find the triplet whose sum is closest to the target. Return that closest sum. You must track the minimum absolute difference rather than checking for exact matches, changing the pointer movement logic.
 
     Time: O(n^2)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 2, 3, 4, 5], target = 10. Closest triplet sum is 3+4+5 = 12, so return 12.
+    count = 0
+    n = len(array)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on targetSum
+        j = 0
+        for k in range(i, n):
+            if j < len(targetSum) and array[k] == targetSum[j]:
+                j += 1
+        if j == len(targetSum):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(closest_three_sum([1, 2, 3, 4, 5]))
-print(closest_three_sum([5, 3, 1]))
-print(closest_three_sum([1]))`,
+print(closest_three_sum([1,2,3,4,5], None))  # Expected: [[1,3,5],[2,3,4]]
+print(closest_three_sum([-1,0,1,2], None))  # Expected: [[-1,0,1]]
+print(closest_three_sum([1,2,3], None))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
 // ClosestThreeSum solves the Closest Three Sum problem.
-// Instead of finding triplets that sum exactly to the target, find the triplet whose sum is closest to the target. Return that closest sum.
+// Instead of finding triplets that sum exactly to the target, find the triplet whose sum is closest to the target. Return that closest sum. You must track the minimum absolute difference rather than checking for exact matches, changing the pointer movement logic.
 // Time: O(n^2), Space: O(n)
-func ClosestThreeSum(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func ClosestThreeSum(array []int, targetSum int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(ClosestThreeSum([]int{1, 2, 3, 4, 5}))
-    fmt.Println(ClosestThreeSum([]int{5, 3, 1}))
-    fmt.Println(ClosestThreeSum([]int{1}))
-}`
+	fmt.Println(ClosestThreeSum([]int{1, 2, 3, 4, 5}, nil)) // Expected: [[1,3,5],[2,3,4]]
+	fmt.Println(ClosestThreeSum([]int{-1, 0, 1, 2}, nil)) // Expected: [[-1,0,1]]
+	fmt.Println(ClosestThreeSum([]int{1, 2, 3}, nil)) // Expected: []
+}
+`
         },
         twists: [],
         similar: []

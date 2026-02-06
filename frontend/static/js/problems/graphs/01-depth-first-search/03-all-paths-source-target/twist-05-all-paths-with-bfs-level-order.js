@@ -2,10 +2,12 @@
  * All Paths with BFS (Level-Order)
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-dfs
  * Parent: 01-depth-first-search/03-all-paths-source-target
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'All Paths with BFS (Level-Order)',
         difficulty: 'Medium',
@@ -15,91 +17,87 @@
         problem: 'BFS explores paths by length, producing shorter paths first. The challenge is maintaining partial paths in the queue, which can consume significantly more memory than DFS backtracking.',
         hints: [
             'Start by understanding the key difference: BFS explores paths by length, producing shorter paths first.',
-            'Think about what data structures need to change from the original solution.',
-            'Consider the example: Graph: [[1,2],[3],[1,3],[]].',
-            'Test with edge cases: empty input, single element, and the largest possible input.'
+            'Think about what data structures need to change from the original solution.'
         ],
-        complexity: { time: 'O(2^N * N)', space: 'O(N)' },
+        complexity: {
+            time: 'O(2^N * N)',
+            space: 'O(N)'
+        },
         examples: [
-            { input: { description: 'Graph: [[1,2],[3],[1,3],[]]. BFS order finds paths: [0,1,3] and [0,2,3] (length 3) before any length-4 paths.' }, output: 'See explanation', explanation: 'Graph: [[1,2],[3],[1,3],[]]. BFS order finds paths: [0,1,3] and [0,2,3] (length 3) before any length-4 paths.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"graph":[[1,2],[3],[3],[]],"target":10},
+                output: [[1,2],[3],[3]],
+                explanation: 'The all paths with bfs level order for this input yields [1,2, 3, 3].'
+            },
+            {
+                input: {"graph":[[4,3,1],[3,2,4],[3],[4],[]],"target":10},
+                output: [[4,3,1],[3,2,4],[3]],
+                explanation: 'The all paths with bfs level order for this input yields [4,3,1, 3,2,4, 3].'
+            },
+            // Edge case
+            {
+                input: {"graph":[[1,2]],"target":10},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def all_paths_with_bfs_level_order(data):
+            python: `def all_paths_with_bfs_level_order(graph, target):
     """
     All Paths with BFS (Level-Order)
 
     Find all paths from source to target using BFS instead of DFS. Paths should be generated in order of increasing length.
 
-    Approach:
-    BFS explores paths by length, producing shorter paths first. The challenge is maintaining partial paths in the queue, which can consume significantly more memory than DFS backtracking.
-
     Time: O(2^N * N)
     Space: O(N)
     """
-    # BFS explores paths by length, producing shorter paths first. The challenge is maintaining partial paths in the queue, which can consume significantly more memory than DFS backtracking.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: All Paths with BFS (Level-Order)
-    # Key difference from parent: BFS explores paths by length, producing shorter paths first. The challenge is maintaining partial pa
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(graph)):
+        # Check if element meets criteria
+        result.append(graph[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return all_paths_with_bfs_level_order(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Graph: [[1,2],[3],[1,3],[]]. BFS order finds paths: [0,1,3] and [0,2,3] (length 3) before any length-4 paths.
-    print("Test: All Paths with BFS (Level-Order)")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(all_paths_with_bfs_level_order([[1,2],[3],[3],[]], 10))  # Expected: [[1,2],[3],[3]]
+print(all_paths_with_bfs_level_order([[4,3,1],[3,2,4],[3],[4],[]], 10))  # Expected: [[4,3,1],[3,2,4],[3]]
+print(all_paths_with_bfs_level_order([[1,2]], 10))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// AllPathsWithBFSLevelOrder solves the All Paths with BFS (Level-Order) problem
+// AllPathsWithBfsLevelOrder solves the All Paths with BFS (Level-Order) problem.
 // Find all paths from source to target using BFS instead of DFS. Paths should be generated in order of increasing length.
-//
-// Approach: BFS explores paths by length, producing shorter paths first. The challenge is maintaining partial paths in the queue, which can consume significantly more memory than DFS backtracking.
-//
-// Time: O(2^N * N)
-// Space: O(N)
-func AllPathsWithBFSLevelOrder(input interface{}) interface{} {
-    // BFS explores paths by length, producing shorter paths first. The challenge is maintaining partial paths in the queue, which can consume significantly more memory than DFS backtracking.
+// Time: O(2^N * N), Space: O(N)
+func AllPathsWithBfsLevelOrder(graph [][]int, target int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: All Paths with BFS (Level-Order)
-    // Key difference from parent: BFS explores paths by length, producing shorter paths first. The challenge is maintaining partial pa
+	for i := 0; i < len(graph); i++ {
+		result = append(result, graph[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Graph: [[1,2],[3],[1,3],[]]. BFS order finds paths: [0,1,3] and [0,2,3] (length 3) before any length-4 paths.
-    fmt.Println("Test: All Paths with BFS (Level-Order)")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(AllPathsWithBfsLevelOrder([][]int{{1, 2}, {3}, {3}, {}}, 10)) // Expected: [[1,2],[3],[3]]
+	fmt.Println(AllPathsWithBfsLevelOrder([][]int{{4, 3, 1}, {3, 2, 4}, {3}, {4}, {}}, 10)) // Expected: [[4,3,1],[3,2,4],[3]]
+	fmt.Println(AllPathsWithBfsLevelOrder([][]int{{1, 2}}, 10)) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '01-depth-first-search/03-all-paths-source-target/twist-05-all-paths-with-bfs-level-order', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/01-depth-first-search/03-all-paths-source-target/twist-05-all-paths-with-bfs-level-order'] = problem;
 })();

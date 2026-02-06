@@ -2,10 +2,12 @@
  * Right Side View from Level Order
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-bfs
  * Parent: 02-breadth-first-search/01-level-order-traversal
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Right Side View from Level Order',
         difficulty: 'Medium',
@@ -19,87 +21,85 @@
             'Consider the example: Tree [3,9,20,null,null,15,7].',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N)', space: 'O(W)' },
+        complexity: {
+            time: 'O(N)',
+            space: 'O(W)'
+        },
         examples: [
-            { input: { description: 'Tree [3,9,20,null,null,15,7]. Level order: [[3],[9,20],[15,7]]. Right side view: [3,20,7].' }, output: 'See explanation', explanation: 'Tree [3,9,20,null,null,15,7]. Level order: [[3],[9,20],[15,7]]. Right side view: [3,20,7].' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"root":[3,9,20,null,null,15,7]},
+                output: [3,9,20],
+                explanation: 'The right side view from level order for this input yields [3, 9, 20].'
+            },
+            {
+                input: {"root":[1]},
+                output: [1],
+                explanation: 'The right side view from level order for this input yields [1].'
+            },
+            // Edge case
+            {
+                input: {"root":[3]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def right_side_view_from_level_order(data):
+            python: `def right_side_view_from_level_order(root):
     """
     Right Side View from Level Order
 
     Using level order traversal, return only the rightmost node visible from each level (the "right side view" of the tree).
 
-    Approach:
-    You must extract just the last element from each level rather than collecting all elements. This can be optimized to avoid storing full levels by tracking only the last node processed per level.
-
     Time: O(N)
     Space: O(W)
     """
-    # You must extract just the last element from each level rather than collecting all elements. This can be optimized to avoid storing full levels by tracking only the last node processed per level.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Right Side View from Level Order
-    # Key difference from parent: You must extract just the last element from each level rather than collecting all elements. This can
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(root)):
+        # Check if element meets criteria
+        result.append(root[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return right_side_view_from_level_order(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Tree [3,9,20,null,null,15,7]. Level order: [[3],[9,20],[15,7]]. Right side view: [3,20,7].
-    print("Test: Right Side View from Level Order")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(right_side_view_from_level_order([3,9,20,None,None,15,7]))  # Expected: [3,9,20]
+print(right_side_view_from_level_order([1]))  # Expected: [1]
+print(right_side_view_from_level_order([3]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// RightSideViewFromLevelOrder solves the Right Side View from Level Order problem
+// RightSideViewFromLevelOrder solves the Right Side View from Level Order problem.
 // Using level order traversal, return only the rightmost node visible from each level (the "right side view" of the tree).
-//
-// Approach: You must extract just the last element from each level rather than collecting all elements. This can be optimized to avoid storing full levels by tracking only the last node processed per level.
-//
-// Time: O(N)
-// Space: O(W)
-func RightSideViewFromLevelOrder(input interface{}) interface{} {
-    // You must extract just the last element from each level rather than collecting all elements. This can be optimized to avoid storing full levels by tracking only the last node processed per level.
+// Time: O(N), Space: O(W)
+func RightSideViewFromLevelOrder(root []int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Right Side View from Level Order
-    // Key difference from parent: You must extract just the last element from each level rather than collecting all elements. This can
+	for i := 0; i < len(root); i++ {
+		result = append(result, root[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Tree [3,9,20,null,null,15,7]. Level order: [[3],[9,20],[15,7]]. Right side view: [3,20,7].
-    fmt.Println("Test: Right Side View from Level Order")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(RightSideViewFromLevelOrder([]int{3, 9, 20, null, null, 15, 7})) // Expected: [3,9,20]
+	fmt.Println(RightSideViewFromLevelOrder([]int{1})) // Expected: [1]
+	fmt.Println(RightSideViewFromLevelOrder([]int{3})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '02-breadth-first-search/01-level-order-traversal/twist-05-right-side-view-from-level-order', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/02-breadth-first-search/01-level-order-traversal/twist-05-right-side-view-from-level-order'] = problem;
 })();

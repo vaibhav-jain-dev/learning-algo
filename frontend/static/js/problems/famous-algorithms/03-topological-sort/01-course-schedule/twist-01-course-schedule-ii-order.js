@@ -2,10 +2,12 @@
  * Course Schedule II (Order)
  * Category: famous-algorithms
  * Difficulty: Medium
+ * Algorithm: topological-sort
  * Parent: 03-topological-sort/01-course-schedule
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Course Schedule II (Order)',
         difficulty: 'Medium',
@@ -19,57 +21,87 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For 4 courses with prereqs [[1,0],[2,0],[3,1],[3,2]], return [0,1,2,3] or [0,2,1,3].' },
-                output: 'See example',
-                explanation: 'For 4 courses with prereqs [[1,0],[2,0],[3,1],[3,2]], return [0,1,2,3] or [0,2,1,3].'
+                input: {"numCourses":2,"prerequisites":[[1,0]]},
+                output: true,
+                explanation: 'The course schedule ii order condition is satisfied for this input.'
+            },
+            {
+                input: {"numCourses":2,"prerequisites":[[1,0],[0,1]]},
+                output: false,
+                explanation: 'The course schedule ii order condition is not satisfied for this input.'
+            },
+            // Edge case
+            {
+                input: {"numCourses":0,"prerequisites":[[1,0]]},
+                output: false,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Course Schedule II (Order)
-# Category: famous-algorithms
-# Difficulty: Medium
-# Parent: 03-topological-sort/01-course-schedule
-
-def solve():
+            python: `def course_schedule_ii_order(numCourses, prerequisites):
     """
+    Course Schedule II (Order)
+
     Return one valid order in which courses can be taken, not just whether it is possible.
 
-    Key insight: Extends from boolean feasibility to constructing a concrete ordering, requiring you to record the topological order during BFS.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    j = 0
+
+    for i in range(len(numCourses)):
+        if j < len(prerequisites) and numCourses[i] == prerequisites[j]:
+            j += 1
+
+    return j == len(prerequisites)
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(course_schedule_ii_order(2, [[1,0]]))  # Expected: True
+print(course_schedule_ii_order(2, [[1,0],[0,1]]))  # Expected: False
+print(course_schedule_ii_order(0, [[1,0]]))  # Expected: False
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Course Schedule II (Order) problem.
+// CourseScheduleIiOrder solves the Course Schedule II (Order) problem.
 // Return one valid order in which courses can be taken, not just whether it is possible.
-// Key insight: Extends from boolean feasibility to constructing a concrete ordering, requiring you to record the topological order during BFS.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func CourseScheduleIiOrder(numCourses int, prerequisites [][]int) bool {
+	j := 0
+
+	for i := 0; i < len(numCourses) && j < len(prerequisites); i++ {
+		if numCourses[i] == prerequisites[j] {
+			j++
+		}
+	}
+
+	return j == len(prerequisites)
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(CourseScheduleIiOrder(2, [][]int{{1, 0}})) // Expected: true
+	fmt.Println(CourseScheduleIiOrder(2, [][]int{{1, 0}, {0, 1}})) // Expected: false
+	fmt.Println(CourseScheduleIiOrder(0, [][]int{{1, 0}})) // Expected: false
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '03-topological-sort/01-course-schedule/twist-01-course-schedule-ii-order', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/03-topological-sort/01-course-schedule/twist-01-course-schedule-ii-order'] = problem;
 })();

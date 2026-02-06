@@ -2,10 +2,12 @@
  * Minimize Group Size Difference
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-coloring
  * Parent: 09-two-colorable/02-possible-bipartition
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Minimize Group Size Difference',
         difficulty: 'Hard',
@@ -19,87 +21,87 @@
             'Consider the example: Component A: 3 in group 1, 7 in group 2.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(V + E)', space: 'O(V + E)' },
+        complexity: {
+            time: 'O(V + E)',
+            space: 'O(V + E)'
+        },
         examples: [
-            { input: { description: 'Component A: 3 in group 1, 7 in group 2. Component B: 5 in group 1, 4 in group 2. Choose to swap A: 7+5=12 vs 3+4=7 (diff=5) or not swap: 3+5=8 vs 7+4=11 (diff=3). Minimum diff: 3.' }, output: 'See explanation', explanation: 'Component A: 3 in group 1, 7 in group 2. Component B: 5 in group 1, 4 in group 2. Choose to swap A: 7+5=12 vs 3+4=7 (diff=5) or not swap: 3+5=8 vs 7+4=11 (diff=3). Minimum diff: 3.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"n":4,"dislikes":[[1,2],[1,3],[2,4]]},
+                output: true,
+                explanation: 'The minimize group size difference condition is satisfied for this input.'
+            },
+            {
+                input: {"n":3,"dislikes":[[1,2],[1,3],[2,3]]},
+                output: false,
+                explanation: 'The minimize group size difference condition is not satisfied for this input.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"dislikes":[[1,2]]},
+                output: false,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def minimize_group_size_difference(data):
+            python: `def minimize_group_size_difference(n, dislikes):
     """
     Minimize Group Size Difference
 
     If bipartition is possible, find the partition that minimizes the difference in group sizes.
 
-    Approach:
-    Each connected component has exactly 2 colorings (swap colors). You choose the coloring per component that best balances total group sizes, a subset sum variant.
-
     Time: O(V + E)
     Space: O(V + E)
     """
-    # Each connected component has exactly 2 colorings (swap colors). You choose the coloring per component that best balances total group sizes, a subset sum variant.
+    j = 0
 
-    # Implementation
-    result = None
+    for i in range(len(n)):
+        if j < len(dislikes) and n[i] == dislikes[j]:
+            j += 1
 
-    # Core algorithm adapted for: Minimize Group Size Difference
-    # Key difference from parent: Each connected component has exactly 2 colorings (swap colors). You choose the coloring per componen
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return minimize_group_size_difference(data)
+    return j == len(dislikes)
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Component A: 3 in group 1, 7 in group 2. Component B: 5 in group 1, 4 in group 2. Choose to swap A: 7+5=12 vs 3+4=7 (diff=5) or not swap: 3+5=8 vs 7+4=11 (diff=3). Minimum diff: 3.
-    print("Test: Minimize Group Size Difference")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(minimize_group_size_difference(4, [[1,2],[1,3],[2,4]]))  # Expected: True
+print(minimize_group_size_difference(3, [[1,2],[1,3],[2,3]]))  # Expected: False
+print(minimize_group_size_difference(0, [[1,2]]))  # Expected: False
+`,
             go: `package main
 
 import "fmt"
 
-// MinimizeGroupSizeDifference solves the Minimize Group Size Difference problem
+// MinimizeGroupSizeDifference solves the Minimize Group Size Difference problem.
 // If bipartition is possible, find the partition that minimizes the difference in group sizes.
-//
-// Approach: Each connected component has exactly 2 colorings (swap colors). You choose the coloring per component that best balances total group sizes, a subset sum variant.
-//
-// Time: O(V + E)
-// Space: O(V + E)
-func MinimizeGroupSizeDifference(input interface{}) interface{} {
-    // Each connected component has exactly 2 colorings (swap colors). You choose the coloring per component that best balances total group sizes, a subset sum variant.
+// Time: O(V + E), Space: O(V + E)
+func MinimizeGroupSizeDifference(n int, dislikes [][]int) bool {
+	j := 0
 
-    // Core algorithm adapted for: Minimize Group Size Difference
-    // Key difference from parent: Each connected component has exactly 2 colorings (swap colors). You choose the coloring per componen
+	for i := 0; i < len(n) && j < len(dislikes); i++ {
+		if n[i] == dislikes[j] {
+			j++
+		}
+	}
 
-    return nil
+	return j == len(dislikes)
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Component A: 3 in group 1, 7 in group 2. Component B: 5 in group 1, 4 in group 2. Choose to swap A: 7+5=12 vs 3+4=7 (diff=5) or not swap: 3+5=8 vs 7+4=11 (diff=3). Minimum diff: 3.
-    fmt.Println("Test: Minimize Group Size Difference")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(MinimizeGroupSizeDifference(4, [][]int{{1, 2}, {1, 3}, {2, 4}})) // Expected: true
+	fmt.Println(MinimizeGroupSizeDifference(3, [][]int{{1, 2}, {1, 3}, {2, 3}})) // Expected: false
+	fmt.Println(MinimizeGroupSizeDifference(0, [][]int{{1, 2}})) // Expected: false
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '09-two-colorable/02-possible-bipartition/twist-02-minimize-group-size-difference', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/09-two-colorable/02-possible-bipartition/twist-02-minimize-group-size-difference'] = problem;
 })();

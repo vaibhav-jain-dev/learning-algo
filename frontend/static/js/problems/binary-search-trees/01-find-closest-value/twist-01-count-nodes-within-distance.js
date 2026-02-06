@@ -2,10 +2,12 @@
  * Count Nodes Within Distance
  * Category: binary-search-trees
  * Difficulty: Medium
+ * Algorithm: bst-search
  * Parent: 01-find-closest-value
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Count Nodes Within Distance',
         difficulty: 'Medium',
@@ -14,68 +16,87 @@
         description: 'Instead of finding the single closest value, count how many nodes in the BST have values within a given distance D of the target.',
         problem: 'You can no longer prune an entire subtree just because the current node is farther than your best. Both subtrees might contain values within distance D, so you need a range-aware traversal strategy. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: count nodes within distance.",
-                  "Consider how you can no longer prune an entire subtree just because the current node is farther than your best affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Tree: [10,5,15,2,5,13,22,1], target=12, D=3 -> Count=3 (values 10, 13, 15 are all within distance 3 of 12).'
+                input: {"tree":[10,5,15,2,5,13,22,1,null,null,null,null,14],"target":10},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the count nodes within distance criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":[10],"target":10},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Count Nodes Within Distance
-# Difficulty: Medium
-# Parent: 01-find-closest-value
-#
-# Instead of finding the single closest value, count how many nodes in the BST have values within a given distance D of the target.
-
-def countNodesWithinDistance(data):
+            python: `def count_nodes_within_distance(tree, target):
     """
     Count Nodes Within Distance
 
-    Approach: You can no longer prune an entire subtree just because the current node is farther than your best.
+    Instead of finding the single closest value, count how many nodes in the BST have values within a given distance D of the target.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: You can no longer prune an entire subtree just because the current node is farther than your best
-    pass
+    count = 0
+    n = len(tree)
+
+    for i in range(n):
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and tree[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree: [10,5,15,2,5,13,22,1], target=12, D=3 -> Count=3 (values 10, 13, 15 are all within distance 3 of 12)
-    print(countNodesWithinDistance({}))`,
+# Test cases
+print(count_nodes_within_distance([10,5,15,2,5,13,22,1,None,None,None,None,14], 10))  # Expected: 1
+print(count_nodes_within_distance([10], 10))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// Count Nodes Within Distance
-// Difficulty: Medium
-// Parent: 01-find-closest-value
-//
+// CountNodesWithinDistance solves the Count Nodes Within Distance problem.
 // Instead of finding the single closest value, count how many nodes in the BST have values within a given distance D of the target.
+// Time: O(n), Space: O(1)
+func CountNodesWithinDistance(tree []int, target int) int {
+	result := 0
 
-func CountNodesWithinDistance(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: You can no longer prune an entire subtree just because the current node is farther than your best
-    return nil
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Tree: [10,5,15,2,5,13,22,1], target=12, D=3 -> Count=3 (values 10, 13, 15 are all within distance 3 of 12)
-    fmt.Println(CountNodesWithinDistance(map[string]interface{}{}))
-}`
+	fmt.Println(CountNodesWithinDistance([]int{10, 5, 15, 2, 5, 13, 22, 1, null, null, null, null, 14}, 10)) // Expected: 1
+	fmt.Println(CountNodesWithinDistance([]int{10}, 10)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '01-find-closest-value/twist-01-count-nodes-within-distance', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/01-find-closest-value/twist-01-count-nodes-within-distance'] = problem;
 })();

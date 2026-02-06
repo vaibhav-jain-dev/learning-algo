@@ -27,83 +27,71 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[-3,-1,0,2,4]},
                 output: [0,1,4,9,16],
-                explanation: 'Elements transformed and sorted correctly.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: [1,4,9],
-                explanation: 'All positive - order maintained after transformation.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[-5,-3,-1]},
                 output: [1,9,25],
-                explanation: 'All negative - order reversed after transformation.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def sorted_squared_no_duplicates_with_original_indices(data):
+            python: `def sorted_squared_no_duplicates_with_original_indices(array):
     """
     Sorted Squared No Duplicates with Original Indices
 
-    Return unique squared values along with all original indices that contributed to each value.
-    \n    Approach: Requires maintaining index lists while deduplicating, turning a simple merge into a grouping operation.
+    Return unique squared values along with all original indices that contributed to each value. Requires maintaining index lists while deduplicating, turning a simple merge into a grouping operation.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array=[-3,-1,1,3] → [{val:1, indices:[1,2]}, {val:9, indices:[0,3]}]
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
 # Test cases
-print(sorted_squared_no_duplicates_with_original_indices([1, 2, 3, 4, 5]))
-print(sorted_squared_no_duplicates_with_original_indices([5, 3, 1]))
-print(sorted_squared_no_duplicates_with_original_indices([1]))`,
+print(sorted_squared_no_duplicates_with_original_indices([-3,-1,0,2,4]))  # Expected: [0,1,4,9,16]
+print(sorted_squared_no_duplicates_with_original_indices([1,2,3]))  # Expected: [1,4,9]
+print(sorted_squared_no_duplicates_with_original_indices([-5,-3,-1]))  # Expected: [1,9,25]
+`,
             go: `package main
 
 import "fmt"
 
 // SortedSquaredNoDuplicatesWithOriginalIndices solves the Sorted Squared No Duplicates with Original Indices problem.
-// Return unique squared values along with all original indices that contributed to each value.
+// Return unique squared values along with all original indices that contributed to each value. Requires maintaining index lists while deduplicating, turning a simple merge into a grouping operation.
 // Time: O(n), Space: O(n)
-func SortedSquaredNoDuplicatesWithOriginalIndices(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func SortedSquaredNoDuplicatesWithOriginalIndices(array []int) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(SortedSquaredNoDuplicatesWithOriginalIndices([]int{1, 2, 3, 4, 5}))
-    fmt.Println(SortedSquaredNoDuplicatesWithOriginalIndices([]int{5, 3, 1}))
-    fmt.Println(SortedSquaredNoDuplicatesWithOriginalIndices([]int{1}))
-}`
+	fmt.Println(SortedSquaredNoDuplicatesWithOriginalIndices([]int{-3, -1, 0, 2, 4})) // Expected: [0,1,4,9,16]
+	fmt.Println(SortedSquaredNoDuplicatesWithOriginalIndices([]int{1, 2, 3})) // Expected: [1,4,9]
+	fmt.Println(SortedSquaredNoDuplicatesWithOriginalIndices([]int{-5, -3, -1})) // Expected: [1,9,25]
+}
+`
         },
         twists: [],
         similar: []

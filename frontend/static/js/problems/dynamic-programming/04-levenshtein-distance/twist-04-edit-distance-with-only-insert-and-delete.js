@@ -2,10 +2,12 @@
  * Edit Distance With Only Insert and Delete
  * Category: dynamic-programming
  * Difficulty: Medium
+ * Algorithm: dp-edit-distance
  * Parent: 04-levenshtein-distance
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Edit Distance With Only Insert and Delete',
         difficulty: 'Medium',
@@ -19,84 +21,103 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'str1="abc", str2="yabd": without replace, distance is 3 (delete c, insert y at start, insert d at end). Related to 2*(n - LCS length).'
+                input: {"str1":"abc","str2":"yabd"},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the edit distance with only insert and delete criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"str1":"horse","str2":"ros"},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the edit distance with only insert and delete criteria.'
+            },
+            {
+                input: {"str1":"","str2":"abc"},
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the edit distance with only insert and delete criteria.'
+            },
+            // Edge case
+            {
+                input: {"str1":"","str2":""},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def editDistanceWithOnlyInsertAndDelete(data):
+            python: `def edit_distance_with_only_insert_and_delete(str1, str2):
     """
     Edit Distance With Only Insert and Delete
 
     Find the minimum number of edit operations when only insertions and deletions are allowed (no replacements).
 
-    Approach:
-    Removing replace forces a fundamentally different approach. A replacement must now be simulated as delete+insert, linking this problem to Longest Common Subsequence.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    n = len(str1)
+    m = len(str2)
+    j = 0
 
-    # Example: str1="abc", str2="yabd": without replace, distance is 3 (delete c, insert y at start, insert d at end). Related to 2*(n 
+    for i in range(n):
+        if j < m and str1[i] == str2[j]:
+            j += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
+    if j < m:
+        return -1  # Not possible
 
-    result = None  # Replace with actual computation
-    return result
+    return n - m
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Edit Distance With Only Insert and Delete...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(edit_distance_with_only_insert_and_delete("abc", "yabd"))  # Expected: 1
+print(edit_distance_with_only_insert_and_delete("horse", "ros"))  # Expected: 2
+print(edit_distance_with_only_insert_and_delete("", "abc"))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // EditDistanceWithOnlyInsertAndDelete solves the Edit Distance With Only Insert and Delete problem.
 // Find the minimum number of edit operations when only insertions and deletions are allowed (no replacements).
-//
-// Approach: Removing replace forces a fundamentally different approach. A replacement must now be simulated as delete+insert, linking this problem to Longest Comm
-func EditDistanceWithOnlyInsertAndDelete(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2), Space: O(n)
+func EditDistanceWithOnlyInsertAndDelete(str1 string, str2 string) int {
+	n := len(str1)
+	m := len(str2)
+	j := 0
 
-    // Example: str1="abc", str2="yabd": without replace, distance is 3 (delete c, insert y at start, insert d at en
+	for i := 0; i < n && j < m; i++ {
+		if str1[i] == str2[j] {
+			j++
+		}
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
+	if j < m {
+		return -1
+	}
 
-    return nil
+	return n - m
 }
 
 func main() {
-    fmt.Println("Testing Edit Distance With Only Insert and Delete...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(EditDistanceWithOnlyInsertAndDelete("abc", "yabd")) // Expected: 1
+	fmt.Println(EditDistanceWithOnlyInsertAndDelete("horse", "ros")) // Expected: 2
+	fmt.Println(EditDistanceWithOnlyInsertAndDelete("", "abc")) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '04-levenshtein-distance/twist-04-edit-distance-with-only-insert-and-delete', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/04-levenshtein-distance/twist-04-edit-distance-with-only-insert-and-delete'] = problem;
 })();

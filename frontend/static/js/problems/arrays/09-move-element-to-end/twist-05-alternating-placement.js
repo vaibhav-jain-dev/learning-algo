@@ -27,83 +27,73 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5]},
                 output: true,
-                explanation: 'Standard case satisfying the problem conditions.'
+                explanation: ''
             },
             {
                 input: {"array":[5,3,1]},
                 output: false,
-                explanation: 'Case where the condition is not met.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1]},
                 output: true,
-                explanation: 'Edge case with single element.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def alternating_placement(data):
+            python: `def alternating_placement(array, toMove, target):
     """
     Alternating Placement
 
-    Rearrange the array so target elements alternate with non-target elements. If not possible, place remaining at the end.
-    \n    Approach: Requires a two-phase approach: separate elements, then interleave them, a completely different strategy from simple partitioning.
+    Rearrange the array so target elements alternate with non-target elements. If not possible, place remaining at the end. Requires a two-phase approach: separate elements, then interleave them, a completely different strategy from simple partitioning.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [2, 1, 2, 3, 2, 4], toMove = 2. Result: [1, 2, 3, 2, 4, 2].
+    j = 0
 
-    if not data:
-        return None
+    for i in range(len(array)):
+        if j < len(toMove) and array[i] == toMove[j]:
+            j += 1
 
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
-
-    return result
+    return j == len(toMove)
 
 
 # Test cases
-print(alternating_placement([1, 2, 3, 4, 5]))
-print(alternating_placement([5, 3, 1]))
-print(alternating_placement([1]))`,
+print(alternating_placement([1,2,3,4,5], None, None))  # Expected: True
+print(alternating_placement([5,3,1], None, None))  # Expected: False
+print(alternating_placement([1], None, None))  # Expected: True
+`,
             go: `package main
 
 import "fmt"
 
 // AlternatingPlacement solves the Alternating Placement problem.
-// Rearrange the array so target elements alternate with non-target elements. If not possible, place remaining at the end.
+// Rearrange the array so target elements alternate with non-target elements. If not possible, place remaining at the end. Requires a two-phase approach: separate elements, then interleave them, a completely different strategy from simple partitioning.
 // Time: O(n), Space: O(n)
-func AlternatingPlacement(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func AlternatingPlacement(array []int, toMove int, target int) bool {
+	j := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array) && j < len(toMove); i++ {
+		if array[i] == toMove[j] {
+			j++
+		}
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return j == len(toMove)
 }
 
 func main() {
-    fmt.Println(AlternatingPlacement([]int{1, 2, 3, 4, 5}))
-    fmt.Println(AlternatingPlacement([]int{5, 3, 1}))
-    fmt.Println(AlternatingPlacement([]int{1}))
-}`
+	fmt.Println(AlternatingPlacement([]int{1, 2, 3, 4, 5}, nil, 10)) // Expected: true
+	fmt.Println(AlternatingPlacement([]int{5, 3, 1}, nil, 10)) // Expected: false
+	fmt.Println(AlternatingPlacement([]int{1}, nil, 10)) // Expected: true
+}
+`
         },
         twists: [],
         similar: []

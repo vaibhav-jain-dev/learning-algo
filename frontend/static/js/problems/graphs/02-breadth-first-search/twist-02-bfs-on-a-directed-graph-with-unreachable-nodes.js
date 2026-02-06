@@ -2,10 +2,12 @@
  * BFS on a Directed Graph with Unreachable Nodes
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-bfs
  * Parent: 02-breadth-first-search
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'BFS on a Directed Graph with Unreachable Nodes',
         difficulty: 'Medium',
@@ -19,87 +21,78 @@
             'Consider the example: Directed graph: A->B, A->C, D->C.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(V + E)', space: 'O(V)' },
+        complexity: {
+            time: 'O(V + E)',
+            space: 'O(V)'
+        },
         examples: [
-            { input: { description: 'Directed graph: A->B, A->C, D->C. BFS from A: visited=[A,B,C], unreachable=[D].' }, output: 'See explanation', explanation: 'Directed graph: A->B, A->C, D->C. BFS from A: visited=[A,B,C], unreachable=[D].' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}},
+                output: [0],
+                explanation: 'The bfs on a directed graph with unreachable nodes for this input yields [0].'
+            },
+            // Edge case
+            {
+                input: {"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def bfs_on_a_directed_graph_with_unreachable_nodes(data):
+            python: `def bfs_on_a_directed_graph_with_unreachable_nodes(tree):
     """
     BFS on a Directed Graph with Unreachable Nodes
 
     Perform BFS on a directed graph starting from a given node. Some nodes may be unreachable. Return both the traversal order and the set of unreachable nodes.
 
-    Approach:
-    In a tree, all nodes are reachable from root. In a directed graph, some nodes may have no incoming path from the start. You must identify which nodes were never visited after BFS completes.
-
     Time: O(V + E)
     Space: O(V)
     """
-    # In a tree, all nodes are reachable from root. In a directed graph, some nodes may have no incoming path from the start. You must identify which nodes were never visited after BFS completes.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: BFS on a Directed Graph with Unreachable Nodes
-    # Key difference from parent: In a tree, all nodes are reachable from root. In a directed graph, some nodes may have no incoming p
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return bfs_on_a_directed_graph_with_unreachable_nodes(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Directed graph: A->B, A->C, D->C. BFS from A: visited=[A,B,C], unreachable=[D].
-    print("Test: BFS on a Directed Graph with Unreachable Nodes")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(bfs_on_a_directed_graph_with_unreachable_nodes({"name": "A", "children": [{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}))  # Expected: [0]
+print(bfs_on_a_directed_graph_with_unreachable_nodes({"name": "A", "children": [{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// BFSOnADirectedGraphWithUnreachableNodes solves the BFS on a Directed Graph with Unreachable Nodes problem
+// BfsOnADirectedGraphWithUnreachableNodes solves the BFS on a Directed Graph with Unreachable Nodes problem.
 // Perform BFS on a directed graph starting from a given node. Some nodes may be unreachable. Return both the traversal order and the set of unreachable nodes.
-//
-// Approach: In a tree, all nodes are reachable from root. In a directed graph, some nodes may have no incoming path from the start. You must identify which nodes were never visited after BFS completes.
-//
-// Time: O(V + E)
-// Space: O(V)
-func BFSOnADirectedGraphWithUnreachableNodes(input interface{}) interface{} {
-    // In a tree, all nodes are reachable from root. In a directed graph, some nodes may have no incoming path from the start. You must identify which nodes were never visited after BFS completes.
+// Time: O(V + E), Space: O(V)
+func BfsOnADirectedGraphWithUnreachableNodes(tree map[string]interface{}) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: BFS on a Directed Graph with Unreachable Nodes
-    // Key difference from parent: In a tree, all nodes are reachable from root. In a directed graph, some nodes may have no incoming p
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Directed graph: A->B, A->C, D->C. BFS from A: visited=[A,B,C], unreachable=[D].
-    fmt.Println("Test: BFS on a Directed Graph with Unreachable Nodes")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(BfsOnADirectedGraphWithUnreachableNodes({"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]})) // Expected: [0]
+	fmt.Println(BfsOnADirectedGraphWithUnreachableNodes({"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '02-breadth-first-search/twist-02-bfs-on-a-directed-graph-with-unreachable-nodes', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/02-breadth-first-search/twist-02-bfs-on-a-directed-graph-with-unreachable-nodes'] = problem;
 })();

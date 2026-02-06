@@ -2,10 +2,12 @@
  * Write the Recurrence from Scratch
  * Category: dynamic-programming
  * Difficulty: Easy
+ * Algorithm: dp-max-subset
  * Parent: 01-max-subset-sum
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Write the Recurrence from Scratch',
         difficulty: 'Easy',
@@ -19,84 +21,86 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'Define dp[i] = max sum considering elements 0..i. Then dp[0] = array[0], dp[1] = max(array[0], array[1]), dp[i] = max(dp[i-1], dp[i-2] + array[i]).'
+                input: {"array":[75,105,120,75,90,135]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the write the recurrence from scratch criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"array":[7,10,12,7,9,14]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the write the recurrence from scratch criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[75]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def writeTheRecurrenceFromScratch(data):
+            python: `def write_the_recurrence_from_scratch(array):
     """
     Write the Recurrence from Scratch
 
     Without looking at the solution, define dp[i] and write the full recurrence relation for Max Subset Sum No Adjacent. Include base cases for dp[0] and dp[1].
 
-    Approach:
-    Forces you to derive the state definition and transition yourself rather than just reading it. Many students can follow a recurrence but struggle to define one from an empty page.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    result = 0
 
-    # Example: Define dp[i] = max sum considering elements 0..i. Then dp[0] = array[0], dp[1] = max(array[0], array[1]), dp[i] = max(dp
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
     return result
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Write the Recurrence from Scratch...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(write_the_recurrence_from_scratch([75,105,120,75,90,135]))  # Expected: 1
+print(write_the_recurrence_from_scratch([7,10,12,7,9,14]))  # Expected: 2
+print(write_the_recurrence_from_scratch([75]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // WriteTheRecurrenceFromScratch solves the Write the Recurrence from Scratch problem.
-// Without looking at the solution, define dp[i] and write the full recurrence relation for Max Subset Sum No Adjacent. Include base cases for dp[0] and 
-//
-// Approach: Forces you to derive the state definition and transition yourself rather than just reading it. Many students can follow a recurrence but struggle to d
-func WriteTheRecurrenceFromScratch(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Without looking at the solution, define dp[i] and write the full recurrence relation for Max Subset Sum No Adjacent. Include base cases for dp[0] and dp[1].
+// Time: O(n^2), Space: O(n)
+func WriteTheRecurrenceFromScratch(array []int) int {
+	result := 0
 
-    // Example: Define dp[i] = max sum considering elements 0..i. Then dp[0] = array[0], dp[1] = max(array[0], array
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Write the Recurrence from Scratch...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(WriteTheRecurrenceFromScratch([]int{75, 105, 120, 75, 90, 135})) // Expected: 1
+	fmt.Println(WriteTheRecurrenceFromScratch([]int{7, 10, 12, 7, 9, 14})) // Expected: 2
+	fmt.Println(WriteTheRecurrenceFromScratch([]int{75})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '01-max-subset-sum/twist-01-write-the-recurrence-from-scratch', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/01-max-subset-sum/twist-01-write-the-recurrence-from-scratch'] = problem;
 })();

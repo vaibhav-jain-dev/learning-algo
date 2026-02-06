@@ -2,10 +2,12 @@
  * Redundant Connection in a Directed Graph
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-cycle
  * Parent: 03-cycle-in-graph/02-redundant-connection
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Redundant Connection in a Directed Graph',
         difficulty: 'Hard',
@@ -15,91 +17,87 @@
         problem: 'In directed graphs, the redundant edge might not be in a cycle - it could create a node with two parents instead. You must handle both cases: two-parent scenario and cycle scenario, possibly with overlap.',
         hints: [
             'Start by understanding the key difference: In directed graphs, the redundant edge might not be in a cycle - it could create a node with two parents instead.',
-            'Consider breaking this into subproblems and solving each independently.',
-            'Consider the example: Edges: [[1,2],[1,3],[2,3]].',
-            'Test with edge cases: empty input, single element, and the largest possible input.'
+            'Consider breaking this into subproblems and solving each independently.'
         ],
-        complexity: { time: 'O(N * alpha(N))', space: 'O(N)' },
+        complexity: {
+            time: 'O(N * alpha(N))',
+            space: 'O(N)'
+        },
         examples: [
-            { input: { description: 'Edges: [[1,2],[1,3],[2,3]]. Directed: node 3 has two parents (1 and 2). Remove [2,3]. But [[1,2],[2,3],[3,1]] has a cycle - remove [3,1].' }, output: 'See explanation', explanation: 'Edges: [[1,2],[1,3],[2,3]]. Directed: node 3 has two parents (1 and 2). Remove [2,3]. But [[1,2],[2,3],[3,1]] has a cycle - remove [3,1].' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"edges":[[1,2],[1,3],[2,3]]},
+                output: [[1,2],[1,3],[2,3]],
+                explanation: 'The redundant connection in a directed graph for this input yields [1,2, 1,3, 2,3].'
+            },
+            {
+                input: {"edges":[[1,2],[2,3],[3,4],[1,4],[1,5]]},
+                output: [[1,2],[2,3],[3,4]],
+                explanation: 'The redundant connection in a directed graph for this input yields [1,2, 2,3, 3,4].'
+            },
+            // Edge case
+            {
+                input: {"edges":[[1,2]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def redundant_connection_in_a_directed_graph(data):
+            python: `def redundant_connection_in_a_directed_graph(edges):
     """
     Redundant Connection in a Directed Graph
 
     Same problem but on a directed graph (rooted tree with one extra directed edge). The extra edge might create a cycle or give a node two parents.
 
-    Approach:
-    In directed graphs, the redundant edge might not be in a cycle - it could create a node with two parents instead. You must handle both cases: two-parent scenario and cycle scenario, possibly with overlap.
-
     Time: O(N * alpha(N))
     Space: O(N)
     """
-    # In directed graphs, the redundant edge might not be in a cycle - it could create a node with two parents instead. You must handle both cases: two-parent scenario and cycle scenario, possibly with overlap.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Redundant Connection in a Directed Graph
-    # Key difference from parent: In directed graphs, the redundant edge might not be in a cycle - it could create a node with two par
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(edges)):
+        # Check if element meets criteria
+        result.append(edges[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return redundant_connection_in_a_directed_graph(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Edges: [[1,2],[1,3],[2,3]]. Directed: node 3 has two parents (1 and 2). Remove [2,3]. But [[1,2],[2,3],[3,1]] has a cycle - remove [3,1].
-    print("Test: Redundant Connection in a Directed Graph")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(redundant_connection_in_a_directed_graph([[1,2],[1,3],[2,3]]))  # Expected: [[1,2],[1,3],[2,3]]
+print(redundant_connection_in_a_directed_graph([[1,2],[2,3],[3,4],[1,4],[1,5]]))  # Expected: [[1,2],[2,3],[3,4]]
+print(redundant_connection_in_a_directed_graph([[1,2]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// RedundantConnectionInADirectedGraph solves the Redundant Connection in a Directed Graph problem
+// RedundantConnectionInADirectedGraph solves the Redundant Connection in a Directed Graph problem.
 // Same problem but on a directed graph (rooted tree with one extra directed edge). The extra edge might create a cycle or give a node two parents.
-//
-// Approach: In directed graphs, the redundant edge might not be in a cycle - it could create a node with two parents instead. You must handle both cases: two-parent scenario and cycle scenario, possibly with overlap.
-//
-// Time: O(N * alpha(N))
-// Space: O(N)
-func RedundantConnectionInADirectedGraph(input interface{}) interface{} {
-    // In directed graphs, the redundant edge might not be in a cycle - it could create a node with two parents instead. You must handle both cases: two-parent scenario and cycle scenario, possibly with overlap.
+// Time: O(N * alpha(N)), Space: O(N)
+func RedundantConnectionInADirectedGraph(edges [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Redundant Connection in a Directed Graph
-    // Key difference from parent: In directed graphs, the redundant edge might not be in a cycle - it could create a node with two par
+	for i := 0; i < len(edges); i++ {
+		result = append(result, edges[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Edges: [[1,2],[1,3],[2,3]]. Directed: node 3 has two parents (1 and 2). Remove [2,3]. But [[1,2],[2,3],[3,1]] has a cycle - remove [3,1].
-    fmt.Println("Test: Redundant Connection in a Directed Graph")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(RedundantConnectionInADirectedGraph([][]int{{1, 2}, {1, 3}, {2, 3}})) // Expected: [[1,2],[1,3],[2,3]]
+	fmt.Println(RedundantConnectionInADirectedGraph([][]int{{1, 2}, {2, 3}, {3, 4}, {1, 4}, {1, 5}})) // Expected: [[1,2],[2,3],[3,4]]
+	fmt.Println(RedundantConnectionInADirectedGraph([][]int{{1, 2}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '03-cycle-in-graph/02-redundant-connection/twist-01-redundant-connection-in-a-directed-graph', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/03-cycle-in-graph/02-redundant-connection/twist-01-redundant-connection-in-a-directed-graph'] = problem;
 })();

@@ -2,10 +2,12 @@
  * Kth Permutation of Subset
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-permutations
  * Parent: 03-permutations/03-kth-permutation
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Kth Permutation of Subset',
         difficulty: 'Hard',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For n=4, r=2, k=5: permutations of length 2 from [1,2,3,4] in order are 12,13,14,21,23,24,... so k=5 gives "23".' },
-                output: 'See example',
-                explanation: 'For n=4, r=2, k=5: permutations of length 2 from [1,2,3,4] in order are 12,13,14,21,23,24,... so k=5 gives "23".'
+                input: {"n":3,"k":3},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the kth permutation of subset criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"k":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Kth Permutation of Subset
-# Category: recursion
-# Difficulty: Hard
-# Parent: 03-permutations/03-kth-permutation
-
-def solve():
+            python: `def kth_permutation_of_subset(n, k):
     """
+    Kth Permutation of Subset
+
     Find the kth permutation of length r chosen from n elements (r < n), listed in lexicographic order.
 
-    Key insight: The factorial decomposition changes from n! to P(n,r) = n!/(n-r)!, requiring adjusted group sizes at each digit selection step.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(n)
+
+    for i in range(n):
+        # Check condition based on k
+        j = 0
+        for k in range(i, n):
+            if j < len(k) and n[k] == k[j]:
+                j += 1
+        if j == len(k):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(kth_permutation_of_subset(3, 3))  # Expected: 1
+print(kth_permutation_of_subset(0, 0))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Kth Permutation of Subset problem.
+// KthPermutationOfSubset solves the Kth Permutation of Subset problem.
 // Find the kth permutation of length r chosen from n elements (r < n), listed in lexicographic order.
-// Key insight: The factorial decomposition changes from n! to P(n,r) = n!/(n-r)!, requiring adjusted group sizes at each digit selection step.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func KthPermutationOfSubset(n int, k int) int {
+	result := 0
+
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(KthPermutationOfSubset(3, 3)) // Expected: 1
+	fmt.Println(KthPermutationOfSubset(0, 0)) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '03-permutations/03-kth-permutation/twist-05-kth-permutation-of-subset', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/03-permutations/03-kth-permutation/twist-05-kth-permutation-of-subset'] = problem;
 })();

@@ -27,83 +27,72 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,1,2,3]},
                 output: 2,
-                explanation: 'Two valid configurations found in the input.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: 1,
-                explanation: 'Only one valid configuration exists.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1,1,1]},
                 output: 3,
-                explanation: 'Multiple identical elements create multiple valid configurations.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def partition_and_count(data):
+            python: `def partition_and_count(array):
     """
     Partition and Count
 
-    Partition the array and return the count of elements satisfying the predicate (the partition point index).
-    \n    Approach: The focus shifts to finding and returning the boundary index, useful for subsequent binary search operations.
+    Partition the array and return the count of elements satisfying the predicate (the partition point index). The focus shifts to finding and returning the boundary index, useful for subsequent binary search operations.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 4, 2, 5, 3, 6], pred = isEven. After partition, boundary index = 3 (3 even numbers).
+    result = 0
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
 
     return result
 
 
 # Test cases
-print(partition_and_count([1, 2, 3, 4, 5]))
-print(partition_and_count([5, 3, 1]))
-print(partition_and_count([1]))`,
+print(partition_and_count([1,2,1,2,3]))  # Expected: 2
+print(partition_and_count([1,2,3]))  # Expected: 1
+print(partition_and_count([1,1,1]))  # Expected: 3
+`,
             go: `package main
 
 import "fmt"
 
 // PartitionAndCount solves the Partition and Count problem.
-// Partition the array and return the count of elements satisfying the predicate (the partition point index).
+// Partition the array and return the count of elements satisfying the predicate (the partition point index). The focus shifts to finding and returning the boundary index, useful for subsequent binary search operations.
 // Time: O(n), Space: O(n)
-func PartitionAndCount(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func PartitionAndCount(array []int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(PartitionAndCount([]int{1, 2, 3, 4, 5}))
-    fmt.Println(PartitionAndCount([]int{5, 3, 1}))
-    fmt.Println(PartitionAndCount([]int{1}))
-}`
+	fmt.Println(PartitionAndCount([]int{1, 2, 1, 2, 3})) // Expected: 2
+	fmt.Println(PartitionAndCount([]int{1, 2, 3})) // Expected: 1
+	fmt.Println(PartitionAndCount([]int{1, 1, 1})) // Expected: 3
+}
+`
         },
         twists: [],
         similar: []

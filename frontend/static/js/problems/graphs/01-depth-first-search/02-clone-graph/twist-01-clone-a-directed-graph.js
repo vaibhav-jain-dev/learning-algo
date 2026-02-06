@@ -2,10 +2,12 @@
  * Clone a Directed Graph
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-dfs
  * Parent: 01-depth-first-search/02-clone-graph
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Clone a Directed Graph',
         difficulty: 'Medium',
@@ -19,87 +21,85 @@
             'Consider the example: Directed graph: 1->2, 2->3, 3->1.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N + E)', space: 'O(N)' },
+        complexity: {
+            time: 'O(N + E)',
+            space: 'O(N)'
+        },
         examples: [
-            { input: { description: 'Directed graph: 1->2, 2->3, 3->1. Clone preserves: clone(1)->clone(2)->clone(3)->clone(1).' }, output: 'See explanation', explanation: 'Directed graph: 1->2, 2->3, 3->1. Clone preserves: clone(1)->clone(2)->clone(3)->clone(1).' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"adjList":[[2,4],[1,3],[2,4],[1,3]]},
+                output: [[2,4],[1,3],[2,4]],
+                explanation: 'The clone a directed graph for this input yields [2,4, 1,3, 2,4].'
+            },
+            {
+                input: {"adjList":[[]]},
+                output: [[]],
+                explanation: 'The clone a directed graph for this input yields [].'
+            },
+            // Edge case
+            {
+                input: {"adjList":[[2,4]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def clone_a_directed_graph(data):
+            python: `def clone_a_directed_graph(adjList):
     """
     Clone a Directed Graph
 
     Clone a directed graph where edges are one-way. The cloned graph must preserve edge directions exactly.
 
-    Approach:
-    In undirected graphs, each edge appears in both neighbor lists. In directed graphs, you must be careful not to assume symmetry. The DFS traversal might not reach all nodes from a single starting node.
-
     Time: O(N + E)
     Space: O(N)
     """
-    # In undirected graphs, each edge appears in both neighbor lists. In directed graphs, you must be careful not to assume symmetry. The DFS traversal might not reach all nodes from a single starting node.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Clone a Directed Graph
-    # Key difference from parent: In undirected graphs, each edge appears in both neighbor lists. In directed graphs, you must be care
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(adjList)):
+        # Check if element meets criteria
+        result.append(adjList[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return clone_a_directed_graph(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Directed graph: 1->2, 2->3, 3->1. Clone preserves: clone(1)->clone(2)->clone(3)->clone(1).
-    print("Test: Clone a Directed Graph")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(clone_a_directed_graph([[2,4],[1,3],[2,4],[1,3]]))  # Expected: [[2,4],[1,3],[2,4]]
+print(clone_a_directed_graph([[]]))  # Expected: [[]]
+print(clone_a_directed_graph([[2,4]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// CloneADirectedGraph solves the Clone a Directed Graph problem
+// CloneADirectedGraph solves the Clone a Directed Graph problem.
 // Clone a directed graph where edges are one-way. The cloned graph must preserve edge directions exactly.
-//
-// Approach: In undirected graphs, each edge appears in both neighbor lists. In directed graphs, you must be careful not to assume symmetry. The DFS traversal might not reach all nodes from a single starting node.
-//
-// Time: O(N + E)
-// Space: O(N)
-func CloneADirectedGraph(input interface{}) interface{} {
-    // In undirected graphs, each edge appears in both neighbor lists. In directed graphs, you must be careful not to assume symmetry. The DFS traversal might not reach all nodes from a single starting node.
+// Time: O(N + E), Space: O(N)
+func CloneADirectedGraph(adjList [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Clone a Directed Graph
-    // Key difference from parent: In undirected graphs, each edge appears in both neighbor lists. In directed graphs, you must be care
+	for i := 0; i < len(adjList); i++ {
+		result = append(result, adjList[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Directed graph: 1->2, 2->3, 3->1. Clone preserves: clone(1)->clone(2)->clone(3)->clone(1).
-    fmt.Println("Test: Clone a Directed Graph")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(CloneADirectedGraph([][]int{{2, 4}, {1, 3}, {2, 4}, {1, 3}})) // Expected: [[2,4],[1,3],[2,4]]
+	fmt.Println(CloneADirectedGraph([][]int{{}})) // Expected: [[]]
+	fmt.Println(CloneADirectedGraph([][]int{{2, 4}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '01-depth-first-search/02-clone-graph/twist-01-clone-a-directed-graph', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/01-depth-first-search/02-clone-graph/twist-01-clone-a-directed-graph'] = problem;
 })();

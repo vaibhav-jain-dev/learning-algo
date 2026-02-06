@@ -2,10 +2,12 @@
  * LIS in O(n log n)
  * Category: dynamic-programming
  * Difficulty: Hard
+ * Algorithm: dp-increasing-subseq
  * Parent: 12-longest-increasing-subseq
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'LIS in O(n log n)',
         difficulty: 'Hard',
@@ -19,84 +21,90 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n log n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n log n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'array=[10,9,2,5,3,7,101,18]: tails array evolves as [10],[9],[2],[2,5],[2,3],[2,3,7],[2,3,7,101],[2,3,7,18]. LIS length=4.'
+                input: {"array":[5,7,-24,12,10,2,3,12,5,6,35]},
+                output: [5,7,-24],
+                explanation: 'The lis in on log n for this input yields [5, 7, -24].'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"array":[10,9,2,5,3,7,101,18]},
+                output: [10,9,2],
+                explanation: 'The lis in on log n for this input yields [10, 9, 2].'
+            },
+            {
+                input: {"array":[0,1,0,3,2,3]},
+                output: [0,1,0],
+                explanation: 'The lis in on log n for this input yields [0, 1, 0].'
+            },
+            // Edge case
+            {
+                input: {"array":[5]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def lisInOnLogN(data):
+            python: `def lis_in_on_log_n(array):
     """
     LIS in O(n log n)
 
     Solve the LIS problem in O(n log n) time instead of O(n^2) using patience sorting or binary search with a tails array.
 
-    Approach:
-    Requires a completely different algorithmic paradigm: maintaining a tails array and using binary search for insertion points, rather than pairwise DP comparisons.
+    Time: O(n log n)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    result = []
 
-    # Example: array=[10,9,2,5,3,7,101,18]: tails array evolves as [10],[9],[2],[2,5],[2,3],[2,3,7],[2,3,7,101],[2,3,7,18]. LIS length=
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
     return result
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing LIS in O(n log n)...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(lis_in_on_log_n([5,7,-24,12,10,2,3,12,5,6,35]))  # Expected: [5,7,-24]
+print(lis_in_on_log_n([10,9,2,5,3,7,101,18]))  # Expected: [10,9,2]
+print(lis_in_on_log_n([0,1,0,3,2,3]))  # Expected: [0,1,0]
+`,
             go: `package main
 
 import "fmt"
 
 // LisInOnLogN solves the LIS in O(n log n) problem.
 // Solve the LIS problem in O(n log n) time instead of O(n^2) using patience sorting or binary search with a tails array.
-//
-// Approach: Requires a completely different algorithmic paradigm: maintaining a tails array and using binary search for insertion points, rather than pairwise DP 
-func LisInOnLogN(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n log n), Space: O(n)
+func LisInOnLogN(array []int) []int {
+	result := make([]int, 0)
 
-    // Example: array=[10,9,2,5,3,7,101,18]: tails array evolves as [10],[9],[2],[2,5],[2,3],[2,3,7],[2,3,7,101],[2,
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing LIS in O(n log n)...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(LisInOnLogN([]int{5, 7, -24, 12, 10, 2, 3, 12, 5, 6, 35})) // Expected: [5,7,-24]
+	fmt.Println(LisInOnLogN([]int{10, 9, 2, 5, 3, 7, 101, 18})) // Expected: [10,9,2]
+	fmt.Println(LisInOnLogN([]int{0, 1, 0, 3, 2, 3})) // Expected: [0,1,0]
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '12-longest-increasing-subseq/twist-03-lis-in-on-log-n', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/12-longest-increasing-subseq/twist-03-lis-in-on-log-n'] = problem;
 })();

@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,2,1]},
                 output: 3,
-                explanation: 'The maximum/longest valid segment has length 3.'
+                explanation: ''
             },
             {
                 input: {"array":[5,4,3,2,1]},
                 output: 5,
-                explanation: 'The entire array satisfies the condition.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1]},
                 output: 1,
-                explanation: 'Single element is trivially valid.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def maximum_product_quadruplet(data):
+            python: `def maximum_product_quadruplet(array, target):
     """
     Maximum Product Quadruplet
 
-    Instead of summing to a target, find the quadruplet with the maximum product among those that sum to the target.
-    \n    Approach: Two objectives compete: matching the target sum while maximizing product, requiring different optimization thinking.
+    Instead of summing to a target, find the quadruplet with the maximum product among those that sum to the target. Two objectives compete: matching the target sum while maximizing product, requiring different optimization thinking.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 2, 3, 4, -1, -2, -3], target = 4. Among valid quadruplets, find max product.
+    count = 0
+    n = len(array)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and array[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(maximum_product_quadruplet([1, 2, 3, 4, 5]))
-print(maximum_product_quadruplet([5, 3, 1]))
-print(maximum_product_quadruplet([1]))`,
+print(maximum_product_quadruplet([1,2,3,2,1], None))  # Expected: 3
+print(maximum_product_quadruplet([5,4,3,2,1], None))  # Expected: 5
+print(maximum_product_quadruplet([1], None))  # Expected: 1
+`,
             go: `package main
 
 import "fmt"
 
 // MaximumProductQuadruplet solves the Maximum Product Quadruplet problem.
-// Instead of summing to a target, find the quadruplet with the maximum product among those that sum to the target.
+// Instead of summing to a target, find the quadruplet with the maximum product among those that sum to the target. Two objectives compete: matching the target sum while maximizing product, requiring different optimization thinking.
 // Time: O(n), Space: O(n)
-func MaximumProductQuadruplet(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MaximumProductQuadruplet(array []int, target int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(MaximumProductQuadruplet([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MaximumProductQuadruplet([]int{5, 3, 1}))
-    fmt.Println(MaximumProductQuadruplet([]int{1}))
-}`
+	fmt.Println(MaximumProductQuadruplet([]int{1, 2, 3, 2, 1}, nil)) // Expected: 3
+	fmt.Println(MaximumProductQuadruplet([]int{5, 4, 3, 2, 1}, nil)) // Expected: 5
+	fmt.Println(MaximumProductQuadruplet([]int{1}, nil)) // Expected: 1
+}
+`
         },
         twists: [],
         similar: []

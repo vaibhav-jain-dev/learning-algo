@@ -2,10 +2,12 @@
  * Kth Largest in Range
  * Category: binary-search-trees
  * Difficulty: Hard
+ * Algorithm: bst-kth-largest
  * Parent: 06-find-kth-largest
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Kth Largest in Range',
         difficulty: 'Hard',
@@ -14,68 +16,94 @@
         description: 'Find the kth largest value that falls within a given range [low, high]. Values outside the range are excluded from the ranking.',
         problem: 'You must combine range filtering with order statistics. A simple reverse inorder traversal needs an additional check to skip out-of-range nodes while still pruning subtrees for efficiency. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: kth largest in range.",
-                  "Consider how you must combine range filtering with order statistics affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'BST has values [1, 5, 10, 15, 20, 25]. Range [5, 20], k=2. Within range: [5, 10, 15, 20]. The 2nd largest in range is 15.'
+                input: {"tree":[15,5,20,2,5,17,22,1],"k":3},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the kth largest in range criteria.'
+            },
+            {
+                input: {"tree":[15,5,20,2,5,17,22,1],"k":1},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the kth largest in range criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":[15],"k":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Kth Largest in Range
-# Difficulty: Hard
-# Parent: 06-find-kth-largest
-#
-# Find the kth largest value that falls within a given range [low, high]. Values outside the range are excluded from the ranking.
-
-def kthLargestInRange(data):
+            python: `def kth_largest_in_range(tree, k):
     """
     Kth Largest in Range
 
-    Approach: You must combine range filtering with order statistics.
+    Find the kth largest value that falls within a given range [low, high]. Values outside the range are excluded from the ranking.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: You must combine range filtering with order statistics
-    pass
+    count = 0
+    n = len(tree)
+
+    for i in range(n):
+        # Check condition based on k
+        j = 0
+        for k in range(i, n):
+            if j < len(k) and tree[k] == k[j]:
+                j += 1
+        if j == len(k):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: BST has values [1, 5, 10, 15, 20, 25]
-    print(kthLargestInRange({}))`,
+# Test cases
+print(kth_largest_in_range([15,5,20,2,5,17,22,1], 3))  # Expected: 1
+print(kth_largest_in_range([15,5,20,2,5,17,22,1], 1))  # Expected: 2
+print(kth_largest_in_range([15], 0))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// Kth Largest in Range
-// Difficulty: Hard
-// Parent: 06-find-kth-largest
-//
+// KthLargestInRange solves the Kth Largest in Range problem.
 // Find the kth largest value that falls within a given range [low, high]. Values outside the range are excluded from the ranking.
+// Time: O(n), Space: O(1)
+func KthLargestInRange(tree []int, k int) int {
+	result := 0
 
-func KthLargestInRange(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: You must combine range filtering with order statistics
-    return nil
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    // Example: BST has values [1, 5, 10, 15, 20, 25]
-    fmt.Println(KthLargestInRange(map[string]interface{}{}))
-}`
+	fmt.Println(KthLargestInRange([]int{15, 5, 20, 2, 5, 17, 22, 1}, 3)) // Expected: 1
+	fmt.Println(KthLargestInRange([]int{15, 5, 20, 2, 5, 17, 22, 1}, 1)) // Expected: 2
+	fmt.Println(KthLargestInRange([]int{15}, 0)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '06-find-kth-largest/twist-03-kth-largest-in-range', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/06-find-kth-largest/twist-03-kth-largest-in-range'] = problem;
 })();

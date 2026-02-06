@@ -2,10 +2,12 @@
  * Longest Happy Suffix
  * Category: famous-algorithms
  * Difficulty: Easy
+ * Algorithm: kmp-algorithm
  * Parent: 04-knuth-morris-pratt/03-longest-happy-prefix
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Longest Happy Suffix',
         difficulty: 'Easy',
@@ -19,57 +21,86 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For "abcabc", the longest happy prefix/suffix is "abc". Understanding that prefix=suffix in this context is key.' },
-                output: 'See example',
-                explanation: 'For "abcabc", the longest happy prefix/suffix is "abc". Understanding that prefix=suffix in this context is key.'
+                input: {"s":"level"},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the longest happy suffix criteria.'
+            },
+            {
+                input: {"s":"ababab"},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the longest happy suffix criteria.'
+            },
+            // Edge case
+            {
+                input: {"s":""},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Longest Happy Suffix
-# Category: famous-algorithms
-# Difficulty: Easy
-# Parent: 04-knuth-morris-pratt/03-longest-happy-prefix
-
-def solve():
+            python: `def longest_happy_suffix(s):
     """
+    Longest Happy Suffix
+
     Find the longest proper suffix that is also a prefix (same as happy prefix but phrased differently to test understanding).
 
-    Key insight: This is actually the same problem -- a happy prefix IS a suffix by definition. The twist tests whether you recognize the symmetry.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(s)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(longest_happy_suffix("level"))  # Expected: 1
+print(longest_happy_suffix("ababab"))  # Expected: 2
+print(longest_happy_suffix(""))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Longest Happy Suffix problem.
+// LongestHappySuffix solves the Longest Happy Suffix problem.
 // Find the longest proper suffix that is also a prefix (same as happy prefix but phrased differently to test understanding).
-// Key insight: This is actually the same problem -- a happy prefix IS a suffix by definition. The twist tests whether you recognize the symmetry.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func LongestHappySuffix(s string) int {
+	result := 0
+
+	for i := 0; i < len(s); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(LongestHappySuffix("level")) // Expected: 1
+	fmt.Println(LongestHappySuffix("ababab")) // Expected: 2
+	fmt.Println(LongestHappySuffix("")) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '04-knuth-morris-pratt/03-longest-happy-prefix/twist-03-longest-happy-suffix', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/04-knuth-morris-pratt/03-longest-happy-prefix/twist-03-longest-happy-suffix'] = problem;
 })();

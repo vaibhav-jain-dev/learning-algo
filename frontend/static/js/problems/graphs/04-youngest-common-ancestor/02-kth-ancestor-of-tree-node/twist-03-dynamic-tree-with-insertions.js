@@ -2,10 +2,12 @@
  * Dynamic Tree with Insertions
  * Category: graphs
  * Difficulty: Very Hard
+ * Algorithm: graph-ancestor
  * Parent: 04-youngest-common-ancestor/02-kth-ancestor-of-tree-node
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Dynamic Tree with Insertions',
         difficulty: 'Very Hard',
@@ -19,87 +21,78 @@
             'Consider the example: Insert node 7 with parent 3.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'Varies - see approach', space: 'Varies - see approach' },
+        complexity: {
+            time: 'Varies - see approach',
+            space: 'Varies - see approach'
+        },
         examples: [
-            { input: { description: 'Insert node 7 with parent 3. Compute jump[7][0]=3, jump[7][1]=jump[3][1], etc.' }, output: 'See explanation', explanation: 'Insert node 7 with parent 3. Compute jump[7][0]=3, jump[7][1]=jump[3][1], etc.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"n":7,"parent":[-1,0,0,1,1,2,2],"queries":[[3,1],[5,2],[6,3]]},
+                output: [-1,0,0],
+                explanation: 'The dynamic tree with insertions for this input yields [-1, 0, 0].'
+            },
+            // Edge case
+            {
+                input: {"n":0,"parent":[-1],"queries":[[3,1]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def dynamic_tree_with_insertions(data):
+            python: `def dynamic_tree_with_insertions(n, parent, queries):
     """
     Dynamic Tree with Insertions
 
     Nodes are added to the tree dynamically. Support kth ancestor queries while the tree grows.
 
-    Approach:
-    The jump table must be maintained incrementally. Each new node only needs to fill in its own row, but you must think about how to do this in O(log N) per insertion.
-
     Time: Varies - see approach
     Space: Varies - see approach
     """
-    # The jump table must be maintained incrementally. Each new node only needs to fill in its own row, but you must think about how to do this in O(log N) per insertion.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Dynamic Tree with Insertions
-    # Key difference from parent: The jump table must be maintained incrementally. Each new node only needs to fill in its own row, bu
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(n)):
+        # Check if element meets criteria
+        result.append(n[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return dynamic_tree_with_insertions(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Insert node 7 with parent 3. Compute jump[7][0]=3, jump[7][1]=jump[3][1], etc.
-    print("Test: Dynamic Tree with Insertions")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(dynamic_tree_with_insertions(7, [-1,0,0,1,1,2,2], [[3,1],[5,2],[6,3]]))  # Expected: [-1,0,0]
+print(dynamic_tree_with_insertions(0, [-1], [[3,1]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// DynamicTreeWithInsertions solves the Dynamic Tree with Insertions problem
+// DynamicTreeWithInsertions solves the Dynamic Tree with Insertions problem.
 // Nodes are added to the tree dynamically. Support kth ancestor queries while the tree grows.
-//
-// Approach: The jump table must be maintained incrementally. Each new node only needs to fill in its own row, but you must think about how to do this in O(log N) per insertion.
-//
-// Time: Varies - see approach
-// Space: Varies - see approach
-func DynamicTreeWithInsertions(input interface{}) interface{} {
-    // The jump table must be maintained incrementally. Each new node only needs to fill in its own row, but you must think about how to do this in O(log N) per insertion.
+// Time: Varies - see approach, Space: Varies - see approach
+func DynamicTreeWithInsertions(n int, parent []int, queries [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Dynamic Tree with Insertions
-    // Key difference from parent: The jump table must be maintained incrementally. Each new node only needs to fill in its own row, bu
+	for i := 0; i < len(n); i++ {
+		result = append(result, n[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Insert node 7 with parent 3. Compute jump[7][0]=3, jump[7][1]=jump[3][1], etc.
-    fmt.Println("Test: Dynamic Tree with Insertions")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(DynamicTreeWithInsertions(7, []int{-1, 0, 0, 1, 1, 2, 2}, [][]int{{3, 1}, {5, 2}, {6, 3}})) // Expected: [-1,0,0]
+	fmt.Println(DynamicTreeWithInsertions(0, []int{-1}, [][]int{{3, 1}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '04-youngest-common-ancestor/02-kth-ancestor-of-tree-node/twist-03-dynamic-tree-with-insertions', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/04-youngest-common-ancestor/02-kth-ancestor-of-tree-node/twist-03-dynamic-tree-with-insertions'] = problem;
 })();

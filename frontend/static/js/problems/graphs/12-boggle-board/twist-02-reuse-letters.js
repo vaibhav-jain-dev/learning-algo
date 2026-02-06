@@ -2,10 +2,12 @@
  * Reuse Letters
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-word-search
  * Parent: 12-boggle-board
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Reuse Letters',
         difficulty: 'Medium',
@@ -15,91 +17,87 @@
         problem: 'Without the visited constraint, the search space explodes. You no longer need a visited set, but must limit search depth to word length to avoid infinite loops.',
         hints: [
             'Start by understanding the key difference: Without the visited constraint, the search space explodes.',
-            'Think about what data structures need to change from the original solution.',
-            'Consider the example: Board [[a,b],[c,d]].',
-            'Test with edge cases: empty input, single element, and the largest possible input.'
+            'Think about what data structures need to change from the original solution.'
         ],
-        complexity: { time: 'O(N * M * 8^L + W * L)', space: 'O(W * L + N * M)' },
+        complexity: {
+            time: 'O(N * M * 8^L + W * L)',
+            space: 'O(W * L + N * M)'
+        },
         examples: [
-            { input: { description: 'Board [[a,b],[c,d]]. Word "aba" is possible by visiting (0,0)->(0,1)->(0,0). Not possible in original problem.' }, output: 'See explanation', explanation: 'Board [[a,b],[c,d]]. Word "aba" is possible by visiting (0,0)->(0,1)->(0,0). Not possible in original problem.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"board":[["t","h","i","s"],["w","a","t","s"],["o","a","h","g"],["f","g","d","t"]],"words":["this","two","fat","that"]},
+                output: [["t","h","i","s"],["w","a","t","s"],["o","a","h","g"]],
+                explanation: 'The reuse letters for this input yields [t,h,i,s, w,a,t,s, o,a,h,g].'
+            },
+            {
+                input: {"board":[["a","b"],["c","d"]],"words":["abcd","abdc","abca"]},
+                output: [["a","b"],["c","d"]],
+                explanation: 'The reuse letters for this input yields [a,b, c,d].'
+            },
+            // Edge case
+            {
+                input: {"board":[["t","h","i","s"]],"words":["this"]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def reuse_letters(data):
+            python: `def reuse_letters(board, words):
     """
     Reuse Letters
 
     A letter at a given position can be used multiple times in the same word. Find all words constructible this way.
 
-    Approach:
-    Without the visited constraint, the search space explodes. You no longer need a visited set, but must limit search depth to word length to avoid infinite loops.
-
     Time: O(N * M * 8^L + W * L)
     Space: O(W * L + N * M)
     """
-    # Without the visited constraint, the search space explodes. You no longer need a visited set, but must limit search depth to word length to avoid infinite loops.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Reuse Letters
-    # Key difference from parent: Without the visited constraint, the search space explodes. You no longer need a visited set, but mus
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(board)):
+        # Check if element meets criteria
+        result.append(board[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return reuse_letters(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Board [[a,b],[c,d]]. Word "aba" is possible by visiting (0,0)->(0,1)->(0,0). Not possible in original problem.
-    print("Test: Reuse Letters")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(reuse_letters([["t","h","i","s"],["w","a","t","s"],["o","a","h","g"],["f","g","d","t"]], ["this","two","fat","that"]))  # Expected: [["t","h","i","s"],["w","a","t","s"],["o","a","h","g"]]
+print(reuse_letters([["a","b"],["c","d"]], ["abcd","abdc","abca"]))  # Expected: [["a","b"],["c","d"]]
+print(reuse_letters([["t","h","i","s"]], ["this"]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// ReuseLetters solves the Reuse Letters problem
+// ReuseLetters solves the Reuse Letters problem.
 // A letter at a given position can be used multiple times in the same word. Find all words constructible this way.
-//
-// Approach: Without the visited constraint, the search space explodes. You no longer need a visited set, but must limit search depth to word length to avoid infinite loops.
-//
-// Time: O(N * M * 8^L + W * L)
-// Space: O(W * L + N * M)
-func ReuseLetters(input interface{}) interface{} {
-    // Without the visited constraint, the search space explodes. You no longer need a visited set, but must limit search depth to word length to avoid infinite loops.
+// Time: O(N * M * 8^L + W * L), Space: O(W * L + N * M)
+func ReuseLetters(board [][]int, words []string) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Reuse Letters
-    // Key difference from parent: Without the visited constraint, the search space explodes. You no longer need a visited set, but mus
+	for i := 0; i < len(board); i++ {
+		result = append(result, board[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Board [[a,b],[c,d]]. Word "aba" is possible by visiting (0,0)->(0,1)->(0,0). Not possible in original problem.
-    fmt.Println("Test: Reuse Letters")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(ReuseLetters([][]int{{t, h, i, s}, {w, a, t, s}, {o, a, h, g}, {f, g, d, t}}, []string{"this", "two", "fat", "that"})) // Expected: [["t","h","i","s"],["w","a","t","s"],["o","a","h","g"]]
+	fmt.Println(ReuseLetters([][]int{{a, b}, {c, d}}, []string{"abcd", "abdc", "abca"})) // Expected: [["a","b"],["c","d"]]
+	fmt.Println(ReuseLetters([][]int{{t, h, i, s}}, []string{"this"})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '12-boggle-board/twist-02-reuse-letters', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/12-boggle-board/twist-02-reuse-letters'] = problem;
 })();

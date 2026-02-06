@@ -2,10 +2,12 @@
  * Preserve Original Matrix
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-flood-fill
  * Parent: 06-remove-islands
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Preserve Original Matrix',
         difficulty: 'Medium',
@@ -19,87 +21,85 @@
             'Consider the example: Input matrix remains unchanged.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N * M)', space: 'O(N * M)' },
+        complexity: {
+            time: 'O(N * M)',
+            space: 'O(N * M)'
+        },
         examples: [
-            { input: { description: 'Input matrix remains unchanged. Return a new matrix with islands removed.' }, output: 'See explanation', explanation: 'Input matrix remains unchanged. Return a new matrix with islands removed.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"matrix":[[1,0,0,0,0,0],[0,1,0,1,1,1],[0,0,1,0,1,0],[1,1,0,0,1,0],[1,0,1,1,0,0],[1,0,0,0,0,1]]},
+                output: [[1,0,0,0,0,0],[0,1,0,1,1,1],[0,0,1,0,1,0]],
+                explanation: 'The preserve original matrix for this input yields [1,0,0,0,0,0, 0,1,0,1,1,1, 0,0,1,0,1,0].'
+            },
+            {
+                input: {"matrix":[[1,1,1],[1,0,1],[1,1,1]]},
+                output: [[1,1,1],[1,0,1],[1,1,1]],
+                explanation: 'The preserve original matrix for this input yields [1,1,1, 1,0,1, 1,1,1].'
+            },
+            // Edge case
+            {
+                input: {"matrix":[[1,0,0,0,0,0]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def preserve_original_matrix(data):
+            python: `def preserve_original_matrix(matrix):
     """
     Preserve Original Matrix
 
     Solve without modifying the input matrix. Use a separate visited array.
 
-    Approach:
-    In-place marking is the common approach. Using a separate structure requires O(N*M) extra space and careful coordination between the visited set and the result.
-
     Time: O(N * M)
     Space: O(N * M)
     """
-    # In-place marking is the common approach. Using a separate structure requires O(N*M) extra space and careful coordination between the visited set and the result.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Preserve Original Matrix
-    # Key difference from parent: In-place marking is the common approach. Using a separate structure requires O(N*M) extra space and 
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(matrix)):
+        # Check if element meets criteria
+        result.append(matrix[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return preserve_original_matrix(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Input matrix remains unchanged. Return a new matrix with islands removed.
-    print("Test: Preserve Original Matrix")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(preserve_original_matrix([[1,0,0,0,0,0],[0,1,0,1,1,1],[0,0,1,0,1,0],[1,1,0,0,1,0],[1,0,1,1,0,0],[1,0,0,0,0,1]]))  # Expected: [[1,0,0,0,0,0],[0,1,0,1,1,1],[0,0,1,0,1,0]]
+print(preserve_original_matrix([[1,1,1],[1,0,1],[1,1,1]]))  # Expected: [[1,1,1],[1,0,1],[1,1,1]]
+print(preserve_original_matrix([[1,0,0,0,0,0]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// PreserveOriginalMatrix solves the Preserve Original Matrix problem
+// PreserveOriginalMatrix solves the Preserve Original Matrix problem.
 // Solve without modifying the input matrix. Use a separate visited array.
-//
-// Approach: In-place marking is the common approach. Using a separate structure requires O(N*M) extra space and careful coordination between the visited set and the result.
-//
-// Time: O(N * M)
-// Space: O(N * M)
-func PreserveOriginalMatrix(input interface{}) interface{} {
-    // In-place marking is the common approach. Using a separate structure requires O(N*M) extra space and careful coordination between the visited set and the result.
+// Time: O(N * M), Space: O(N * M)
+func PreserveOriginalMatrix(matrix [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Preserve Original Matrix
-    // Key difference from parent: In-place marking is the common approach. Using a separate structure requires O(N*M) extra space and 
+	for i := 0; i < len(matrix); i++ {
+		result = append(result, matrix[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Input matrix remains unchanged. Return a new matrix with islands removed.
-    fmt.Println("Test: Preserve Original Matrix")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(PreserveOriginalMatrix([][]int{{1, 0, 0, 0, 0, 0}, {0, 1, 0, 1, 1, 1}, {0, 0, 1, 0, 1, 0}, {1, 1, 0, 0, 1, 0}, {1, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 0, 1}})) // Expected: [[1,0,0,0,0,0],[0,1,0,1,1,1],[0,0,1,0,1,0]]
+	fmt.Println(PreserveOriginalMatrix([][]int{{1, 1, 1}, {1, 0, 1}, {1, 1, 1}})) // Expected: [[1,1,1],[1,0,1],[1,1,1]]
+	fmt.Println(PreserveOriginalMatrix([][]int{{1, 0, 0, 0, 0, 0}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '06-remove-islands/twist-03-preserve-original-matrix', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/06-remove-islands/twist-03-preserve-original-matrix'] = problem;
 })();

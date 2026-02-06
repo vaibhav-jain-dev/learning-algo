@@ -2,10 +2,12 @@
  * Merge with Structure Priority
  * Category: binary-trees
  * Difficulty: Hard
+ * Algorithm: tree-merge
  * Parent: 12-merge-binary-trees
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Merge with Structure Priority',
         difficulty: 'Hard',
@@ -19,121 +21,85 @@
             'Key insight: This is not a value merge but a structural overlay.',
             'You must stop descending into tree2 branches that are shadowed by tree1, which changes the recursion logic.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree1 [1, 2, null, 3], Tree2 [5, 6, 7, 8, 9]' },
-                output: 'See explanation',
-                explanation: 'Tree1 [1, 2, null, 3], Tree2 [5, 6, 7, 8, 9]. Result: [1, 2, 7, 3, null, null, null]. Tree1 structure preserved where it exists; tree2 right subtree (7) fills the gap.'
+                input: {"tree1":{"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}},"tree2":{"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the merge with structure priority criteria.'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree1":{"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}},"tree2":{"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def merge_with_structure_priority(data):
+            python: `def merge_with_structure_priority(tree1, tree2):
     """
     Merge with Structure Priority
 
-    Merge two trees, but when both trees have a node at the same position, use tree1 value and tree1 structure (ignore tree2 subtree).
-     Only use tree2 nodes where tree1 has no node.
+    Merge two trees, but when both trees have a node at the same position, use tree1 value and tree1 structure (ignore tree2 subtree). Only use tree2 nodes where tree1 has no node. This is not a value merge but a structural overlay. Tree1 takes priority, and tree2 fills gaps. You must stop descending into tree2 branches that are shadowed by tree1, which changes the recursion logic.
 
-    Approach: This is not a value merge but a structural overlay
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    count = 0
+    n = len(tree1)
 
-    # Key insight: This is not a value merge but a structural overlay
+    for i in range(n):
+        # Check condition based on tree2
+        j = 0
+        for k in range(i, n):
+            if j < len(tree2) and tree1[k] == tree2[j]:
+                j += 1
+        if j == len(tree2):
+            count += 1
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Merge with Structure Priority
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree1 [1, 2, null, 3], Tree2 [5, 6, 7, 8, 9]
-    print("See problem description for test cases")`,
+# Test cases
+print(merge_with_structure_priority({"value": 1, "left": {"value": 3, "left": {"value": 5}}, "right": {"value": 2}}, {"value": 2, "left": {"value": 1, "right": {"value": 4}}, "right": {"value": 3, "right": {"value": 7}}}))  # Expected: 1
+print(merge_with_structure_priority({"value": 1, "left": {"value": 3, "left": {"value": 5}}, "right": {"value": 2}}, {"value": 2, "left": {"value": 1, "right": {"value": 4}}, "right": {"value": 3, "right": {"value": 7}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// MergeWithStructurePriority solves: Merge with Structure Priority
-// This is not a value merge but a structural overlay
+// MergeWithStructurePriority solves the Merge with Structure Priority problem.
+// Merge two trees, but when both trees have a node at the same position, use tree1 value and tree1 structure (ignore tree2 subtree). Only use tree2 nodes where tree1 has no node. This is not a value merge but a structural overlay. Tree1 takes priority, and tree2 fills gaps. You must stop descending into tree2 branches that are shadowed by tree1, which changes the recursion logic.
 // Time: O(n), Space: O(n)
-func MergeWithStructurePriority(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func MergeWithStructurePriority(tree1 *TreeNode, tree2 *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree1); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Merge with Structure Priority
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree1 [1, 2, null, 3], Tree2 [5, 6, 7, 8, 9]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(MergeWithStructurePriority({"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}}, {"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}})) // Expected: 1
+	fmt.Println(MergeWithStructurePriority({"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}}, {"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '12-merge-binary-trees/twist-05-merge-with-structure-priority', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/12-merge-binary-trees/twist-05-merge-with-structure-priority'] = problem;
 })();

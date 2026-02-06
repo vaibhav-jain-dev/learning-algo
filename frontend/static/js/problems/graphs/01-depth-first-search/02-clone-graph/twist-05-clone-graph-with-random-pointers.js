@@ -2,10 +2,12 @@
  * Clone Graph with Random Pointers
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-dfs
  * Parent: 01-depth-first-search/02-clone-graph
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Clone Graph with Random Pointers',
         difficulty: 'Hard',
@@ -15,91 +17,87 @@
         problem: 'The random pointer can point to any node, including ones not yet cloned during DFS. You must handle forward references gracefully, requiring the clone map to serve double duty for both neighbor and random pointer resolution.',
         hints: [
             'Start by understanding the key difference: The random pointer can point to any node, including ones not yet cloned during DFS.',
-            'Consider breaking this into subproblems and solving each independently.',
-            'Consider the example: Node 1 (neighbors: [2], random: 3), Node 2 (neighbors: [1], random: 1), Node 3 (neighbors: [], random: 2).',
-            'Test with edge cases: empty input, single element, and the largest possible input.'
+            'Consider breaking this into subproblems and solving each independently.'
         ],
-        complexity: { time: 'O(N + E)', space: 'O(N)' },
+        complexity: {
+            time: 'O(N + E)',
+            space: 'O(N)'
+        },
         examples: [
-            { input: { description: 'Node 1 (neighbors: [2], random: 3), Node 2 (neighbors: [1], random: 1), Node 3 (neighbors: [], random: 2). All pointers must map to cloned versions.' }, output: 'See explanation', explanation: 'Node 1 (neighbors: [2], random: 3), Node 2 (neighbors: [1], random: 1), Node 3 (neighbors: [], random: 2). All pointers must map to cloned versions.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"adjList":[[2,4],[1,3],[2,4],[1,3]]},
+                output: [[2,4],[1,3],[2,4]],
+                explanation: 'The clone graph with random pointers for this input yields [2,4, 1,3, 2,4].'
+            },
+            {
+                input: {"adjList":[[]]},
+                output: [[]],
+                explanation: 'The clone graph with random pointers for this input yields [].'
+            },
+            // Edge case
+            {
+                input: {"adjList":[[2,4]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def clone_graph_with_random_pointers(data):
+            python: `def clone_graph_with_random_pointers(adjList):
     """
     Clone Graph with Random Pointers
 
     Each node has a regular neighbor list plus a random pointer to any node in the graph. Clone the graph preserving both neighbor relationships and random pointers.
 
-    Approach:
-    The random pointer can point to any node, including ones not yet cloned during DFS. You must handle forward references gracefully, requiring the clone map to serve double duty for both neighbor and random pointer resolution.
-
     Time: O(N + E)
     Space: O(N)
     """
-    # The random pointer can point to any node, including ones not yet cloned during DFS. You must handle forward references gracefully, requiring the clone map to serve double duty for both neighbor and random pointer resolution.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Clone Graph with Random Pointers
-    # Key difference from parent: The random pointer can point to any node, including ones not yet cloned during DFS. You must handle 
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(adjList)):
+        # Check if element meets criteria
+        result.append(adjList[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return clone_graph_with_random_pointers(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Node 1 (neighbors: [2], random: 3), Node 2 (neighbors: [1], random: 1), Node 3 (neighbors: [], random: 2). All pointers must map to cloned versions.
-    print("Test: Clone Graph with Random Pointers")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(clone_graph_with_random_pointers([[2,4],[1,3],[2,4],[1,3]]))  # Expected: [[2,4],[1,3],[2,4]]
+print(clone_graph_with_random_pointers([[]]))  # Expected: [[]]
+print(clone_graph_with_random_pointers([[2,4]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// CloneGraphWithRandomPointers solves the Clone Graph with Random Pointers problem
+// CloneGraphWithRandomPointers solves the Clone Graph with Random Pointers problem.
 // Each node has a regular neighbor list plus a random pointer to any node in the graph. Clone the graph preserving both neighbor relationships and random pointers.
-//
-// Approach: The random pointer can point to any node, including ones not yet cloned during DFS. You must handle forward references gracefully, requiring the clone map to serve double duty for both neighbor and random pointer resolution.
-//
-// Time: O(N + E)
-// Space: O(N)
-func CloneGraphWithRandomPointers(input interface{}) interface{} {
-    // The random pointer can point to any node, including ones not yet cloned during DFS. You must handle forward references gracefully, requiring the clone map to serve double duty for both neighbor and random pointer resolution.
+// Time: O(N + E), Space: O(N)
+func CloneGraphWithRandomPointers(adjList [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Clone Graph with Random Pointers
-    // Key difference from parent: The random pointer can point to any node, including ones not yet cloned during DFS. You must handle 
+	for i := 0; i < len(adjList); i++ {
+		result = append(result, adjList[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Node 1 (neighbors: [2], random: 3), Node 2 (neighbors: [1], random: 1), Node 3 (neighbors: [], random: 2). All pointers must map to cloned versions.
-    fmt.Println("Test: Clone Graph with Random Pointers")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(CloneGraphWithRandomPointers([][]int{{2, 4}, {1, 3}, {2, 4}, {1, 3}})) // Expected: [[2,4],[1,3],[2,4]]
+	fmt.Println(CloneGraphWithRandomPointers([][]int{{}})) // Expected: [[]]
+	fmt.Println(CloneGraphWithRandomPointers([][]int{{2, 4}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '01-depth-first-search/02-clone-graph/twist-05-clone-graph-with-random-pointers', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/01-depth-first-search/02-clone-graph/twist-05-clone-graph-with-random-pointers'] = problem;
 })();

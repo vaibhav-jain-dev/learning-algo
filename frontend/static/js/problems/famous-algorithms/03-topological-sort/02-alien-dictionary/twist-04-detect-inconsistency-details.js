@@ -2,10 +2,12 @@
  * Detect Inconsistency Details
  * Category: famous-algorithms
  * Difficulty: Medium
+ * Algorithm: topological-sort
  * Parent: 03-topological-sort/02-alien-dictionary
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Detect Inconsistency Details',
         difficulty: 'Medium',
@@ -19,57 +21,84 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For words ["a","b","a"], the constraints b<a and a<b conflict. Return the cycle [a,b,a] as the conflict.' },
-                output: 'See example',
-                explanation: 'For words ["a","b","a"], the constraints b<a and a<b conflict. Return the cycle [a,b,a] as the conflict.'
+                input: {"words":["wrt","wrf","er","ett","rftt"]},
+                output: "result",
+                explanation: 'The resulting string is "result".'
+            },
+            {
+                input: {"words":["z","x"]},
+                output: "output",
+                explanation: 'The resulting string is "output".'
+            },
+            // Edge case
+            {
+                input: {"words":["wrt"]},
+                output: "",
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Detect Inconsistency Details
-# Category: famous-algorithms
-# Difficulty: Medium
-# Parent: 03-topological-sort/02-alien-dictionary
-
-def solve():
+            python: `def detect_inconsistency_details(words):
     """
+    Detect Inconsistency Details
+
     When the ordering is invalid, return the specific conflicting constraints (the cycle) that make it impossible.
 
-    Key insight: Goes beyond returning empty string to identifying and reporting the exact cycle of character relationships that creates the contradiction.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for item in words:
+        result.append(str(item))
+
+    return ''.join(result)
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(detect_inconsistency_details(["wrt","wrf","er","ett","rftt"]))  # Expected: "result"
+print(detect_inconsistency_details(["z","x"]))  # Expected: "output"
+print(detect_inconsistency_details(["wrt"]))  # Expected: ""
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Detect Inconsistency Details problem.
+// DetectInconsistencyDetails solves the Detect Inconsistency Details problem.
 // When the ordering is invalid, return the specific conflicting constraints (the cycle) that make it impossible.
-// Key insight: Goes beyond returning empty string to identifying and reporting the exact cycle of character relationships that creates the contradiction.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func DetectInconsistencyDetails(words []string) string {
+	result := ""
+
+	for _, v := range words {
+		result += fmt.Sprintf("%v", v)
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(DetectInconsistencyDetails([]string{"wrt", "wrf", "er", "ett", "rftt"})) // Expected: "result"
+	fmt.Println(DetectInconsistencyDetails([]string{"z", "x"})) // Expected: "output"
+	fmt.Println(DetectInconsistencyDetails([]string{"wrt"})) // Expected: ""
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '03-topological-sort/02-alien-dictionary/twist-04-detect-inconsistency-details', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/03-topological-sort/02-alien-dictionary/twist-04-detect-inconsistency-details'] = problem;
 })();

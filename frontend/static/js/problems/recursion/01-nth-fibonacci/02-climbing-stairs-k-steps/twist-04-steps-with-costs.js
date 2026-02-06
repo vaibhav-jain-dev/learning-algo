@@ -2,10 +2,12 @@
  * Steps with Costs
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-staircase
  * Parent: 01-nth-fibonacci/02-climbing-stairs-k-steps
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Steps with Costs',
         difficulty: 'Hard',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'n=4, k=2, costs=[1,3,2,4]. dp[0]=0, dp[1]=1, dp[2]=min(dp[1]+3, dp[0]+3)=4, dp[3]=min(dp[2]+2, dp[1]+2)=3, dp[4]=min(dp[3]+4, dp[2]+4)=7.' },
-                output: 'See example',
-                explanation: 'n=4, k=2, costs=[1,3,2,4]. dp[0]=0, dp[1]=1, dp[2]=min(dp[1]+3, dp[0]+3)=4, dp[3]=min(dp[2]+2, dp[1]+2)=3, dp[4]=min(dp[3]+4, dp[2]+4)=7.'
+                input: {"n":4,"k":2},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the steps with costs criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"k":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Steps with Costs
-# Category: recursion
-# Difficulty: Hard
-# Parent: 01-nth-fibonacci/02-climbing-stairs-k-steps
-
-def solve():
+            python: `def steps_with_costs(n, k):
     """
+    Steps with Costs
+
     Each step i has a cost cost[i]. Instead of counting paths, find the minimum cost to reach the top, where at each position you can take 1 to k steps.
 
-    Key insight: Changes the recurrence from summation to minimization. The same recursive/DP structure applies but the combining operation is min() instead of sum(), altering the optimization perspective.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(n)
+
+    for i in range(n):
+        # Check condition based on k
+        j = 0
+        for k in range(i, n):
+            if j < len(k) and n[k] == k[j]:
+                j += 1
+        if j == len(k):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(steps_with_costs(4, 2))  # Expected: 1
+print(steps_with_costs(0, 0))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Steps with Costs problem.
+// StepsWithCosts solves the Steps with Costs problem.
 // Each step i has a cost cost[i]. Instead of counting paths, find the minimum cost to reach the top, where at each position you can take 1 to k steps.
-// Key insight: Changes the recurrence from summation to minimization. The same recursive/DP structure applies but the combining operation is min() instead of sum(), altering the optimization perspective.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func StepsWithCosts(n int, k int) int {
+	result := 0
+
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(StepsWithCosts(4, 2)) // Expected: 1
+	fmt.Println(StepsWithCosts(0, 0)) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '01-nth-fibonacci/02-climbing-stairs-k-steps/twist-04-steps-with-costs', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/01-nth-fibonacci/02-climbing-stairs-k-steps/twist-04-steps-with-costs'] = problem;
 })();

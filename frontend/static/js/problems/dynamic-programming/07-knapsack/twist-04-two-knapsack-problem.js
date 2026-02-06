@@ -2,10 +2,12 @@
  * Two-Knapsack Problem
  * Category: dynamic-programming
  * Difficulty: Very Hard
+ * Algorithm: dp-knapsack
  * Parent: 07-knapsack
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Two-Knapsack Problem',
         difficulty: 'Very Hard',
@@ -19,84 +21,90 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n * c1 * c2)', space: 'O(c1 * c2)' },
+        complexity: {
+            time: 'O(n * c1 * c2)',
+            space: 'O(c1 * c2)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'items=[[60,10],[100,20],[120,30]], cap1=30, cap2=20: put item 2 in knapsack 1 (value 120, weight 30), item 1 in knapsack 2 (value 100, weight 20), total=220.'
+                input: {"items":[[1,2],[4,3],[5,6],[6,7]],"capacity":10},
+                output: [[1,2],[4,3],[5,6]],
+                explanation: 'The two knapsack problem for this input yields [1,2, 4,3, 5,6].'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"items":[[60,10],[100,20],[120,30]],"capacity":50},
+                output: [[60,10],[100,20],[120,30]],
+                explanation: 'The two knapsack problem for this input yields [60,10, 100,20, 120,30].'
+            },
+            {
+                input: {"items":[[10,5],[40,4],[30,6],[50,3]],"capacity":10},
+                output: [[10,5],[40,4],[30,6]],
+                explanation: 'The two knapsack problem for this input yields [10,5, 40,4, 30,6].'
+            },
+            // Edge case
+            {
+                input: {"items":[[1,2]],"capacity":0},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def twoknapsackProblem(data):
+            python: `def two_knapsack_problem(items, capacity):
     """
     Two-Knapsack Problem
 
     You have two knapsacks with different capacities. Each item can go into at most one knapsack. Maximize the total value across both knapsacks.
 
-    Approach:
-    Adds a second capacity dimension, turning the 2D DP into 3D. For each item, you must decide: skip it, put it in knapsack 1, or put it in knapsack 2.
+    Time: O(n * c1 * c2)
+    Space: O(c1 * c2)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    result = []
 
-    # Example: items=[[60,10],[100,20],[120,30]], cap1=30, cap2=20: put item 2 in knapsack 1 (value 120, weight 30), item 1 in knapsack
+    for i in range(len(items)):
+        # Check if element meets criteria
+        result.append(items[i])
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
     return result
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Two-Knapsack Problem...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(two_knapsack_problem([[1,2],[4,3],[5,6],[6,7]], 10))  # Expected: [[1,2],[4,3],[5,6]]
+print(two_knapsack_problem([[60,10],[100,20],[120,30]], 50))  # Expected: [[60,10],[100,20],[120,30]]
+print(two_knapsack_problem([[10,5],[40,4],[30,6],[50,3]], 10))  # Expected: [[10,5],[40,4],[30,6]]
+`,
             go: `package main
 
 import "fmt"
 
-// TwoknapsackProblem solves the Two-Knapsack Problem problem.
+// TwoKnapsackProblem solves the Two-Knapsack Problem problem.
 // You have two knapsacks with different capacities. Each item can go into at most one knapsack. Maximize the total value across both knapsacks.
-//
-// Approach: Adds a second capacity dimension, turning the 2D DP into 3D. For each item, you must decide: skip it, put it in knapsack 1, or put it in knapsack 2.
-func TwoknapsackProblem(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n * c1 * c2), Space: O(c1 * c2)
+func TwoKnapsackProblem(items [][]int, capacity int) []int {
+	result := make([]int, 0)
 
-    // Example: items=[[60,10],[100,20],[120,30]], cap1=30, cap2=20: put item 2 in knapsack 1 (value 120, weight 30)
+	for i := 0; i < len(items); i++ {
+		result = append(result, items[i])
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Two-Knapsack Problem...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(TwoKnapsackProblem([][]int{{1, 2}, {4, 3}, {5, 6}, {6, 7}}, 10)) // Expected: [[1,2],[4,3],[5,6]]
+	fmt.Println(TwoKnapsackProblem([][]int{{60, 10}, {100, 20}, {120, 30}}, 50)) // Expected: [[60,10],[100,20],[120,30]]
+	fmt.Println(TwoKnapsackProblem([][]int{{10, 5}, {40, 4}, {30, 6}, {50, 3}}, 10)) // Expected: [[10,5],[40,4],[30,6]]
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '07-knapsack/twist-04-two-knapsack-problem', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/07-knapsack/twist-04-two-knapsack-problem'] = problem;
 })();

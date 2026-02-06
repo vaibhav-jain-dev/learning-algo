@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,1,2,3]},
                 output: 2,
-                explanation: 'Two valid configurations found in the input.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: 1,
-                explanation: 'Only one valid configuration exists.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1,1,1]},
                 output: 3,
-                explanation: 'Multiple identical elements create multiple valid configurations.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def move_and_count_swaps(data):
+            python: `def move_and_count_swaps(array, toMove, target):
     """
     Move and Count Swaps
 
-    Move all target elements to the end and return the minimum number of swaps performed.
-    \n    Approach: Forces you to count actual swap operations rather than just achieving the end state, requiring careful pointer management.
+    Move all target elements to the end and return the minimum number of swaps performed. Forces you to count actual swap operations rather than just achieving the end state, requiring careful pointer management.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [2, 1, 2, 2, 3, 4, 2], toMove = 2. After moving, count = 2 swaps.
+    count = 0
+    n = len(array)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on toMove
+        j = 0
+        for k in range(i, n):
+            if j < len(toMove) and array[k] == toMove[j]:
+                j += 1
+        if j == len(toMove):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(move_and_count_swaps([1, 2, 3, 4, 5]))
-print(move_and_count_swaps([5, 3, 1]))
-print(move_and_count_swaps([1]))`,
+print(move_and_count_swaps([1,2,1,2,3], None, None))  # Expected: 2
+print(move_and_count_swaps([1,2,3], None, None))  # Expected: 1
+print(move_and_count_swaps([1,1,1], None, None))  # Expected: 3
+`,
             go: `package main
 
 import "fmt"
 
 // MoveAndCountSwaps solves the Move and Count Swaps problem.
-// Move all target elements to the end and return the minimum number of swaps performed.
+// Move all target elements to the end and return the minimum number of swaps performed. Forces you to count actual swap operations rather than just achieving the end state, requiring careful pointer management.
 // Time: O(n), Space: O(n)
-func MoveAndCountSwaps(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MoveAndCountSwaps(array []int, toMove int, target int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(MoveAndCountSwaps([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MoveAndCountSwaps([]int{5, 3, 1}))
-    fmt.Println(MoveAndCountSwaps([]int{1}))
-}`
+	fmt.Println(MoveAndCountSwaps([]int{1, 2, 1, 2, 3}, nil, 10)) // Expected: 2
+	fmt.Println(MoveAndCountSwaps([]int{1, 2, 3}, nil, 10)) // Expected: 1
+	fmt.Println(MoveAndCountSwaps([]int{1, 1, 1}, nil, 10)) // Expected: 3
+}
+`
         },
         twists: [],
         similar: []

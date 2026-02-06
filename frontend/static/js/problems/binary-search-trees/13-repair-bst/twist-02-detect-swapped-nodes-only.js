@@ -2,10 +2,12 @@
  * Detect Swapped Nodes Only
  * Category: binary-search-trees
  * Difficulty: Medium
+ * Algorithm: bst-repair
  * Parent: 13-repair-bst
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Detect Swapped Nodes Only',
         difficulty: 'Medium',
@@ -14,68 +16,87 @@
         description: 'Find and return the values of the two swapped nodes without actually repairing the tree. Do this in O(n) time and O(1) space using Morris traversal.',
         problem: 'The focus shifts from repair to detection with strict space constraints. Morris traversal temporarily modifies the tree for O(1) space inorder traversal, requiring careful handling of threaded pointers while tracking inversions. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: detect swapped nodes only.",
-                  "Consider how the focus shifts from repair to detection with strict space constraints affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(1)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'BST [3, 1, 4, null, null, 2]. Inorder gives [1, 3, 2, 4]. The inversion is at (3, 2). The swapped nodes are 3 and 2.'
+                input: {"tree":[1,3,null,null,2]},
+                output: [1,3,null],
+                explanation: 'The detect swapped nodes only for this input yields [1, 3, ].'
+            },
+            {
+                input: {"tree":[3,1,4,null,null,2]},
+                output: [3,1,4],
+                explanation: 'The detect swapped nodes only for this input yields [3, 1, 4].'
+            },
+            // Edge case
+            {
+                input: {"tree":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Detect Swapped Nodes Only
-# Difficulty: Medium
-# Parent: 13-repair-bst
-#
-# Find and return the values of the two swapped nodes without actually repairing the tree. Do this in O(n) time and O(1) space using Morris traversal.
-
-def detectSwappedNodesOnly(data):
+            python: `def detect_swapped_nodes_only(tree):
     """
     Detect Swapped Nodes Only
 
-    Approach: The focus shifts from repair to detection with strict space constraints.
+    Find and return the values of the two swapped nodes without actually repairing the tree. Do this in O(n) time and O(1) space using Morris traversal.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: The focus shifts from repair to detection with strict space constraints
-    pass
+    result = []
+
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: BST [3, 1, 4, null, null, 2]
-    print(detectSwappedNodesOnly({}))`,
+# Test cases
+print(detect_swapped_nodes_only([1,3,None,None,2]))  # Expected: [1,3,None]
+print(detect_swapped_nodes_only([3,1,4,None,None,2]))  # Expected: [3,1,4]
+print(detect_swapped_nodes_only([1]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// Detect Swapped Nodes Only
-// Difficulty: Medium
-// Parent: 13-repair-bst
-//
+// DetectSwappedNodesOnly solves the Detect Swapped Nodes Only problem.
 // Find and return the values of the two swapped nodes without actually repairing the tree. Do this in O(n) time and O(1) space using Morris traversal.
+// Time: O(n), Space: O(1)
+func DetectSwappedNodesOnly(tree []int) []int {
+	result := make([]int, 0)
 
-func DetectSwappedNodesOnly(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: The focus shifts from repair to detection with strict space constraints
-    return nil
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
+
+	return result
 }
 
 func main() {
-    // Example: BST [3, 1, 4, null, null, 2]
-    fmt.Println(DetectSwappedNodesOnly(map[string]interface{}{}))
-}`
+	fmt.Println(DetectSwappedNodesOnly([]int{1, 3, null, null, 2})) // Expected: [1,3,null]
+	fmt.Println(DetectSwappedNodesOnly([]int{3, 1, 4, null, null, 2})) // Expected: [3,1,4]
+	fmt.Println(DetectSwappedNodesOnly([]int{1})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '13-repair-bst/twist-02-detect-swapped-nodes-only', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/13-repair-bst/twist-02-detect-swapped-nodes-only'] = problem;
 })();

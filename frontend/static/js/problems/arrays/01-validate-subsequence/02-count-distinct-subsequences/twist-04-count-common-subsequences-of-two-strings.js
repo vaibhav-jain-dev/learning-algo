@@ -26,80 +26,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"s":"rabbbit","t":"rabbit"},
                 output: 3,
-                explanation: 'Three distinct ways to select "rabbit" from "rabbbit" by choosing different b characters.'
+                explanation: ''
             },
             {
                 input: {"s":"aabb","t":"ab"},
                 output: 4,
-                explanation: 'Four ways: positions (0,2), (0,3), (1,2), (1,3).'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"s":"abc","t":"xyz"},
                 output: 0,
-                explanation: 'No matching subsequence exists.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def count_common_subsequences_of_two_strings(data):
+            python: `def count_common_subsequences_of_two_strings(s, t):
     """
     Count Common Subsequences of Two Strings
 
-    Given two strings s1 and s2, count the total number of common subsequences (not just the longest one).
-    \n    Approach: Changes the DP recurrence: instead of matching against a target, you must count all shared subsequences between two strings simultaneously.
+    Given two strings s1 and s2, count the total number of common subsequences (not just the longest one). Changes the DP recurrence: instead of matching against a target, you must count all shared subsequences between two strings simultaneously.
 
     Time: O(n)
     Space: O(n)
-
-    Example: s1="abc", s2="abc" → 8 (empty + a + b + c + ab + ac + bc + abc)
     """
-    if not data:
-        return None
+    count = 0
+    n = len(s)
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
-
-    # Core algorithm implementation
     for i in range(n):
-        result.append(data[i])
+        # Check condition based on t
+        j = 0
+        for k in range(i, n):
+            if j < len(t) and s[k] == t[j]:
+                j += 1
+        if j == len(t):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(count_common_subsequences_of_two_strings([1, 2, 3, 4, 5]))
-print(count_common_subsequences_of_two_strings([5, 3, 1]))
-print(count_common_subsequences_of_two_strings([1]))`,
+print(count_common_subsequences_of_two_strings("rabbbit", "rabbit"))  # Expected: 3
+print(count_common_subsequences_of_two_strings("aabb", "ab"))  # Expected: 4
+print(count_common_subsequences_of_two_strings("abc", "xyz"))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // CountCommonSubsequencesOfTwoStrings solves the Count Common Subsequences of Two Strings problem.
-// Given two strings s1 and s2, count the total number of common subsequences (not just the longest one).
+// Given two strings s1 and s2, count the total number of common subsequences (not just the longest one). Changes the DP recurrence: instead of matching against a target, you must count all shared subsequences between two strings simultaneously.
 // Time: O(n), Space: O(n)
-func CountCommonSubsequencesOfTwoStrings(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func CountCommonSubsequencesOfTwoStrings(s string, t string) int {
+	result := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(s); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(CountCommonSubsequencesOfTwoStrings([]int{1, 2, 3, 4, 5}))
-    fmt.Println(CountCommonSubsequencesOfTwoStrings([]int{5, 3, 1}))
-    fmt.Println(CountCommonSubsequencesOfTwoStrings([]int{1}))
-}`
+	fmt.Println(CountCommonSubsequencesOfTwoStrings("rabbbit", "rabbit")) // Expected: 3
+	fmt.Println(CountCommonSubsequencesOfTwoStrings("aabb", "ab")) // Expected: 4
+	fmt.Println(CountCommonSubsequencesOfTwoStrings("abc", "xyz")) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []

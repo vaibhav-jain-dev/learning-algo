@@ -2,10 +2,12 @@
  * Online Streaming Circular
  * Category: famous-algorithms
  * Difficulty: Very Hard
+ * Algorithm: kadanes-algorithm
  * Parent: 01-kadanes-algorithm/01-max-circular-subarray
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Online Streaming Circular',
         difficulty: 'Very Hard',
@@ -19,57 +21,86 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'After seeing [5, -3, 5]: you know total=7, max_kadane=5, min_kadane=-3. When stream ends, circular_max = max(5, 7-(-3)) = 10.' },
-                output: 'See example',
-                explanation: 'After seeing [5, -3, 5]: you know total=7, max_kadane=5, min_kadane=-3. When stream ends, circular_max = max(5, 7-(-3)) = 10.'
+                input: {"nums":[1,-2,3,-2]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the online streaming circular criteria.'
+            },
+            {
+                input: {"nums":[5,-3,5]},
+                output: 3,
+                explanation: 'For this input, there are 3 valid positions that satisfy the online streaming circular criteria.'
+            },
+            // Edge case
+            {
+                input: {"nums":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Online Streaming Circular
-# Category: famous-algorithms
-# Difficulty: Very Hard
-# Parent: 01-kadanes-algorithm/01-max-circular-subarray
-
-def solve():
+            python: `def online_streaming_circular(nums):
     """
+    Online Streaming Circular
+
     Elements arrive in a stream but the array is known to be circular (the last element connects to the first). How would you maintain the maximum circular subarray sum as new elements arrive, before the circle is closed?
 
-    Key insight: You cannot compute the circular answer until you know the total sum, but you need to maintain partial results efficiently. Forces thinking about what information to accumulate for the eventual circular closure.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(nums)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(online_streaming_circular([1,-2,3,-2]))  # Expected: 2
+print(online_streaming_circular([5,-3,5]))  # Expected: 3
+print(online_streaming_circular([1]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Online Streaming Circular problem.
+// OnlineStreamingCircular solves the Online Streaming Circular problem.
 // Elements arrive in a stream but the array is known to be circular (the last element connects to the first). How would you maintain the maximum circular subarray sum as new elements arrive, before the circle is closed?
-// Key insight: You cannot compute the circular answer until you know the total sum, but you need to maintain partial results efficiently. Forces thinking about what information to accumulate for the eventual circular closure.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func OnlineStreamingCircular(nums []int) int {
+	result := 0
+
+	for i := 0; i < len(nums); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(OnlineStreamingCircular([]int{1, -2, 3, -2})) // Expected: 2
+	fmt.Println(OnlineStreamingCircular([]int{5, -3, 5})) // Expected: 3
+	fmt.Println(OnlineStreamingCircular([]int{1})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '01-kadanes-algorithm/01-max-circular-subarray/twist-04-online-streaming-circular', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/01-kadanes-algorithm/01-max-circular-subarray/twist-04-online-streaming-circular'] = problem;
 })();

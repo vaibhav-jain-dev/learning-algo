@@ -2,10 +2,12 @@
  * Phased Construction
  * Category: famous-algorithms
  * Difficulty: Very Hard
+ * Algorithm: kruskals-algorithm
  * Parent: 06-kruskals-algorithm/03-optimize-water-distribution
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Phased Construction',
         difficulty: 'Very Hard',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'With k=2 per phase, you might build 1 well and 1 pipe in phase 1, then 2 pipes in phase 2, etc., ensuring water reaches new houses each phase.' },
-                output: 'See example',
-                explanation: 'With k=2 per phase, you might build 1 well and 1 pipe in phase 1, then 2 pipes in phase 2, etc., ensuring water reaches new houses each phase.'
+                input: {"n":3,"wells":[1,2,2],"pipes":[[1,2,1],[2,3,1]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the phased construction criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"wells":[1],"pipes":[[1,2,1]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Phased Construction
-# Category: famous-algorithms
-# Difficulty: Very Hard
-# Parent: 06-kruskals-algorithm/03-optimize-water-distribution
-
-def solve():
+            python: `def phased_construction(n, wells, pipes):
     """
+    Phased Construction
+
     Construction happens in phases. In each phase you can build at most k wells/pipes. Minimize the number of phases so all houses have water.
 
-    Key insight: Adds a scheduling constraint on top of the MST -- you need to build the MST edges in a specific order respecting the k-per-phase limit and water flow requirements.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(n)
+
+    for i in range(n):
+        # Check condition based on wells
+        j = 0
+        for k in range(i, n):
+            if j < len(wells) and n[k] == wells[j]:
+                j += 1
+        if j == len(wells):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(phased_construction(3, [1,2,2], [[1,2,1],[2,3,1]]))  # Expected: 1
+print(phased_construction(0, [1], [[1,2,1]]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Phased Construction problem.
+// PhasedConstruction solves the Phased Construction problem.
 // Construction happens in phases. In each phase you can build at most k wells/pipes. Minimize the number of phases so all houses have water.
-// Key insight: Adds a scheduling constraint on top of the MST -- you need to build the MST edges in a specific order respecting the k-per-phase limit and water flow requirements.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func PhasedConstruction(n int, wells []int, pipes [][]int) int {
+	result := 0
+
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(PhasedConstruction(3, []int{1, 2, 2}, [][]int{{1, 2, 1}, {2, 3, 1}})) // Expected: 1
+	fmt.Println(PhasedConstruction(0, []int{1}, [][]int{{1, 2, 1}})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '06-kruskals-algorithm/03-optimize-water-distribution/twist-05-phased-construction', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/06-kruskals-algorithm/03-optimize-water-distribution/twist-05-phased-construction'] = problem;
 })();

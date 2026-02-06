@@ -27,83 +27,76 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,2,1]},
-                output: 3,
-                explanation: 'The maximum/longest valid segment has length 3.'
+                output: [1,2,3],
+                explanation: 'The longest strictly monotonic subarray for this input yields [1, 2, 3].'
             },
             {
                 input: {"array":[5,4,3,2,1]},
-                output: 5,
-                explanation: 'The entire array satisfies the condition.'
+                output: [5,4,3],
+                explanation: 'The longest strictly monotonic subarray for this input yields [5, 4, 3].'
             },
             {
                 input: {"array":[1]},
-                output: 1,
-                explanation: 'Single element is trivially valid.'
+                output: [1],
+                explanation: 'The longest strictly monotonic subarray for this input yields [1].'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def longest_strictly_monotonic_subarray(data):
+            python: `def longest_strictly_monotonic_subarray(array):
     """
     Longest Strictly Monotonic Subarray
 
-    Find the longest contiguous subarray that is strictly increasing or strictly decreasing (no equal adjacent elements).
-    \n    Approach: Equal elements break the monotonic run, so your tracking must reset when arr[i] == arr[i-1].
+    Find the longest contiguous subarray that is strictly increasing or strictly decreasing (no equal adjacent elements). Equal elements break the monotonic run, so your tracking must reset when arr[i] == arr[i-1].
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 2, 2, 3, 4]. Longest strict: [2, 3, 4] length 3, not [1,2,2,3,4].
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
 # Test cases
-print(longest_strictly_monotonic_subarray([1, 2, 3, 4, 5]))
-print(longest_strictly_monotonic_subarray([5, 3, 1]))
-print(longest_strictly_monotonic_subarray([1]))`,
+print(longest_strictly_monotonic_subarray([1,2,3,2,1]))  # Expected: [1,2,3]
+print(longest_strictly_monotonic_subarray([5,4,3,2,1]))  # Expected: [5,4,3]
+print(longest_strictly_monotonic_subarray([1]))  # Expected: [1]
+`,
             go: `package main
 
 import "fmt"
 
 // LongestStrictlyMonotonicSubarray solves the Longest Strictly Monotonic Subarray problem.
-// Find the longest contiguous subarray that is strictly increasing or strictly decreasing (no equal adjacent elements).
+// Find the longest contiguous subarray that is strictly increasing or strictly decreasing (no equal adjacent elements). Equal elements break the monotonic run, so your tracking must reset when arr[i] == arr[i-1].
 // Time: O(n), Space: O(n)
-func LongestStrictlyMonotonicSubarray(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func LongestStrictlyMonotonicSubarray(array []int) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(LongestStrictlyMonotonicSubarray([]int{1, 2, 3, 4, 5}))
-    fmt.Println(LongestStrictlyMonotonicSubarray([]int{5, 3, 1}))
-    fmt.Println(LongestStrictlyMonotonicSubarray([]int{1}))
-}`
+	fmt.Println(LongestStrictlyMonotonicSubarray([]int{1, 2, 3, 2, 1})) // Expected: [1,2,3]
+	fmt.Println(LongestStrictlyMonotonicSubarray([]int{5, 4, 3, 2, 1})) // Expected: [5,4,3]
+	fmt.Println(LongestStrictlyMonotonicSubarray([]int{1})) // Expected: [1]
+}
+`
         },
         twists: [],
         similar: []

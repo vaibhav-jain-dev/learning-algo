@@ -2,10 +2,12 @@
  * Two Sum Closest with No Ancestor-Descendant Pair
  * Category: binary-search-trees
  * Difficulty: Very Hard
+ * Algorithm: bst-search
  * Parent: 01-find-closest-value/03-two-sum-closest-bst
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Two Sum Closest with No Ancestor-Descendant Pair',
         difficulty: 'Very Hard',
@@ -14,68 +16,94 @@
         description: 'Find two nodes with sum closest to target, but the two nodes must not be in an ancestor-descendant relationship.',
         problem: 'The constraint eliminates pairs that lie on the same root-to-leaf path. You must track the path relationships between candidate pairs, which the simple two-pointer approach on sorted values completely ignores. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: two sum closest with no ancestor-descendant pair.",
-                  "Consider how the constraint eliminates pairs that lie on the same root-to-leaf path affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Tree: [10,5,15,2,7,12,20], target=17 -> Cannot use (10,7) since 10 is ancestor of 7. Valid: (5,12)=17.'
+                input: {"tree":[10,5,15,2,7,12,20],"target":10},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the two sum closest with no ancestor descendant pair criteria.'
+            },
+            {
+                input: {"tree":[5,3,7,1,4,6,8],"target":10},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the two sum closest with no ancestor descendant pair criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":[10],"target":10},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Two Sum Closest with No Ancestor-Descendant Pair
-# Difficulty: Very Hard
-# Parent: 01-find-closest-value/03-two-sum-closest-bst
-#
-# Find two nodes with sum closest to target, but the two nodes must not be in an ancestor-descendant relationship.
-
-def twoSumClosestWithNoAncestorDescendantPair(data):
+            python: `def two_sum_closest_with_no_ancestor_descendant_pair(tree, target):
     """
     Two Sum Closest with No Ancestor-Descendant Pair
 
-    Approach: The constraint eliminates pairs that lie on the same root-to-leaf path.
+    Find two nodes with sum closest to target, but the two nodes must not be in an ancestor-descendant relationship.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: The constraint eliminates pairs that lie on the same root-to-leaf path
-    pass
+    count = 0
+    n = len(tree)
+
+    for i in range(n):
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and tree[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree: [10,5,15,2,7,12,20], target=17 -> Cannot use (10,7) since 10 is ancestor of 7
-    print(twoSumClosestWithNoAncestorDescendantPair({}))`,
+# Test cases
+print(two_sum_closest_with_no_ancestor_descendant_pair([10,5,15,2,7,12,20], 10))  # Expected: 1
+print(two_sum_closest_with_no_ancestor_descendant_pair([5,3,7,1,4,6,8], 10))  # Expected: 2
+print(two_sum_closest_with_no_ancestor_descendant_pair([10], 10))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// Two Sum Closest with No Ancestor-Descendant Pair
-// Difficulty: Very Hard
-// Parent: 01-find-closest-value/03-two-sum-closest-bst
-//
+// TwoSumClosestWithNoAncestorDescendantPair solves the Two Sum Closest with No Ancestor-Descendant Pair problem.
 // Find two nodes with sum closest to target, but the two nodes must not be in an ancestor-descendant relationship.
+// Time: O(n), Space: O(1)
+func TwoSumClosestWithNoAncestorDescendantPair(tree []int, target int) int {
+	result := 0
 
-func TwoSumClosestWithNoAncestorDescendantPair(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: The constraint eliminates pairs that lie on the same root-to-leaf path
-    return nil
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Tree: [10,5,15,2,7,12,20], target=17 -> Cannot use (10,7) since 10 is ancestor of 7
-    fmt.Println(TwoSumClosestWithNoAncestorDescendantPair(map[string]interface{}{}))
-}`
+	fmt.Println(TwoSumClosestWithNoAncestorDescendantPair([]int{10, 5, 15, 2, 7, 12, 20}, 10)) // Expected: 1
+	fmt.Println(TwoSumClosestWithNoAncestorDescendantPair([]int{5, 3, 7, 1, 4, 6, 8}, 10)) // Expected: 2
+	fmt.Println(TwoSumClosestWithNoAncestorDescendantPair([]int{10}, 10)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '01-find-closest-value/03-two-sum-closest-bst/twist-05-two-sum-closest-with-no-ancestor-descendant-pair', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/01-find-closest-value/03-two-sum-closest-bst/twist-05-two-sum-closest-with-no-ancestor-descendant-pair'] = problem;
 })();

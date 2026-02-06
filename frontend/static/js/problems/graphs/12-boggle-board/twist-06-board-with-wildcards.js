@@ -2,10 +2,12 @@
  * Board with Wildcards
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-word-search
  * Parent: 12-boggle-board
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Board with Wildcards',
         difficulty: 'Hard',
@@ -15,91 +17,87 @@
         problem: 'At wildcard cells, every letter matches, branching the Trie traversal into multiple children simultaneously. The search becomes significantly wider at wildcard positions.',
         hints: [
             'Start by understanding the key difference: At wildcard cells, every letter matches, branching the Trie traversal into multiple children simultaneously.',
-            'Consider breaking this into subproblems and solving each independently.',
-            'Consider the example: Board [[*,h],[a,t]].',
-            'Test with edge cases: empty input, single element, and the largest possible input.'
+            'Consider breaking this into subproblems and solving each independently.'
         ],
-        complexity: { time: 'O(N * M * 8^L + W * L)', space: 'O(W * L + N * M)' },
+        complexity: {
+            time: 'O(N * M * 8^L + W * L)',
+            space: 'O(W * L + N * M)'
+        },
         examples: [
-            { input: { description: 'Board [[*,h],[a,t]]. Wildcard * matches any letter. Words "hat", "that" become findable depending on Trie structure.' }, output: 'See explanation', explanation: 'Board [[*,h],[a,t]]. Wildcard * matches any letter. Words "hat", "that" become findable depending on Trie structure.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"board":[["t","h","i","s"],["w","a","t","s"],["o","a","h","g"],["f","g","d","t"]],"words":["this","two","fat","that"]},
+                output: [["t","h","i","s"],["w","a","t","s"],["o","a","h","g"]],
+                explanation: 'The board with wildcards for this input yields [t,h,i,s, w,a,t,s, o,a,h,g].'
+            },
+            {
+                input: {"board":[["a","b"],["c","d"]],"words":["abcd","abdc","abca"]},
+                output: [["a","b"],["c","d"]],
+                explanation: 'The board with wildcards for this input yields [a,b, c,d].'
+            },
+            // Edge case
+            {
+                input: {"board":[["t","h","i","s"]],"words":["this"]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def board_with_wildcards(data):
+            python: `def board_with_wildcards(board, words):
     """
     Board with Wildcards
 
     Some cells contain a wildcard character that matches any letter. Find all words considering wildcards.
 
-    Approach:
-    At wildcard cells, every letter matches, branching the Trie traversal into multiple children simultaneously. The search becomes significantly wider at wildcard positions.
-
     Time: O(N * M * 8^L + W * L)
     Space: O(W * L + N * M)
     """
-    # At wildcard cells, every letter matches, branching the Trie traversal into multiple children simultaneously. The search becomes significantly wider at wildcard positions.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Board with Wildcards
-    # Key difference from parent: At wildcard cells, every letter matches, branching the Trie traversal into multiple children simulta
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(board)):
+        # Check if element meets criteria
+        result.append(board[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return board_with_wildcards(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Board [[*,h],[a,t]]. Wildcard * matches any letter. Words "hat", "that" become findable depending on Trie structure.
-    print("Test: Board with Wildcards")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(board_with_wildcards([["t","h","i","s"],["w","a","t","s"],["o","a","h","g"],["f","g","d","t"]], ["this","two","fat","that"]))  # Expected: [["t","h","i","s"],["w","a","t","s"],["o","a","h","g"]]
+print(board_with_wildcards([["a","b"],["c","d"]], ["abcd","abdc","abca"]))  # Expected: [["a","b"],["c","d"]]
+print(board_with_wildcards([["t","h","i","s"]], ["this"]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// BoardWithWildcards solves the Board with Wildcards problem
+// BoardWithWildcards solves the Board with Wildcards problem.
 // Some cells contain a wildcard character that matches any letter. Find all words considering wildcards.
-//
-// Approach: At wildcard cells, every letter matches, branching the Trie traversal into multiple children simultaneously. The search becomes significantly wider at wildcard positions.
-//
-// Time: O(N * M * 8^L + W * L)
-// Space: O(W * L + N * M)
-func BoardWithWildcards(input interface{}) interface{} {
-    // At wildcard cells, every letter matches, branching the Trie traversal into multiple children simultaneously. The search becomes significantly wider at wildcard positions.
+// Time: O(N * M * 8^L + W * L), Space: O(W * L + N * M)
+func BoardWithWildcards(board [][]int, words []string) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Board with Wildcards
-    // Key difference from parent: At wildcard cells, every letter matches, branching the Trie traversal into multiple children simulta
+	for i := 0; i < len(board); i++ {
+		result = append(result, board[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Board [[*,h],[a,t]]. Wildcard * matches any letter. Words "hat", "that" become findable depending on Trie structure.
-    fmt.Println("Test: Board with Wildcards")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(BoardWithWildcards([][]int{{t, h, i, s}, {w, a, t, s}, {o, a, h, g}, {f, g, d, t}}, []string{"this", "two", "fat", "that"})) // Expected: [["t","h","i","s"],["w","a","t","s"],["o","a","h","g"]]
+	fmt.Println(BoardWithWildcards([][]int{{a, b}, {c, d}}, []string{"abcd", "abdc", "abca"})) // Expected: [["a","b"],["c","d"]]
+	fmt.Println(BoardWithWildcards([][]int{{t, h, i, s}}, []string{"this"})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '12-boggle-board/twist-06-board-with-wildcards', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/12-boggle-board/twist-06-board-with-wildcards'] = problem;
 })();

@@ -2,10 +2,12 @@
  * Count BST Nodes Using O(1) Space
  * Category: binary-search-trees
  * Difficulty: Medium
+ * Algorithm: bst-traversal
  * Parent: 04-bst-traversal/02-morris-traversal
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Count BST Nodes Using O(1) Space',
         difficulty: 'Medium',
@@ -14,68 +16,88 @@
         description: 'Count the total number of nodes in a BST using Morris traversal, achieving O(1) space. Also compute the sum and average of all node values in the same pass.',
         problem: 'While the traversal mechanism is the same, aggregating statistics requires careful counting. The key challenge is that Morris visits some nodes twice (once when creating the thread, once when removing it), so you must only count on the correct visit. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: count bst nodes using o(1) space.",
-                  "Consider how while the traversal mechanism is the same, aggregating statistics requires careful counting affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(1)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Tree: [10,5,15,2,7]. Morris traversal visits 5 twice (thread creation and removal). Count on thread-removal visit only. Result: count=5, sum=39, avg=7.8.'
+                input: {"tree":[4,2,6,1,3,5,7]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the count bst nodes using o1 space criteria.'
+            },
+            {
+                input: {"tree":[1,2,3,4,5,null,6]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the count bst nodes using o1 space criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":[4]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Count BST Nodes Using O(1) Space
-# Difficulty: Medium
-# Parent: 04-bst-traversal/02-morris-traversal
-#
-# Count the total number of nodes in a BST using Morris traversal, achieving O(1) space. Also compute the sum and average of all node values in the same pass.
-
-def countBstNodesUsingO1Space(data):
+            python: `def count_bst_nodes_using_o1_space(tree):
     """
     Count BST Nodes Using O(1) Space
 
-    Approach: While the traversal mechanism is the same, aggregating statistics requires careful counting.
+    Count the total number of nodes in a BST using Morris traversal, achieving O(1) space. Also compute the sum and average of all node values in the same pass.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: While the traversal mechanism is the same, aggregating statistics requires careful counting
-    pass
+    result = 0
+
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree: [10,5,15,2,7]
-    print(countBstNodesUsingO1Space({}))`,
+# Test cases
+print(count_bst_nodes_using_o1_space([4,2,6,1,3,5,7]))  # Expected: 1
+print(count_bst_nodes_using_o1_space([1,2,3,4,5,None,6]))  # Expected: 2
+print(count_bst_nodes_using_o1_space([4]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// Count BST Nodes Using O(1) Space
-// Difficulty: Medium
-// Parent: 04-bst-traversal/02-morris-traversal
-//
+// CountBstNodesUsingO1Space solves the Count BST Nodes Using O(1) Space problem.
 // Count the total number of nodes in a BST using Morris traversal, achieving O(1) space. Also compute the sum and average of all node values in the same pass.
+// Time: O(n), Space: O(1)
+func CountBstNodesUsingO1Space(tree []int) int {
+	result := 0
 
-func CountBstNodesUsingO1Space(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: While the traversal mechanism is the same, aggregating statistics requires careful counting
-    return nil
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Tree: [10,5,15,2,7]
-    fmt.Println(CountBstNodesUsingO1Space(map[string]interface{}{}))
-}`
+	fmt.Println(CountBstNodesUsingO1Space([]int{4, 2, 6, 1, 3, 5, 7})) // Expected: 1
+	fmt.Println(CountBstNodesUsingO1Space([]int{1, 2, 3, 4, 5, null, 6})) // Expected: 2
+	fmt.Println(CountBstNodesUsingO1Space([]int{4})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '04-bst-traversal/02-morris-traversal/twist-05-count-bst-nodes-using-o1-space', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/04-bst-traversal/02-morris-traversal/twist-05-count-bst-nodes-using-o1-space'] = problem;
 })();

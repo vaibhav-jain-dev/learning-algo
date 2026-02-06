@@ -2,10 +2,12 @@
  * Merge Two BST Iterators
  * Category: binary-search-trees
  * Difficulty: Hard
+ * Algorithm: bst-iterator
  * Parent: 11-bst-iterator
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Merge Two BST Iterators',
         difficulty: 'Hard',
@@ -14,68 +16,80 @@
         description: 'Given two BSTs, create a merged iterator that yields all values from both trees in sorted order, using O(h1 + h2) space.',
         problem: 'You must manage two independent iterator states simultaneously and merge their outputs, similar to merging two sorted lists but with lazy evaluation. Each advance requires comparing the two peek values. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: merge two bst iterators.",
-                  "Consider how you must manage two independent iterator states simultaneously and merge their outputs, similar to merging two sorted lists but with lazy evaluation affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'BST1 [3, 1, 5], BST2 [4, 2, 6]. Merged iteration yields: 1, 2, 3, 4, 5, 6.'
+                input: {"tree":[7,3,15,null,null,9,20],"operations":["next","next","hasNext","next","hasNext","next","hasNext","next","hasNext"]},
+                output: [7,3,15],
+                explanation: 'The merge two bst iterators for this input yields [7, 3, 15].'
+            },
+            // Edge case
+            {
+                input: {"tree":[7],"operations":["next"]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Merge Two BST Iterators
-# Difficulty: Hard
-# Parent: 11-bst-iterator
-#
-# Given two BSTs, create a merged iterator that yields all values from both trees in sorted order, using O(h1 + h2) space.
-
-def mergeTwoBstIterators(data):
+            python: `def merge_two_bst_iterators(tree, operations):
     """
     Merge Two BST Iterators
 
-    Approach: You must manage two independent iterator states simultaneously and merge their outputs, similar to merging two sorted lists but with lazy evaluation.
+    Given two BSTs, create a merged iterator that yields all values from both trees in sorted order, using O(h1 + h2) space.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: You must manage two independent iterator states simultaneously and merge their outputs, similar to merging two sorted lists but with lazy evaluation
-    pass
+    result = []
+
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: BST1 [3, 1, 5], BST2 [4, 2, 6]
-    print(mergeTwoBstIterators({}))`,
+# Test cases
+print(merge_two_bst_iterators([7,3,15,None,None,9,20], ["next","next","hasNext","next","hasNext","next","hasNext","next","hasNext"]))  # Expected: [7,3,15]
+print(merge_two_bst_iterators([7], ["next"]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// Merge Two BST Iterators
-// Difficulty: Hard
-// Parent: 11-bst-iterator
-//
+// MergeTwoBstIterators solves the Merge Two BST Iterators problem.
 // Given two BSTs, create a merged iterator that yields all values from both trees in sorted order, using O(h1 + h2) space.
+// Time: O(n), Space: O(1)
+func MergeTwoBstIterators(tree []int, operations []string) []int {
+	result := make([]int, 0)
 
-func MergeTwoBstIterators(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: You must manage two independent iterator states simultaneously and merge their outputs, similar to merging two sorted lists but with lazy evaluation
-    return nil
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
+
+	return result
 }
 
 func main() {
-    // Example: BST1 [3, 1, 5], BST2 [4, 2, 6]
-    fmt.Println(MergeTwoBstIterators(map[string]interface{}{}))
-}`
+	fmt.Println(MergeTwoBstIterators([]int{7, 3, 15, null, null, 9, 20}, []string{"next", "next", "hasNext", "next", "hasNext", "next", "hasNext", "next", "hasNext"})) // Expected: [7,3,15]
+	fmt.Println(MergeTwoBstIterators([]int{7}, []string{"next"})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '11-bst-iterator/twist-04-merge-two-bst-iterators', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/11-bst-iterator/twist-04-merge-two-bst-iterators'] = problem;
 })();

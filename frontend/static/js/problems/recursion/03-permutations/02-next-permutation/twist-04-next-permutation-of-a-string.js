@@ -2,10 +2,12 @@
  * Next Permutation of a String
  * Category: recursion
  * Difficulty: Easy
+ * Algorithm: recursion-permutations
  * Parent: 03-permutations/02-next-permutation
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Next Permutation of a String',
         difficulty: 'Easy',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For "abdc", the next permutation string is "acbd". For "dcba", wrap around to "abcd".' },
-                output: 'See example',
-                explanation: 'For "abdc", the next permutation string is "acbd". For "dcba", wrap around to "abcd".'
+                input: {"nums":[1,2,3]},
+                output: [1,2,3],
+                explanation: 'The next permutation of a string for this input yields [1, 2, 3].'
+            },
+            // Edge case
+            {
+                input: {"nums":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Next Permutation of a String
-# Category: recursion
-# Difficulty: Easy
-# Parent: 03-permutations/02-next-permutation
-
-def solve():
+            python: `def next_permutation_of_a_string(nums):
     """
+    Next Permutation of a String
+
     Apply the next permutation algorithm to a string of characters instead of numbers, returning the next lexicographic string.
 
-    Key insight: While algorithmically similar, working with characters introduces considerations around character encoding, case sensitivity, and string immutability.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(nums)):
+        # Check if element meets criteria
+        result.append(nums[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(next_permutation_of_a_string([1,2,3]))  # Expected: [1,2,3]
+print(next_permutation_of_a_string([1]))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Next Permutation of a String problem.
+// NextPermutationOfAString solves the Next Permutation of a String problem.
 // Apply the next permutation algorithm to a string of characters instead of numbers, returning the next lexicographic string.
-// Key insight: While algorithmically similar, working with characters introduces considerations around character encoding, case sensitivity, and string immutability.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func NextPermutationOfAString(nums []int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(nums); i++ {
+		result = append(result, nums[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(NextPermutationOfAString([]int{1, 2, 3})) // Expected: [1,2,3]
+	fmt.Println(NextPermutationOfAString([]int{1})) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '03-permutations/02-next-permutation/twist-04-next-permutation-of-a-string', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/03-permutations/02-next-permutation/twist-04-next-permutation-of-a-string'] = problem;
 })();

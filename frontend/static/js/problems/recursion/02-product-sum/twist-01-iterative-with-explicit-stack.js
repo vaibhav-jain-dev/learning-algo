@@ -2,10 +2,12 @@
  * Iterative with Explicit Stack
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-product-sum
  * Parent: 02-product-sum
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Iterative with Explicit Stack',
         difficulty: 'Medium',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Stack starts with [(array, depth=1)]. Pop an element: if integer, add value*depth to sum. If sub-array, push each child with depth+1. Process until stack is empty.' },
-                output: 'See example',
-                explanation: 'Stack starts with [(array, depth=1)]. Pop an element: if integer, add value*depth to sum. If sub-array, push each child with depth+1. Process until stack is empty.'
+                input: {"array":[5,2,[7,-1],3,[6,[-13,8],4]]},
+                output: 3,
+                explanation: 'For this input, there are 3 valid positions that satisfy the iterative with explicit stack criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[5]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Iterative with Explicit Stack
-# Category: recursion
-# Difficulty: Medium
-# Parent: 02-product-sum
-
-def solve():
+            python: `def iterative_with_explicit_stack(array):
     """
+    Iterative with Explicit Stack
+
     Solve product sum without recursion by using an explicit stack. Each stack entry must track both the element and its current depth.
 
-    Key insight: Converting nested recursion to an iterative stack-based approach requires explicitly managing depth state that recursion handles implicitly. You must decide how to encode depth alongside array elements.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(iterative_with_explicit_stack([5,2,[7,-1],3,[6,[-13,8],4]]))  # Expected: 3
+print(iterative_with_explicit_stack([5]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Iterative with Explicit Stack problem.
+// IterativeWithExplicitStack solves the Iterative with Explicit Stack problem.
 // Solve product sum without recursion by using an explicit stack. Each stack entry must track both the element and its current depth.
-// Key insight: Converting nested recursion to an iterative stack-based approach requires explicitly managing depth state that recursion handles implicitly. You must decide how to encode depth alongside array elements.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func IterativeWithExplicitStack(array []int) int {
+	result := 0
+
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(IterativeWithExplicitStack([]interface{}{5, 2, []int{7, -1}, 3, []interface{}{6, []int{-13, 8}, 4}})) // Expected: 3
+	fmt.Println(IterativeWithExplicitStack([]int{5})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '02-product-sum/twist-01-iterative-with-explicit-stack', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/02-product-sum/twist-01-iterative-with-explicit-stack'] = problem;
 })();

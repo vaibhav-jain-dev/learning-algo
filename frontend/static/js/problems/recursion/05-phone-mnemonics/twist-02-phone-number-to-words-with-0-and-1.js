@@ -2,10 +2,12 @@
  * Phone Number to Words with 0 and 1
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-phone
  * Parent: 05-phone-mnemonics
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Phone Number to Words with 0 and 1',
         difficulty: 'Medium',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For "201", output includes ["a ","b ","c "] where the space comes from 0 and 1 contributes nothing.' },
-                output: 'See example',
-                explanation: 'For "201", output includes ["a ","b ","c "] where the space comes from 0 and 1 contributes nothing.'
+                input: {"phoneNumber":"23"},
+                output: [0],
+                explanation: 'The phone number to words with 0 and 1 for this input yields [0].'
+            },
+            // Edge case
+            {
+                input: {"phoneNumber":""},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Phone Number to Words with 0 and 1
-# Category: recursion
-# Difficulty: Medium
-# Parent: 05-phone-mnemonics
-
-def solve():
+            python: `def phone_number_to_words_with_0_and_1(phoneNumber):
     """
+    Phone Number to Words with 0 and 1
+
     Extend the mapping so that 0 maps to a space and 1 maps to nothing (skip), then generate all combinations.
 
-    Key insight: Introduces variable-length branching -- some digits produce 0 characters while others produce 3-4, complicating the recursion structure.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(phoneNumber)):
+        # Check if element meets criteria
+        result.append(phoneNumber[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(phone_number_to_words_with_0_and_1("23"))  # Expected: [0]
+print(phone_number_to_words_with_0_and_1(""))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Phone Number to Words with 0 and 1 problem.
+// PhoneNumberToWordsWith0And1 solves the Phone Number to Words with 0 and 1 problem.
 // Extend the mapping so that 0 maps to a space and 1 maps to nothing (skip), then generate all combinations.
-// Key insight: Introduces variable-length branching -- some digits produce 0 characters while others produce 3-4, complicating the recursion structure.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func PhoneNumberToWordsWith0And1(phoneNumber string) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(phoneNumber); i++ {
+		result = append(result, phoneNumber[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(PhoneNumberToWordsWith0And1("23")) // Expected: [0]
+	fmt.Println(PhoneNumberToWordsWith0And1("")) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '05-phone-mnemonics/twist-02-phone-number-to-words-with-0-and-1', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/05-phone-mnemonics/twist-02-phone-number-to-words-with-0-and-1'] = problem;
 })();

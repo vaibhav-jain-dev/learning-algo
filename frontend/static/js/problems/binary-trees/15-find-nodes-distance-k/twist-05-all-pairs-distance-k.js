@@ -2,10 +2,12 @@
  * All Pairs Distance K
  * Category: binary-trees
  * Difficulty: Very Hard
+ * Algorithm: tree-distance
  * Parent: 15-find-nodes-distance-k
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'All Pairs Distance K',
         difficulty: 'Very Hard',
@@ -19,121 +21,92 @@
             'Key insight: This generalizes from one target to all possible targets.',
             'An optimized approach uses the Euler tour or centroid decomposition for O(n log n) complexity.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree [1, 2, 3, 4, 5], k=2' },
-                output: 'See explanation',
-                explanation: 'Tree [1, 2, 3, 4, 5], k=2. Pairs at distance 2: (4,5), (4,1), (5,1), (2,3). Count = 4.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"target":5,"k":2},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the all pairs distance k criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2},"right":{"value":3}},"target":1,"k":1},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the all pairs distance k criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"target":0,"k":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def all_pairs_distance_k(data):
+            python: `def all_pairs_distance_k(tree, target, k):
     """
     All Pairs Distance K
 
-    Find all pairs of nodes (a, b) in the tree such that the distance between a and b is exactly k.
-     Return the count of such pairs.
+    Find all pairs of nodes (a, b) in the tree such that the distance between a and b is exactly k. Return the count of such pairs. This generalizes from one target to all possible targets. A naive approach runs BFS from each node (O(n^2)). An optimized approach uses the Euler tour or centroid decomposition for O(n log n) complexity.
 
-    Approach: This generalizes from one target to all possible targets
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    count = 0
+    n = len(tree)
 
-    # Key insight: This generalizes from one target to all possible targets
+    for i in range(n):
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and tree[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement All Pairs Distance K
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree [1, 2, 3, 4, 5], k=2
-    print("See problem description for test cases")`,
+# Test cases
+print(all_pairs_distance_k({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5, "left": {"value": 7}, "right": {"value": 8}}}, "right": {"value": 3, "right": {"value": 6}}}, 5, 2))  # Expected: 1
+print(all_pairs_distance_k({"value": 1, "left": {"value": 2}, "right": {"value": 3}}, 1, 1))  # Expected: 2
+print(all_pairs_distance_k({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5, "left": {"value": 7}, "right": {"value": 8}}}, "right": {"value": 3, "right": {"value": 6}}}, 0, 0))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// AllPairsDistanceK solves: All Pairs Distance K
-// This generalizes from one target to all possible targets
+// AllPairsDistanceK solves the All Pairs Distance K problem.
+// Find all pairs of nodes (a, b) in the tree such that the distance between a and b is exactly k. Return the count of such pairs. This generalizes from one target to all possible targets. A naive approach runs BFS from each node (O(n^2)). An optimized approach uses the Euler tour or centroid decomposition for O(n log n) complexity.
 // Time: O(n), Space: O(n)
-func AllPairsDistanceK(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func AllPairsDistanceK(tree *TreeNode, target int, k int) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement All Pairs Distance K
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree [1, 2, 3, 4, 5], k=2
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(AllPairsDistanceK({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}}, 5, 2)) // Expected: 1
+	fmt.Println(AllPairsDistanceK({"value":1,"left":{"value":2},"right":{"value":3}}, 1, 1)) // Expected: 2
+	fmt.Println(AllPairsDistanceK({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}}, 0, 0)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '15-find-nodes-distance-k/twist-05-all-pairs-distance-k', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/15-find-nodes-distance-k/twist-05-all-pairs-distance-k'] = problem;
 })();

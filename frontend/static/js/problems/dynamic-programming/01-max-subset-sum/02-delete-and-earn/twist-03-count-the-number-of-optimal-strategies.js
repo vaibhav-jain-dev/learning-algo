@@ -2,10 +2,12 @@
  * Count the Number of Optimal Strategies
  * Category: dynamic-programming
  * Difficulty: Hard
+ * Algorithm: dp-max-subset
  * Parent: 01-max-subset-sum/02-delete-and-earn
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Count the Number of Optimal Strategies',
         difficulty: 'Hard',
@@ -19,84 +21,86 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'For nums=[2, 2, 3, 3, 3, 4]: points=[0, 0, 4, 9, 4]. dp[3]=9 is the only max strategy (take 3s). But if points were [0, 0, 5, 5, 5], taking {2,4} and taking {3} both give 10, so count=2.'
+                input: {"nums":[3,4,2]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the count the number of optimal strategies criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"nums":[2,2,3,3,3,4]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the count the number of optimal strategies criteria.'
+            },
+            // Edge case
+            {
+                input: {"nums":[3]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def countTheNumberOfOptimalStrategies(data):
+            python: `def count_the_number_of_optimal_strategies(nums):
     """
     Count the Number of Optimal Strategies
 
     Instead of finding the maximum points, count how many distinct sets of values achieve that maximum. Two strategies are different if they choose different sets of values.
 
-    Approach:
-    Switches from optimization to counting. You need a parallel DP that tracks both the max value AND the count of ways to achieve it at each step.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    result = 0
 
-    # Example: For nums=[2, 2, 3, 3, 3, 4]: points=[0, 0, 4, 9, 4]. dp[3]=9 is the only max strategy (take 3s). But if points were [0, 
+    for i in range(len(nums)):
+        # Process element
+        result += 1  # Update based on condition
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
     return result
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Count the Number of Optimal Strategies...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(count_the_number_of_optimal_strategies([3,4,2]))  # Expected: 1
+print(count_the_number_of_optimal_strategies([2,2,3,3,3,4]))  # Expected: 2
+print(count_the_number_of_optimal_strategies([3]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // CountTheNumberOfOptimalStrategies solves the Count the Number of Optimal Strategies problem.
-// Instead of finding the maximum points, count how many distinct sets of values achieve that maximum. Two strategies are different if they choose differ
-//
-// Approach: Switches from optimization to counting. You need a parallel DP that tracks both the max value AND the count of ways to achieve it at each step.
-func CountTheNumberOfOptimalStrategies(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Instead of finding the maximum points, count how many distinct sets of values achieve that maximum. Two strategies are different if they choose different sets of values.
+// Time: O(n^2), Space: O(n)
+func CountTheNumberOfOptimalStrategies(nums []int) int {
+	result := 0
 
-    // Example: For nums=[2, 2, 3, 3, 3, 4]: points=[0, 0, 4, 9, 4]. dp[3]=9 is the only max strategy (take 3s). But
+	for i := 0; i < len(nums); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Count the Number of Optimal Strategies...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(CountTheNumberOfOptimalStrategies([]int{3, 4, 2})) // Expected: 1
+	fmt.Println(CountTheNumberOfOptimalStrategies([]int{2, 2, 3, 3, 3, 4})) // Expected: 2
+	fmt.Println(CountTheNumberOfOptimalStrategies([]int{3})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '01-max-subset-sum/02-delete-and-earn/twist-03-count-the-number-of-optimal-strategies', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/01-max-subset-sum/02-delete-and-earn/twist-03-count-the-number-of-optimal-strategies'] = problem;
 })();

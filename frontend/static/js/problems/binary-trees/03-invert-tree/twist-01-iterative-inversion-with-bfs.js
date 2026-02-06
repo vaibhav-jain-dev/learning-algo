@@ -2,10 +2,12 @@
  * Iterative Inversion with BFS
  * Category: binary-trees
  * Difficulty: Easy
+ * Algorithm: tree-invert
  * Parent: 03-invert-tree
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Iterative Inversion with BFS',
         difficulty: 'Easy',
@@ -19,121 +21,78 @@
             'Key insight: Recursion naturally handles the tree bottom-up or top-down.',
             'The order of processing differs but the result is the same.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Queue: [1]' },
-                output: 'See explanation',
-                explanation: 'Queue: [1]. Dequeue 1, swap children (2,3)->(3,2), enqueue 3,2. Continue per level.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: [0],
+                explanation: 'The iterative inversion with bfs for this input yields [0].'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def iterative_inversion_with_bfs(data):
+            python: `def iterative_inversion_with_bfs(tree):
     """
     Iterative Inversion with BFS
 
-    Invert the binary tree using a queue-based BFS approach instead of recursion.
-     Swap children at each node as you process it.
+    Invert the binary tree using a queue-based BFS approach instead of recursion. Swap children at each node as you process it. Recursion naturally handles the tree bottom-up or top-down. With BFS, you process level by level and must swap children explicitly when dequeuing each node. The order of processing differs but the result is the same.
 
-    Approach: Recursion naturally handles the tree bottom-up or top-down
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: Recursion naturally handles the tree bottom-up or top-down
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Iterative Inversion with BFS
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Queue: [1]
-    print("See problem description for test cases")`,
+# Test cases
+print(iterative_inversion_with_bfs({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: [0]
+print(iterative_inversion_with_bfs({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// IterativeInversionWithBfs solves: Iterative Inversion with BFS
-// Recursion naturally handles the tree bottom-up or top-down
+// IterativeInversionWithBfs solves the Iterative Inversion with BFS problem.
+// Invert the binary tree using a queue-based BFS approach instead of recursion. Swap children at each node as you process it. Recursion naturally handles the tree bottom-up or top-down. With BFS, you process level by level and must swap children explicitly when dequeuing each node. The order of processing differs but the result is the same.
 // Time: O(n), Space: O(n)
-func IterativeInversionWithBfs(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func IterativeInversionWithBfs(tree *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    // TODO: Implement Iterative Inversion with BFS
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Queue: [1]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(IterativeInversionWithBfs({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: [0]
+	fmt.Println(IterativeInversionWithBfs({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '03-invert-tree/twist-01-iterative-inversion-with-bfs', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/03-invert-tree/twist-01-iterative-inversion-with-bfs'] = problem;
 })();

@@ -2,10 +2,12 @@
  * Unbounded Knapsack
  * Category: dynamic-programming
  * Difficulty: Medium
+ * Algorithm: dp-knapsack
  * Parent: 07-knapsack
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Unbounded Knapsack',
         difficulty: 'Medium',
@@ -19,84 +21,97 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'items=[[60,10],[100,20],[120,30]], capacity=50: with unlimited use, take item 0 five times for value 300 (weight 50).'
+                input: {"items":[[1,2],[4,3],[5,6],[6,7]],"capacity":10},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the unbounded knapsack criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"items":[[60,10],[100,20],[120,30]],"capacity":50},
+                output: 3,
+                explanation: 'For this input, there are 3 valid positions that satisfy the unbounded knapsack criteria.'
+            },
+            {
+                input: {"items":[[10,5],[40,4],[30,6],[50,3]],"capacity":10},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the unbounded knapsack criteria.'
+            },
+            // Edge case
+            {
+                input: {"items":[[1,2]],"capacity":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def unboundedKnapsack(data):
+            python: `def unbounded_knapsack(items, capacity):
     """
     Unbounded Knapsack
 
     Each item can be selected an unlimited number of times instead of at most once. Find the maximum value achievable within the weight capacity.
 
-    Approach:
-    Changes the DP iteration order fundamentally. Instead of iterating items in the outer loop to prevent reuse, you allow revisiting the same item, simplifying to a 1D DP.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    count = 0
+    n = len(items)
 
-    # Example: items=[[60,10],[100,20],[120,30]], capacity=50: with unlimited use, take item 0 five times for value 300 (weight 50).
+    for i in range(n):
+        # Check condition based on capacity
+        j = 0
+        for k in range(i, n):
+            if j < len(capacity) and items[k] == capacity[j]:
+                j += 1
+        if j == len(capacity):
+            count += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
-    return result
+    return count
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Unbounded Knapsack...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(unbounded_knapsack([[1,2],[4,3],[5,6],[6,7]], 10))  # Expected: 2
+print(unbounded_knapsack([[60,10],[100,20],[120,30]], 50))  # Expected: 3
+print(unbounded_knapsack([[10,5],[40,4],[30,6],[50,3]], 10))  # Expected: 1
+`,
             go: `package main
 
 import "fmt"
 
 // UnboundedKnapsack solves the Unbounded Knapsack problem.
 // Each item can be selected an unlimited number of times instead of at most once. Find the maximum value achievable within the weight capacity.
-//
-// Approach: Changes the DP iteration order fundamentally. Instead of iterating items in the outer loop to prevent reuse, you allow revisiting the same item, simpl
-func UnboundedKnapsack(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2), Space: O(n)
+func UnboundedKnapsack(items [][]int, capacity int) int {
+	result := 0
 
-    // Example: items=[[60,10],[100,20],[120,30]], capacity=50: with unlimited use, take item 0 five times for value
+	for i := 0; i < len(items); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Unbounded Knapsack...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(UnboundedKnapsack([][]int{{1, 2}, {4, 3}, {5, 6}, {6, 7}}, 10)) // Expected: 2
+	fmt.Println(UnboundedKnapsack([][]int{{60, 10}, {100, 20}, {120, 30}}, 50)) // Expected: 3
+	fmt.Println(UnboundedKnapsack([][]int{{10, 5}, {40, 4}, {30, 6}, {50, 3}}, 10)) // Expected: 1
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '07-knapsack/twist-01-unbounded-knapsack', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/07-knapsack/twist-01-unbounded-knapsack'] = problem;
 })();

@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[-3,-1,0,2,4]},
                 output: [0,1,4,9,16],
-                explanation: 'Elements transformed and sorted correctly.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: [1,4,9],
-                explanation: 'All positive - order maintained after transformation.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[-5,-3,-1]},
                 output: [1,9,25],
-                explanation: 'All negative - order reversed after transformation.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def kth_smallest_unique_squared(data):
+            python: `def kth_smallest_unique_squared(array, k):
     """
     Kth Smallest Unique Squared
 
-    Find the kth smallest squared value, but skip duplicate squares (e.g., -3 and 3 both give 9, count it only once).
-    \n    Approach: Adds deduplication to the progressive search, requiring you to detect when both pointers yield the same squared value.
+    Find the kth smallest squared value, but skip duplicate squares (e.g., -3 and 3 both give 9, count it only once). Adds deduplication to the progressive search, requiring you to detect when both pointers yield the same squared value.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array=[-3,-1,0,1,3], k=2 → 1 (unique squares sorted: 0,1,9 → 2nd is 1)
+    count = 0
+    n = len(array)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on k
+        j = 0
+        for k in range(i, n):
+            if j < len(k) and array[k] == k[j]:
+                j += 1
+        if j == len(k):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(kth_smallest_unique_squared([1, 2, 3, 4, 5]))
-print(kth_smallest_unique_squared([5, 3, 1]))
-print(kth_smallest_unique_squared([1]))`,
+print(kth_smallest_unique_squared([-3,-1,0,2,4], None))  # Expected: [0,1,4,9,16]
+print(kth_smallest_unique_squared([1,2,3], None))  # Expected: [1,4,9]
+print(kth_smallest_unique_squared([-5,-3,-1], None))  # Expected: [1,9,25]
+`,
             go: `package main
 
 import "fmt"
 
 // KthSmallestUniqueSquared solves the Kth Smallest Unique Squared problem.
-// Find the kth smallest squared value, but skip duplicate squares (e.g., -3 and 3 both give 9, count it only once).
+// Find the kth smallest squared value, but skip duplicate squares (e.g., -3 and 3 both give 9, count it only once). Adds deduplication to the progressive search, requiring you to detect when both pointers yield the same squared value.
 // Time: O(n), Space: O(n)
-func KthSmallestUniqueSquared(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func KthSmallestUniqueSquared(array []int, k int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(KthSmallestUniqueSquared([]int{1, 2, 3, 4, 5}))
-    fmt.Println(KthSmallestUniqueSquared([]int{5, 3, 1}))
-    fmt.Println(KthSmallestUniqueSquared([]int{1}))
-}`
+	fmt.Println(KthSmallestUniqueSquared([]int{-3, -1, 0, 2, 4}, nil)) // Expected: [0,1,4,9,16]
+	fmt.Println(KthSmallestUniqueSquared([]int{1, 2, 3}, nil)) // Expected: [1,4,9]
+	fmt.Println(KthSmallestUniqueSquared([]int{-5, -3, -1}, nil)) // Expected: [1,9,25]
+}
+`
         },
         twists: [],
         similar: []

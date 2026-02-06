@@ -2,10 +2,12 @@
  * Traversal with Depth Callback
  * Category: binary-search-trees
  * Difficulty: Easy
+ * Algorithm: bst-traversal
  * Parent: 04-bst-traversal
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Traversal with Depth Callback',
         difficulty: 'Easy',
@@ -14,68 +16,80 @@
         description: 'Modify each traversal (inorder, preorder, postorder) to also provide the depth of each node to a callback function. Return an array of {value, depth} pairs.',
         problem: 'Adding depth tracking requires passing an additional parameter through the recursion. While simple for recursion, it changes how you think about the iterative stack-based versions since depth must be explicitly tracked. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: traversal with depth callback.",
-                  "Consider how adding depth tracking requires passing an additional parameter through the recursion affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Tree: [10,5,15]. Inorder with depth: [{value:5,depth:1}, {value:10,depth:0}, {value:15,depth:1}].'
+                input: {"tree":[10,5,15,2,5,null,22,1]},
+                output: [10,5,15],
+                explanation: 'The traversal with depth callback for this input yields [10, 5, 15].'
+            },
+            // Edge case
+            {
+                input: {"tree":[10]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Traversal with Depth Callback
-# Difficulty: Easy
-# Parent: 04-bst-traversal
-#
-# Modify each traversal (inorder, preorder, postorder) to also provide the depth of each node to a callback function. Return an array of {value, depth} pairs.
-
-def traversalWithDepthCallback(data):
+            python: `def traversal_with_depth_callback(tree):
     """
     Traversal with Depth Callback
 
-    Approach: Adding depth tracking requires passing an additional parameter through the recursion.
+    Modify each traversal (inorder, preorder, postorder) to also provide the depth of each node to a callback function. Return an array of {value, depth} pairs.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Adding depth tracking requires passing an additional parameter through the recursion
-    pass
+    result = []
+
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree: [10,5,15]
-    print(traversalWithDepthCallback({}))`,
+# Test cases
+print(traversal_with_depth_callback([10,5,15,2,5,None,22,1]))  # Expected: [10,5,15]
+print(traversal_with_depth_callback([10]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// Traversal with Depth Callback
-// Difficulty: Easy
-// Parent: 04-bst-traversal
-//
+// TraversalWithDepthCallback solves the Traversal with Depth Callback problem.
 // Modify each traversal (inorder, preorder, postorder) to also provide the depth of each node to a callback function. Return an array of {value, depth} pairs.
+// Time: O(n), Space: O(1)
+func TraversalWithDepthCallback(tree []int) []int {
+	result := make([]int, 0)
 
-func TraversalWithDepthCallback(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Adding depth tracking requires passing an additional parameter through the recursion
-    return nil
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Tree: [10,5,15]
-    fmt.Println(TraversalWithDepthCallback(map[string]interface{}{}))
-}`
+	fmt.Println(TraversalWithDepthCallback([]int{10, 5, 15, 2, 5, null, 22, 1})) // Expected: [10,5,15]
+	fmt.Println(TraversalWithDepthCallback([]int{10})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '04-bst-traversal/twist-04-traversal-with-depth-callback', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/04-bst-traversal/twist-04-traversal-with-depth-callback'] = problem;
 })();

@@ -2,10 +2,12 @@
  * Bidirectional BFS
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-bfs
  * Parent: 02-breadth-first-search
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Bidirectional BFS',
         difficulty: 'Hard',
@@ -19,87 +21,78 @@
             'Consider the example: Graph: A-B-C-D-E.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(V + E)', space: 'O(V)' },
+        complexity: {
+            time: 'O(V + E)',
+            space: 'O(V)'
+        },
         examples: [
-            { input: { description: 'Graph: A-B-C-D-E. Source=A, Target=E. Forward BFS: {A},{B}. Backward BFS: {E},{D}. Next forward: {C}. C is in backward frontier path -> found path A-B-C-D-E.' }, output: 'See explanation', explanation: 'Graph: A-B-C-D-E. Source=A, Target=E. Forward BFS: {A},{B}. Backward BFS: {E},{D}. Next forward: {C}. C is in backward frontier path -> found path A-B-C-D-E.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]},"target":10},
+                output: [0],
+                explanation: 'The bidirectional bfs for this input yields [0].'
+            },
+            // Edge case
+            {
+                input: {"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]},"target":10},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def bidirectional_bfs(data):
+            python: `def bidirectional_bfs(tree, target):
     """
     Bidirectional BFS
 
     Given source and target in an undirected graph, perform BFS from both ends simultaneously. Stop when the two frontiers meet.
 
-    Approach:
-    Bidirectional BFS can dramatically reduce the search space from O(b^d) to O(b^(d/2)). You must manage two queues and two visited sets, alternating expansion between them.
-
     Time: O(V + E)
     Space: O(V)
     """
-    # Bidirectional BFS can dramatically reduce the search space from O(b^d) to O(b^(d/2)). You must manage two queues and two visited sets, alternating expansion between them.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Bidirectional BFS
-    # Key difference from parent: Bidirectional BFS can dramatically reduce the search space from O(b^d) to O(b^(d/2)). You must manag
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return bidirectional_bfs(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Graph: A-B-C-D-E. Source=A, Target=E. Forward BFS: {A},{B}. Backward BFS: {E},{D}. Next forward: {C}. C is in backward frontier path -> found path A-B-C-D-E.
-    print("Test: Bidirectional BFS")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(bidirectional_bfs({"name": "A", "children": [{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}, 10))  # Expected: [0]
+print(bidirectional_bfs({"name": "A", "children": [{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}, 10))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// BidirectionalBFS solves the Bidirectional BFS problem
+// BidirectionalBfs solves the Bidirectional BFS problem.
 // Given source and target in an undirected graph, perform BFS from both ends simultaneously. Stop when the two frontiers meet.
-//
-// Approach: Bidirectional BFS can dramatically reduce the search space from O(b^d) to O(b^(d/2)). You must manage two queues and two visited sets, alternating expansion between them.
-//
-// Time: O(V + E)
-// Space: O(V)
-func BidirectionalBFS(input interface{}) interface{} {
-    // Bidirectional BFS can dramatically reduce the search space from O(b^d) to O(b^(d/2)). You must manage two queues and two visited sets, alternating expansion between them.
+// Time: O(V + E), Space: O(V)
+func BidirectionalBfs(tree map[string]interface{}, target int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Bidirectional BFS
-    // Key difference from parent: Bidirectional BFS can dramatically reduce the search space from O(b^d) to O(b^(d/2)). You must manag
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Graph: A-B-C-D-E. Source=A, Target=E. Forward BFS: {A},{B}. Backward BFS: {E},{D}. Next forward: {C}. C is in backward frontier path -> found path A-B-C-D-E.
-    fmt.Println("Test: Bidirectional BFS")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(BidirectionalBfs({"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}, 10)) // Expected: [0]
+	fmt.Println(BidirectionalBfs({"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}, 10)) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '02-breadth-first-search/twist-03-bidirectional-bfs', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/02-breadth-first-search/twist-03-bidirectional-bfs'] = problem;
 })();

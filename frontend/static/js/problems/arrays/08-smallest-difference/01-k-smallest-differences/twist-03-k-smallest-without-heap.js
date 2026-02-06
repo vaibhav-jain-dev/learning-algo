@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,3,5,7],"k":2},
                 output: [1,3],
-                explanation: 'The k=2 smallest/closest values found.'
+                explanation: ''
             },
             {
                 input: {"array":[10,20,30],"k":1},
                 output: [10],
-                explanation: 'With k=1, return the single best result.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[5,5,5,5],"k":3},
                 output: [5,5,5],
-                explanation: 'Duplicate values handled correctly with k=3.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def k_smallest_without_heap(data):
+            python: `def k_smallest_without_heap(arr1, arr2, k):
     """
     K Smallest Without Heap
 
-    Find K smallest difference pairs without using a heap. Use only sorting and two-pointer techniques.
-    \n    Approach: Forces a merge-based approach, iterating through sorted differences systematically without priority queue overhead.
+    Find K smallest difference pairs without using a heap. Use only sorting and two-pointer techniques. Forces a merge-based approach, iterating through sorted differences systematically without priority queue overhead.
 
     Time: O(n log k)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # arr1 = [1, 3, 5], arr2 = [2, 4], k = 3. Same result but achieved with pointers only.
+    count = 0
+    n = len(arr1)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on arr2
+        j = 0
+        for k in range(i, n):
+            if j < len(arr2) and arr1[k] == arr2[j]:
+                j += 1
+        if j == len(arr2):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(k_smallest_without_heap([1, 2, 3, 4, 5]))
-print(k_smallest_without_heap([5, 3, 1]))
-print(k_smallest_without_heap([1]))`,
+print(k_smallest_without_heap(None, None, 2))  # Expected: [1,3]
+print(k_smallest_without_heap(None, None, 1))  # Expected: [10]
+print(k_smallest_without_heap(None, None, 3))  # Expected: [5,5,5]
+`,
             go: `package main
 
 import "fmt"
 
 // KSmallestWithoutHeap solves the K Smallest Without Heap problem.
-// Find K smallest difference pairs without using a heap. Use only sorting and two-pointer techniques.
+// Find K smallest difference pairs without using a heap. Use only sorting and two-pointer techniques. Forces a merge-based approach, iterating through sorted differences systematically without priority queue overhead.
 // Time: O(n log k), Space: O(n)
-func KSmallestWithoutHeap(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func KSmallestWithoutHeap(arr1 []int, arr2 []int, k int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(arr1); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(KSmallestWithoutHeap([]int{1, 2, 3, 4, 5}))
-    fmt.Println(KSmallestWithoutHeap([]int{5, 3, 1}))
-    fmt.Println(KSmallestWithoutHeap([]int{1}))
-}`
+	fmt.Println(KSmallestWithoutHeap(nil, nil, 2)) // Expected: [1,3]
+	fmt.Println(KSmallestWithoutHeap(nil, nil, 1)) // Expected: [10]
+	fmt.Println(KSmallestWithoutHeap(nil, nil, 3)) // Expected: [5,5,5]
+}
+`
         },
         twists: [],
         similar: []

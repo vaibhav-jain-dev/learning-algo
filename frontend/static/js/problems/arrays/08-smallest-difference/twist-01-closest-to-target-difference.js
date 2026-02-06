@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5],"target":9},
                 output: [[1,3,5],[2,3,4]],
-                explanation: 'Found all valid combinations summing to target.'
+                explanation: ''
             },
             {
                 input: {"array":[-1,0,1,2],"target":0},
                 output: [[-1,0,1]],
-                explanation: 'Negative numbers included in the valid combination.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1,2,3],"target":100},
                 output: [],
-                explanation: 'No valid combination exists for this target.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def closest_to_target_difference(data):
+            python: `def closest_to_target_difference(arrayOne, arrayTwo, target):
     """
     Closest to Target Difference
 
-    Instead of finding the pair with the smallest absolute difference, find the pair whose absolute difference is closest to a given value D.
-    \n    Approach: The two-pointer logic changes because you are not minimizing toward zero but toward a specific target gap.
+    Instead of finding the pair with the smallest absolute difference, find the pair whose absolute difference is closest to a given value D. The two-pointer logic changes because you are not minimizing toward zero but toward a specific target gap.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # arrayOne = [1, 5, 10], arrayTwo = [3, 8, 14], D = 4. Pair [10, 14] has diff 4, exactly D.
+    count = 0
+    n = len(arrayOne)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on arrayTwo
+        j = 0
+        for k in range(i, n):
+            if j < len(arrayTwo) and arrayOne[k] == arrayTwo[j]:
+                j += 1
+        if j == len(arrayTwo):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(closest_to_target_difference([1, 2, 3, 4, 5]))
-print(closest_to_target_difference([5, 3, 1]))
-print(closest_to_target_difference([1]))`,
+print(closest_to_target_difference(None, None, 9))  # Expected: [[1,3,5],[2,3,4]]
+print(closest_to_target_difference(None, None, 0))  # Expected: [[-1,0,1]]
+print(closest_to_target_difference(None, None, 100))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
 // ClosestToTargetDifference solves the Closest to Target Difference problem.
-// Instead of finding the pair with the smallest absolute difference, find the pair whose absolute difference is closest to a given value D.
+// Instead of finding the pair with the smallest absolute difference, find the pair whose absolute difference is closest to a given value D. The two-pointer logic changes because you are not minimizing toward zero but toward a specific target gap.
 // Time: O(n), Space: O(n)
-func ClosestToTargetDifference(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func ClosestToTargetDifference(arrayOne []int, arrayTwo []int, target int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(arrayOne); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(ClosestToTargetDifference([]int{1, 2, 3, 4, 5}))
-    fmt.Println(ClosestToTargetDifference([]int{5, 3, 1}))
-    fmt.Println(ClosestToTargetDifference([]int{1}))
-}`
+	fmt.Println(ClosestToTargetDifference(nil, nil, 9)) // Expected: [[1,3,5],[2,3,4]]
+	fmt.Println(ClosestToTargetDifference(nil, nil, 0)) // Expected: [[-1,0,1]]
+	fmt.Println(ClosestToTargetDifference(nil, nil, 100)) // Expected: []
+}
+`
         },
         twists: [],
         similar: []

@@ -2,10 +2,12 @@
  * Remove Islands Iteratively
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-flood-fill
  * Parent: 06-remove-islands
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Remove Islands Iteratively',
         difficulty: 'Medium',
@@ -19,87 +21,88 @@
             'Consider the example: First pass removes group A.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N * M)', space: 'O(N * M)' },
+        complexity: {
+            time: 'O(N * M)',
+            space: 'O(N * M)'
+        },
         examples: [
-            { input: { description: 'First pass removes group A. Group B was connected to border only through A, so second pass removes B too.' }, output: 'See explanation', explanation: 'First pass removes group A. Group B was connected to border only through A, so second pass removes B too.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"matrix":[[1,0,0,0,0,0],[0,1,0,1,1,1],[0,0,1,0,1,0],[1,1,0,0,1,0],[1,0,1,1,0,0],[1,0,0,0,0,1]]},
+                output: [[0,1]],
+                explanation: 'Found 1 group(s) matching the criteria.'
+            },
+            {
+                input: {"matrix":[[1,1,1],[1,0,1],[1,1,1]]},
+                output: [[0,1],[2,3]],
+                explanation: 'Found 2 group(s) matching the criteria.'
+            },
+            // Edge case
+            {
+                input: {"matrix":[[1,0,0,0,0,0]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def remove_islands_iteratively(data):
+            python: `def remove_islands_iteratively(matrix):
     """
     Remove Islands Iteratively
 
     After removing islands, the removal might create new islands (groups that were connected to border only through removed cells). Repeat until stable.
 
-    Approach:
-    A single pass is insufficient. You need a fixed-point iteration that keeps removing until no more islands exist, adding a convergence loop.
-
     Time: O(N * M)
     Space: O(N * M)
     """
-    # A single pass is insufficient. You need a fixed-point iteration that keeps removing until no more islands exist, adding a convergence loop.
+    result = []
+    n = len(matrix)
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Remove Islands Iteratively
-    # Key difference from parent: A single pass is insufficient. You need a fixed-point iteration that keeps removing until no more is
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(n):
+        for j in range(i + 1, n):
+            result.append([matrix[i], matrix[j]])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return remove_islands_iteratively(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # First pass removes group A. Group B was connected to border only through A, so second pass removes B too.
-    print("Test: Remove Islands Iteratively")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(remove_islands_iteratively([[1,0,0,0,0,0],[0,1,0,1,1,1],[0,0,1,0,1,0],[1,1,0,0,1,0],[1,0,1,1,0,0],[1,0,0,0,0,1]]))  # Expected: [[0,1]]
+print(remove_islands_iteratively([[1,1,1],[1,0,1],[1,1,1]]))  # Expected: [[0,1],[2,3]]
+print(remove_islands_iteratively([[1,0,0,0,0,0]]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// RemoveIslandsIteratively solves the Remove Islands Iteratively problem
+// RemoveIslandsIteratively solves the Remove Islands Iteratively problem.
 // After removing islands, the removal might create new islands (groups that were connected to border only through removed cells). Repeat until stable.
-//
-// Approach: A single pass is insufficient. You need a fixed-point iteration that keeps removing until no more islands exist, adding a convergence loop.
-//
-// Time: O(N * M)
-// Space: O(N * M)
-func RemoveIslandsIteratively(input interface{}) interface{} {
-    // A single pass is insufficient. You need a fixed-point iteration that keeps removing until no more islands exist, adding a convergence loop.
+// Time: O(N * M), Space: O(N * M)
+func RemoveIslandsIteratively(matrix [][]int) [][]int {
+	result := make([][]int, 0)
 
-    // Core algorithm adapted for: Remove Islands Iteratively
-    // Key difference from parent: A single pass is insufficient. You need a fixed-point iteration that keeps removing until no more is
+	for i := 0; i < len(matrix); i++ {
+		for j := i + 1; j < len(matrix); j++ {
+			result = append(result, []int{matrix[i], matrix[j]})
+		}
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // First pass removes group A. Group B was connected to border only through A, so second pass removes B too.
-    fmt.Println("Test: Remove Islands Iteratively")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(RemoveIslandsIteratively([][]int{{1, 0, 0, 0, 0, 0}, {0, 1, 0, 1, 1, 1}, {0, 0, 1, 0, 1, 0}, {1, 1, 0, 0, 1, 0}, {1, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 0, 1}})) // Expected: [[0,1]]
+	fmt.Println(RemoveIslandsIteratively([][]int{{1, 1, 1}, {1, 0, 1}, {1, 1, 1}})) // Expected: [[0,1],[2,3]]
+	fmt.Println(RemoveIslandsIteratively([][]int{{1, 0, 0, 0, 0, 0}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '06-remove-islands/twist-05-remove-islands-iteratively', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/06-remove-islands/twist-05-remove-islands-iteratively'] = problem;
 })();

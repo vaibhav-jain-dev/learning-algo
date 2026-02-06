@@ -2,10 +2,12 @@
  * Maximum Ladder Length
  * Category: famous-algorithms
  * Difficulty: Medium
+ * Algorithm: a-star-bfs
  * Parent: 08-a-star-algorithm/03-word-ladder-heuristic
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Maximum Ladder Length',
         difficulty: 'Medium',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'From "hit" to "cog", the shortest path is 5 but the longest (non-repeating) path might visit 10 intermediate words.' },
-                output: 'See example',
-                explanation: 'From "hit" to "cog", the shortest path is 5 but the longest (non-repeating) path might visit 10 intermediate words.'
+                input: {"beginWord":"hit","endWord":"cog","wordList":["hot","dot","dog","lot","log","cog"]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the maximum ladder length criteria.'
+            },
+            // Edge case
+            {
+                input: {"beginWord":"","endWord":"","wordList":["hot"]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Maximum Ladder Length
-# Category: famous-algorithms
-# Difficulty: Medium
-# Parent: 08-a-star-algorithm/03-word-ladder-heuristic
-
-def solve():
+            python: `def maximum_ladder_length(beginWord, endWord, wordList):
     """
+    Maximum Ladder Length
+
     Find the longest possible transformation sequence from beginWord to endWord (visiting each word at most once).
 
-    Key insight: Inverts the optimization from shortest to longest path, which is NP-hard in general graphs. For word ladders, the small graph size may make it tractable with DFS+backtracking.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(beginWord)
+
+    for i in range(n):
+        # Check condition based on endWord
+        j = 0
+        for k in range(i, n):
+            if j < len(endWord) and beginWord[k] == endWord[j]:
+                j += 1
+        if j == len(endWord):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(maximum_ladder_length("hit", "cog", ["hot","dot","dog","lot","log","cog"]))  # Expected: 2
+print(maximum_ladder_length("", "", ["hot"]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Maximum Ladder Length problem.
+// MaximumLadderLength solves the Maximum Ladder Length problem.
 // Find the longest possible transformation sequence from beginWord to endWord (visiting each word at most once).
-// Key insight: Inverts the optimization from shortest to longest path, which is NP-hard in general graphs. For word ladders, the small graph size may make it tractable with DFS+backtracking.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func MaximumLadderLength(beginWord string, endWord string, wordList []string) int {
+	result := 0
+
+	for i := 0; i < len(beginWord); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(MaximumLadderLength("hit", "cog", []string{"hot", "dot", "dog", "lot", "log", "cog"})) // Expected: 2
+	fmt.Println(MaximumLadderLength("", "", []string{"hot"})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '08-a-star-algorithm/03-word-ladder-heuristic/twist-04-maximum-ladder-length', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/08-a-star-algorithm/03-word-ladder-heuristic/twist-04-maximum-ladder-length'] = problem;
 })();

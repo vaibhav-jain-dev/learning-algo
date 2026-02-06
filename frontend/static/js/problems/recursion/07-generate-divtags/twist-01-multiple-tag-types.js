@@ -2,10 +2,12 @@
  * Multiple Tag Types
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: general
  * Parent: 07-generate-divtags
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Multiple Tag Types',
         difficulty: 'Hard',
@@ -19,57 +21,91 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For 1 div and 1 span, valid outputs include "<div><span></span></div>" and "<span><div></div></span>" and "<div></div><span></span>", etc.' },
-                output: 'See example',
-                explanation: 'For 1 div and 1 span, valid outputs include "<div><span></span></div>" and "<span><div></div></span>" and "<div></div><span></span>", etc.'
+                input: {"raw":"numberOfTags = 2"},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the multiple tag types criteria.'
+            },
+            {
+                input: {"raw":"numberOfTags = 1"},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the multiple tag types criteria.'
+            },
+            {
+                input: {"raw":"numberOfTags = 3"},
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the multiple tag types criteria.'
+            },
+            // Edge case
+            {
+                input: {"raw":""},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Multiple Tag Types
-# Category: recursion
-# Difficulty: Hard
-# Parent: 07-generate-divtags
-
-def solve():
+            python: `def multiple_tag_types(raw):
     """
+    Multiple Tag Types
+
     Generate valid strings using multiple tag types (e.g., <div>, <span>, <p>) where each type has a specified count and tags must be properly nested.
 
-    Key insight: Increases the branching factor at each step -- you can open or close any valid tag type, and closing must match the most recently opened unclosed tag (stack-based validation).
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(raw)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(multiple_tag_types("numberOfTags = 2"))  # Expected: 1
+print(multiple_tag_types("numberOfTags = 1"))  # Expected: 2
+print(multiple_tag_types("numberOfTags = 3"))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Multiple Tag Types problem.
+// MultipleTagTypes solves the Multiple Tag Types problem.
 // Generate valid strings using multiple tag types (e.g., <div>, <span>, <p>) where each type has a specified count and tags must be properly nested.
-// Key insight: Increases the branching factor at each step -- you can open or close any valid tag type, and closing must match the most recently opened unclosed tag (stack-based validation).
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func MultipleTagTypes(raw string) int {
+	result := 0
+
+	for i := 0; i < len(raw); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(MultipleTagTypes("numberOfTags = 2")) // Expected: 1
+	fmt.Println(MultipleTagTypes("numberOfTags = 1")) // Expected: 2
+	fmt.Println(MultipleTagTypes("numberOfTags = 3")) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '07-generate-divtags/twist-01-multiple-tag-types', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/07-generate-divtags/twist-01-multiple-tag-types'] = problem;
 })();

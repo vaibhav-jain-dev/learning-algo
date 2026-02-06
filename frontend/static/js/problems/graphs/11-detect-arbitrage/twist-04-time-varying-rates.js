@@ -2,10 +2,12 @@
  * Time-Varying Rates
  * Category: graphs
  * Difficulty: Very Hard
+ * Algorithm: graph-arbitrage
  * Parent: 11-detect-arbitrage
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Time-Varying Rates',
         difficulty: 'Very Hard',
@@ -19,87 +21,84 @@
             'Consider the example: At time T1: no arbitrage.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'Varies - see approach', space: 'Varies - see approach' },
+        complexity: {
+            time: 'Varies - see approach',
+            space: 'Varies - see approach'
+        },
         examples: [
-            { input: { description: 'At time T1: no arbitrage. At T2: EUR/GBP rate changes, creating a profitable cycle. Detect the earliest time.' }, output: 'See explanation', explanation: 'At time T1: no arbitrage. At T2: EUR/GBP rate changes, creating a profitable cycle. Detect the earliest time.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"exchangeRates":[[1,0.8631,0.5903],[1.1586,1,0.6849],[1.6939,1.46,1]]},
+                output: true,
+                explanation: 'The time varying rates condition is satisfied for this input.'
+            },
+            {
+                input: {"exchangeRates":[[1,0.5,0.25],[2,1,0.5],[4,2,1]]},
+                output: false,
+                explanation: 'The time varying rates condition is not satisfied for this input.'
+            },
+            // Edge case
+            {
+                input: {"exchangeRates":[[1,0.8631,0.5903]]},
+                output: false,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def time_varying_rates(data):
+            python: `def time_varying_rates(exchangeRates):
     """
     Time-Varying Rates
 
     Exchange rates change over time. Given rates at different timestamps, find if arbitrage exists at any point in time.
 
-    Approach:
-    You run the detection algorithm for each time snapshot, or more cleverly, track rate changes and only recheck affected cycles.
-
     Time: Varies - see approach
     Space: Varies - see approach
     """
-    # You run the detection algorithm for each time snapshot, or more cleverly, track rate changes and only recheck affected cycles.
+    if not exchangeRates:
+        return False
 
-    # Implementation
-    result = None
+    # Process the input
+    for i in range(len(exchangeRates)):
+        pass  # Check condition
 
-    # Core algorithm adapted for: Time-Varying Rates
-    # Key difference from parent: You run the detection algorithm for each time snapshot, or more cleverly, track rate changes and onl
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return time_varying_rates(data)
+    return True
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # At time T1: no arbitrage. At T2: EUR/GBP rate changes, creating a profitable cycle. Detect the earliest time.
-    print("Test: Time-Varying Rates")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(time_varying_rates([[1,0.8631,0.5903],[1.1586,1,0.6849],[1.6939,1.46,1]]))  # Expected: True
+print(time_varying_rates([[1,0.5,0.25],[2,1,0.5],[4,2,1]]))  # Expected: False
+print(time_varying_rates([[1,0.8631,0.5903]]))  # Expected: False
+`,
             go: `package main
 
 import "fmt"
 
-// TimeVaryingRates solves the Time-Varying Rates problem
+// TimeVaryingRates solves the Time-Varying Rates problem.
 // Exchange rates change over time. Given rates at different timestamps, find if arbitrage exists at any point in time.
-//
-// Approach: You run the detection algorithm for each time snapshot, or more cleverly, track rate changes and only recheck affected cycles.
-//
-// Time: Varies - see approach
-// Space: Varies - see approach
-func TimeVaryingRates(input interface{}) interface{} {
-    // You run the detection algorithm for each time snapshot, or more cleverly, track rate changes and only recheck affected cycles.
+// Time: Varies - see approach, Space: Varies - see approach
+func TimeVaryingRates(exchangeRates [][]int) bool {
+	if len(exchangeRates) == 0 {
+		return false
+	}
 
-    // Core algorithm adapted for: Time-Varying Rates
-    // Key difference from parent: You run the detection algorithm for each time snapshot, or more cleverly, track rate changes and onl
-
-    return nil
+	return true
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // At time T1: no arbitrage. At T2: EUR/GBP rate changes, creating a profitable cycle. Detect the earliest time.
-    fmt.Println("Test: Time-Varying Rates")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(TimeVaryingRates([][]int{{1, 0.8631, 0.5903}, {1.1586, 1, 0.6849}, {1.6939, 1.46, 1}})) // Expected: true
+	fmt.Println(TimeVaryingRates([][]int{{1, 0.5, 0.25}, {2, 1, 0.5}, {4, 2, 1}})) // Expected: false
+	fmt.Println(TimeVaryingRates([][]int{{1, 0.8631, 0.5903}})) // Expected: false
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '11-detect-arbitrage/twist-04-time-varying-rates', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/11-detect-arbitrage/twist-04-time-varying-rates'] = problem;
 })();

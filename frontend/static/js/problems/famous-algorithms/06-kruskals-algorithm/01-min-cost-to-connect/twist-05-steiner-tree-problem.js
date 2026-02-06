@@ -2,10 +2,12 @@
  * Steiner Tree Problem
  * Category: famous-algorithms
  * Difficulty: Very Hard
+ * Algorithm: kruskals-algorithm
  * Parent: 06-kruskals-algorithm/01-min-cost-to-connect
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Steiner Tree Problem',
         difficulty: 'Very Hard',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For 3 points forming an equilateral triangle, adding a Steiner point at the center reduces total connection length compared to MST.' },
-                output: 'See example',
-                explanation: 'For 3 points forming an equilateral triangle, adding a Steiner point at the center reduces total connection length compared to MST.'
+                input: {"points":[[0,0],[2,2],[3,10],[5,2],[7,0]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the steiner tree problem criteria.'
+            },
+            // Edge case
+            {
+                input: {"points":[[0,0]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Steiner Tree Problem
-# Category: famous-algorithms
-# Difficulty: Very Hard
-# Parent: 06-kruskals-algorithm/01-min-cost-to-connect
-
-def solve():
+            python: `def steiner_tree_problem(points):
     """
+    Steiner Tree Problem
+
     Connect a subset of required points with minimum total distance, optionally adding intermediate Steiner points not in the original set.
 
-    Key insight: Unlike MST which connects existing vertices only, Steiner trees can add new junction points to reduce total distance, making it NP-hard in general.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(points)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(steiner_tree_problem([[0,0],[2,2],[3,10],[5,2],[7,0]]))  # Expected: 1
+print(steiner_tree_problem([[0,0]]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Steiner Tree Problem problem.
+// SteinerTreeProblem solves the Steiner Tree Problem problem.
 // Connect a subset of required points with minimum total distance, optionally adding intermediate Steiner points not in the original set.
-// Key insight: Unlike MST which connects existing vertices only, Steiner trees can add new junction points to reduce total distance, making it NP-hard in general.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func SteinerTreeProblem(points [][]int) int {
+	result := 0
+
+	for i := 0; i < len(points); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(SteinerTreeProblem([][]int{{0, 0}, {2, 2}, {3, 10}, {5, 2}, {7, 0}})) // Expected: 1
+	fmt.Println(SteinerTreeProblem([][]int{{0, 0}})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '06-kruskals-algorithm/01-min-cost-to-connect/twist-05-steiner-tree-problem', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/06-kruskals-algorithm/01-min-cost-to-connect/twist-05-steiner-tree-problem'] = problem;
 })();

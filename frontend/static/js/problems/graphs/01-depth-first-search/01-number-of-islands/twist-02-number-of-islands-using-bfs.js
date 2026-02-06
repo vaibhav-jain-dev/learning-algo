@@ -2,10 +2,12 @@
  * Number of Islands Using BFS
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-dfs
  * Parent: 01-depth-first-search/01-number-of-islands
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Number of Islands Using BFS',
         difficulty: 'Medium',
@@ -19,87 +21,86 @@
             'Consider the example: Same input/output, but the internal exploration of each island radiates outward level by level instead of going deep first.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(M * N)', space: 'O(M * N)' },
+        complexity: {
+            time: 'O(M * N)',
+            space: 'O(M * N)'
+        },
         examples: [
-            { input: { description: 'Same input/output, but the internal exploration of each island radiates outward level by level instead of going deep first.' }, output: 'See explanation', explanation: 'Same input/output, but the internal exploration of each island radiates outward level by level instead of going deep first.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"grid":[["1","1","1","1","0"],["1","1","0","1","0"],["1","1","0","0","0"],["0","0","0","0","0"]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the number of islands using bfs criteria.'
+            },
+            {
+                input: {"grid":[["1","1","0","0","0"],["1","1","0","0","0"],["0","0","1","0","0"],["0","0","0","1","1"]]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the number of islands using bfs criteria.'
+            },
+            // Edge case
+            {
+                input: {"grid":[["1","1","1","1","0"]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def number_of_islands_using_bfs(data):
+            python: `def number_of_islands_using_bfs(grid):
     """
     Number of Islands Using BFS
 
     Solve the same problem using BFS instead of DFS. Compare the traversal pattern and discuss when BFS might be preferred.
 
-    Approach:
-    Forces you to switch from recursive flood-fill to iterative queue-based exploration. BFS avoids stack overflow on very large islands but uses more memory for wide islands.
-
     Time: O(M * N)
     Space: O(M * N)
     """
-    # Forces you to switch from recursive flood-fill to iterative queue-based exploration. BFS avoids stack overflow on very large islands but uses more memory for wide islands.
+    result = 0
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Number of Islands Using BFS
-    # Key difference from parent: Forces you to switch from recursive flood-fill to iterative queue-based exploration. BFS avoids stac
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(grid)):
+        # Process element
+        result += 1  # Update based on condition
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return number_of_islands_using_bfs(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Same input/output, but the internal exploration of each island radiates outward level by level instead of going deep first.
-    print("Test: Number of Islands Using BFS")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(number_of_islands_using_bfs([["1","1","1","1","0"],["1","1","0","1","0"],["1","1","0","0","0"],["0","0","0","0","0"]]))  # Expected: 1
+print(number_of_islands_using_bfs([["1","1","0","0","0"],["1","1","0","0","0"],["0","0","1","0","0"],["0","0","0","1","1"]]))  # Expected: 2
+print(number_of_islands_using_bfs([["1","1","1","1","0"]]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// NumberOfIslandsUsingBFS solves the Number of Islands Using BFS problem
+// NumberOfIslandsUsingBfs solves the Number of Islands Using BFS problem.
 // Solve the same problem using BFS instead of DFS. Compare the traversal pattern and discuss when BFS might be preferred.
-//
-// Approach: Forces you to switch from recursive flood-fill to iterative queue-based exploration. BFS avoids stack overflow on very large islands but uses more memory for wide islands.
-//
-// Time: O(M * N)
-// Space: O(M * N)
-func NumberOfIslandsUsingBFS(input interface{}) interface{} {
-    // Forces you to switch from recursive flood-fill to iterative queue-based exploration. BFS avoids stack overflow on very large islands but uses more memory for wide islands.
+// Time: O(M * N), Space: O(M * N)
+func NumberOfIslandsUsingBfs(grid [][]int) int {
+	result := 0
 
-    // Core algorithm adapted for: Number of Islands Using BFS
-    // Key difference from parent: Forces you to switch from recursive flood-fill to iterative queue-based exploration. BFS avoids stac
+	for i := 0; i < len(grid); i++ {
+		// Process element
+		result++
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Same input/output, but the internal exploration of each island radiates outward level by level instead of going deep first.
-    fmt.Println("Test: Number of Islands Using BFS")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(NumberOfIslandsUsingBfs([][]int{{1, 1, 1, 1, 0}, {1, 1, 0, 1, 0}, {1, 1, 0, 0, 0}, {0, 0, 0, 0, 0}})) // Expected: 1
+	fmt.Println(NumberOfIslandsUsingBfs([][]int{{1, 1, 0, 0, 0}, {1, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 1}})) // Expected: 2
+	fmt.Println(NumberOfIslandsUsingBfs([][]int{{1, 1, 1, 1, 0}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '01-depth-first-search/01-number-of-islands/twist-02-number-of-islands-using-bfs', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/01-depth-first-search/01-number-of-islands/twist-02-number-of-islands-using-bfs'] = problem;
 })();

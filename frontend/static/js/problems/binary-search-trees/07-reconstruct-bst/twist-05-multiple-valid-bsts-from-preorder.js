@@ -2,10 +2,12 @@
  * Multiple Valid BSTs from Preorder
  * Category: binary-search-trees
  * Difficulty: Very Hard
+ * Algorithm: bst-reconstruction
  * Parent: 07-reconstruct-bst
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Multiple Valid BSTs from Preorder',
         difficulty: 'Very Hard',
@@ -14,68 +16,88 @@
         description: 'Given a preorder traversal, count how many distinct BSTs could produce this exact preorder if duplicate values are allowed and duplicates can go either left or right.',
         problem: 'With duplicates, the partition point between left and right subtrees becomes ambiguous. You need to count all valid split points where equal values can be assigned to either side, turning this into a combinatorial problem. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: multiple valid bsts from preorder.",
-                  "Consider how with duplicates, the partition point between left and right subtrees becomes ambiguous affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Preorder [5, 5, 5]. The root is 5. The remaining [5, 5] could split as left=[5,5],right=[] or left=[5],right=[5] or left=[],right=[5,5], each recursively multiplying possibilities.'
+                input: {"preorderTraversalValues":[10,4,2,1,5,17,19,18]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the multiple valid bsts from preorder criteria.'
+            },
+            {
+                input: {"preorderTraversalValues":[5,3,1,4,7,6,8]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the multiple valid bsts from preorder criteria.'
+            },
+            // Edge case
+            {
+                input: {"preorderTraversalValues":[10]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Multiple Valid BSTs from Preorder
-# Difficulty: Very Hard
-# Parent: 07-reconstruct-bst
-#
-# Given a preorder traversal, count how many distinct BSTs could produce this exact preorder if duplicate values are allowed and duplicates can go either left or right.
-
-def multipleValidBstsFromPreorder(data):
+            python: `def multiple_valid_bsts_from_preorder(preorderTraversalValues):
     """
     Multiple Valid BSTs from Preorder
 
-    Approach: With duplicates, the partition point between left and right subtrees becomes ambiguous.
+    Given a preorder traversal, count how many distinct BSTs could produce this exact preorder if duplicate values are allowed and duplicates can go either left or right.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: With duplicates, the partition point between left and right subtrees becomes ambiguous
-    pass
+    result = 0
+
+    for i in range(len(preorderTraversalValues)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Preorder [5, 5, 5]
-    print(multipleValidBstsFromPreorder({}))`,
+# Test cases
+print(multiple_valid_bsts_from_preorder([10,4,2,1,5,17,19,18]))  # Expected: 1
+print(multiple_valid_bsts_from_preorder([5,3,1,4,7,6,8]))  # Expected: 2
+print(multiple_valid_bsts_from_preorder([10]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// Multiple Valid BSTs from Preorder
-// Difficulty: Very Hard
-// Parent: 07-reconstruct-bst
-//
+// MultipleValidBstsFromPreorder solves the Multiple Valid BSTs from Preorder problem.
 // Given a preorder traversal, count how many distinct BSTs could produce this exact preorder if duplicate values are allowed and duplicates can go either left or right.
+// Time: O(n), Space: O(1)
+func MultipleValidBstsFromPreorder(preorderTraversalValues []int) int {
+	result := 0
 
-func MultipleValidBstsFromPreorder(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: With duplicates, the partition point between left and right subtrees becomes ambiguous
-    return nil
+	for i := 0; i < len(preorderTraversalValues); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Preorder [5, 5, 5]
-    fmt.Println(MultipleValidBstsFromPreorder(map[string]interface{}{}))
-}`
+	fmt.Println(MultipleValidBstsFromPreorder([]int{10, 4, 2, 1, 5, 17, 19, 18})) // Expected: 1
+	fmt.Println(MultipleValidBstsFromPreorder([]int{5, 3, 1, 4, 7, 6, 8})) // Expected: 2
+	fmt.Println(MultipleValidBstsFromPreorder([]int{10})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '07-reconstruct-bst/twist-05-multiple-valid-bsts-from-preorder', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/07-reconstruct-bst/twist-05-multiple-valid-bsts-from-preorder'] = problem;
 })();

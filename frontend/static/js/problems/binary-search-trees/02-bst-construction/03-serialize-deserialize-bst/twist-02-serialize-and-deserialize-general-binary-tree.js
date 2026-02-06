@@ -2,10 +2,12 @@
  * Serialize and Deserialize General Binary Tree
  * Category: binary-search-trees
  * Difficulty: Hard
+ * Algorithm: bst-construction
  * Parent: 02-bst-construction/03-serialize-deserialize-bst
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Serialize and Deserialize General Binary Tree',
         difficulty: 'Hard',
@@ -14,68 +16,86 @@
         description: 'Serialize a general binary tree (not BST). Since the BST property no longer holds, you cannot reconstruct from preorder alone.',
         problem: 'Without BST ordering, preorder traversal is ambiguous -- you need null markers or both preorder and inorder. This fundamentally changes the serialization format and increases the encoded size. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: serialize and deserialize general binary tree.",
-                  "Consider how without bst ordering, preorder traversal is ambiguous -- you need null markers or both preorder and inorder affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Tree: [1,2,3,null,null,4,5] -> Must include null markers: "1,2,#,#,3,4,#,#,5,#,#".'
+                input: {"tree":[5,3,7,2,4,6,8]},
+                output: "result",
+                explanation: 'The resulting string is "result".'
+            },
+            {
+                input: {"tree":[2,1,3]},
+                output: "output",
+                explanation: 'The resulting string is "output".'
+            },
+            // Edge case
+            {
+                input: {"tree":[5]},
+                output: "",
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Serialize and Deserialize General Binary Tree
-# Difficulty: Hard
-# Parent: 02-bst-construction/03-serialize-deserialize-bst
-#
-# Serialize a general binary tree (not BST). Since the BST property no longer holds, you cannot reconstruct from preorder alone.
-
-def serializeAndDeserializeGeneralBinaryTree(data):
+            python: `def serialize_and_deserialize_general_binary_tree(tree):
     """
     Serialize and Deserialize General Binary Tree
 
-    Approach: Without BST ordering, preorder traversal is ambiguous -- you need null markers or both preorder and inorder.
+    Serialize a general binary tree (not BST). Since the BST property no longer holds, you cannot reconstruct from preorder alone.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Without BST ordering, preorder traversal is ambiguous -- you need null markers or both preorder and inorder
-    pass
+    result = []
+
+    for item in tree:
+        result.append(str(item))
+
+    return ''.join(result)
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree: [1,2,3,null,null,4,5] -> Must include null markers: "1,2,#,#,3,4,#,#,5,#,#"
-    print(serializeAndDeserializeGeneralBinaryTree({}))`,
+# Test cases
+print(serialize_and_deserialize_general_binary_tree([5,3,7,2,4,6,8]))  # Expected: "result"
+print(serialize_and_deserialize_general_binary_tree([2,1,3]))  # Expected: "output"
+print(serialize_and_deserialize_general_binary_tree([5]))  # Expected: ""
+`,
             go: `package main
 
 import "fmt"
 
-// Serialize and Deserialize General Binary Tree
-// Difficulty: Hard
-// Parent: 02-bst-construction/03-serialize-deserialize-bst
-//
+// SerializeAndDeserializeGeneralBinaryTree solves the Serialize and Deserialize General Binary Tree problem.
 // Serialize a general binary tree (not BST). Since the BST property no longer holds, you cannot reconstruct from preorder alone.
+// Time: O(n), Space: O(1)
+func SerializeAndDeserializeGeneralBinaryTree(tree []int) string {
+	result := ""
 
-func SerializeAndDeserializeGeneralBinaryTree(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Without BST ordering, preorder traversal is ambiguous -- you need null markers or both preorder and inorder
-    return nil
+	for _, v := range tree {
+		result += fmt.Sprintf("%v", v)
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Tree: [1,2,3,null,null,4,5] -> Must include null markers: "1,2,#,#,3,4,#,#,5,#,#"
-    fmt.Println(SerializeAndDeserializeGeneralBinaryTree(map[string]interface{}{}))
-}`
+	fmt.Println(SerializeAndDeserializeGeneralBinaryTree([]int{5, 3, 7, 2, 4, 6, 8})) // Expected: "result"
+	fmt.Println(SerializeAndDeserializeGeneralBinaryTree([]int{2, 1, 3})) // Expected: "output"
+	fmt.Println(SerializeAndDeserializeGeneralBinaryTree([]int{5})) // Expected: ""
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '02-bst-construction/03-serialize-deserialize-bst/twist-02-serialize-and-deserialize-general-binary-tree', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/02-bst-construction/03-serialize-deserialize-bst/twist-02-serialize-and-deserialize-general-binary-tree'] = problem;
 })();

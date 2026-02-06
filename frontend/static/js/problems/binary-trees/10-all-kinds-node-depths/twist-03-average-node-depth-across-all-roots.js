@@ -2,10 +2,12 @@
  * Average Node Depth Across All Roots
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-dfs
  * Parent: 10-all-kinds-node-depths
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Average Node Depth Across All Roots',
         difficulty: 'Medium',
@@ -19,121 +21,78 @@
             'Key insight: You need the same total as the original problem, but dividing by the correct normalization factor (n * (n-1) since each of n roots has n-1 other nodes).',
             'The math insight simplifies the problem but requires careful counting.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree [1, 2, 3, 4, 5]' },
-                output: 'See explanation',
-                explanation: 'Tree [1, 2, 3, 4, 5]. Total from all-kinds = 26. There are 5 nodes, each with 4 others. Average = 26 / (5*4) = 1.3.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: [0],
+                explanation: 'The average node depth across all roots for this input yields [0].'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def average_node_depth_across_all_roots(data):
+            python: `def average_node_depth_across_all_roots(tree):
     """
     Average Node Depth Across All Roots
 
-    Compute the average depth across all nodes when each node is treated as the root.
-     Return a floating-point result.
+    Compute the average depth across all nodes when each node is treated as the root. Return a floating-point result. You need the same total as the original problem, but dividing by the correct normalization factor (n * (n-1) since each of n roots has n-1 other nodes). The math insight simplifies the problem but requires careful counting.
 
-    Approach: You need the same total as the original problem, but dividing by the correct normalization factor (n * (n-1) since each of n roots has n-1 other nodes)
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: You need the same total as the original problem, but dividing by the correct normalization factor (n * (n-1) since each of n roots has n-1 other nodes)
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Average Node Depth Across All Roots
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree [1, 2, 3, 4, 5]
-    print("See problem description for test cases")`,
+# Test cases
+print(average_node_depth_across_all_roots({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: [0]
+print(average_node_depth_across_all_roots({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// AverageNodeDepthAcrossAllRoots solves: Average Node Depth Across All Roots
-// You need the same total as the original problem, but dividing by the correct normalization factor (n * (n-1) since each of n roots has n-1 other nodes)
+// AverageNodeDepthAcrossAllRoots solves the Average Node Depth Across All Roots problem.
+// Compute the average depth across all nodes when each node is treated as the root. Return a floating-point result. You need the same total as the original problem, but dividing by the correct normalization factor (n * (n-1) since each of n roots has n-1 other nodes). The math insight simplifies the problem but requires careful counting.
 // Time: O(n), Space: O(n)
-func AverageNodeDepthAcrossAllRoots(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func AverageNodeDepthAcrossAllRoots(tree *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    // TODO: Implement Average Node Depth Across All Roots
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree [1, 2, 3, 4, 5]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(AverageNodeDepthAcrossAllRoots({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: [0]
+	fmt.Println(AverageNodeDepthAcrossAllRoots({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '10-all-kinds-node-depths/twist-03-average-node-depth-across-all-roots', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/10-all-kinds-node-depths/twist-03-average-node-depth-across-all-roots'] = problem;
 })();

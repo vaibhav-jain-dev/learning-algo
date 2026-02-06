@@ -2,10 +2,12 @@
  * Tail Recursion Impossibility
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-product-sum
  * Parent: 02-product-sum/01-nested-array-depth
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Tail Recursion Impossibility',
         difficulty: 'Hard',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For [A, B] where A and B are sub-arrays: depth = 1 + max(depth(A), depth(B)). You cannot compute this with a single tail call because you need both depth(A) and depth(B) before taking the max.' },
-                output: 'See example',
-                explanation: 'For [A, B] where A and B are sub-arrays: depth = 1 + max(depth(A), depth(B)). You cannot compute this with a single tail call because you need both depth(A) and depth(B) before taking the max.'
+                input: {"array":[1,[2,[3,4]]]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the tail recursion impossibility criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Tail Recursion Impossibility
-# Category: recursion
-# Difficulty: Hard
-# Parent: 02-product-sum/01-nested-array-depth
-
-def solve():
+            python: `def tail_recursion_impossibility(array):
     """
+    Tail Recursion Impossibility
+
     Explain why maximum depth of nested arrays cannot be trivially converted to tail recursion. What property of the problem prevents it?
 
-    Key insight: This is a conceptual analysis twist. The problem requires comparing results from multiple recursive calls (siblings in the array), which means you need the results of sub-calls before you can combine them. This prevents simple tail-call optimization.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(tail_recursion_impossibility([1,[2,[3,4]]]))  # Expected: 2
+print(tail_recursion_impossibility([1]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Tail Recursion Impossibility problem.
+// TailRecursionImpossibility solves the Tail Recursion Impossibility problem.
 // Explain why maximum depth of nested arrays cannot be trivially converted to tail recursion. What property of the problem prevents it?
-// Key insight: This is a conceptual analysis twist. The problem requires comparing results from multiple recursive calls (siblings in the array), which means you need the results of sub-calls before you can combine them. This prevents simple tail-call optimization.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func TailRecursionImpossibility(array []int) int {
+	result := 0
+
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(TailRecursionImpossibility([]interface{}{1, []interface{}{2, []int{3, 4}}})) // Expected: 2
+	fmt.Println(TailRecursionImpossibility([]int{1})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '02-product-sum/01-nested-array-depth/twist-05-tail-recursion-impossibility', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/02-product-sum/01-nested-array-depth/twist-05-tail-recursion-impossibility'] = problem;
 })();

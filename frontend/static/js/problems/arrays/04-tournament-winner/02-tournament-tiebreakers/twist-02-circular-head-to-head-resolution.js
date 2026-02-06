@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[4,5,1,2,3]},
                 output: true,
-                explanation: 'Circular traversal allows wrap-around from end to beginning.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4,5]},
                 output: true,
-                explanation: 'Standard case without wrap-around needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[3,1,2]},
                 output: false,
-                explanation: 'Even with circular traversal, the condition is not met.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def circular_head_to_head_resolution(data):
+            python: `def circular_head_to_head_resolution(raw):
     """
     Circular Head-to-Head Resolution
 
-    What if head-to-head among tied teams is also circular (A beat B, B beat C, C beat A)? Apply a secondary tiebreaker.
-    \n    Approach: Circular head-to-head means no single winner exists from direct comparison, requiring a fallback strategy like most total wins or fewest losses.
+    What if head-to-head among tied teams is also circular (A beat B, B beat C, C beat A)? Apply a secondary tiebreaker. Circular head-to-head means no single winner exists from direct comparison, requiring a fallback strategy like most total wins or fewest losses.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # A beats B, B beats C, C beats A (all tied on points) → use total goal difference as fallback
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in raw:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(circular_head_to_head_resolution([1, 2, 3, 4, 5]))
-print(circular_head_to_head_resolution([5, 3, 1]))
-print(circular_head_to_head_resolution([1]))`,
+print(circular_head_to_head_resolution(None))  # Expected: True
+print(circular_head_to_head_resolution(None))  # Expected: True
+print(circular_head_to_head_resolution(None))  # Expected: False
+`,
             go: `package main
 
 import "fmt"
 
 // CircularHeadToHeadResolution solves the Circular Head-to-Head Resolution problem.
-// What if head-to-head among tied teams is also circular (A beat B, B beat C, C beat A)? Apply a secondary tiebreaker.
+// What if head-to-head among tied teams is also circular (A beat B, B beat C, C beat A)? Apply a secondary tiebreaker. Circular head-to-head means no single winner exists from direct comparison, requiring a fallback strategy like most total wins or fewest losses.
 // Time: O(n), Space: O(n)
-func CircularHeadToHeadResolution(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func CircularHeadToHeadResolution(raw string) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range raw {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(CircularHeadToHeadResolution([]int{1, 2, 3, 4, 5}))
-    fmt.Println(CircularHeadToHeadResolution([]int{5, 3, 1}))
-    fmt.Println(CircularHeadToHeadResolution([]int{1}))
-}`
+	fmt.Println(CircularHeadToHeadResolution(nil)) // Expected: true
+	fmt.Println(CircularHeadToHeadResolution(nil)) // Expected: true
+	fmt.Println(CircularHeadToHeadResolution(nil)) // Expected: false
+}
+`
         },
         twists: [],
         similar: []

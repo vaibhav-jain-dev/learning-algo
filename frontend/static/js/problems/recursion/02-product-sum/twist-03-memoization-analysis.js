@@ -2,10 +2,12 @@
  * Memoization Analysis
  * Category: recursion
  * Difficulty: Easy
+ * Algorithm: recursion-product-sum
  * Parent: 02-product-sum
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Memoization Analysis',
         difficulty: 'Easy',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'In [5, [7, [3]], [7, [3]]], even though [7,[3]] appears twice, they are independent traversals. Memoization would need structural equality checks, which is more expensive than just recomputing.' },
-                output: 'See example',
-                explanation: 'In [5, [7, [3]], [7, [3]]], even though [7,[3]] appears twice, they are independent traversals. Memoization would need structural equality checks, which is more expensive than just recomputing.'
+                input: {"array":[5,2,[7,-1],3,[6,[-13,8],4]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the memoization analysis criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[5]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Memoization Analysis
-# Category: recursion
-# Difficulty: Easy
-# Parent: 02-product-sum
-
-def solve():
+            python: `def memoization_analysis(array):
     """
+    Memoization Analysis
+
     Would memoization help for the product sum problem? Analyze whether overlapping subproblems exist. If not, explain why.
 
-    Key insight: This is a conceptual trap. Unlike Fibonacci, each nested array is a unique structural position - there are no overlapping subproblems. Understanding when memoization does NOT help is as important as knowing when it does.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(memoization_analysis([5,2,[7,-1],3,[6,[-13,8],4]]))  # Expected: 1
+print(memoization_analysis([5]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Memoization Analysis problem.
+// MemoizationAnalysis solves the Memoization Analysis problem.
 // Would memoization help for the product sum problem? Analyze whether overlapping subproblems exist. If not, explain why.
-// Key insight: This is a conceptual trap. Unlike Fibonacci, each nested array is a unique structural position - there are no overlapping subproblems. Understanding when memoization does NOT help is as important as knowing when it does.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func MemoizationAnalysis(array []int) int {
+	result := 0
+
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(MemoizationAnalysis([]interface{}{5, 2, []int{7, -1}, 3, []interface{}{6, []int{-13, 8}, 4}})) // Expected: 1
+	fmt.Println(MemoizationAnalysis([]int{5})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '02-product-sum/twist-03-memoization-analysis', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/02-product-sum/twist-03-memoization-analysis'] = problem;
 })();

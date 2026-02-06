@@ -26,80 +26,93 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[5,1,22,25,6,-1,8,10],"sequence":[1,6,-1,10]},
-                output: true,
-                explanation: 'The sequence elements appear in order within the array.'
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the count all valid starting positions criteria.'
             },
             {
                 input: {"array":[1,2,3,4,5],"sequence":[5,3,1]},
-                output: false,
-                explanation: 'The sequence elements do not appear in the required order.'
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the count all valid starting positions criteria.'
             },
             {
                 input: {"array":[1,1,1,1,1],"sequence":[1,1,1]},
-                output: true,
-                explanation: 'Duplicate elements are handled correctly.'
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the count all valid starting positions criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[5],"sequence":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def count_all_valid_starting_positions(data):
+            python: `def count_all_valid_starting_positions(array, sequence):
     """
     Count All Valid Starting Positions
 
-    Instead of just true/false, count how many starting positions in the array allow the sequence to be matched going forward.
-    \n    Approach: Changes from a single-pass check to exploring multiple potential starting points, requiring careful counting.
+    Instead of just true/false, count how many starting positions in the array allow the sequence to be matched going forward. Changes from a single-pass check to exploring multiple potential starting points, requiring careful counting.
 
     Time: O(n)
     Space: O(n)
-
-    Example: array=[1,2,1,2,3], sequence=[1,2] → 2 (can start at index 0 or index 2)
     """
-    if not data:
-        return None
+    count = 0
+    n = len(array)
+    m = len(sequence)
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
+    for start in range(n):
+        j = 0
+        for i in range(start, n):
+            if j < m and array[i] == sequence[j]:
+                j += 1
+            if j == m:
+                count += 1
+                break
 
-    # Core algorithm implementation
-    for i in range(n):
-        result.append(data[i])
-
-    return result
+    return count
 
 
 # Test cases
-print(count_all_valid_starting_positions([1, 2, 3, 4, 5]))
-print(count_all_valid_starting_positions([5, 3, 1]))
-print(count_all_valid_starting_positions([1]))`,
+print(count_all_valid_starting_positions([5,1,22,25,6,-1,8,10], [1,6,-1,10]))  # Expected: 1
+print(count_all_valid_starting_positions([1,2,3,4,5], [5,3,1]))  # Expected: 2
+print(count_all_valid_starting_positions([1,1,1,1,1], [1,1,1]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // CountAllValidStartingPositions solves the Count All Valid Starting Positions problem.
-// Instead of just true/false, count how many starting positions in the array allow the sequence to be matched going forward.
+// Instead of just true/false, count how many starting positions in the array allow the sequence to be matched going forward. Changes from a single-pass check to exploring multiple potential starting points, requiring careful counting.
 // Time: O(n), Space: O(n)
-func CountAllValidStartingPositions(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func CountAllValidStartingPositions(array []int, sequence []int) int {
+	count := 0
+	n := len(array)
+	m := len(sequence)
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for start := 0; start < n; start++ {
+		j := 0
+		for i := start; i < n && j < m; i++ {
+			if array[i] == sequence[j] {
+				j++
+			}
+		}
+		if j == m {
+			count++
+		}
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return count
 }
 
 func main() {
-    fmt.Println(CountAllValidStartingPositions([]int{1, 2, 3, 4, 5}))
-    fmt.Println(CountAllValidStartingPositions([]int{5, 3, 1}))
-    fmt.Println(CountAllValidStartingPositions([]int{1}))
-}`
+	fmt.Println(CountAllValidStartingPositions([]int{5, 1, 22, 25, 6, -1, 8, 10}, []int{1, 6, -1, 10})) // Expected: 1
+	fmt.Println(CountAllValidStartingPositions([]int{1, 2, 3, 4, 5}, []int{5, 3, 1})) // Expected: 2
+	fmt.Println(CountAllValidStartingPositions([]int{1, 1, 1, 1, 1}, []int{1, 1, 1})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []

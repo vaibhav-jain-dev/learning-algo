@@ -2,10 +2,12 @@
  * Counting vs Optimization
  * Category: dynamic-programming
  * Difficulty: Medium
+ * Algorithm: dp-coin-change
  * Parent: 02-number-of-ways-to-make-change
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Counting vs Optimization',
         difficulty: 'Medium',
@@ -14,89 +16,99 @@
         description: 'This problem counts the number of ways. The related Min Coins problem minimizes the count. Compare the two recurrences side by side. What changes between counting and optimization?',
         problem: 'Counting uses addition (dp[i] += dp[i-coin]) while optimization uses min/max (dp[i] = min(dp[i], 1+dp[i-coin])). Same structure, different aggregation. Understanding this duality is key to DP mastery.',
         hints: [
-            'Start with the base problem solution and identify what assumption changes for this twist.',
-            'Key difference from the base problem: Counting uses addition (dp[i] += dp[i-coin]) while optimization uses min/max (dp[i] = min(dp[i], 1+dp[i-coin])). Same st',
-            'Think about how the DP state definition or recurrence relation must be modified.',
-            'Consider edge cases such as empty input, single-element input, or impossible configurations.'
+            'Start with the base problem solution and identify what assumption changes for this twist.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'Counting: dp[i] += dp[i-coin]. Optimization: dp[i] = min(dp[i], 1 + dp[i-coin]). Base case differs too: counting uses dp[0]=1, optimization uses dp[0]=0 with others as infinity.'
+                input: {"n":6,"denoms":[1,5]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the counting vs optimization criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"n":10,"denoms":[1,5,10,25]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the counting vs optimization criteria.'
+            },
+            {
+                input: {"n":0,"denoms":[1,2]},
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the counting vs optimization criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"denoms":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def countingVsOptimization(data):
+            python: `def counting_vs_optimization(n, denoms):
     """
     Counting vs Optimization
 
     This problem counts the number of ways. The related Min Coins problem minimizes the count. Compare the two recurrences side by side. What changes between counting and optimization?
 
-    Approach:
-    Counting uses addition (dp[i] += dp[i-coin]) while optimization uses min/max (dp[i] = min(dp[i], 1+dp[i-coin])). Same structure, different aggregation. Understanding this duality is key to DP mastery.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    count = 0
+    n = len(n)
 
-    # Example: Counting: dp[i] += dp[i-coin]. Optimization: dp[i] = min(dp[i], 1 + dp[i-coin]). Base case differs too: counting uses dp
+    for i in range(n):
+        # Check condition based on denoms
+        j = 0
+        for k in range(i, n):
+            if j < len(denoms) and n[k] == denoms[j]:
+                j += 1
+        if j == len(denoms):
+            count += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
-    return result
+    return count
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Counting vs Optimization...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(counting_vs_optimization(6, [1,5]))  # Expected: 1
+print(counting_vs_optimization(10, [1,5,10,25]))  # Expected: 2
+print(counting_vs_optimization(0, [1,2]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // CountingVsOptimization solves the Counting vs Optimization problem.
-// This problem counts the number of ways. The related Min Coins problem minimizes the count. Compare the two recurrences side by side. What changes betw
-//
-// Approach: Counting uses addition (dp[i] += dp[i-coin]) while optimization uses min/max (dp[i] = min(dp[i], 1+dp[i-coin])). Same structure, different aggregation
-func CountingVsOptimization(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// This problem counts the number of ways. The related Min Coins problem minimizes the count. Compare the two recurrences side by side. What changes between counting and optimization?
+// Time: O(n^2), Space: O(n)
+func CountingVsOptimization(n int, denoms []int) int {
+	result := 0
 
-    // Example: Counting: dp[i] += dp[i-coin]. Optimization: dp[i] = min(dp[i], 1 + dp[i-coin]). Base case differs t
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Counting vs Optimization...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(CountingVsOptimization(6, []int{1, 5})) // Expected: 1
+	fmt.Println(CountingVsOptimization(10, []int{1, 5, 10, 25})) // Expected: 2
+	fmt.Println(CountingVsOptimization(0, []int{1, 2})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '02-number-of-ways-to-make-change/twist-04-counting-vs-optimization', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/02-number-of-ways-to-make-change/twist-04-counting-vs-optimization'] = problem;
 })();

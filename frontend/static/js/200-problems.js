@@ -4778,6 +4778,9 @@
                     originalCode.python = getDefaultCode('python', problemId);
                 }
                 currentCode.python = originalCode.python;
+                if (currentLanguage === 'python' && editor) {
+                    editor.setValue(currentCode.python);
+                }
             });
 
         // Load Go code (for Solutions tab reference only)
@@ -4815,6 +4818,9 @@
                     originalCode.go = getDefaultCode('go', problemId);
                 }
                 currentCode.go = originalCode.go;
+                if (currentLanguage === 'go' && editor) {
+                    editor.setValue(currentCode.go);
+                }
             });
     }
 
@@ -4826,16 +4832,32 @@
      * @param {string} solutionCode - Original solution code (optional)
      * @returns {string} Code template
      */
+    // Extract just the problem name from an ID that may contain path segments
+    // e.g. "01-validate-subsequence/twist-01-circular-array-subsequence" → "circular-array-subsequence"
+    // e.g. "01-validate-subsequence" → "validate-subsequence"
+    function extractProblemName(problemId) {
+        if (!problemId) return 'solution';
+        // For paths with /, use the last segment
+        var segment = problemId;
+        if (problemId.indexOf('/') !== -1) {
+            var parts = problemId.split('/');
+            segment = parts[parts.length - 1];
+        }
+        // Strip leading number prefix like "01-" or "twist-01-"
+        return segment.replace(/^(?:twist-)?(\d+-)?/, '');
+    }
+
     function generateTemplateFromProblem(problem, lang, solutionCode) {
         if (!problem || !problem.examples || problem.examples.length === 0) {
             return getDefaultCode(lang, problem ? problem.id : 'solution');
         }
 
+        var baseName = extractProblemName(problem.id);
         var funcName;
         if (lang === 'python') {
-            funcName = problem.id.replace(/^\d+-/, '').replace(/-/g, '_');
+            funcName = baseName.replace(/-/g, '_');
         } else {
-            funcName = problem.id.replace(/^\d+-/, '').replace(/-/g, '_')
+            funcName = baseName.replace(/-/g, '_')
                 .split('_').map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join('');
         }
 
@@ -4951,7 +4973,8 @@
     }
 
     function getDefaultCode(lang, problemId) {
-        var funcName = problemId ? problemId.replace(/^\d+-/, '').replace(/-/g, '_') : 'solution';
+        var baseName = extractProblemName(problemId);
+        var funcName = baseName.replace(/-/g, '_');
         // Convert to appropriate case - NO main block, only function
         if (lang === 'python') {
             return 'def ' + funcName + '():\n    """\n    Write your solution here.\n    """\n    pass\n';

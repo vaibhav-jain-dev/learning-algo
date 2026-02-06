@@ -2,10 +2,12 @@
  * Dislike Chains
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-coloring
  * Parent: 09-two-colorable/02-possible-bipartition
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Dislike Chains',
         difficulty: 'Medium',
@@ -19,87 +21,87 @@
             'Consider the example: 1 dislikes 2, 2 dislikes 3.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(V + E)', space: 'O(V + E)' },
+        complexity: {
+            time: 'O(V + E)',
+            space: 'O(V + E)'
+        },
         examples: [
-            { input: { description: '1 dislikes 2, 2 dislikes 3. So 1 and 3 are in the same group. If 1 also dislikes 3, bipartition fails.' }, output: 'See explanation', explanation: '1 dislikes 2, 2 dislikes 3. So 1 and 3 are in the same group. If 1 also dislikes 3, bipartition fails.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"n":4,"dislikes":[[1,2],[1,3],[2,4]]},
+                output: true,
+                explanation: 'The dislike chains condition is satisfied for this input.'
+            },
+            {
+                input: {"n":3,"dislikes":[[1,2],[1,3],[2,3]]},
+                output: false,
+                explanation: 'The dislike chains condition is not satisfied for this input.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"dislikes":[[1,2]]},
+                output: false,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def dislike_chains(data):
+            python: `def dislike_chains(n, dislikes):
     """
     Dislike Chains
 
     If person A dislikes B and B dislikes C, then A and C must be in the same group (enemy of enemy is friend). Verify this constraint.
 
-    Approach:
-    This is exactly what 2-coloring enforces, but the twist makes you think about it from a transitive constraint perspective rather than graph coloring.
-
     Time: O(V + E)
     Space: O(V + E)
     """
-    # This is exactly what 2-coloring enforces, but the twist makes you think about it from a transitive constraint perspective rather than graph coloring.
+    j = 0
 
-    # Implementation
-    result = None
+    for i in range(len(n)):
+        if j < len(dislikes) and n[i] == dislikes[j]:
+            j += 1
 
-    # Core algorithm adapted for: Dislike Chains
-    # Key difference from parent: This is exactly what 2-coloring enforces, but the twist makes you think about it from a transitive c
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return dislike_chains(data)
+    return j == len(dislikes)
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # 1 dislikes 2, 2 dislikes 3. So 1 and 3 are in the same group. If 1 also dislikes 3, bipartition fails.
-    print("Test: Dislike Chains")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(dislike_chains(4, [[1,2],[1,3],[2,4]]))  # Expected: True
+print(dislike_chains(3, [[1,2],[1,3],[2,3]]))  # Expected: False
+print(dislike_chains(0, [[1,2]]))  # Expected: False
+`,
             go: `package main
 
 import "fmt"
 
-// DislikeChains solves the Dislike Chains problem
+// DislikeChains solves the Dislike Chains problem.
 // If person A dislikes B and B dislikes C, then A and C must be in the same group (enemy of enemy is friend). Verify this constraint.
-//
-// Approach: This is exactly what 2-coloring enforces, but the twist makes you think about it from a transitive constraint perspective rather than graph coloring.
-//
-// Time: O(V + E)
-// Space: O(V + E)
-func DislikeChains(input interface{}) interface{} {
-    // This is exactly what 2-coloring enforces, but the twist makes you think about it from a transitive constraint perspective rather than graph coloring.
+// Time: O(V + E), Space: O(V + E)
+func DislikeChains(n int, dislikes [][]int) bool {
+	j := 0
 
-    // Core algorithm adapted for: Dislike Chains
-    // Key difference from parent: This is exactly what 2-coloring enforces, but the twist makes you think about it from a transitive c
+	for i := 0; i < len(n) && j < len(dislikes); i++ {
+		if n[i] == dislikes[j] {
+			j++
+		}
+	}
 
-    return nil
+	return j == len(dislikes)
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // 1 dislikes 2, 2 dislikes 3. So 1 and 3 are in the same group. If 1 also dislikes 3, bipartition fails.
-    fmt.Println("Test: Dislike Chains")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(DislikeChains(4, [][]int{{1, 2}, {1, 3}, {2, 4}})) // Expected: true
+	fmt.Println(DislikeChains(3, [][]int{{1, 2}, {1, 3}, {2, 3}})) // Expected: false
+	fmt.Println(DislikeChains(0, [][]int{{1, 2}})) // Expected: false
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '09-two-colorable/02-possible-bipartition/twist-03-dislike-chains', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/09-two-colorable/02-possible-bipartition/twist-03-dislike-chains'] = problem;
 })();

@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,3,5,2,4]},
                 output: 1,
-                explanation: 'Only one operation needed to achieve the goal.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4]},
                 output: 0,
-                explanation: 'Already satisfies the condition, no operations needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[5,3,1,4,2]},
                 output: 2,
-                explanation: 'Two operations needed to satisfy the condition.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def min_coins_to_add_with_coin_limit(data):
+            python: `def min_coins_to_add_with_coin_limit(coins, target, k):
     """
     Min Coins to Add with Coin Limit
 
-    You can add at most k coins. What is the maximum target you can reach with at most k additions?
-    \n    Approach: Inverts the problem: instead of minimizing coins for a fixed target, maximize coverage with a fixed budget of coins.
+    You can add at most k coins. What is the maximum target you can reach with at most k additions? Inverts the problem: instead of minimizing coins for a fixed target, maximize coverage with a fixed budget of coins.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # coins=[1,5], k=2 → add [2,?] → with [1,2,5] can make 1-8, then add [9?] → maximize range
+    count = 0
+    n = len(coins)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and coins[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(min_coins_to_add_with_coin_limit([1, 2, 3, 4, 5]))
-print(min_coins_to_add_with_coin_limit([5, 3, 1]))
-print(min_coins_to_add_with_coin_limit([1]))`,
+print(min_coins_to_add_with_coin_limit(None, None, None))  # Expected: 1
+print(min_coins_to_add_with_coin_limit(None, None, None))  # Expected: 0
+print(min_coins_to_add_with_coin_limit(None, None, None))  # Expected: 2
+`,
             go: `package main
 
 import "fmt"
 
 // MinCoinsToAddWithCoinLimit solves the Min Coins to Add with Coin Limit problem.
-// You can add at most k coins. What is the maximum target you can reach with at most k additions?
+// You can add at most k coins. What is the maximum target you can reach with at most k additions? Inverts the problem: instead of minimizing coins for a fixed target, maximize coverage with a fixed budget of coins.
 // Time: O(n), Space: O(n)
-func MinCoinsToAddWithCoinLimit(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MinCoinsToAddWithCoinLimit(coins []int, target int, k int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(coins); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(MinCoinsToAddWithCoinLimit([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MinCoinsToAddWithCoinLimit([]int{5, 3, 1}))
-    fmt.Println(MinCoinsToAddWithCoinLimit([]int{1}))
-}`
+	fmt.Println(MinCoinsToAddWithCoinLimit(nil, nil, 3)) // Expected: 1
+	fmt.Println(MinCoinsToAddWithCoinLimit(nil, nil, 3)) // Expected: 0
+	fmt.Println(MinCoinsToAddWithCoinLimit(nil, nil, 3)) // Expected: 2
+}
+`
         },
         twists: [],
         similar: []

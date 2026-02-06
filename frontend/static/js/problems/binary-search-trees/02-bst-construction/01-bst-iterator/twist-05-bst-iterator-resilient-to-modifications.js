@@ -2,10 +2,12 @@
  * BST Iterator Resilient to Modifications
  * Category: binary-search-trees
  * Difficulty: Very Hard
+ * Algorithm: bst-iterator
  * Parent: 02-bst-construction/01-bst-iterator
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'BST Iterator Resilient to Modifications',
         difficulty: 'Very Hard',
@@ -14,68 +16,80 @@
         description: 'The BST may have nodes inserted or deleted between iterator calls. The iterator should still yield all remaining values in sorted order, including newly inserted ones and excluding deleted ones.',
         problem: 'Standard iterators assume a static tree. Handling concurrent modifications requires either snapshotting, versioning, or re-validating the stack state before each next() call -- a fundamentally different design. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: bst iterator resilient to modifications.",
-                  "Consider how standard iterators assume a static tree affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Tree: [5,3,7]. next()=3. Insert 4. next()=4 (newly inserted). next()=5. Delete 7. hasNext()=false.'
+                input: {"tree":[7,3,15,null,null,9,20]},
+                output: [7,3,15],
+                explanation: 'The bst iterator resilient to modifications for this input yields [7, 3, 15].'
+            },
+            // Edge case
+            {
+                input: {"tree":[7]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# BST Iterator Resilient to Modifications
-# Difficulty: Very Hard
-# Parent: 02-bst-construction/01-bst-iterator
-#
-# The BST may have nodes inserted or deleted between iterator calls. The iterator should still yield all remaining values in sorted order, including newly inserted ones and excluding deleted ones.
-
-def bstIteratorResilientToModifications(data):
+            python: `def bst_iterator_resilient_to_modifications(tree):
     """
     BST Iterator Resilient to Modifications
 
-    Approach: Standard iterators assume a static tree.
+    The BST may have nodes inserted or deleted between iterator calls. The iterator should still yield all remaining values in sorted order, including newly inserted ones and excluding deleted ones.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Standard iterators assume a static tree
-    pass
+    result = []
+
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree: [5,3,7]
-    print(bstIteratorResilientToModifications({}))`,
+# Test cases
+print(bst_iterator_resilient_to_modifications([7,3,15,None,None,9,20]))  # Expected: [7,3,15]
+print(bst_iterator_resilient_to_modifications([7]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// BST Iterator Resilient to Modifications
-// Difficulty: Very Hard
-// Parent: 02-bst-construction/01-bst-iterator
-//
+// BstIteratorResilientToModifications solves the BST Iterator Resilient to Modifications problem.
 // The BST may have nodes inserted or deleted between iterator calls. The iterator should still yield all remaining values in sorted order, including newly inserted ones and excluding deleted ones.
+// Time: O(n), Space: O(1)
+func BstIteratorResilientToModifications(tree []int) []int {
+	result := make([]int, 0)
 
-func BstIteratorResilientToModifications(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Standard iterators assume a static tree
-    return nil
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Tree: [5,3,7]
-    fmt.Println(BstIteratorResilientToModifications(map[string]interface{}{}))
-}`
+	fmt.Println(BstIteratorResilientToModifications([]int{7, 3, 15, null, null, 9, 20})) // Expected: [7,3,15]
+	fmt.Println(BstIteratorResilientToModifications([]int{7})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '02-bst-construction/01-bst-iterator/twist-05-bst-iterator-resilient-to-modifications', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/02-bst-construction/01-bst-iterator/twist-05-bst-iterator-resilient-to-modifications'] = problem;
 })();

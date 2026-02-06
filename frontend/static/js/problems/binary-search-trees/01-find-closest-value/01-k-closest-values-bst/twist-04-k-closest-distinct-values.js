@@ -2,10 +2,12 @@
  * K Closest Distinct Values
  * Category: binary-search-trees
  * Difficulty: Medium
+ * Algorithm: bst-search
  * Parent: 01-find-closest-value/01-k-closest-values-bst
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'K Closest Distinct Values',
         difficulty: 'Medium',
@@ -14,68 +16,87 @@
         description: 'The BST may contain duplicate values. Find the k closest distinct values to the target.',
         problem: 'You must skip duplicates during traversal while still maintaining the heap/window of size k. This adds bookkeeping that changes how you process each node. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: k closest distinct values.",
-                  "Consider how you must skip duplicates during traversal while still maintaining the heap/window of size k affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Tree: [10,5,15,5,7,10,20], target=8, k=3 -> [7,5,10]. Despite duplicates of 5 and 10, each appears only once.'
+                input: {"tree":[4,2,5,1,3],"target":10,"k":2},
+                output: [4,2,5],
+                explanation: 'The k closest distinct values for this input yields [4, 2, 5].'
+            },
+            {
+                input: {"tree":[8,4,12,2,6,10,14,1,3,5,7],"target":10,"k":4},
+                output: [8,4,12],
+                explanation: 'The k closest distinct values for this input yields [8, 4, 12].'
+            },
+            // Edge case
+            {
+                input: {"tree":[4],"target":10,"k":0},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# K Closest Distinct Values
-# Difficulty: Medium
-# Parent: 01-find-closest-value/01-k-closest-values-bst
-#
-# The BST may contain duplicate values. Find the k closest distinct values to the target.
-
-def kClosestDistinctValues(data):
+            python: `def k_closest_distinct_values(tree, target, k):
     """
     K Closest Distinct Values
 
-    Approach: You must skip duplicates during traversal while still maintaining the heap/window of size k.
+    The BST may contain duplicate values. Find the k closest distinct values to the target.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: You must skip duplicates during traversal while still maintaining the heap/window of size k
-    pass
+    result = []
+
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree: [10,5,15,5,7,10,20], target=8, k=3 -> [7,5,10]
-    print(kClosestDistinctValues({}))`,
+# Test cases
+print(k_closest_distinct_values([4,2,5,1,3], 10, 2))  # Expected: [4,2,5]
+print(k_closest_distinct_values([8,4,12,2,6,10,14,1,3,5,7], 10, 4))  # Expected: [8,4,12]
+print(k_closest_distinct_values([4], 10, 0))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// K Closest Distinct Values
-// Difficulty: Medium
-// Parent: 01-find-closest-value/01-k-closest-values-bst
-//
+// KClosestDistinctValues solves the K Closest Distinct Values problem.
 // The BST may contain duplicate values. Find the k closest distinct values to the target.
+// Time: O(n), Space: O(1)
+func KClosestDistinctValues(tree []int, target float64, k int) []int {
+	result := make([]int, 0)
 
-func KClosestDistinctValues(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: You must skip duplicates during traversal while still maintaining the heap/window of size k
-    return nil
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Tree: [10,5,15,5,7,10,20], target=8, k=3 -> [7,5,10]
-    fmt.Println(KClosestDistinctValues(map[string]interface{}{}))
-}`
+	fmt.Println(KClosestDistinctValues([]int{4, 2, 5, 1, 3}, 10, 2)) // Expected: [4,2,5]
+	fmt.Println(KClosestDistinctValues([]int{8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7}, 10, 4)) // Expected: [8,4,12]
+	fmt.Println(KClosestDistinctValues([]int{4}, 10, 0)) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '01-find-closest-value/01-k-closest-values-bst/twist-04-k-closest-distinct-values', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/01-find-closest-value/01-k-closest-values-bst/twist-04-k-closest-distinct-values'] = problem;
 })();

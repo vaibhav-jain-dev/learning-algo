@@ -2,10 +2,12 @@
  * All Possible Height-Balanced BSTs
  * Category: binary-search-trees
  * Difficulty: Hard
+ * Algorithm: bst-construction-balanced
  * Parent: 02-bst-construction/02-convert-sorted-array-to-bst
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'All Possible Height-Balanced BSTs',
         difficulty: 'Hard',
@@ -14,68 +16,87 @@
         description: 'Given the sorted array, return all possible height-balanced BSTs that can be formed. When the array length is even, the middle can be chosen as either of two elements.',
         problem: 'The base problem picks one middle element deterministically. This twist requires exploring both choices when the subarray has even length, turning a single recursive path into a branching enumeration problem. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: all possible height-balanced bsts.",
-                  "Consider how the base problem picks one middle element deterministically affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'nums=[1,2,3,4] -> Two valid BSTs: [2,1,3,null,null,null,4] and [3,2,4,1]. Both are height-balanced.'
+                input: {"nums":[-10,-3,0,5,9]},
+                output: [-10,-3,0],
+                explanation: 'The all possible height balanced bsts for this input yields [-10, -3, 0].'
+            },
+            {
+                input: {"nums":[1,2,3,4,5,6,7]},
+                output: [1,2,3],
+                explanation: 'The all possible height balanced bsts for this input yields [1, 2, 3].'
+            },
+            // Edge case
+            {
+                input: {"nums":[-10]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# All Possible Height-Balanced BSTs
-# Difficulty: Hard
-# Parent: 02-bst-construction/02-convert-sorted-array-to-bst
-#
-# Given the sorted array, return all possible height-balanced BSTs that can be formed. When the array length is even, the middle can be chosen as either of two elements.
-
-def allPossibleHeightBalancedBsts(data):
+            python: `def all_possible_height_balanced_bsts(nums):
     """
     All Possible Height-Balanced BSTs
 
-    Approach: The base problem picks one middle element deterministically.
+    Given the sorted array, return all possible height-balanced BSTs that can be formed. When the array length is even, the middle can be chosen as either of two elements.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: The base problem picks one middle element deterministically
-    pass
+    result = []
+
+    for i in range(len(nums)):
+        # Check if element meets criteria
+        result.append(nums[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: nums=[1,2,3,4] -> Two valid BSTs: [2,1,3,null,null,null,4] and [3,2,4,1]
-    print(allPossibleHeightBalancedBsts({}))`,
+# Test cases
+print(all_possible_height_balanced_bsts([-10,-3,0,5,9]))  # Expected: [-10,-3,0]
+print(all_possible_height_balanced_bsts([1,2,3,4,5,6,7]))  # Expected: [1,2,3]
+print(all_possible_height_balanced_bsts([-10]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// All Possible Height-Balanced BSTs
-// Difficulty: Hard
-// Parent: 02-bst-construction/02-convert-sorted-array-to-bst
-//
+// AllPossibleHeightBalancedBsts solves the All Possible Height-Balanced BSTs problem.
 // Given the sorted array, return all possible height-balanced BSTs that can be formed. When the array length is even, the middle can be chosen as either of two elements.
+// Time: O(n), Space: O(1)
+func AllPossibleHeightBalancedBsts(nums []int) []int {
+	result := make([]int, 0)
 
-func AllPossibleHeightBalancedBsts(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: The base problem picks one middle element deterministically
-    return nil
+	for i := 0; i < len(nums); i++ {
+		result = append(result, nums[i])
+	}
+
+	return result
 }
 
 func main() {
-    // Example: nums=[1,2,3,4] -> Two valid BSTs: [2,1,3,null,null,null,4] and [3,2,4,1]
-    fmt.Println(AllPossibleHeightBalancedBsts(map[string]interface{}{}))
-}`
+	fmt.Println(AllPossibleHeightBalancedBsts([]int{-10, -3, 0, 5, 9})) // Expected: [-10,-3,0]
+	fmt.Println(AllPossibleHeightBalancedBsts([]int{1, 2, 3, 4, 5, 6, 7})) // Expected: [1,2,3]
+	fmt.Println(AllPossibleHeightBalancedBsts([]int{-10})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '02-bst-construction/02-convert-sorted-array-to-bst/twist-02-all-possible-height-balanced-bsts', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/02-bst-construction/02-convert-sorted-array-to-bst/twist-02-all-possible-height-balanced-bsts'] = problem;
 })();

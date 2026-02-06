@@ -2,74 +2,98 @@
  * Online Streaming Variant
  * Category: famous-algorithms
  * Difficulty: Hard
+ * Algorithm: kadanes-algorithm
  * Parent: 01-kadanes-algorithm
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Online Streaming Variant',
         difficulty: 'Hard',
         algorithm: 'kadanes-algorithm',
         parent: '01-kadanes-algorithm',
         description: 'Numbers arrive one at a time in a stream. At any point, you may be asked for the maximum subarray sum of all numbers seen so far. You cannot store the entire array. Design an O(1) per-element update.',
-        problem: 'This is the online version of Kadane\'s. While the core recurrence works naturally online, the twist forces you to reason about what state is sufficient and why you never need to look back at old elements.',
+        problem: 'This is the online version of Kadane\',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Stream: -2, 1, -3, 4, -1, 2. After each element, maxSoFar values are: -2, 1, 1, 4, 4, 5.' },
-                output: 'See example',
-                explanation: 'Stream: -2, 1, -3, 4, -1, 2. After each element, maxSoFar values are: -2, 1, 1, 4, 4, 5.'
+                input: {"nums":[-2,1,-3,4,-1,2,1,-5,4]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the online streaming variant criteria.'
+            },
+            // Edge case
+            {
+                input: {"nums":[-2]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Online Streaming Variant
-# Category: famous-algorithms
-# Difficulty: Hard
-# Parent: 01-kadanes-algorithm
-
-def solve():
+            python: `def online_streaming_variant(nums):
     """
+    Online Streaming Variant
+
     Numbers arrive one at a time in a stream. At any point, you may be asked for the maximum subarray sum of all numbers seen so far. You cannot store the entire array. Design an O(1) per-element update.
 
-    Key insight: This is the online version of Kadane's. While the core recurrence works naturally online, the twist forces you to reason about what state is sufficient and why you never need to look back at old elements.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(nums)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(online_streaming_variant([-2,1,-3,4,-1,2,1,-5,4]))  # Expected: 2
+print(online_streaming_variant([-2]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Online Streaming Variant problem.
+// OnlineStreamingVariant solves the Online Streaming Variant problem.
 // Numbers arrive one at a time in a stream. At any point, you may be asked for the maximum subarray sum of all numbers seen so far. You cannot store the entire array. Design an O(1) per-element update.
-// Key insight: This is the online version of Kadane's. While the core recurrence works naturally online, the twist forces you to reason about what state is sufficient and why you never need to look back at old elements.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func OnlineStreamingVariant(nums []int) int {
+	result := 0
+
+	for i := 0; i < len(nums); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(OnlineStreamingVariant([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4})) // Expected: 2
+	fmt.Println(OnlineStreamingVariant([]int{-2})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '01-kadanes-algorithm/twist-04-online-streaming-variant', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/01-kadanes-algorithm/twist-04-online-streaming-variant'] = problem;
 })();

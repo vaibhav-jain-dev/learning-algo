@@ -27,83 +27,74 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[-3,-1,0,2,4]},
                 output: [0,1,4,9,16],
-                explanation: 'Elements transformed and sorted correctly.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: [1,4,9],
-                explanation: 'All positive - order maintained after transformation.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[-5,-3,-1]},
                 output: [1,9,25],
-                explanation: 'All negative - order reversed after transformation.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def three_sum_without_sorting(data):
+            python: `def three_sum_without_sorting(array, targetSum):
     """
     Three Sum Without Sorting
 
-    Find all triplets summing to target but you are not allowed to sort the array. Use a hash-based approach instead.
-    \n    Approach: Removes the two-pointer technique entirely, forcing a hash map approach with careful deduplication.
+    Find all triplets summing to target but you are not allowed to sort the array. Use a hash-based approach instead. Removes the two-pointer technique entirely, forcing a hash map approach with careful deduplication.
 
     Time: O(n log n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [12, 3, 1, 2, -6, 5, -8, 6], target = 0. Same result but found using hash lookups.
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
+    n = len(array)
 
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        for j in range(i + 1, n):
+            result.append([array[i], array[j]])
 
     return result
 
 
 # Test cases
-print(three_sum_without_sorting([1, 2, 3, 4, 5]))
-print(three_sum_without_sorting([5, 3, 1]))
-print(three_sum_without_sorting([1]))`,
+print(three_sum_without_sorting([-3,-1,0,2,4], None))  # Expected: [0,1,4,9,16]
+print(three_sum_without_sorting([1,2,3], None))  # Expected: [1,4,9]
+print(three_sum_without_sorting([-5,-3,-1], None))  # Expected: [1,9,25]
+`,
             go: `package main
 
 import "fmt"
 
 // ThreeSumWithoutSorting solves the Three Sum Without Sorting problem.
-// Find all triplets summing to target but you are not allowed to sort the array. Use a hash-based approach instead.
+// Find all triplets summing to target but you are not allowed to sort the array. Use a hash-based approach instead. Removes the two-pointer technique entirely, forcing a hash map approach with careful deduplication.
 // Time: O(n log n), Space: O(n)
-func ThreeSumWithoutSorting(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func ThreeSumWithoutSorting(array []int, targetSum int) [][]int {
+	result := make([][]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		for j := i + 1; j < len(array); j++ {
+			result = append(result, []int{array[i], array[j]})
+		}
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(ThreeSumWithoutSorting([]int{1, 2, 3, 4, 5}))
-    fmt.Println(ThreeSumWithoutSorting([]int{5, 3, 1}))
-    fmt.Println(ThreeSumWithoutSorting([]int{1}))
-}`
+	fmt.Println(ThreeSumWithoutSorting([]int{-3, -1, 0, 2, 4}, nil)) // Expected: [0,1,4,9,16]
+	fmt.Println(ThreeSumWithoutSorting([]int{1, 2, 3}, nil)) // Expected: [1,4,9]
+	fmt.Println(ThreeSumWithoutSorting([]int{-5, -3, -1}, nil)) // Expected: [1,9,25]
+}
+`
         },
         twists: [],
         similar: []

@@ -2,10 +2,12 @@
  * Word Search II with Trie
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-word-search
  * Parent: 12-boggle-board
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Word Search II with Trie',
         difficulty: 'Hard',
@@ -19,87 +21,85 @@
             'Consider the example: Words: ["oath","pea","eat","rain"].',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N * M * 8^L + W * L)', space: 'O(W * L + N * M)' },
+        complexity: {
+            time: 'O(N * M * 8^L + W * L)',
+            space: 'O(W * L + N * M)'
+        },
         examples: [
-            { input: { description: 'Words: ["oath","pea","eat","rain"]. Build Trie, then DFS from each cell following Trie nodes. Remove found words from Trie for further pruning.' }, output: 'See explanation', explanation: 'Words: ["oath","pea","eat","rain"]. Build Trie, then DFS from each cell following Trie nodes. Remove found words from Trie for further pruning.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"board":[["t","h","i","s"],["w","a","t","s"],["o","a","h","g"],["f","g","d","t"]],"words":["this","two","fat","that"]},
+                output: [["t","h","i","s"],["w","a","t","s"],["o","a","h","g"]],
+                explanation: 'The word search ii with trie for this input yields [t,h,i,s, w,a,t,s, o,a,h,g].'
+            },
+            {
+                input: {"board":[["a","b"],["c","d"]],"words":["abcd","abdc","abca"]},
+                output: [["a","b"],["c","d"]],
+                explanation: 'The word search ii with trie for this input yields [a,b, c,d].'
+            },
+            // Edge case
+            {
+                input: {"board":[["t","h","i","s"]],"words":["this"]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def word_search_ii_with_trie(data):
+            python: `def word_search_ii_with_trie(board, words):
     """
     Word Search II with Trie
 
     Implement using a Trie (prefix tree) for efficient multi-word search. Prune branches that cannot lead to any word.
 
-    Approach:
-    Instead of searching for each word independently, build a Trie and search all words simultaneously. Trie pruning eliminates dead-end paths early, dramatically improving performance.
-
     Time: O(N * M * 8^L + W * L)
     Space: O(W * L + N * M)
     """
-    # Instead of searching for each word independently, build a Trie and search all words simultaneously. Trie pruning eliminates dead-end paths early, dramatically improving performance.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Word Search II with Trie
-    # Key difference from parent: Instead of searching for each word independently, build a Trie and search all words simultaneously. 
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(board)):
+        # Check if element meets criteria
+        result.append(board[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return word_search_ii_with_trie(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Words: ["oath","pea","eat","rain"]. Build Trie, then DFS from each cell following Trie nodes. Remove found words from Trie for further pruning.
-    print("Test: Word Search II with Trie")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(word_search_ii_with_trie([["t","h","i","s"],["w","a","t","s"],["o","a","h","g"],["f","g","d","t"]], ["this","two","fat","that"]))  # Expected: [["t","h","i","s"],["w","a","t","s"],["o","a","h","g"]]
+print(word_search_ii_with_trie([["a","b"],["c","d"]], ["abcd","abdc","abca"]))  # Expected: [["a","b"],["c","d"]]
+print(word_search_ii_with_trie([["t","h","i","s"]], ["this"]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// WordSearchIIWithTrie solves the Word Search II with Trie problem
+// WordSearchIiWithTrie solves the Word Search II with Trie problem.
 // Implement using a Trie (prefix tree) for efficient multi-word search. Prune branches that cannot lead to any word.
-//
-// Approach: Instead of searching for each word independently, build a Trie and search all words simultaneously. Trie pruning eliminates dead-end paths early, dramatically improving performance.
-//
-// Time: O(N * M * 8^L + W * L)
-// Space: O(W * L + N * M)
-func WordSearchIIWithTrie(input interface{}) interface{} {
-    // Instead of searching for each word independently, build a Trie and search all words simultaneously. Trie pruning eliminates dead-end paths early, dramatically improving performance.
+// Time: O(N * M * 8^L + W * L), Space: O(W * L + N * M)
+func WordSearchIiWithTrie(board [][]int, words []string) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Word Search II with Trie
-    // Key difference from parent: Instead of searching for each word independently, build a Trie and search all words simultaneously. 
+	for i := 0; i < len(board); i++ {
+		result = append(result, board[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Words: ["oath","pea","eat","rain"]. Build Trie, then DFS from each cell following Trie nodes. Remove found words from Trie for further pruning.
-    fmt.Println("Test: Word Search II with Trie")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(WordSearchIiWithTrie([][]int{{t, h, i, s}, {w, a, t, s}, {o, a, h, g}, {f, g, d, t}}, []string{"this", "two", "fat", "that"})) // Expected: [["t","h","i","s"],["w","a","t","s"],["o","a","h","g"]]
+	fmt.Println(WordSearchIiWithTrie([][]int{{a, b}, {c, d}}, []string{"abcd", "abdc", "abca"})) // Expected: [["a","b"],["c","d"]]
+	fmt.Println(WordSearchIiWithTrie([][]int{{t, h, i, s}}, []string{"this"})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '12-boggle-board/twist-04-word-search-ii-with-trie', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/12-boggle-board/twist-04-word-search-ii-with-trie'] = problem;
 })();

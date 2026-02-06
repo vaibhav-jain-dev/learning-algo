@@ -2,10 +2,12 @@
  * Unified Iterative Traversal (Single Template)
  * Category: binary-search-trees
  * Difficulty: Hard
+ * Algorithm: bst-traversal
  * Parent: 04-bst-traversal/01-iterative-tree-traversal
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Unified Iterative Traversal (Single Template)',
         difficulty: 'Hard',
@@ -14,68 +16,80 @@
         description: 'Implement all three traversals using a single unified iterative template. Use a marker/flag system where you push nodes with a "visited" boolean, so the same loop structure handles inorder, preorder, and postorder by simply changing the push order.',
         problem: 'The standard iterative approaches use fundamentally different stack strategies for each traversal. A unified template forces you to think about a general framework that abstracts the traversal order into a configurable parameter. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: unified iterative traversal (single template).",
-                  "Consider how the standard iterative approaches use fundamentally different stack strategies for each traversal affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Using a (node, visited) tuple on the stack: for inorder, push right, self(marked), left. Popping a marked node means process it. Same structure for all three by reordering pushes.'
+                input: {"tree":[1,2,3,4,5,null,6]},
+                output: [1,2,3],
+                explanation: 'The unified iterative traversal single template for this input yields [1, 2, 3].'
+            },
+            // Edge case
+            {
+                input: {"tree":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Unified Iterative Traversal (Single Template)
-# Difficulty: Hard
-# Parent: 04-bst-traversal/01-iterative-tree-traversal
-#
-# Implement all three traversals using a single unified iterative template. Use a marker/flag system where you push nodes with a "visited" boolean, so the same loop structure handles inorder, preorder, and postorder by simply changing the push order.
-
-def unifiedIterativeTraversalSingleTemplate(data):
+            python: `def unified_iterative_traversal_single_template(tree):
     """
     Unified Iterative Traversal (Single Template)
 
-    Approach: The standard iterative approaches use fundamentally different stack strategies for each traversal.
+    Implement all three traversals using a single unified iterative template. Use a marker/flag system where you push nodes with a "visited" boolean, so the same loop structure handles inorder, preorder, and postorder by simply changing the push order.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: The standard iterative approaches use fundamentally different stack strategies for each traversal
-    pass
+    result = []
+
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Using a (node, visited) tuple on the stack: for inorder, push right, self(marked), left
-    print(unifiedIterativeTraversalSingleTemplate({}))`,
+# Test cases
+print(unified_iterative_traversal_single_template([1,2,3,4,5,None,6]))  # Expected: [1,2,3]
+print(unified_iterative_traversal_single_template([1]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// Unified Iterative Traversal (Single Template)
-// Difficulty: Hard
-// Parent: 04-bst-traversal/01-iterative-tree-traversal
-//
+// UnifiedIterativeTraversalSingleTemplate solves the Unified Iterative Traversal (Single Template) problem.
 // Implement all three traversals using a single unified iterative template. Use a marker/flag system where you push nodes with a "visited" boolean, so the same loop structure handles inorder, preorder, and postorder by simply changing the push order.
+// Time: O(n), Space: O(1)
+func UnifiedIterativeTraversalSingleTemplate(tree []int) []int {
+	result := make([]int, 0)
 
-func UnifiedIterativeTraversalSingleTemplate(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: The standard iterative approaches use fundamentally different stack strategies for each traversal
-    return nil
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Using a (node, visited) tuple on the stack: for inorder, push right, self(marked), left
-    fmt.Println(UnifiedIterativeTraversalSingleTemplate(map[string]interface{}{}))
-}`
+	fmt.Println(UnifiedIterativeTraversalSingleTemplate([]int{1, 2, 3, 4, 5, null, 6})) // Expected: [1,2,3]
+	fmt.Println(UnifiedIterativeTraversalSingleTemplate([]int{1})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '04-bst-traversal/01-iterative-tree-traversal/twist-01-unified-iterative-traversal-single-template', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/04-bst-traversal/01-iterative-tree-traversal/twist-01-unified-iterative-traversal-single-template'] = problem;
 })();

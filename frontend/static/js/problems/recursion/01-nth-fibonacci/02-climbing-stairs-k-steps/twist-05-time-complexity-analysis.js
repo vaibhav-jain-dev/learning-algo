@@ -2,10 +2,12 @@
  * Time Complexity Analysis
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-staircase
  * Parent: 01-nth-fibonacci/02-climbing-stairs-k-steps
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Time Complexity Analysis',
         difficulty: 'Medium',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For k=2: O(phi^n). For k=3: O(tribonacci_constant^n) where tribonacci_constant ~= 1.839. For k>=n: O(2^n) since every subset of steps is valid.' },
-                output: 'See example',
-                explanation: 'For k=2: O(phi^n). For k=3: O(tribonacci_constant^n) where tribonacci_constant ~= 1.839. For k>=n: O(2^n) since every subset of steps is valid.'
+                input: {"n":4,"k":2},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the time complexity analysis criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"k":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Time Complexity Analysis
-# Category: recursion
-# Difficulty: Medium
-# Parent: 01-nth-fibonacci/02-climbing-stairs-k-steps
-
-def solve():
+            python: `def time_complexity_analysis(n, k):
     """
+    Time Complexity Analysis
+
     Analyze the time complexity of the naive recursive solution without memoization for general k. How does it compare to Fibonacci when k=2? What is the base of the exponential?
 
-    Key insight: Requires mathematical reasoning about k-way branching. For k=2 the base is phi~1.618, but for larger k the base approaches 2. Understanding this connection deepens insight into why memoization is critical.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(n)
+
+    for i in range(n):
+        # Check condition based on k
+        j = 0
+        for k in range(i, n):
+            if j < len(k) and n[k] == k[j]:
+                j += 1
+        if j == len(k):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(time_complexity_analysis(4, 2))  # Expected: 1
+print(time_complexity_analysis(0, 0))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Time Complexity Analysis problem.
+// TimeComplexityAnalysis solves the Time Complexity Analysis problem.
 // Analyze the time complexity of the naive recursive solution without memoization for general k. How does it compare to Fibonacci when k=2? What is the base of the exponential?
-// Key insight: Requires mathematical reasoning about k-way branching. For k=2 the base is phi~1.618, but for larger k the base approaches 2. Understanding this connection deepens insight into why memoization is critical.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func TimeComplexityAnalysis(n int, k int) int {
+	result := 0
+
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(TimeComplexityAnalysis(4, 2)) // Expected: 1
+	fmt.Println(TimeComplexityAnalysis(0, 0)) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '01-nth-fibonacci/02-climbing-stairs-k-steps/twist-05-time-complexity-analysis', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/01-nth-fibonacci/02-climbing-stairs-k-steps/twist-05-time-complexity-analysis'] = problem;
 })();

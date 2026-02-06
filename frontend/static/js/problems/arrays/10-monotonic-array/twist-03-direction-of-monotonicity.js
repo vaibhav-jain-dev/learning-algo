@@ -27,83 +27,76 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5]},
-                output: true,
-                explanation: 'Array is monotonically increasing.'
+                output: [1,2,3],
+                explanation: 'The direction of monotonicity for this input yields [1, 2, 3].'
             },
             {
                 input: {"array":[5,4,3,2,1]},
-                output: true,
-                explanation: 'Array is monotonically decreasing.'
+                output: [5,4,3],
+                explanation: 'The direction of monotonicity for this input yields [5, 4, 3].'
             },
             {
                 input: {"array":[1,3,2,4]},
-                output: false,
-                explanation: 'Array is not monotonic - has both increases and decreases.'
+                output: [1,3,2],
+                explanation: 'The direction of monotonicity for this input yields [1, 3, 2].'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def direction_of_monotonicity(data):
+            python: `def direction_of_monotonicity(array):
     """
     Direction of Monotonicity
 
-    Return which direction the array is monotonic: "increasing", "decreasing", "constant", or "neither".
-    \n    Approach: Must distinguish between all four cases explicitly, handling arrays with all equal elements as a special case.
+    Return which direction the array is monotonic: "increasing", "decreasing", "constant", or "neither". Must distinguish between all four cases explicitly, handling arrays with all equal elements as a special case.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [5, 5, 5] returns "constant". array = [1, 2, 3] returns "increasing".
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
 # Test cases
-print(direction_of_monotonicity([1, 2, 3, 4, 5]))
-print(direction_of_monotonicity([5, 3, 1]))
-print(direction_of_monotonicity([1]))`,
+print(direction_of_monotonicity([1,2,3,4,5]))  # Expected: [1,2,3]
+print(direction_of_monotonicity([5,4,3,2,1]))  # Expected: [5,4,3]
+print(direction_of_monotonicity([1,3,2,4]))  # Expected: [1,3,2]
+`,
             go: `package main
 
 import "fmt"
 
 // DirectionOfMonotonicity solves the Direction of Monotonicity problem.
-// Return which direction the array is monotonic: "increasing", "decreasing", "constant", or "neither".
+// Return which direction the array is monotonic: "increasing", "decreasing", "constant", or "neither". Must distinguish between all four cases explicitly, handling arrays with all equal elements as a special case.
 // Time: O(n), Space: O(n)
-func DirectionOfMonotonicity(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func DirectionOfMonotonicity(array []int) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(DirectionOfMonotonicity([]int{1, 2, 3, 4, 5}))
-    fmt.Println(DirectionOfMonotonicity([]int{5, 3, 1}))
-    fmt.Println(DirectionOfMonotonicity([]int{1}))
-}`
+	fmt.Println(DirectionOfMonotonicity([]int{1, 2, 3, 4, 5})) // Expected: [1,2,3]
+	fmt.Println(DirectionOfMonotonicity([]int{5, 4, 3, 2, 1})) // Expected: [5,4,3]
+	fmt.Println(DirectionOfMonotonicity([]int{1, 3, 2, 4})) // Expected: [1,3,2]
+}
+`
         },
         twists: [],
         similar: []

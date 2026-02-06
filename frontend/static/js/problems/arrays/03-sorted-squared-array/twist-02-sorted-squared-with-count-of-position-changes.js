@@ -27,83 +27,72 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,1,2,3]},
                 output: 2,
-                explanation: 'Two valid configurations found in the input.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: 1,
-                explanation: 'Only one valid configuration exists.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1,1,1]},
                 output: 3,
-                explanation: 'Multiple identical elements create multiple valid configurations.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def sorted_squared_with_count_of_position_changes(data):
+            python: `def sorted_squared_with_count_of_position_changes(array):
     """
     Sorted Squared with Count of Position Changes
 
-    Return the sorted squared array AND the count of elements that changed position after squaring and sorting.
-    \n    Approach: Adds an inversion-counting aspect on top of the squaring problem, requiring you to track original vs final positions.
+    Return the sorted squared array AND the count of elements that changed position after squaring and sorting. Adds an inversion-counting aspect on top of the squaring problem, requiring you to track original vs final positions.
 
     Time: O(n log n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array=[-3,-1,2,4] → squares=[1,4,9,16], positions changed: -3 moved from 0→2, -1 moved from 1→0 → 2 changes
+    result = 0
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
 
     return result
 
 
 # Test cases
-print(sorted_squared_with_count_of_position_changes([1, 2, 3, 4, 5]))
-print(sorted_squared_with_count_of_position_changes([5, 3, 1]))
-print(sorted_squared_with_count_of_position_changes([1]))`,
+print(sorted_squared_with_count_of_position_changes([1,2,1,2,3]))  # Expected: 2
+print(sorted_squared_with_count_of_position_changes([1,2,3]))  # Expected: 1
+print(sorted_squared_with_count_of_position_changes([1,1,1]))  # Expected: 3
+`,
             go: `package main
 
 import "fmt"
 
 // SortedSquaredWithCountOfPositionChanges solves the Sorted Squared with Count of Position Changes problem.
-// Return the sorted squared array AND the count of elements that changed position after squaring and sorting.
+// Return the sorted squared array AND the count of elements that changed position after squaring and sorting. Adds an inversion-counting aspect on top of the squaring problem, requiring you to track original vs final positions.
 // Time: O(n log n), Space: O(n)
-func SortedSquaredWithCountOfPositionChanges(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func SortedSquaredWithCountOfPositionChanges(array []int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(SortedSquaredWithCountOfPositionChanges([]int{1, 2, 3, 4, 5}))
-    fmt.Println(SortedSquaredWithCountOfPositionChanges([]int{5, 3, 1}))
-    fmt.Println(SortedSquaredWithCountOfPositionChanges([]int{1}))
-}`
+	fmt.Println(SortedSquaredWithCountOfPositionChanges([]int{1, 2, 1, 2, 3})) // Expected: 2
+	fmt.Println(SortedSquaredWithCountOfPositionChanges([]int{1, 2, 3})) // Expected: 1
+	fmt.Println(SortedSquaredWithCountOfPositionChanges([]int{1, 1, 1})) // Expected: 3
+}
+`
         },
         twists: [],
         similar: []

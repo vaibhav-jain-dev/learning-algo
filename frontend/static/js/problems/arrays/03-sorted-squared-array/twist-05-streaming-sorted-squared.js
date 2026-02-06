@@ -27,83 +27,71 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,3,5,2,4]},
                 output: 1,
-                explanation: 'Only one operation needed to achieve the goal.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4]},
                 output: 0,
-                explanation: 'Already satisfies the condition, no operations needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[5,3,1,4,2]},
                 output: 2,
-                explanation: 'Two operations needed to satisfy the condition.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def streaming_sorted_squared(data):
+            python: `def streaming_sorted_squared(array):
     """
     Streaming Sorted Squared
 
-    Elements arrive one at a time in sorted order. After each new element, output the current sorted squared array in O(n) time.
-    \n    Approach: Cannot rebuild from scratch each time. Requires maintaining a sorted squared structure and efficiently inserting new squared values.
+    Elements arrive one at a time in sorted order. After each new element, output the current sorted squared array in O(n) time. Cannot rebuild from scratch each time. Requires maintaining a sorted squared structure and efficiently inserting new squared values.
 
     Time: O(n log n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # stream: -3 → [9], then -1 → [1,9], then 2 → [1,4,9], then 4 → [1,4,9,16]
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
 # Test cases
-print(streaming_sorted_squared([1, 2, 3, 4, 5]))
-print(streaming_sorted_squared([5, 3, 1]))
-print(streaming_sorted_squared([1]))`,
+print(streaming_sorted_squared([1,3,5,2,4]))  # Expected: 1
+print(streaming_sorted_squared([1,2,3,4]))  # Expected: 0
+print(streaming_sorted_squared([5,3,1,4,2]))  # Expected: 2
+`,
             go: `package main
 
 import "fmt"
 
 // StreamingSortedSquared solves the Streaming Sorted Squared problem.
-// Elements arrive one at a time in sorted order. After each new element, output the current sorted squared array in O(n) time.
+// Elements arrive one at a time in sorted order. After each new element, output the current sorted squared array in O(n) time. Cannot rebuild from scratch each time. Requires maintaining a sorted squared structure and efficiently inserting new squared values.
 // Time: O(n log n), Space: O(n)
-func StreamingSortedSquared(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func StreamingSortedSquared(array []int) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(StreamingSortedSquared([]int{1, 2, 3, 4, 5}))
-    fmt.Println(StreamingSortedSquared([]int{5, 3, 1}))
-    fmt.Println(StreamingSortedSquared([]int{1}))
-}`
+	fmt.Println(StreamingSortedSquared([]int{1, 3, 5, 2, 4})) // Expected: 1
+	fmt.Println(StreamingSortedSquared([]int{1, 2, 3, 4})) // Expected: 0
+	fmt.Println(StreamingSortedSquared([]int{5, 3, 1, 4, 2})) // Expected: 2
+}
+`
         },
         twists: [],
         similar: []

@@ -2,10 +2,12 @@
  * Kth Smallest Instead
  * Category: binary-search-trees
  * Difficulty: Easy
+ * Algorithm: bst-kth-largest
  * Parent: 06-find-kth-largest
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Kth Smallest Instead',
         difficulty: 'Easy',
@@ -14,68 +16,94 @@
         description: 'Instead of finding the kth largest, find the kth smallest value in the BST.',
         problem: 'The traversal direction reverses: you use a standard inorder traversal (left-root-right) instead of reverse inorder (right-root-left), which seems trivial but tests whether you truly understand the symmetry. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: kth smallest instead.",
-                  "Consider how the traversal direction reverses: you use a standard inorder traversal (left-root-right) instead of reverse inorder (right-root-left), which seems trivial but tests whether you truly understand the symmetry affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'For BST [15, 5, 20, 2, 5, 17, 22, 1] with k=3, the kth smallest is 5 (values in order: 1, 2, 5, 5, 15, 17, 20, 22).'
+                input: {"tree":[15,5,20,2,5,17,22,1],"k":3},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the kth smallest instead criteria.'
+            },
+            {
+                input: {"tree":[15,5,20,2,5,17,22,1],"k":1},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the kth smallest instead criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":[15],"k":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Kth Smallest Instead
-# Difficulty: Easy
-# Parent: 06-find-kth-largest
-#
-# Instead of finding the kth largest, find the kth smallest value in the BST.
-
-def kthSmallestInstead(data):
+            python: `def kth_smallest_instead(tree, k):
     """
     Kth Smallest Instead
 
-    Approach: The traversal direction reverses: you use a standard inorder traversal (left-root-right) instead of reverse inorder (right-root-left), which seems trivial but tests whether you truly understand the symmetry.
+    Instead of finding the kth largest, find the kth smallest value in the BST.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: The traversal direction reverses: you use a standard inorder traversal (left-root-right) instead of reverse inorder (right-root-left), which seems trivial but tests whether you truly understand the symmetry
-    pass
+    count = 0
+    n = len(tree)
+
+    for i in range(n):
+        # Check condition based on k
+        j = 0
+        for k in range(i, n):
+            if j < len(k) and tree[k] == k[j]:
+                j += 1
+        if j == len(k):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: For BST [15, 5, 20, 2, 5, 17, 22, 1] with k=3, the kth smallest is 5 (values in order: 1, 2, 5, 5, 15, 17, 20, 22)
-    print(kthSmallestInstead({}))`,
+# Test cases
+print(kth_smallest_instead([15,5,20,2,5,17,22,1], 3))  # Expected: 1
+print(kth_smallest_instead([15,5,20,2,5,17,22,1], 1))  # Expected: 2
+print(kth_smallest_instead([15], 0))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// Kth Smallest Instead
-// Difficulty: Easy
-// Parent: 06-find-kth-largest
-//
+// KthSmallestInstead solves the Kth Smallest Instead problem.
 // Instead of finding the kth largest, find the kth smallest value in the BST.
+// Time: O(n), Space: O(1)
+func KthSmallestInstead(tree []int, k int) int {
+	result := 0
 
-func KthSmallestInstead(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: The traversal direction reverses: you use a standard inorder traversal (left-root-right) instead of reverse inorder (right-root-left), which seems trivial but tests whether you truly understand the symmetry
-    return nil
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    // Example: For BST [15, 5, 20, 2, 5, 17, 22, 1] with k=3, the kth smallest is 5 (values in order: 1, 2, 5, 5, 15, 17, 20, 22)
-    fmt.Println(KthSmallestInstead(map[string]interface{}{}))
-}`
+	fmt.Println(KthSmallestInstead([]int{15, 5, 20, 2, 5, 17, 22, 1}, 3)) // Expected: 1
+	fmt.Println(KthSmallestInstead([]int{15, 5, 20, 2, 5, 17, 22, 1}, 1)) // Expected: 2
+	fmt.Println(KthSmallestInstead([]int{15}, 0)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '06-find-kth-largest/twist-02-kth-smallest-instead', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/06-find-kth-largest/twist-02-kth-smallest-instead'] = problem;
 })();

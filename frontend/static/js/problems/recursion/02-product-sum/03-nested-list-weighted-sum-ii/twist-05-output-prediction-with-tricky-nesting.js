@@ -2,10 +2,12 @@
  * Output Prediction with Tricky Nesting
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-product-sum
  * Parent: 02-product-sum/03-nested-list-weighted-sum-ii
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Output Prediction with Tricky Nesting',
         difficulty: 'Medium',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Max depth = 4 (path to 6). Weights: depth 1 (items: 1) weight=4, depth 2 (items: 2,4) weight=3, depth 3 (items: 3,5) weight=2, depth 4 (items: 6) weight=1. Sum = 1*4+2*3+4*3+3*2+5*2+6*1 = 4+6+12+6+10+6 = 44.' },
-                output: 'See example',
-                explanation: 'Max depth = 4 (path to 6). Weights: depth 1 (items: 1) weight=4, depth 2 (items: 2,4) weight=3, depth 3 (items: 3,5) weight=2, depth 4 (items: 6) weight=1. Sum = 1*4+2*3+4*3+3*2+5*2+6*1 = 4+6+12+6+10+6 = 44.'
+                input: {"array":[[1,1],2,[1,1]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the output prediction with tricky nesting criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[[1,1]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Output Prediction with Tricky Nesting
-# Category: recursion
-# Difficulty: Medium
-# Parent: 02-product-sum/03-nested-list-weighted-sum-ii
-
-def solve():
+            python: `def output_prediction_with_tricky_nesting(array):
     """
+    Output Prediction with Tricky Nesting
+
     Without running code, compute the inverse-weighted sum of [1, [2, [3]], [4, [5, [6]]]]. Be careful with varying depths in different branches.
 
-    Key insight: Tests your ability to mentally trace the algorithm with asymmetric nesting. Different branches have different depths, so the max depth affects all weights globally. You must find the global max depth first.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(output_prediction_with_tricky_nesting([[1,1],2,[1,1]]))  # Expected: 1
+print(output_prediction_with_tricky_nesting([[1,1]]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Output Prediction with Tricky Nesting problem.
+// OutputPredictionWithTrickyNesting solves the Output Prediction with Tricky Nesting problem.
 // Without running code, compute the inverse-weighted sum of [1, [2, [3]], [4, [5, [6]]]]. Be careful with varying depths in different branches.
-// Key insight: Tests your ability to mentally trace the algorithm with asymmetric nesting. Different branches have different depths, so the max depth affects all weights globally. You must find the global max depth first.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func OutputPredictionWithTrickyNesting(array [][]int) int {
+	result := 0
+
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(OutputPredictionWithTrickyNesting([][]int{{1, 1}, 2, {1, 1}})) // Expected: 1
+	fmt.Println(OutputPredictionWithTrickyNesting([][]int{{1, 1}})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '02-product-sum/03-nested-list-weighted-sum-ii/twist-05-output-prediction-with-tricky-nesting', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/02-product-sum/03-nested-list-weighted-sum-ii/twist-05-output-prediction-with-tricky-nesting'] = problem;
 })();

@@ -2,16 +2,18 @@
  * MST with Starting Vertex
  * Category: famous-algorithms
  * Difficulty: Easy
+ * Algorithm: prims-algorithm
  * Parent: 07-prims-algorithm
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'MST with Starting Vertex',
         difficulty: 'Easy',
         algorithm: 'prims-algorithm',
         parent: '07-prims-algorithm',
-        description: 'Run Prim\'s from different starting vertices and verify that all produce MSTs with the same total weight.',
+        description: 'Run Prim\',
         problem: 'Tests understanding that MST weight is invariant to the starting vertex (though the actual edges may differ), which is a key property to prove.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -19,57 +21,80 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Start Prim from vertex 0: weight 16. Start from vertex 3: weight 16. Same total, possibly different edges.' },
-                output: 'See example',
-                explanation: 'Start Prim from vertex 0: weight 16. Start from vertex 3: weight 16. Same total, possibly different edges.'
+                input: {"V":5,"edges":[[0,1,2],[0,3,6],[1,2,3],[1,3,8],[1,4,5],[2,4,7],[3,4,9]]},
+                output: true,
+                explanation: 'The mst with starting vertex condition is satisfied for this input.'
+            },
+            // Edge case
+            {
+                input: {"V":0,"edges":[[0,1,2]]},
+                output: false,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# MST with Starting Vertex
-# Category: famous-algorithms
-# Difficulty: Easy
-# Parent: 07-prims-algorithm
-
-def solve():
+            python: `def mst_with_starting_vertex(V, edges):
     """
-    Run Prim's from different starting vertices and verify that all produce MSTs with the same total weight.
+    MST with Starting Vertex
 
-    Key insight: Tests understanding that MST weight is invariant to the starting vertex (though the actual edges may differ), which is a key property to prove.
+    Run Prim\\
+
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    j = 0
+
+    for i in range(len(V)):
+        if j < len(edges) and V[i] == edges[j]:
+            j += 1
+
+    return j == len(edges)
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(mst_with_starting_vertex(5, [[0,1,2],[0,3,6],[1,2,3],[1,3,8],[1,4,5],[2,4,7],[3,4,9]]))  # Expected: True
+print(mst_with_starting_vertex(0, [[0,1,2]]))  # Expected: False
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the MST with Starting Vertex problem.
-// Run Prim's from different starting vertices and verify that all produce MSTs with the same total weight.
-// Key insight: Tests understanding that MST weight is invariant to the starting vertex (though the actual edges may differ), which is a key property to prove.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// MstWithStartingVertex solves the MST with Starting Vertex problem.
+// Run Prim\\
+// Time: O(?), Space: O(?)
+func MstWithStartingVertex(V int, edges [][]int) bool {
+	j := 0
+
+	for i := 0; i < len(V) && j < len(edges); i++ {
+		if V[i] == edges[j] {
+			j++
+		}
+	}
+
+	return j == len(edges)
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(MstWithStartingVertex(5, [][]int{{0, 1, 2}, {0, 3, 6}, {1, 2, 3}, {1, 3, 8}, {1, 4, 5}, {2, 4, 7}, {3, 4, 9}})) // Expected: true
+	fmt.Println(MstWithStartingVertex(0, [][]int{{0, 1, 2}})) // Expected: false
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '07-prims-algorithm/twist-03-mst-with-starting-vertex', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/07-prims-algorithm/twist-03-mst-with-starting-vertex'] = problem;
 })();

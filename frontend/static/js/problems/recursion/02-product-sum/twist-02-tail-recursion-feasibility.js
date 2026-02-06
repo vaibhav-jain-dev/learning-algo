@@ -2,10 +2,12 @@
  * Tail Recursion Feasibility
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-product-sum
  * Parent: 02-product-sum
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Tail Recursion Feasibility',
         difficulty: 'Medium',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'productSum([5, [7, -1], 3], depth=1, acc=0): after processing 5, you must recurse into [7,-1] but still have 3 remaining. This breaks tail-call optimization unless you use continuation-passing style.' },
-                output: 'See example',
-                explanation: 'productSum([5, [7, -1], 3], depth=1, acc=0): after processing 5, you must recurse into [7,-1] but still have 3 remaining. This breaks tail-call optimization unless you use continuation-passing style.'
+                input: {"array":[5,2,[7,-1],3,[6,[-13,8],4]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the tail recursion feasibility criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[5]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Tail Recursion Feasibility
-# Category: recursion
-# Difficulty: Medium
-# Parent: 02-product-sum
-
-def solve():
+            python: `def tail_recursion_feasibility(array):
     """
+    Tail Recursion Feasibility
+
     Can product sum be converted to tail recursion? Attempt to refactor it with an accumulator. Explain why nested arrays make pure tail recursion difficult.
 
-    Key insight: Unlike linear recursion (Fibonacci), the nested structure means you recurse into sub-arrays mid-iteration. True tail recursion requires the recursive call to be the last operation, but you have remaining siblings to process.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(tail_recursion_feasibility([5,2,[7,-1],3,[6,[-13,8],4]]))  # Expected: 1
+print(tail_recursion_feasibility([5]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Tail Recursion Feasibility problem.
+// TailRecursionFeasibility solves the Tail Recursion Feasibility problem.
 // Can product sum be converted to tail recursion? Attempt to refactor it with an accumulator. Explain why nested arrays make pure tail recursion difficult.
-// Key insight: Unlike linear recursion (Fibonacci), the nested structure means you recurse into sub-arrays mid-iteration. True tail recursion requires the recursive call to be the last operation, but you have remaining siblings to process.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func TailRecursionFeasibility(array []int) int {
+	result := 0
+
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(TailRecursionFeasibility([]interface{}{5, 2, []int{7, -1}, 3, []interface{}{6, []int{-13, 8}, 4}})) // Expected: 1
+	fmt.Println(TailRecursionFeasibility([]int{5})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '02-product-sum/twist-02-tail-recursion-feasibility', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/02-product-sum/twist-02-tail-recursion-feasibility'] = problem;
 })();

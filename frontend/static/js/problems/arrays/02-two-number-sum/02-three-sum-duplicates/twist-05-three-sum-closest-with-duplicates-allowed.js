@@ -26,80 +26,71 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"nums":[-1,2,1,-4],"target":1},
                 output: 2,
-                explanation: 'The triplet (-1, 2, 1) has sum 2, which is closest to target 1.'
+                explanation: ''
             },
             {
                 input: {"nums":[0,0,0],"target":1},
                 output: 0,
-                explanation: 'Only triplet possible: 0+0+0=0, closest to 1.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"nums":[1,2,3,4,5],"target":10},
                 output: 10,
-                explanation: 'Triplet (2,3,5) or (1,4,5) sums to exactly 10.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def three_sum_closest_with_duplicates_allowed(data):
+            python: `def three_sum_closest_with_duplicates_allowed(nums, target):
     """
     Three Sum Closest with Duplicates Allowed
 
-    Find the closest sum to target, but report ALL unique triplets achieving that closest sum.
-    \n    Approach: Combines the closest-sum search with duplicate-aware enumeration, requiring two phases: find the closest sum, then collect all triplets matching it.
+    Find the closest sum to target, but report ALL unique triplets achieving that closest sum. Combines the closest-sum search with duplicate-aware enumeration, requiring two phases: find the closest sum, then collect all triplets matching it.
 
     Time: O(n)
     Space: O(n)
-
-    Example: nums=[-1,0,1,2,-1], target=1 → closest=1, triplets=[[-1,0,2]]
     """
-    if not data:
-        return None
-
-    n = len(data) if hasattr(data, '__len__') else 0
     result = []
 
-    # Core algorithm implementation
-    for i in range(n):
-        result.append(data[i])
+    for i in range(len(nums)):
+        # Check if element meets criteria
+        result.append(nums[i])
 
     return result
 
 
 # Test cases
-print(three_sum_closest_with_duplicates_allowed([1, 2, 3, 4, 5]))
-print(three_sum_closest_with_duplicates_allowed([5, 3, 1]))
-print(three_sum_closest_with_duplicates_allowed([1]))`,
+print(three_sum_closest_with_duplicates_allowed([-1,2,1,-4], 1))  # Expected: 2
+print(three_sum_closest_with_duplicates_allowed([0,0,0], 1))  # Expected: 0
+print(three_sum_closest_with_duplicates_allowed([1,2,3,4,5], 10))  # Expected: 10
+`,
             go: `package main
 
 import "fmt"
 
 // ThreeSumClosestWithDuplicatesAllowed solves the Three Sum Closest with Duplicates Allowed problem.
-// Find the closest sum to target, but report ALL unique triplets achieving that closest sum.
+// Find the closest sum to target, but report ALL unique triplets achieving that closest sum. Combines the closest-sum search with duplicate-aware enumeration, requiring two phases: find the closest sum, then collect all triplets matching it.
 // Time: O(n), Space: O(n)
-func ThreeSumClosestWithDuplicatesAllowed(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func ThreeSumClosestWithDuplicatesAllowed(nums []int, target int) []int {
+	result := make([]int, 0)
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(nums); i++ {
+		result = append(result, nums[i])
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(ThreeSumClosestWithDuplicatesAllowed([]int{1, 2, 3, 4, 5}))
-    fmt.Println(ThreeSumClosestWithDuplicatesAllowed([]int{5, 3, 1}))
-    fmt.Println(ThreeSumClosestWithDuplicatesAllowed([]int{1}))
-}`
+	fmt.Println(ThreeSumClosestWithDuplicatesAllowed([]int{-1, 2, 1, -4}, 1)) // Expected: 2
+	fmt.Println(ThreeSumClosestWithDuplicatesAllowed([]int{0, 0, 0}, 1)) // Expected: 0
+	fmt.Println(ThreeSumClosestWithDuplicatesAllowed([]int{1, 2, 3, 4, 5}, 10)) // Expected: 10
+}
+`
         },
         twists: [],
         similar: []

@@ -2,10 +2,12 @@
  * Compare Boundary Traversal
  * Category: binary-trees
  * Difficulty: Hard
+ * Algorithm: tree-dfs
  * Parent: 11-compare-leaf-traversal
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Compare Boundary Traversal',
         difficulty: 'Hard',
@@ -19,121 +21,80 @@
             'Key insight: Boundary traversal combines three different traversal patterns into one sequence.',
             'You must handle corner cases where a node is part of multiple boundaries (e.g., leftmost leaf is both left edge and leaf).'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree [1, 2, 3, 4, 5, 6, 7]' },
-                output: 'See explanation',
-                explanation: 'Tree [1, 2, 3, 4, 5, 6, 7]. Boundary: [1, 2, 4, 5, 6, 7, 3]. Left edge: [1, 2, 4], Leaves: [4, 5, 6, 7], Right edge: [7, 3, 1], deduplicated.'
+                input: {"tree1":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"tree2":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}}},
+                output: true,
+                explanation: 'The compare boundary traversal condition is satisfied for this input.'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree1":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"tree2":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}}},
+                output: false,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def compare_boundary_traversal(data):
+            python: `def compare_boundary_traversal(tree1, tree2):
     """
     Compare Boundary Traversal
 
-    Compare the full boundary traversals of two trees.
-     The boundary includes left edge (top-down), leaves (left-to-right), and right edge (bottom-up), without duplicates.
+    Compare the full boundary traversals of two trees. The boundary includes left edge (top-down), leaves (left-to-right), and right edge (bottom-up), without duplicates. Boundary traversal combines three different traversal patterns into one sequence. You must handle corner cases where a node is part of multiple boundaries (e.g., leftmost leaf is both left edge and leaf).
 
-    Approach: Boundary traversal combines three different traversal patterns into one sequence
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    j = 0
 
-    # Key insight: Boundary traversal combines three different traversal patterns into one sequence
+    for i in range(len(tree1)):
+        if j < len(tree2) and tree1[i] == tree2[j]:
+            j += 1
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Compare Boundary Traversal
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return j == len(tree2)
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree [1, 2, 3, 4, 5, 6, 7]
-    print("See problem description for test cases")`,
+# Test cases
+print(compare_boundary_traversal({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5, "left": {"value": 7}, "right": {"value": 8}}}, "right": {"value": 3, "right": {"value": 6}}}, {"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 7, "right": {"value": 5, "right": {"value": 6}}}}, "right": {"value": 3, "left": {"value": 8}}}))  # Expected: True
+print(compare_boundary_traversal({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5, "left": {"value": 7}, "right": {"value": 8}}}, "right": {"value": 3, "right": {"value": 6}}}, {"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 7, "right": {"value": 5, "right": {"value": 6}}}}, "right": {"value": 3, "left": {"value": 8}}}))  # Expected: False
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// CompareBoundaryTraversal solves: Compare Boundary Traversal
-// Boundary traversal combines three different traversal patterns into one sequence
+// CompareBoundaryTraversal solves the Compare Boundary Traversal problem.
+// Compare the full boundary traversals of two trees. The boundary includes left edge (top-down), leaves (left-to-right), and right edge (bottom-up), without duplicates. Boundary traversal combines three different traversal patterns into one sequence. You must handle corner cases where a node is part of multiple boundaries (e.g., leftmost leaf is both left edge and leaf).
 // Time: O(n), Space: O(n)
-func CompareBoundaryTraversal(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func CompareBoundaryTraversal(tree1 *TreeNode, tree2 *TreeNode) bool {
+	j := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree1) && j < len(tree2); i++ {
+		if tree1[i] == tree2[j] {
+			j++
+		}
+	}
 
-    // TODO: Implement Compare Boundary Traversal
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return j == len(tree2)
 }
 
 func main() {
-    // Example: Tree [1, 2, 3, 4, 5, 6, 7]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(CompareBoundaryTraversal({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}}, {"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}})) // Expected: true
+	fmt.Println(CompareBoundaryTraversal({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}}, {"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}})) // Expected: false
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '11-compare-leaf-traversal/twist-02-compare-boundary-traversal', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/11-compare-leaf-traversal/twist-02-compare-boundary-traversal'] = problem;
 })();

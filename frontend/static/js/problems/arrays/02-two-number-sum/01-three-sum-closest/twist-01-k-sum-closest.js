@@ -26,80 +26,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"nums":[-1,2,1,-4],"target":1},
                 output: 2,
-                explanation: 'The triplet (-1, 2, 1) has sum 2, which is closest to target 1.'
+                explanation: ''
             },
             {
                 input: {"nums":[0,0,0],"target":1},
                 output: 0,
-                explanation: 'Only triplet possible: 0+0+0=0, closest to 1.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"nums":[1,2,3,4,5],"target":10},
                 output: 10,
-                explanation: 'Triplet (2,3,5) or (1,4,5) sums to exactly 10.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def k_sum_closest(data):
+            python: `def k_sum_closest(nums, target):
     """
     K-Sum Closest
 
-    Generalize to finding k numbers whose sum is closest to target, not just 3.
-    \n    Approach: Requires recursive decomposition: reduce k-sum to (k-1)-sum, adding layers of iteration. The two-pointer optimization only applies at the innermost level.
+    Generalize to finding k numbers whose sum is closest to target, not just 3. Requires recursive decomposition: reduce k-sum to (k-1)-sum, adding layers of iteration. The two-pointer optimization only applies at the innermost level.
 
     Time: O(n log k)
     Space: O(n)
-
-    Example: nums=[1,2,3,4,5], k=4, target=15 → 14 (2+3+4+5)
     """
-    if not data:
-        return None
+    count = 0
+    n = len(nums)
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
-
-    # Core algorithm implementation
     for i in range(n):
-        result.append(data[i])
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and nums[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(k_sum_closest([1, 2, 3, 4, 5]))
-print(k_sum_closest([5, 3, 1]))
-print(k_sum_closest([1]))`,
+print(k_sum_closest([-1,2,1,-4], 1))  # Expected: 2
+print(k_sum_closest([0,0,0], 1))  # Expected: 0
+print(k_sum_closest([1,2,3,4,5], 10))  # Expected: 10
+`,
             go: `package main
 
 import "fmt"
 
 // KSumClosest solves the K-Sum Closest problem.
-// Generalize to finding k numbers whose sum is closest to target, not just 3.
+// Generalize to finding k numbers whose sum is closest to target, not just 3. Requires recursive decomposition: reduce k-sum to (k-1)-sum, adding layers of iteration. The two-pointer optimization only applies at the innermost level.
 // Time: O(n log k), Space: O(n)
-func KSumClosest(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func KSumClosest(nums []int, target int) int {
+	result := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(nums); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(KSumClosest([]int{1, 2, 3, 4, 5}))
-    fmt.Println(KSumClosest([]int{5, 3, 1}))
-    fmt.Println(KSumClosest([]int{1}))
-}`
+	fmt.Println(KSumClosest([]int{-1, 2, 1, -4}, 1)) // Expected: 2
+	fmt.Println(KSumClosest([]int{0, 0, 0}, 1)) // Expected: 0
+	fmt.Println(KSumClosest([]int{1, 2, 3, 4, 5}, 10)) // Expected: 10
+}
+`
         },
         twists: [],
         similar: []

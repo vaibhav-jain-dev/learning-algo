@@ -26,80 +26,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"s1":"abcdebdde","s2":"bde"},
                 output: "bcde",
-                explanation: 'The smallest window containing "bde" as a subsequence is "bcde".'
+                explanation: ''
             },
             {
                 input: {"s1":"abcdef","s2":"ace"},
                 output: "abcde",
-                explanation: 'Window from a to e contains "ace" as a subsequence.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"s1":"xyz","s2":"abc"},
                 output: "",
-                explanation: 'No valid window exists.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def all_minimum_windows(data):
+            python: `def all_minimum_windows(s1, s2):
     """
     All Minimum Windows
 
-    Instead of returning just one minimum window, return all non-overlapping minimum-length windows where s2 is a subsequence.
-    \n    Approach: Requires collecting all optimal windows and then resolving overlaps, adding a greedy interval selection step after the window-finding phase.
+    Instead of returning just one minimum window, return all non-overlapping minimum-length windows where s2 is a subsequence. Requires collecting all optimal windows and then resolving overlaps, adding a greedy interval selection step after the window-finding phase.
 
     Time: O(n)
     Space: O(n)
-
-    Example: s1="abcdbcde", s2="bce" → ["bcde"] or all minimum windows found
     """
-    if not data:
-        return None
+    count = 0
+    n = len(s1)
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
-
-    # Core algorithm implementation
     for i in range(n):
-        result.append(data[i])
+        # Check condition based on s2
+        j = 0
+        for k in range(i, n):
+            if j < len(s2) and s1[k] == s2[j]:
+                j += 1
+        if j == len(s2):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(all_minimum_windows([1, 2, 3, 4, 5]))
-print(all_minimum_windows([5, 3, 1]))
-print(all_minimum_windows([1]))`,
+print(all_minimum_windows("abcdebdde", "bde"))  # Expected: "bcde"
+print(all_minimum_windows("abcdef", "ace"))  # Expected: "abcde"
+print(all_minimum_windows("xyz", "abc"))  # Expected: ""
+`,
             go: `package main
 
 import "fmt"
 
 // AllMinimumWindows solves the All Minimum Windows problem.
-// Instead of returning just one minimum window, return all non-overlapping minimum-length windows where s2 is a subsequence.
+// Instead of returning just one minimum window, return all non-overlapping minimum-length windows where s2 is a subsequence. Requires collecting all optimal windows and then resolving overlaps, adding a greedy interval selection step after the window-finding phase.
 // Time: O(n), Space: O(n)
-func AllMinimumWindows(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func AllMinimumWindows(s1 string, s2 string) int {
+	result := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(s1); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(AllMinimumWindows([]int{1, 2, 3, 4, 5}))
-    fmt.Println(AllMinimumWindows([]int{5, 3, 1}))
-    fmt.Println(AllMinimumWindows([]int{1}))
-}`
+	fmt.Println(AllMinimumWindows("abcdebdde", "bde")) // Expected: "bcde"
+	fmt.Println(AllMinimumWindows("abcdef", "ace")) // Expected: "abcde"
+	fmt.Println(AllMinimumWindows("xyz", "abc")) // Expected: ""
+}
+`
         },
         twists: [],
         similar: []

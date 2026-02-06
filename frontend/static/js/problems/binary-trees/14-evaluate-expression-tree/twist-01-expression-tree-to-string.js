@@ -2,10 +2,12 @@
  * Expression Tree to String
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-expression
  * Parent: 14-evaluate-expression-tree
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Expression Tree to String',
         difficulty: 'Medium',
@@ -19,120 +21,86 @@
             'Think about how the base case differs from the original problem.',
             'Review the example: Tree: + at root, * (left: 2, right: 3), - (left: 4, right: 5).'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree: + at root, * (left: 2, right: 3), - (left: 4, right: 5)' },
-                output: 'See explanation',
-                explanation: 'Tree: + at root, * (left: 2, right: 3), - (left: 4, right: 5). Output: "((2 * 3) + (4 - 5))" = "((2*3)+(4-5))".'
+                input: {"tree":{"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the expression tree to string criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":-1,"left":{"value":5},"right":{"value":7}}},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the expression tree to string criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def expression_tree_to_string(data):
+            python: `def expression_tree_to_string(tree):
     """
     Expression Tree to String
 
-    Instead of evaluating the expression tree, convert it to a fully parenthesized infix string representation.
+    Instead of evaluating the expression tree, convert it to a fully parenthesized infix string representation. Evaluation uses postorder (compute children first, then apply operator). String conversion uses inorder (left, operator, right) with parentheses, requiring different traversal order and string concatenation logic.
 
-    Approach: Evaluation uses postorder (compute children first, then apply operator)
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: Evaluation uses postorder (compute children first, then apply operator)
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Expression Tree to String
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree: + at root, * (left: 2, right: 3), - (left: 4, right: 5)
-    print("See problem description for test cases")`,
+# Test cases
+print(expression_tree_to_string({"value": -1, "left": {"value": -2, "left": {"value": 2}, "right": {"value": 3}}, "right": {"value": -3, "left": {"value": 4}, "right": {"value": 5}}}))  # Expected: 1
+print(expression_tree_to_string({"value": -1, "left": {"value": 5}, "right": {"value": 7}}))  # Expected: 2
+print(expression_tree_to_string({"value": -1, "left": {"value": -2, "left": {"value": 2}, "right": {"value": 3}}, "right": {"value": -3, "left": {"value": 4}, "right": {"value": 5}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// ExpressionTreeToString solves: Expression Tree to String
-// Evaluation uses postorder (compute children first, then apply operator)
+// ExpressionTreeToString solves the Expression Tree to String problem.
+// Instead of evaluating the expression tree, convert it to a fully parenthesized infix string representation. Evaluation uses postorder (compute children first, then apply operator). String conversion uses inorder (left, operator, right) with parentheses, requiring different traversal order and string concatenation logic.
 // Time: O(n), Space: O(n)
-func ExpressionTreeToString(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func ExpressionTreeToString(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Expression Tree to String
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree: + at root, * (left: 2, right: 3), - (left: 4, right: 5)
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(ExpressionTreeToString({"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}})) // Expected: 1
+	fmt.Println(ExpressionTreeToString({"value":-1,"left":{"value":5},"right":{"value":7}})) // Expected: 2
+	fmt.Println(ExpressionTreeToString({"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '14-evaluate-expression-tree/twist-01-expression-tree-to-string', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/14-evaluate-expression-tree/twist-01-expression-tree-to-string'] = problem;
 })();

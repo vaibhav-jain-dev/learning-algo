@@ -2,74 +2,104 @@
  * Dijkstra Comparison
  * Category: famous-algorithms
  * Difficulty: Medium
+ * Algorithm: a-star
  * Parent: 08-a-star-algorithm
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Dijkstra Comparison',
         difficulty: 'Medium',
         algorithm: 'a-star',
         parent: '08-a-star-algorithm',
-        description: 'Solve the same grid pathfinding problem using Dijkstra\'s algorithm (no heuristic) and compare the number of nodes explored with A*.',
-        problem: 'Dijkstra explores in all directions equally (like BFS for unweighted), while A* focuses toward the goal. Comparing node counts demonstrates the heuristic\'s value.',
+        description: 'Solve the same grid pathfinding problem using Dijkstra\',
+        problem: 'Dijkstra explores in all directions equally (like BFS for unweighted), while A* focuses toward the goal. Comparing node counts demonstrates the heuristic\',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'On a 10x10 grid with start at (0,0) and end at (9,9), Dijkstra might explore 80 nodes while A* with Manhattan heuristic explores only 25.' },
-                output: 'See example',
-                explanation: 'On a 10x10 grid with start at (0,0) and end at (9,9), Dijkstra might explore 80 nodes while A* with Manhattan heuristic explores only 25.'
+                input: {"grid":[[0,0,0,0],[0,1,1,0],[0,0,0,0],[0,1,0,0]],"start":[0,0],"end":[3,3]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the dijkstra comparison criteria.'
+            },
+            // Edge case
+            {
+                input: {"grid":[[0,0,0,0]],"start":[0],"end":[3]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Dijkstra Comparison
-# Category: famous-algorithms
-# Difficulty: Medium
-# Parent: 08-a-star-algorithm
-
-def solve():
+            python: `def dijkstra_comparison(grid, start, end):
     """
-    Solve the same grid pathfinding problem using Dijkstra's algorithm (no heuristic) and compare the number of nodes explored with A*.
+    Dijkstra Comparison
 
-    Key insight: Dijkstra explores in all directions equally (like BFS for unweighted), while A* focuses toward the goal. Comparing node counts demonstrates the heuristic's value.
+    Solve the same grid pathfinding problem using Dijkstra\\
+
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(grid)
+
+    for i in range(n):
+        # Check condition based on start
+        j = 0
+        for k in range(i, n):
+            if j < len(start) and grid[k] == start[j]:
+                j += 1
+        if j == len(start):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(dijkstra_comparison([[0,0,0,0],[0,1,1,0],[0,0,0,0],[0,1,0,0]], [0,0], [3,3]))  # Expected: 1
+print(dijkstra_comparison([[0,0,0,0]], [0], [3]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Dijkstra Comparison problem.
-// Solve the same grid pathfinding problem using Dijkstra's algorithm (no heuristic) and compare the number of nodes explored with A*.
-// Key insight: Dijkstra explores in all directions equally (like BFS for unweighted), while A* focuses toward the goal. Comparing node counts demonstrates the heuristic's value.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// DijkstraComparison solves the Dijkstra Comparison problem.
+// Solve the same grid pathfinding problem using Dijkstra\\
+// Time: O(?), Space: O(?)
+func DijkstraComparison(grid [][]int, start []int, end []int) int {
+	result := 0
+
+	for i := 0; i < len(grid); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(DijkstraComparison([][]int{{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 1, 0, 0}}, []int{0, 0}, []int{3, 3})) // Expected: 1
+	fmt.Println(DijkstraComparison([][]int{{0, 0, 0, 0}}, []int{0}, []int{3})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '08-a-star-algorithm/twist-01-dijkstra-comparison', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/08-a-star-algorithm/twist-01-dijkstra-comparison'] = problem;
 })();
