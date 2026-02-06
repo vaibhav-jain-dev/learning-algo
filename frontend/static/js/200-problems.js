@@ -5097,16 +5097,154 @@
         });
     }
 
+    // ---------------------------------------------------------------
+    // In-file Go-to-Definition provider
+    // Finds function/class/variable definitions in the current file
+    // ---------------------------------------------------------------
+    function registerDefinitionProviders() {
+        if (!window.monaco) return;
+        var m = window.monaco;
+
+        function findDefinition(model, word, lang) {
+            var text = model.getValue();
+            var lines = text.split('\n');
+            var patterns;
+            if (lang === 'python') {
+                patterns = [
+                    new RegExp('^\\s*def\\s+' + escapeRegex(word) + '\\s*\\('),
+                    new RegExp('^\\s*class\\s+' + escapeRegex(word) + '[\\s:(]'),
+                    new RegExp('^\\s*' + escapeRegex(word) + '\\s*=')
+                ];
+            } else {
+                patterns = [
+                    new RegExp('^\\s*func\\s+' + escapeRegex(word) + '\\s*\\('),
+                    new RegExp('^\\s*type\\s+' + escapeRegex(word) + '\\s+'),
+                    new RegExp('^\\s*var\\s+' + escapeRegex(word) + '\\s+'),
+                    new RegExp('^\\s*' + escapeRegex(word) + '\\s*:=')
+                ];
+            }
+            for (var i = 0; i < lines.length; i++) {
+                for (var p = 0; p < patterns.length; p++) {
+                    if (patterns[p].test(lines[i])) {
+                        var col = lines[i].indexOf(word) + 1;
+                        return {
+                            uri: model.uri,
+                            range: {
+                                startLineNumber: i + 1, startColumn: col,
+                                endLineNumber: i + 1, endColumn: col + word.length
+                            }
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
+        function escapeRegex(s) {
+            return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // Python definition provider
+        m.languages.registerDefinitionProvider('python', {
+            provideDefinition: function(model, position) {
+                var wordInfo = model.getWordAtPosition(position);
+                if (!wordInfo) return null;
+                var result = findDefinition(model, wordInfo.word, 'python');
+                return result ? [result] : null;
+            }
+        });
+
+        // Go definition provider
+        m.languages.registerDefinitionProvider('go', {
+            provideDefinition: function(model, position) {
+                var wordInfo = model.getWordAtPosition(position);
+                if (!wordInfo) return null;
+                var result = findDefinition(model, wordInfo.word, 'go');
+                return result ? [result] : null;
+            }
+        });
+
+        // Python hover provider - show function signature on hover
+        m.languages.registerHoverProvider('python', {
+            provideHover: function(model, position) {
+                var wordInfo = model.getWordAtPosition(position);
+                if (!wordInfo) return null;
+                var text = model.getValue();
+                var lines = text.split('\n');
+                var defRe = new RegExp('^\\s*def\\s+' + escapeRegex(wordInfo.word) + '\\s*\\(([^)]*)\\)');
+                var classRe = new RegExp('^\\s*class\\s+' + escapeRegex(wordInfo.word));
+                for (var i = 0; i < lines.length; i++) {
+                    var defMatch = lines[i].match(defRe);
+                    if (defMatch) {
+                        return {
+                            range: { startLineNumber: position.lineNumber, startColumn: wordInfo.startColumn, endLineNumber: position.lineNumber, endColumn: wordInfo.endColumn },
+                            contents: [
+                                { value: '```python\ndef ' + wordInfo.word + '(' + defMatch[1] + ')\n```' },
+                                { value: 'Defined on line ' + (i + 1) }
+                            ]
+                        };
+                    }
+                    if (classRe.test(lines[i])) {
+                        return {
+                            range: { startLineNumber: position.lineNumber, startColumn: wordInfo.startColumn, endLineNumber: position.lineNumber, endColumn: wordInfo.endColumn },
+                            contents: [
+                                { value: '```python\nclass ' + wordInfo.word + '\n```' },
+                                { value: 'Defined on line ' + (i + 1) }
+                            ]
+                        };
+                    }
+                }
+                return null;
+            }
+        });
+
+        // Go hover provider
+        m.languages.registerHoverProvider('go', {
+            provideHover: function(model, position) {
+                var wordInfo = model.getWordAtPosition(position);
+                if (!wordInfo) return null;
+                var text = model.getValue();
+                var lines = text.split('\n');
+                var funcRe = new RegExp('^\\s*func\\s+' + escapeRegex(wordInfo.word) + '\\s*\\(([^)]*)\\)(.*)');
+                var typeRe = new RegExp('^\\s*type\\s+' + escapeRegex(wordInfo.word) + '\\s+(.+)');
+                for (var i = 0; i < lines.length; i++) {
+                    var funcMatch = lines[i].match(funcRe);
+                    if (funcMatch) {
+                        return {
+                            range: { startLineNumber: position.lineNumber, startColumn: wordInfo.startColumn, endLineNumber: position.lineNumber, endColumn: wordInfo.endColumn },
+                            contents: [
+                                { value: '```go\nfunc ' + wordInfo.word + '(' + funcMatch[1] + ')' + funcMatch[2].trim() + '\n```' },
+                                { value: 'Defined on line ' + (i + 1) }
+                            ]
+                        };
+                    }
+                    var typeMatch = lines[i].match(typeRe);
+                    if (typeMatch) {
+                        return {
+                            range: { startLineNumber: position.lineNumber, startColumn: wordInfo.startColumn, endLineNumber: position.lineNumber, endColumn: wordInfo.endColumn },
+                            contents: [
+                                { value: '```go\ntype ' + wordInfo.word + ' ' + typeMatch[1].trim() + '\n```' },
+                                { value: 'Defined on line ' + (i + 1) }
+                            ]
+                        };
+                    }
+                }
+                return null;
+            }
+        });
+    }
+
     var monacoCompletionsRegistered = false;
 
     function createMonacoEditor(wrapper) {
         if (editorInitialized || !wrapper || !window.monaco) return;
 
         try {
-            // Register completion providers once
+            // Register completion providers, definition providers, hover providers once
             if (!monacoCompletionsRegistered) {
                 registerPythonCompletions();
                 registerGoCompletions();
+                registerDefinitionProviders();
                 monacoCompletionsRegistered = true;
             }
 
@@ -5115,7 +5253,7 @@
             editor = monaco.editor.create(wrapper, {
                 value: currentCode[currentLanguage] || getDefaultCode(currentLanguage),
                 language: monacoLanguage,
-                theme: 'vs-dark',
+                theme: 'vs',
                 fontSize: 14,
                 fontFamily: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', Menlo, Monaco, Consolas, 'Courier New', monospace",
                 fontLigatures: true,
@@ -5202,6 +5340,8 @@
                 // Show modified dot on tab
                 var modDot = document.getElementById('tab-modified-' + (currentLanguage === 'go' ? 'go' : 'py'));
                 if (modDot) modDot.style.display = 'inline';
+                // Clear execution error markers when user edits
+                clearExecutionMarkers();
             });
 
             // Track cursor position for status bar
@@ -5350,9 +5490,162 @@
         }
     };
 
+    // ---------------------------------------------------------------
+    // Post-execution error highlighting: parse error output and
+    // add red squiggly markers on the offending lines in Monaco
+    // ---------------------------------------------------------------
+    function highlightExecutionErrors(html) {
+        if (!editor || !window.monaco) return;
+        var m = window.monaco;
+        var model = editor.getModel();
+        if (!model) return;
+
+        // Decode HTML entities
+        var text = html
+            .replace(/&#34;/g, '"').replace(/&quot;/g, '"')
+            .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+            .replace(/&#39;/g, "'").replace(/&#10;/g, '\n')
+            .replace(/<[^>]*>/g, ' ');
+
+        var markers = [];
+        var userLineCount = model.getLineCount();
+
+        // Python error patterns
+        // "File ..., line 5" or "  File "<string>", line 11"
+        var pyLineRe = /File\s+["']?[^"']*["']?,\s*line\s+(\d+)/gi;
+        var pyMatch;
+        while ((pyMatch = pyLineRe.exec(text)) !== null) {
+            var ln = parseInt(pyMatch[1], 10);
+            if (ln > 0 && ln <= userLineCount) {
+                var lineText = model.getLineContent(ln);
+                markers.push({
+                    startLineNumber: ln, startColumn: 1,
+                    endLineNumber: ln, endColumn: lineText.length + 1,
+                    message: extractErrorMessage(text, 'python'),
+                    severity: m.MarkerSeverity.Error
+                });
+            }
+        }
+
+        // Python-specific: SyntaxError, NameError, TypeError, etc.
+        var pyErrRe = /(SyntaxError|NameError|TypeError|ValueError|IndexError|KeyError|AttributeError|IndentationError|ZeroDivisionError|ImportError|RuntimeError):\s*(.+)/g;
+        var pyErrMatch;
+        while ((pyErrMatch = pyErrRe.exec(text)) !== null) {
+            // If we already have line markers, update their message
+            if (markers.length > 0) {
+                markers[markers.length - 1].message = pyErrMatch[1] + ': ' + pyErrMatch[2].trim();
+            }
+        }
+
+        // Go error patterns
+        // "./main.go:12:5: ..." or "main.go:12: ..."
+        var goLineRe = /\.?(?:main|prog|solution)\.go:(\d+)(?::(\d+))?:\s*(.+)/gi;
+        var goMatch;
+        while ((goMatch = goLineRe.exec(text)) !== null) {
+            var goLn = parseInt(goMatch[1], 10);
+            var goCol = goMatch[2] ? parseInt(goMatch[2], 10) : 1;
+            var goMsg = goMatch[3].trim();
+            if (goLn > 0 && goLn <= userLineCount) {
+                var goLineText = model.getLineContent(goLn);
+                markers.push({
+                    startLineNumber: goLn, startColumn: goCol,
+                    endLineNumber: goLn, endColumn: goLineText.length + 1,
+                    message: goMsg,
+                    severity: m.MarkerSeverity.Error
+                });
+            }
+        }
+
+        // Go compile errors: "# command-line-arguments" then "./file.go:line:col: msg"
+        var goCompileRe = /(\d+):(\d+):\s*(.+)/g;
+        var goCompMatch;
+        if (text.indexOf('command-line-arguments') !== -1 || text.indexOf('cannot') !== -1 || text.indexOf('undefined') !== -1) {
+            while ((goCompMatch = goCompileRe.exec(text)) !== null) {
+                var cLn = parseInt(goCompMatch[1], 10);
+                var cCol = parseInt(goCompMatch[2], 10);
+                var cMsg = goCompMatch[3].trim();
+                if (cLn > 0 && cLn <= userLineCount && markers.every(function(mk) { return mk.startLineNumber !== cLn; })) {
+                    var cLineText = model.getLineContent(cLn);
+                    markers.push({
+                        startLineNumber: cLn, startColumn: cCol,
+                        endLineNumber: cLn, endColumn: cLineText.length + 1,
+                        message: cMsg,
+                        severity: m.MarkerSeverity.Error
+                    });
+                }
+            }
+        }
+
+        // Generic "line N" pattern as fallback
+        if (markers.length === 0) {
+            var genericRe = /line\s+(\d+)/gi;
+            var gMatch;
+            while ((gMatch = genericRe.exec(text)) !== null) {
+                var gLn = parseInt(gMatch[1], 10);
+                if (gLn > 0 && gLn <= userLineCount) {
+                    var gLineText = model.getLineContent(gLn);
+                    markers.push({
+                        startLineNumber: gLn, startColumn: 1,
+                        endLineNumber: gLn, endColumn: gLineText.length + 1,
+                        message: extractErrorMessage(text, currentLanguage),
+                        severity: m.MarkerSeverity.Error
+                    });
+                }
+            }
+        }
+
+        // Deduplicate markers by line
+        var seen = {};
+        markers = markers.filter(function(mk) {
+            if (seen[mk.startLineNumber]) return false;
+            seen[mk.startLineNumber] = true;
+            return true;
+        });
+
+        if (markers.length > 0) {
+            m.editor.setModelMarkers(model, 'executionErrors', markers);
+            // Jump to first error
+            editor.revealLineInCenter(markers[0].startLineNumber);
+            editor.setPosition({ lineNumber: markers[0].startLineNumber, column: markers[0].startColumn });
+            // Update status bar
+            var errCountEl = document.getElementById('statusbar-error-count');
+            var errEl = document.getElementById('statusbar-errors');
+            if (errCountEl) errCountEl.textContent = markers.length;
+            if (errEl) errEl.className = 'statusbar-item statusbar-errors has-issues';
+        } else {
+            // Clear execution error markers
+            m.editor.setModelMarkers(model, 'executionErrors', []);
+        }
+    }
+
+    function extractErrorMessage(text, lang) {
+        // Try to extract the last error line (most specific)
+        if (lang === 'python') {
+            var errMatch = text.match(/(SyntaxError|NameError|TypeError|ValueError|IndexError|KeyError|AttributeError|IndentationError|ZeroDivisionError|ImportError|RuntimeError):\s*(.+)/);
+            if (errMatch) return errMatch[1] + ': ' + errMatch[2].trim();
+        }
+        var lines = text.trim().split('\n');
+        for (var i = lines.length - 1; i >= 0; i--) {
+            var line = lines[i].trim();
+            if (line.length > 5 && line.indexOf('File') === -1 && line.indexOf('Traceback') === -1) {
+                return line.substring(0, 200);
+            }
+        }
+        return 'Execution error';
+    }
+
+    // Clear error markers when user starts editing
+    function clearExecutionMarkers() {
+        if (editor && window.monaco) {
+            var model = editor.getModel();
+            if (model) window.monaco.editor.setModelMarkers(model, 'executionErrors', []);
+        }
+    }
+
     window.runCode = function() {
         var userCode = editor ? editor.getValue() : (document.getElementById('code-fallback') || {}).value || '';
         var output = document.getElementById('output-content');
+        clearExecutionMarkers();
 
         if (output) output.innerHTML = '<span class="output-label">Output</span><div style="color:#888;">Running...</div>';
 
@@ -5380,6 +5673,8 @@
             } else {
                 if (output) output.innerHTML = '<span class="output-label">Output</span>' + html;
             }
+            // Highlight errors in editor
+            highlightExecutionErrors(html);
         })
         .catch(function(err) {
             if (output) output.innerHTML = '<span class="output-label">Output</span><div style="color:#f44;">Error: ' + err.message + '</div>';
@@ -5673,6 +5968,7 @@
 
         // Get user's solution code (just the function, not the test harness)
         var userCode = editor ? editor.getValue() : (document.getElementById('code-fallback') || {}).value || '';
+        clearExecutionMarkers();
 
         // Generate test code with the user's solution
         var testCode = generateTestCodeWithUserSolution(problem, currentLanguage, userCode);
@@ -5762,6 +6058,8 @@
                     output.innerHTML = '<span class="output-label">Output</span>' + html;
                 }
             }
+            // Highlight errors in editor from execution output
+            highlightExecutionErrors(html);
         })
         .catch(function(err) {
             if (output) output.innerHTML = '<span class="output-label">Output</span><div style="color:#f44;">Error: ' + err.message + '</div>';
