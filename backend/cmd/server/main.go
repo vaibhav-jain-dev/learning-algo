@@ -285,6 +285,15 @@ func main() {
 	api.Post("/pdf/generate", h.GeneratePDF)
 	api.Get("/pdf/download/:jobId", h.DownloadPDF)
 
+	// Code save/load routes (saves to disk)
+	codeSaveHandlers := handlers.NewCodeSaveHandlers(stateDir)
+	codeAPI := app.Group("/api/code")
+	codeAPI.Post("/save", codeSaveHandlers.SaveCode)
+	codeAPI.Get("/list", codeSaveHandlers.ListSavedCode)
+	codeAPI.Get("/load/:id", codeSaveHandlers.LoadCode)
+	codeAPI.Delete("/:id", codeSaveHandlers.DeleteCode)
+	codeAPI.Put("/:id/rename", codeSaveHandlers.RenameCode)
+
 	// HTMX partial routes
 	htmx := app.Group("/htmx")
 	htmx.Get("/problem-tree", h.ProblemTree)

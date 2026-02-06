@@ -431,6 +431,26 @@
                                 <path d="M8 16H3v5"/>
                             </svg>
                         </button>
+                        <button class="action-btn save-btn" onclick="window.CodeSaver && window.CodeSaver.save()" title="Save (Ctrl+S)">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                                <polyline points="17 21 17 13 7 13 7 21"/>
+                                <polyline points="7 3 7 8 15 8"/>
+                            </svg>
+                        </button>
+                        <button class="action-btn saves-btn" onclick="window.CodeSaver && window.CodeSaver.togglePanel()" title="Saved Versions">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/>
+                                <polyline points="13 2 13 9 20 9"/>
+                            </svg>
+                            <span class="saves-count" id="saves-count" style="display:none;">0</span>
+                        </button>
+                        <button class="action-btn new-btn" onclick="window.CodeSaver && window.CodeSaver.newVersion()" title="New (save current & reset)">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                        </button>
                         <button class="run-btn" id="run-btn" onclick="window.runCode()">
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
                                 <path d="M8 5v14l11-7z"/>
@@ -448,6 +468,21 @@
                             <button class="font-btn" onclick="window.changeFontSize('editor', -1)" title="Decrease font size">A-</button>
                             <button class="font-btn" onclick="window.changeFontSize('editor', 1)" title="Increase font size">A+</button>
                         </div>
+                    </div>
+                </div>
+                <!-- Saved Versions Panel (hidden by default) -->
+                <div class="saved-versions-panel" id="saved-versions-panel" style="display:none;">
+                    <div class="saved-versions-header">
+                        <span class="saved-versions-title">Saved Versions</span>
+                        <span class="saved-versions-info" id="saved-versions-info">0/10</span>
+                        <button class="saved-versions-close" onclick="window.CodeSaver && window.CodeSaver.togglePanel()">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="saved-versions-list" id="saved-versions-list">
+                        <div class="saved-versions-empty">No saved versions yet</div>
                     </div>
                 </div>
                 <div class="code-editor-container">
