@@ -200,6 +200,13 @@ func main() {
     fmt.Println(result) // Expected: [1, 0, -1]
 }`
         },
+        twists: [
+            { title: 'Kth Ancestor Without Preprocessing', difficulty: 'Easy', description: 'Find the kth ancestor of a single node with no preprocessing allowed. Just walk up the tree.', whyDifferent: 'Binary lifting is overkill for a single query. Simple parent traversal in O(k) is optimal, forcing you to think about when preprocessing is worthwhile.', example: 'Tree with parent=[−1,0,0,1,1,2,2], node=5, k=2. Walk: 5->2->0. Answer is 0.' },
+            { title: 'LCA via Kth Ancestor', difficulty: 'Hard', description: 'Use binary lifting to find the LCA of two nodes. First equalize depths, then lift both nodes simultaneously.', whyDifferent: 'You must combine depth computation with binary lifting, and the two-pointer simultaneous lifting technique is fundamentally different from simple kth ancestor.', example: 'Nodes at depths 5 and 3. Lift the deeper node by 2, then lift both until they meet.' },
+            { title: 'Dynamic Tree with Insertions', difficulty: 'Very Hard', description: 'Nodes are added to the tree dynamically. Support kth ancestor queries while the tree grows.', whyDifferent: 'The jump table must be maintained incrementally. Each new node only needs to fill in its own row, but you must think about how to do this in O(log N) per insertion.', example: 'Insert node 7 with parent 3. Compute jump[7][0]=3, jump[7][1]=jump[3][1], etc.' },
+            { title: 'Path Between Two Nodes', difficulty: 'Medium', description: 'Given two nodes u and v, find the path from u to v by finding their LCA and concatenating the upward paths.', whyDifferent: 'Binary lifting finds ancestors efficiently, but reconstructing the actual path requires collecting nodes along the way, not just jumping past them.', example: 'Nodes 6 and 4 in the tree. Path: 6->2->0->1->4 (going up to LCA 0, then down).' },
+            { title: 'Ancestor at Given Depth', difficulty: 'Medium', description: 'Instead of the kth ancestor, find the ancestor of a node at a specific depth level.', whyDifferent: 'You need to compute each node depth first, then translate depth queries into kth-ancestor queries where k = currentDepth - targetDepth.', example: 'Node 6 at depth 3, target depth 1. k=3-1=2, so find 2nd ancestor of node 6.' }
+        ],
         similar: [
 
         ]

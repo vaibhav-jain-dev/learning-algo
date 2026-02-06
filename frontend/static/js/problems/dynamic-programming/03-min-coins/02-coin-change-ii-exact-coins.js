@@ -163,6 +163,13 @@ func main() {
     }))  // Expected: false
 }`
         },
+        twists: [
+            { title: 'Count All Combinations', difficulty: 'Medium', description: 'Instead of returning whether it is possible, count the total number of distinct ways to make the amount using exactly k coins.', whyDifferent: 'Shifts from boolean feasibility to counting, requiring you to accumulate counts rather than short-circuit on the first True.', example: 'amount=11, coins=[1,2,5], k=3 returns 2 (5+5+1 and 2+2+7? no, 1+5+5 and 2+4+5? Actually [5,5,1] and different orderings collapse, so you must count unique multisets).' },
+            { title: 'Minimize Largest Coin Used', difficulty: 'Hard', description: 'Make the amount using exactly k coins, but among all valid combinations, return the one that minimizes the largest coin denomination used.', whyDifferent: 'Adds an optimization objective on top of the feasibility constraint, requiring you to track the maximum coin in each DP state.', example: 'amount=10, coins=[1,2,5], k=5 could use [2,2,2,2,2] (max=2) instead of [5,2,1,1,1] (max=5), so answer is 2.' },
+            { title: 'Exact Coins With Limited Supply', difficulty: 'Hard', description: 'Each coin denomination has a limited supply count. Determine if you can make the amount using exactly k coins given the supply constraints.', whyDifferent: 'Moves from unbounded to bounded knapsack thinking, adding a third dimension to track how many of each coin you have used.', example: 'amount=11, coins=[1,2,5], supply=[3,4,2], k=3: Can use at most 3 ones, 4 twos, 2 fives.' },
+            { title: 'Exact Coins Minimum Amount', difficulty: 'Medium', description: 'Given a set of coin denominations and an integer k, find the minimum total amount achievable using exactly k coins.', whyDifferent: 'Reverses the problem direction: amount is now the output to minimize rather than a fixed constraint, completely changing the DP formulation.', example: 'coins=[3,5,7], k=4: minimum amount is 12 (3+3+3+3).' },
+            { title: 'Reconstruct Coin Selection', difficulty: 'Medium', description: 'Return the actual list of coins used (not just true/false) when making the amount with exactly k coins. If multiple solutions exist, return the lexicographically smallest.', whyDifferent: 'Requires backtracking through the DP table to reconstruct the solution path, adding path recovery logic on top of the feasibility check.', example: 'amount=11, coins=[1,2,5], k=3 returns [1,5,5] as the lexicographically smallest valid combination.' }
+        ],
         similar: [
 
         ]

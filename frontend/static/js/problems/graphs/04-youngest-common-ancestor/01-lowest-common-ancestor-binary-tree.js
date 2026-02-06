@@ -243,6 +243,13 @@ func main() {
     fmt.Println(LowestCommonAncestorArray(arr, 5, 4)) // Expected: 5
 }`
         },
+        twists: [
+            { title: 'LCA with Parent Pointers', difficulty: 'Easy', description: 'Each node has a parent pointer. Find LCA of two nodes without access to the root.', whyDifferent: 'Instead of top-down recursion, you work bottom-up using parent pointers, similar to finding the intersection of two linked lists.', example: 'Nodes p=7 and q=4 in a tree. Walk up from each node using parent pointers until paths converge at node 2.' },
+            { title: 'LCA of K Nodes', difficulty: 'Hard', description: 'Given a list of k nodes, find their common ancestor. The LCA must be the deepest node that is an ancestor of all k nodes.', whyDifferent: 'You cannot simply check left/right returns. You need to count how many target nodes each subtree contains and propagate that count upward.', example: 'Nodes [5, 1, 4] in tree rooted at 3. The LCA is 3 because no deeper node is ancestor of all three.' },
+            { title: 'LCA in BST', difficulty: 'Easy', description: 'The tree is a Binary Search Tree. Exploit the BST property to find LCA more efficiently.', whyDifferent: 'You do not need to search both subtrees. The BST ordering property lets you prune one side at each step, leading to O(H) time without visiting all nodes.', example: 'BST: [6,2,8,0,4,7,9]. LCA(2,8)=6 because 2<6<8, so they split at the root.' },
+            { title: 'LCA Queries Offline', difficulty: 'Very Hard', description: 'Answer many LCA queries efficiently. Preprocess the tree so each query is O(1).', whyDifferent: 'Single queries use recursion, but batch queries require Euler tour + sparse table or binary lifting preprocessing, a completely different paradigm.', example: 'Tree with 100K nodes and 50K queries. Preprocess in O(N log N), then answer each query in O(1).' },
+            { title: 'LCA When Nodes May Not Exist', difficulty: 'Medium', description: 'p or q might not exist in the tree. Return null if either node is missing.', whyDifferent: 'The standard algorithm assumes both nodes exist. You must track whether each target was actually found, requiring extra state in the recursion.', example: 'Tree [3,5,1,6,2,0,8], p=5, q=99. Return null because 99 is not in the tree.' }
+        ],
         similar: [
 
         ]
