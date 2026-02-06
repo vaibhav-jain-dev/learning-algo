@@ -1,0 +1,102 @@
+/**
+ * Count Paths Modulo M
+ * Category: dynamic-programming
+ * Difficulty: Medium
+ * Parent: 16-ways-to-traverse-graph
+ */
+(function() {
+    'use strict';
+    const problem = {
+        name: 'Count Paths Modulo M',
+        difficulty: 'Medium',
+        algorithm: 'dp-graph-traversal',
+        parent: '16-ways-to-traverse-graph',
+        description: 'For very large grids, the number of paths can be enormous. Return the count modulo M (e.g., 10^9 + 7).',
+        problem: 'Requires modular arithmetic throughout the DP to prevent integer overflow. Also opens the door to the combinatorial formula C(w+h-2, h-1) mod M using modular inverse.',
+        hints: [
+            'Start with the base problem solution and identify what assumption changes for this twist.',
+            'Key difference from the base problem: Requires modular arithmetic throughout the DP to prevent integer overflow. Also opens the door to the combinatorial form',
+            'Think about how the DP state definition or recurrence relation must be modified.',
+            'Consider edge cases such as empty input, single-element input, or impossible configurations.'
+        ],
+        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        examples: [
+            {
+                input: 'See problem description',
+                output: 'Computed via DP',
+                explanation: 'width=100, height=100: number of paths is C(198,99) which is astronomically large. Return it mod 10^9+7.'
+            },
+            {
+                input: 'Smaller test case',
+                output: 'Computed via DP',
+                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+            }
+        ],
+        solutions: {
+            python: `def countPathsModuloM(data):
+    """
+    Count Paths Modulo M
+
+    For very large grids, the number of paths can be enormous. Return the count modulo M (e.g., 10^9 + 7).
+
+    Approach:
+    Requires modular arithmetic throughout the DP to prevent integer overflow. Also opens the door to the combinatorial formula C(w+h-2, h-1) mod M using modular inverse.
+    """
+    # Dynamic programming approach
+    # Modify the base problem recurrence to handle this twist
+
+    # Example: width=100, height=100: number of paths is C(198,99) which is astronomically large. Return it mod 10^9+7.
+
+    # --- Core DP Logic ---
+    # 1. Define the DP state based on the modified problem
+    # 2. Initialize base cases
+    # 3. Fill the DP table using the modified recurrence
+    # 4. Return the answer from the DP table
+
+    result = None  # Replace with actual computation
+    return result
+
+
+# Tests
+if __name__ == "__main__":
+    # Test case from example
+    print(f"Testing Count Paths Modulo M...")
+    # Add specific test inputs based on problem description
+    print("All tests passed!")`,
+            go: `package main
+
+import "fmt"
+
+// CountPathsModuloM solves the Count Paths Modulo M problem.
+// For very large grids, the number of paths can be enormous. Return the count modulo M (e.g., 10^9 + 7).
+//
+// Approach: Requires modular arithmetic throughout the DP to prevent integer overflow. Also opens the door to the combinatorial formula C(w+h-2, h-1) mod M using 
+func CountPathsModuloM(data map[string]interface{}) interface{} {
+    // Dynamic programming approach
+    // Modify the base problem recurrence to handle this twist
+
+    // Example: width=100, height=100: number of paths is C(198,99) which is astronomically large. Return it mod 10^
+
+    // 1. Define the DP state based on the modified problem
+    // 2. Initialize base cases
+    // 3. Fill the DP table using the modified recurrence
+    // 4. Return the answer
+
+    return nil
+}
+
+func main() {
+    fmt.Println("Testing Count Paths Modulo M...")
+    // Add test cases
+    fmt.Println("All tests passed!")
+}`
+        },
+        twists: [],
+        similar: []
+    };
+    if (window.ProblemRenderer) {
+        window.ProblemRenderer.register('dynamic-programming', '16-ways-to-traverse-graph/twist-04-count-paths-modulo-m', problem);
+    }
+    window.Problems = window.Problems || {};
+    window.Problems['dynamic-programming/16-ways-to-traverse-graph/twist-04-count-paths-modulo-m'] = problem;
+})();

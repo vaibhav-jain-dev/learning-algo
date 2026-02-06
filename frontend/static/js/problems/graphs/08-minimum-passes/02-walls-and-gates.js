@@ -182,11 +182,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Nearest Wall Distance', difficulty: 'Medium', description: 'Instead of distance to nearest gate, fill each empty room with its distance to the nearest wall.', whyDifferent: 'You reverse the source cells: BFS starts from walls instead of gates. But walls are obstacles in the original, so you must redefine what blocks movement.', example: 'Grid where gates and empty rooms are walkable. BFS from all wall cells (-1). Distance to nearest wall for each empty room.' },
-            { title: 'Gates with Capacity', difficulty: 'Hard', description: 'Each gate can serve at most K rooms. Assign each room to its nearest gate, but no gate can serve more than K rooms. Minimize total distance.', whyDifferent: 'Standard BFS greedily assigns each room to the nearest gate. With capacity constraints, some rooms must use farther gates, turning this into an assignment problem.', example: 'Two gates, K=3 each. 8 empty rooms. Some rooms near gate 1 must be assigned to gate 2 because gate 1 is full.' },
-            { title: 'Diagonal Movement', difficulty: 'Easy', description: 'Allow diagonal movement in addition to 4-directional. Diagonal moves also cost 1. Fill rooms with minimum distance to any gate.', whyDifferent: 'With 8 directions, distances shrink and the Chebyshev distance applies instead of Manhattan distance, changing all computed values.', example: 'Room at (2,2) with gate at (0,0). 4-directional distance: 4. 8-directional distance: 2.' },
-            { title: 'Weighted Rooms', difficulty: 'Hard', description: 'Each empty room has a traversal cost (1-5). The distance to a gate is the sum of costs along the path. Fill with minimum cost.', whyDifferent: 'BFS does not work for weighted edges. You need Dijkstra algorithm with a priority queue, starting from all gates simultaneously.', example: 'Rooms with costs: short path through high-cost rooms (total 10) vs longer path through low-cost rooms (total 7). Choose the cheaper path.' },
-            { title: 'Add One Gate', difficulty: 'Very Hard', description: 'You can add one additional gate to any empty room position. Choose the position that minimizes the maximum distance of any room to its nearest gate.', whyDifferent: 'You must try all possible gate placements and evaluate the resulting distance map for each, or use a clever analysis of the current BFS tree.', example: 'Current max distance is 10. Adding a gate at the midpoint of the longest path reduces max distance to 5.' }
+            { id: '08-minimum-passes/02-walls-and-gates/twist-01-nearest-wall-distance', name: 'Nearest Wall Distance', difficulty: 'Medium' },
+            { id: '08-minimum-passes/02-walls-and-gates/twist-02-gates-with-capacity', name: 'Gates with Capacity', difficulty: 'Hard' },
+            { id: '08-minimum-passes/02-walls-and-gates/twist-03-diagonal-movement', name: 'Diagonal Movement', difficulty: 'Easy' },
+            { id: '08-minimum-passes/02-walls-and-gates/twist-04-weighted-rooms', name: 'Weighted Rooms', difficulty: 'Hard' },
+            { id: '08-minimum-passes/02-walls-and-gates/twist-05-add-one-gate', name: 'Add One Gate', difficulty: 'Very Hard' }
         ],
         similar: [
 

@@ -251,11 +251,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Count Surrounded Regions', difficulty: 'Easy', description: 'Instead of capturing surrounded regions, just count how many distinct surrounded regions exist.', whyDifferent: 'You skip the matrix modification and just count. Each new DFS from an interior O that is not border-connected increments a counter.', example: 'Board with 3 groups of Os: 2 are surrounded, 1 touches border. Answer: 2.' },
-            { title: 'Surrounded by Single Character', difficulty: 'Medium', description: 'The board has three characters: X, O, and Y. Only capture O regions that are surrounded entirely by X (not Y or border).', whyDifferent: 'Border connectivity is not the only escape. An O region adjacent to any Y cell also escapes capture, requiring you to check neighbor types during DFS.', example: 'An O group touches Y but not the border. It is NOT captured because Y is not X.' },
-            { title: 'Capture with BFS Only', difficulty: 'Medium', description: 'Solve using BFS instead of DFS. Start from all border Os and expand inward.', whyDifferent: 'BFS from border cells naturally marks all safe Os level by level. The remaining Os are surrounded. This reversal of approach avoids deep recursion.', example: 'Same board, but processed with a queue starting from all border O cells simultaneously.' },
-            { title: 'Minimum Flips to Surround', difficulty: 'Hard', description: 'Some O regions touch the border through a narrow connection. Find the minimum number of O cells to flip to X to make a specific region surrounded.', whyDifferent: 'This becomes a min-cut problem. You need to find the smallest set of cells whose removal disconnects an O region from the border.', example: 'An O region connects to border through a single O cell. Flip that cell to X and the region becomes surrounded.' },
-            { title: 'Partial Capture', difficulty: 'Hard', description: 'Capture O regions that are surrounded on at least 3 sides (top, bottom, left, right borders). A region touching only one border side should be captured.', whyDifferent: 'Instead of binary border/not-border, you track which specific borders a region touches and only spare it if it touches 2 or more border sides.', example: 'An O group touches only the top border. Since it touches only 1 side, it gets captured.' }
+            { id: '06-remove-islands/01-surrounded-regions/twist-01-count-surrounded-regions', name: 'Count Surrounded Regions', difficulty: 'Easy' },
+            { id: '06-remove-islands/01-surrounded-regions/twist-02-surrounded-by-single-character', name: 'Surrounded by Single Character', difficulty: 'Medium' },
+            { id: '06-remove-islands/01-surrounded-regions/twist-03-capture-with-bfs-only', name: 'Capture with BFS Only', difficulty: 'Medium' },
+            { id: '06-remove-islands/01-surrounded-regions/twist-04-minimum-flips-to-surround', name: 'Minimum Flips to Surround', difficulty: 'Hard' },
+            { id: '06-remove-islands/01-surrounded-regions/twist-05-partial-capture', name: 'Partial Capture', difficulty: 'Hard' }
         ],
         similar: [
 

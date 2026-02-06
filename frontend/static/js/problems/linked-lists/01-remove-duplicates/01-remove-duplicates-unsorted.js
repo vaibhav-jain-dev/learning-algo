@@ -197,48 +197,12 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'O(1) Space Without Sorting',
-                difficulty: 'Hard',
-                description: 'Remove duplicates from the unsorted list using O(1) extra space. You cannot use a hash set and you cannot sort the list first.',
-                whyDifferent: 'Without a hash set, you must use a brute-force nested loop approach: for each node, scan ahead to remove all future occurrences. This changes the time complexity to O(n^2) and forces a fundamentally different two-pointer strategy.',
-                example: 'Input: 3->2->2->1->3->2->4. For node 3: scan and remove node at position 5. For node 2: scan and remove nodes at positions 3 and 6. Output: 3->2->1->4.'
-            },
-            {
-                title: 'Doubly Linked Unsorted List',
-                difficulty: 'Medium',
-                description: 'The unsorted list is doubly linked. Remove duplicates keeping first occurrence while maintaining valid prev pointers.',
-                whyDifferent: 'Deletion is simpler because you can access the previous node directly through the prev pointer, but you must remember to update prev pointers for nodes after the removed node. The hash set approach still works, but rewiring logic doubles.',
-                example: 'Input: null<->3<->2<->2<->1<->3. Remove second 2 and second 3. Output: null<->3<->2<->1 with valid prev links.'
-            },
-            {
-                title: 'Streaming / Online Deduplication',
-                difficulty: 'Hard',
-                description: 'Nodes arrive one at a time via an append operation. After each append, the list must remain duplicate-free. Design a data structure that supports O(1) append-with-dedup.',
-                whyDifferent: 'You cannot traverse the entire list on each insertion. You need a persistent hash set alongside the linked list, essentially designing a hybrid data structure rather than a one-pass algorithm.',
-                example: 'append(3): list=[3]. append(2): list=[3,2]. append(2): duplicate, skip. append(1): list=[3,2,1]. append(3): duplicate, skip.'
-            },
-            {
-                title: 'Circular Unsorted List',
-                difficulty: 'Medium',
-                description: 'The unsorted list is circular. Remove duplicates keeping first occurrence. The list must remain circular after deduplication.',
-                whyDifferent: 'With no null terminator, you must track the starting node to know when you have completed a full cycle. Using a hash set still works, but the loop termination condition fundamentally changes.',
-                example: 'Input: ...->3->2->2->1->3->... (circular, 5 nodes). Output: ...->3->2->1->... (circular, 3 nodes).'
-            },
-            {
-                title: 'Remove Duplicates Keep Last Occurrence',
-                difficulty: 'Medium',
-                description: 'Instead of keeping the first occurrence of each value, keep the last occurrence. The relative order of kept nodes should match their last-occurrence positions.',
-                whyDifferent: 'Reverse thinking: you cannot decide whether to keep a node until you know if it appears again later. This may require a reverse pass, a stack-based approach, or two-pass strategy that fundamentally changes the algorithm.',
-                example: 'Input: 3->2->2->1->3->2->4. Keep last of each: output is 1->3->2->4 (last 1 at pos 4, last 3 at pos 5, last 2 at pos 6, last 4 at pos 7).'
-            },
-            {
-                title: 'Conceptual Trap: Stable vs Unstable Removal',
-                difficulty: 'Medium',
-                description: 'What if the problem asked you to remove duplicates but you are allowed to reorder the remaining nodes? Could you achieve O(n) time and O(1) space on an unsorted list?',
-                whyDifferent: 'If stability is not required, you could sort the list in O(n log n) then do the sorted dedup in O(n), or use other tricks. This twist challenges whether the O(n) space is truly necessary or just an artifact of the stability requirement.',
-                example: 'Input: 3->2->2->1->3->4. Unstable output could be: 1->2->3->4 (sorted) instead of maintaining original order 3->2->1->4.'
-            }
+            { id: '01-remove-duplicates/01-remove-duplicates-unsorted/twist-01-o-1-space-without-sorting', name: 'O(1) Space Without Sorting', difficulty: 'Hard' },
+            { id: '01-remove-duplicates/01-remove-duplicates-unsorted/twist-02-doubly-linked-unsorted-list', name: 'Doubly Linked Unsorted List', difficulty: 'Medium' },
+            { id: '01-remove-duplicates/01-remove-duplicates-unsorted/twist-03-streaming-online-deduplication', name: 'Streaming / Online Deduplication', difficulty: 'Hard' },
+            { id: '01-remove-duplicates/01-remove-duplicates-unsorted/twist-04-circular-unsorted-list', name: 'Circular Unsorted List', difficulty: 'Medium' },
+            { id: '01-remove-duplicates/01-remove-duplicates-unsorted/twist-05-remove-duplicates-keep-last-occurrence', name: 'Remove Duplicates Keep Last Occurrence', difficulty: 'Medium' },
+            { id: '01-remove-duplicates/01-remove-duplicates-unsorted/twist-06-conceptual-trap-stable-vs-unstable-removal', name: 'Conceptual Trap: Stable vs Unstable Removal', difficulty: 'Medium' }
         ],
         similar: [
 

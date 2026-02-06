@@ -65,11 +65,11 @@
     }
         ],
         twists: [
-            { title: 'Find the Arbitrage Path', difficulty: 'Hard', description: 'Not just detect arbitrage, but return the sequence of currencies that produces profit.', whyDifferent: 'Detection uses Bellman-Ford on log-transformed weights. Finding the path requires tracking predecessors during relaxation and backtracking from the negative cycle.', example: 'USD -> EUR -> GBP -> USD yields 1.02x starting amount. Return path: [USD, EUR, GBP, USD].' },
-            { title: 'Maximum Arbitrage Profit', difficulty: 'Very Hard', description: 'Among all possible arbitrage cycles, find the one that yields the maximum profit ratio.', whyDifferent: 'Simply detecting any negative cycle is not enough. You must find the cycle with the most negative total weight (in log space), requiring cycle enumeration or optimization.', example: 'Cycle A gives 2% profit, Cycle B gives 5% profit. Return Cycle B with the path and 1.05 ratio.' },
-            { title: 'Arbitrage with Fees', difficulty: 'Hard', description: 'Each currency exchange has a transaction fee (flat or percentage). Detect arbitrage considering fees.', whyDifferent: 'Fees reduce the effective exchange rate. The log-transform must account for fees: log(rate * (1 - fee_pct)) instead of log(rate), potentially eliminating marginal arbitrage.', example: 'Exchange rate 1.5 with 1% fee gives effective rate 1.485. An arbitrage opportunity at 1.5 may vanish with fees.' },
-            { title: 'Time-Varying Rates', difficulty: 'Very Hard', description: 'Exchange rates change over time. Given rates at different timestamps, find if arbitrage exists at any point in time.', whyDifferent: 'You run the detection algorithm for each time snapshot, or more cleverly, track rate changes and only recheck affected cycles.', example: 'At time T1: no arbitrage. At T2: EUR/GBP rate changes, creating a profitable cycle. Detect the earliest time.' },
-            { title: 'Limited Exchange Steps', difficulty: 'Medium', description: 'You can make at most K exchanges. Detect if arbitrage is possible within K steps.', whyDifferent: 'Standard Bellman-Ford runs N-1 iterations. With limit K, you run exactly K iterations and check if any diagonal element exceeds 1 (in original space).', example: 'With K=3 exchanges: USD->EUR->GBP->USD. If this cycle profits, arbitrage exists in 3 steps.' }
+            { id: '11-detect-arbitrage/twist-01-find-the-arbitrage-path', name: 'Find the Arbitrage Path', difficulty: 'Hard' },
+            { id: '11-detect-arbitrage/twist-02-maximum-arbitrage-profit', name: 'Maximum Arbitrage Profit', difficulty: 'Very Hard' },
+            { id: '11-detect-arbitrage/twist-03-arbitrage-with-fees', name: 'Arbitrage with Fees', difficulty: 'Hard' },
+            { id: '11-detect-arbitrage/twist-04-time-varying-rates', name: 'Time-Varying Rates', difficulty: 'Very Hard' },
+            { id: '11-detect-arbitrage/twist-05-limited-exchange-steps', name: 'Limited Exchange Steps', difficulty: 'Medium' }
         ],
         similar: [
     { id: '11-detect-arbitrage/01-cheapest-flights-k-stops', name: 'Cheapest Flights Within K Stops', difficulty: 'Medium' },

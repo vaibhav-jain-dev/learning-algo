@@ -69,11 +69,11 @@
     }
         ],
         twists: [
-            { title: 'Merge K Sorted Lists', difficulty: 'Hard', description: 'Merge k sorted linked lists into one sorted linked list, not just two.', whyDifferent: 'With k lists, pairwise merging is O(nk). Using a min-heap to track the smallest head across all lists reduces to O(n log k), requiring a fundamentally different data structure.', example: 'lists=[[1,4,5],[1,3,4],[2,6]]: merge all into [1,1,2,3,4,4,5,6].' },
-            { title: 'Merge Two Unsorted Lists Into Sorted', difficulty: 'Medium', description: 'Given two unsorted linked lists, produce a single sorted linked list containing all elements from both.', whyDifferent: 'Cannot use the merge step directly since inputs are unsorted. Must either sort each list first (merge sort on linked lists) or collect all values and sort.', example: 'list1=[3,1,4], list2=[2,5,0]: sorted merge result=[0,1,2,3,4,5].' },
-            { title: 'Merge by Alternating Nodes', difficulty: 'Medium', description: 'Merge two lists by alternating nodes: take one from list1, then one from list2, then one from list1, etc. Append remaining nodes at the end.', whyDifferent: 'Ignores sorted order entirely. The merge pattern is round-robin rather than comparison-based, requiring simple alternating pointer reassignment.', example: 'list1=[1,3,5], list2=[2,4,6,8]: result=[1,2,3,4,5,6,8].' },
-            { title: 'Merge In Descending Order', difficulty: 'Medium', description: 'Merge two sorted (ascending) lists into one sorted in descending order, without reversing the final result.', whyDifferent: 'Building the result in reverse order means prepending each chosen node to the result head, flipping the construction direction from typical merge.', example: 'list1=[1,3,5], list2=[2,4,6]: merge descending result=[6,5,4,3,2,1]. Build by prepending the larger element each time.' },
-            { title: 'Intersection of Sorted Lists', difficulty: 'Medium', description: 'Given two sorted linked lists, create a new sorted list containing only the elements that appear in both lists.', whyDifferent: 'Instead of including all elements, you only include matches. The two-pointer technique advances the smaller pointer until values match, then captures the common element.', example: 'list1=[1,2,3,4,6], list2=[2,4,6,8]: intersection=[2,4,6].' }
+            { id: '08-merge-linked-lists/twist-01-merge-k-sorted-lists', name: 'Merge K Sorted Lists', difficulty: 'Hard' },
+            { id: '08-merge-linked-lists/twist-02-merge-two-unsorted-lists-into-sorted', name: 'Merge Two Unsorted Lists Into Sorted', difficulty: 'Medium' },
+            { id: '08-merge-linked-lists/twist-03-merge-by-alternating-nodes', name: 'Merge by Alternating Nodes', difficulty: 'Medium' },
+            { id: '08-merge-linked-lists/twist-04-merge-in-descending-order', name: 'Merge In Descending Order', difficulty: 'Medium' },
+            { id: '08-merge-linked-lists/twist-05-intersection-of-sorted-lists', name: 'Intersection of Sorted Lists', difficulty: 'Medium' }
         ],
         similar: [
 

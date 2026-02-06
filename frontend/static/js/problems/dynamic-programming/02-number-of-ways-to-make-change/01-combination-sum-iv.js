@@ -128,41 +128,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Why This Counts Permutations, Not Combinations',
-                difficulty: 'Medium',
-                description: 'Explain precisely why iterating over target amounts in the outer loop and nums in the inner loop counts ordered sequences (permutations) rather than unordered combinations.',
-                whyDifferent: 'This is the inverse of the coin change counting problem. The loop order determines whether [1,2,1] and [2,1,1] and [1,1,2] are counted as one way or three. You must understand what each DP cell represents under each ordering.',
-                example: 'nums=[1,2,3], target=4. dp[4] includes 1+1+1+1, 1+1+2, 1+2+1, 2+1+1, 2+2, 1+3, 3+1 = 7 permutations. If coins were outer loop, only {1,1,1,1}, {1,1,2}, {1,3}, {2,2} = 4 combinations.'
-            },
-            {
-                title: 'Top-Down Memoization Version',
-                difficulty: 'Medium',
-                description: 'Rewrite the solution using recursive top-down with memoization. Define a function count(remaining) that returns the number of ways to reach exactly 0.',
-                whyDifferent: 'Top-down naturally expresses "what are my choices from here?" which can be easier to reason about for permutation-style problems. Compare the recursion tree to the bottom-up table.',
-                example: 'count(4) = count(3) + count(2) + count(1). count(3) = count(2) + count(1) + count(0). count(0) = 1 (base case). Memoize to avoid recomputation.'
-            },
-            {
-                title: 'Generate All Permutations (Not Just Count)',
-                difficulty: 'Hard',
-                description: 'Instead of counting, generate and return all ordered sequences that sum to target. This requires backtracking or DP with path reconstruction.',
-                whyDifferent: 'Counting is O(target * n) but generating all permutations can be exponential. You need a different algorithmic approach (backtracking with pruning) since the DP table alone cannot reconstruct all paths efficiently.',
-                example: 'nums=[1,2,3], target=4: Output [[1,1,1,1],[1,1,2],[1,2,1],[1,3],[2,1,1],[2,2],[3,1]].'
-            },
-            {
-                title: 'Handle Negative Numbers in nums',
-                difficulty: 'Very Hard',
-                description: 'What if nums can contain negative numbers? The standard DP breaks because the target range becomes unbounded. How would you handle this?',
-                whyDifferent: 'Negative numbers mean you could theoretically increase and decrease the running sum infinitely. You need to either bound the number of elements used or prove convergence, fundamentally changing the problem structure.',
-                example: 'nums=[-1, 1, 2], target=1. Infinite sequences exist: [1], [-1,2], [-1,-1,1,2], etc. You\'d need an additional constraint like "use at most k numbers" to make it finite.'
-            },
-            {
-                title: 'Trace the DP Array',
-                difficulty: 'Easy',
-                description: 'For nums=[1,2,3] and target=4, build the DP array step by step. At each target value, show which nums contribute.',
-                whyDifferent: 'Hand-tracing the permutation DP reveals the contribution of each number at each step and makes the additive accumulation pattern concrete.',
-                example: 'dp[0]=1. dp[1]=dp[0]=1. dp[2]=dp[1]+dp[0]=2. dp[3]=dp[2]+dp[1]+dp[0]=4. dp[4]=dp[3]+dp[2]+dp[1]=4+2+1=7.'
-            }
+            { id: '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-01-why-this-counts-permutations-not-combinations', title: 'Why This Counts Permutations, Not Combinations', difficulty: 'Medium' },
+            { id: '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-02-top-down-memoization-version', title: 'Top-Down Memoization Version', difficulty: 'Medium' },
+            { id: '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-03-generate-all-permutations-not-just-count', title: 'Generate All Permutations (Not Just Count)', difficulty: 'Hard' },
+            { id: '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-04-handle-negative-numbers-in-nums', title: 'Handle Negative Numbers in nums', difficulty: 'Very Hard' },
+            { id: '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-05-trace-the-dp-array', title: 'Trace the DP Array', difficulty: 'Easy' }
         ],
         similar: [
 

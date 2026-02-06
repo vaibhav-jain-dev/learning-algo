@@ -165,41 +165,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Zigzag Level Order Traversal',
-                difficulty: 'Medium',
-                description: 'Traverse the tree level by level, but alternate the direction at each level: left-to-right, then right-to-left, then left-to-right, etc.',
-                whyDifferent: 'Adds directional state management on top of BFS. You must track the current level parity and either reverse the level array or use a deque to build it in the correct order.',
-                example: 'Tree [3,9,20,null,null,15,7]. Output: [[3],[20,9],[15,7]]. Level 0 is L->R, level 1 is R->L, level 2 is L->R.'
-            },
-            {
-                title: 'Bottom-Up Level Order Traversal',
-                difficulty: 'Easy',
-                description: 'Return the level order traversal from bottom to top: the deepest level first and the root level last.',
-                whyDifferent: 'The BFS itself is identical, but you must reverse the result at the end or build it differently. This is a simple twist that tests whether you can decouple traversal order from output order.',
-                example: 'Tree [3,9,20,null,null,15,7]. Output: [[15,7],[9,20],[3]] instead of [[3],[9,20],[15,7]].'
-            },
-            {
-                title: 'Level Order Using DFS',
-                difficulty: 'Medium',
-                description: 'Achieve the same level-grouped output but using DFS instead of BFS. Use the recursion depth to determine which level a node belongs to.',
-                whyDifferent: 'DFS does not naturally process nodes level by level. You must pass the depth as a parameter and use it as an index into the result list. This demonstrates that level grouping does not require BFS.',
-                example: 'Same output [[3],[9,20],[15,7]], but nodes are visited in DFS order: 3,9,20,15,7. Each node is placed into result[depth].'
-            },
-            {
-                title: 'Level Order on a General Graph',
-                difficulty: 'Hard',
-                description: 'Perform level-order traversal on a general undirected graph (not a tree) from a given starting node. Nodes may have multiple parents and cycles exist.',
-                whyDifferent: 'A tree has no cycles, so visited tracking is unnecessary. In a general graph, you must prevent revisiting nodes while still grouping them by BFS level (distance from source).',
-                example: 'Graph: 1-2, 1-3, 2-3, 3-4. BFS from 1: [[1],[2,3],[4]]. Node 3 is level 1 (discovered from 1), not level 2 (from 2).'
-            },
-            {
-                title: 'Right Side View from Level Order',
-                difficulty: 'Medium',
-                description: 'Using level order traversal, return only the rightmost node visible from each level (the "right side view" of the tree).',
-                whyDifferent: 'You must extract just the last element from each level rather than collecting all elements. This can be optimized to avoid storing full levels by tracking only the last node processed per level.',
-                example: 'Tree [3,9,20,null,null,15,7]. Level order: [[3],[9,20],[15,7]]. Right side view: [3,20,7].'
-            }
+            { id: '02-breadth-first-search/01-level-order-traversal/twist-01-zigzag-level-order-traversal', name: 'Zigzag Level Order Traversal', difficulty: 'Medium' },
+            { id: '02-breadth-first-search/01-level-order-traversal/twist-02-bottom-up-level-order-traversal', name: 'Bottom-Up Level Order Traversal', difficulty: 'Easy' },
+            { id: '02-breadth-first-search/01-level-order-traversal/twist-03-level-order-using-dfs', name: 'Level Order Using DFS', difficulty: 'Medium' },
+            { id: '02-breadth-first-search/01-level-order-traversal/twist-04-level-order-on-a-general-graph', name: 'Level Order on a General Graph', difficulty: 'Hard' },
+            { id: '02-breadth-first-search/01-level-order-traversal/twist-05-right-side-view-from-level-order', name: 'Right Side View from Level Order', difficulty: 'Medium' }
         ],
         similar: [
 

@@ -171,11 +171,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Generate Counterclockwise Spiral', difficulty: 'Medium', description: 'Generate an n x n matrix filled with 1 to n^2 in counterclockwise spiral order (down first, then right, then up, then left).', whyDifferent: 'The fill direction changes from right-down-left-up to down-right-up-left, altering the boundary update sequence.', example: 'n = 3. Result: [[1,8,7],[2,9,6],[3,4,5]] (fills down first from top-left).' },
-            { title: 'Rectangular Spiral Generate', difficulty: 'Medium', description: 'Generate an m x n rectangular matrix (not just square) filled in spiral order.', whyDifferent: 'Non-square matrices require careful handling when rows and columns exhaust at different times.', example: 'rows = 3, cols = 4. Result: [[1,2,3,4],[10,11,12,5],[9,8,7,6]].' },
-            { title: 'Generate with Custom Start', difficulty: 'Hard', description: 'Fill an n x n matrix in spiral order but starting from a given cell (r, c) instead of (0, 0).', whyDifferent: 'The starting point is not a corner, so the spiral expansion pattern must handle arbitrary origins and boundary collisions.', example: 'n = 3, start = (1,1). Fill from center: [[6,7,8],[5,1,2],[4,3,9]] or similar.' },
-            { title: 'Spiral Generate with Values', difficulty: 'Medium', description: 'Given a list of values, place them into an n x n matrix following spiral order. The list may have fewer values than cells.', whyDifferent: 'The fill stops when values are exhausted, requiring an early termination condition in the spiral logic.', example: 'values = [5,10,15,20], n = 3. Result: [[5,10,15],[0,0,20],[0,0,0]].' },
-            { title: 'Multi-Layer Spiral with Gaps', difficulty: 'Hard', description: 'Generate a spiral matrix but leave every other layer empty (filled with 0), creating a ring pattern.', whyDifferent: 'Must track which layer is being filled and conditionally skip layers, adding layer-counting state to the generation.', example: 'n = 5. Layer 0 filled 1-16, layer 1 all zeros, layer 2 (center) filled 17.' }
+            { id: '11-spiral-traverse/01-spiral-matrix-generate/twist-01-generate-counterclockwise-spiral', name: 'Generate Counterclockwise Spiral', difficulty: 'Medium' },
+            { id: '11-spiral-traverse/01-spiral-matrix-generate/twist-02-rectangular-spiral-generate', name: 'Rectangular Spiral Generate', difficulty: 'Medium' },
+            { id: '11-spiral-traverse/01-spiral-matrix-generate/twist-03-generate-with-custom-start', name: 'Generate with Custom Start', difficulty: 'Hard' },
+            { id: '11-spiral-traverse/01-spiral-matrix-generate/twist-04-spiral-generate-with-values', name: 'Spiral Generate with Values', difficulty: 'Medium' },
+            { id: '11-spiral-traverse/01-spiral-matrix-generate/twist-05-multi-layer-spiral-with-gaps', name: 'Multi-Layer Spiral with Gaps', difficulty: 'Hard' }
         ],
         similar: [
 

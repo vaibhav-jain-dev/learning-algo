@@ -180,11 +180,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Allow Mixed Direction', difficulty: 'Medium', description: 'Remove the constraint that all elements in a cycle must have the same sign. Any valid cycle of length > 1 counts.', whyDifferent: 'Without direction constraint, every cycle in the functional graph is valid. You simplify the checking logic but must still handle self-loops.', example: 'Array [2, -1, 1, 2, 2]. Cycle 0->2->3->0 mixes positive and negative. With mixed allowed, this is valid.' },
-            { title: 'Find All Cycles', difficulty: 'Hard', description: 'Return all distinct cycles in the array, not just whether one exists. Each cycle is a list of indices.', whyDifferent: 'You must find every cycle, not stop at the first. This requires tracking which indices belong to which cycle across the entire array.', example: 'Array [1,-1,1,-1]. Cycles: [0,1] and [2,3]. Return [[0,1],[2,3]].' },
-            { title: 'Minimum Cycle Length K', difficulty: 'Medium', description: 'A valid cycle must have length at least K (not just > 1). Check if such a cycle exists.', whyDifferent: 'After detecting a cycle, you must measure its length and compare against K. Self-loops and short cycles that were previously invalid may now need explicit length checking.', example: 'Array [2, -1, 1, 2, 2], K=3. The cycle must visit at least 3 distinct indices to be valid.' },
-            { title: 'Weighted Circular Array', difficulty: 'Hard', description: 'Each element has a weight in addition to the jump value. Find a cycle where the sum of weights is positive.', whyDifferent: 'Cycle detection alone is insufficient. You must also track cumulative weight along the cycle path and check if it is positive, adding an optimization dimension.', example: 'Jumps [2,-1,1], Weights [3,-5,4]. Cycle 0->2->0 has weight 3+4=7 > 0. Valid.' },
-            { title: 'Modify to Create Cycle', difficulty: 'Very Hard', description: 'The array has no valid cycle. Find the minimum number of element changes to create a valid cycle of length > 1 with consistent direction.', whyDifferent: 'This inverts the problem from detection to construction. You must analyze the functional graph structure and determine which modifications create cycles most efficiently.', example: 'Array [1, 1, 1, 1, 1] all positive. Change element at index 4 to -4 to create cycle [0,1,2,3,4,0]. Answer: 1 change.' }
+            { id: '07-single-cycle-check/03-circular-array-loop/twist-01-allow-mixed-direction', name: 'Allow Mixed Direction', difficulty: 'Medium' },
+            { id: '07-single-cycle-check/03-circular-array-loop/twist-02-find-all-cycles', name: 'Find All Cycles', difficulty: 'Hard' },
+            { id: '07-single-cycle-check/03-circular-array-loop/twist-03-minimum-cycle-length-k', name: 'Minimum Cycle Length K', difficulty: 'Medium' },
+            { id: '07-single-cycle-check/03-circular-array-loop/twist-04-weighted-circular-array', name: 'Weighted Circular Array', difficulty: 'Hard' },
+            { id: '07-single-cycle-check/03-circular-array-loop/twist-05-modify-to-create-cycle', name: 'Modify to Create Cycle', difficulty: 'Very Hard' }
         ],
         similar: [
 

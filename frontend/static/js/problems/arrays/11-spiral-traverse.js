@@ -74,11 +74,11 @@
     }
         ],
         twists: [
-            { title: 'Counterclockwise Spiral', difficulty: 'Medium', description: 'Traverse the matrix in a counterclockwise spiral (down first, then right, up, left) instead of the standard clockwise direction.', whyDifferent: 'The direction order reverses (down, right, up, left), requiring reordering of the boundary traversal logic.', example: 'matrix = [[1,2,3],[4,5,6],[7,8,9]]. CCW spiral: [1, 4, 7, 8, 9, 6, 3, 2, 5].' },
-            { title: 'Spiral from Center', difficulty: 'Hard', description: 'Start the spiral from the center of the matrix and expand outward in a clockwise direction.', whyDifferent: 'Direction lengths grow (1,1,2,2,3,3,...) as you expand, and boundary checks must handle going outside the matrix.', example: 'matrix = [[1,2,3],[4,5,6],[7,8,9]]. Center-out: [5, 6, 9, 8, 7, 4, 1, 2, 3].' },
-            { title: 'Spiral Layer Values', difficulty: 'Medium', description: 'Instead of returning all elements in spiral order, return the sum of elements in each spiral layer.', whyDifferent: 'The traversal structure is similar but you aggregate per layer rather than collecting individual elements.', example: 'matrix = [[1,2,3],[4,5,6],[7,8,9]]. Layer 0 sum: 1+2+3+6+9+8+7+4 = 40, Layer 1 sum: 5.' },
-            { title: 'Diagonal Spiral', difficulty: 'Hard', description: 'Traverse the matrix in a diagonal spiral pattern instead of the standard horizontal/vertical spiral.', whyDifferent: 'Movement is diagonal instead of axis-aligned, requiring completely different direction vectors and boundary logic.', example: 'matrix = [[1,2,3],[4,5,6],[7,8,9]]. Diagonal spiral visits corners and diagonals in a spiral pattern.' },
-            { title: 'Spiral with Skip', difficulty: 'Medium', description: 'Traverse in spiral order but skip every K-th element. Return only the non-skipped elements.', whyDifferent: 'Must maintain a counter during traversal and conditionally include elements, adding state to the traversal.', example: 'matrix = [[1,2,3],[4,5,6]], K = 2. Spiral: [1,2,3,6,5,4]. Skip every 2nd: [1,3,5].' }
+            { id: '11-spiral-traverse/twist-01-counterclockwise-spiral', name: 'Counterclockwise Spiral', difficulty: 'Medium' },
+            { id: '11-spiral-traverse/twist-02-spiral-from-center', name: 'Spiral from Center', difficulty: 'Hard' },
+            { id: '11-spiral-traverse/twist-03-spiral-layer-values', name: 'Spiral Layer Values', difficulty: 'Medium' },
+            { id: '11-spiral-traverse/twist-04-diagonal-spiral', name: 'Diagonal Spiral', difficulty: 'Hard' },
+            { id: '11-spiral-traverse/twist-05-spiral-with-skip', name: 'Spiral with Skip', difficulty: 'Medium' }
         ],
         similar: [
     { id: '11-spiral-traverse/01-spiral-matrix-generate', name: '01 Spiral Matrix Generate', difficulty: 'Medium' },

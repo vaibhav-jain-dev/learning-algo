@@ -265,41 +265,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Flatten with Child at End (DFS vs BFS Order)',
-                difficulty: 'Medium',
-                description: 'Instead of inserting child lists immediately after the parent node, append each child list at the END of the current level. This produces a BFS-level order instead of DFS order.',
-                whyDifferent: 'The standard solution uses DFS (child is inserted inline). BFS order requires a queue-based approach where child lists are appended after all nodes at the current level are processed. The traversal strategy fundamentally changes.',
-                example: 'Input: 1-2-3 with 2->4-5. DFS: 1->2->4->5->3. BFS: 1->2->3->4->5 (child appended after current level).'
-            },
-            {
-                title: 'Singly Linked Multilevel List',
-                difficulty: 'Medium',
-                description: 'The multilevel list is singly linked (no prev pointers, only next and child). Flatten it into a single-level singly linked list.',
-                whyDifferent: 'Without prev pointers, you cannot set the prev link when connecting child lists. The result is simpler in some ways (fewer pointers to manage) but you must be more careful about not losing references since you cannot traverse backward.',
-                example: 'Input: 1->2->3 with 2.child->4->5. Output: 1->2->4->5->3 (singly linked, no prev).'
-            },
-            {
-                title: 'Unflatten: Restore Multilevel Structure',
-                difficulty: 'Hard',
-                description: 'Given a flattened list and information about the original structure (e.g., depth annotations), reconstruct the multilevel doubly linked list.',
-                whyDifferent: 'This is the reverse problem. You must identify which nodes were originally children based on annotations, recreate child pointers, and properly split the flat list back into levels with correct prev/next/child pointers.',
-                example: 'Input: 1->2->4->5->3 with annotations [0,0,1,1,0] (depth). Output: 1-2-3 with 2->4-5 as child list.'
-            },
-            {
-                title: 'Iterative Stack-Based Approach',
-                difficulty: 'Medium',
-                description: 'Flatten the multilevel list using an explicit stack instead of recursion. When encountering a child, push the next pointer onto the stack and follow the child.',
-                whyDifferent: 'The recursive approach uses the call stack implicitly. The iterative approach makes the stack explicit and requires careful management of when to push and pop. It avoids stack overflow for deeply nested lists.',
-                example: 'At node 2 (child=4, next=3): push 3 onto stack, set 2.next=4. At node 5 (next=null): pop 3 from stack, set 5.next=3.'
-            },
-            {
-                title: 'Circular Multilevel List',
-                difficulty: 'Hard',
-                description: 'Each level of the multilevel list is circular. Flatten into a single-level circular doubly linked list.',
-                whyDifferent: 'At each level, the tail points back to the head of that level. You must break the circular link before flattening, then re-establish a single circular link for the final flattened result. Detecting the end of each level requires tracking the start node.',
-                example: 'Level 0: 1<->2<->3<->back to 1 with 2.child pointing to level 1: 4<->5<->back to 4. Output: 1<->2<->4<->5<->3<->back to 1.'
-            }
+            { id: '03-linked-list-construction/02-flatten-multilevel-list/twist-01-flatten-with-child-at-end-dfs-vs-bfs-order', name: 'Flatten with Child at End (DFS vs BFS Order)', difficulty: 'Medium' },
+            { id: '03-linked-list-construction/02-flatten-multilevel-list/twist-02-singly-linked-multilevel-list', name: 'Singly Linked Multilevel List', difficulty: 'Medium' },
+            { id: '03-linked-list-construction/02-flatten-multilevel-list/twist-03-unflatten-restore-multilevel-structure', name: 'Unflatten: Restore Multilevel Structure', difficulty: 'Hard' },
+            { id: '03-linked-list-construction/02-flatten-multilevel-list/twist-04-iterative-stack-based-approach', name: 'Iterative Stack-Based Approach', difficulty: 'Medium' },
+            { id: '03-linked-list-construction/02-flatten-multilevel-list/twist-05-circular-multilevel-list', name: 'Circular Multilevel List', difficulty: 'Hard' }
         ],
         similar: [
 

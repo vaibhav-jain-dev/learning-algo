@@ -167,11 +167,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Minimize Colors Used', difficulty: 'Medium', description: 'Instead of 4 colors, use the minimum number of colors needed. Determine the chromatic number of the graph.', whyDifferent: 'With max degree 3, 4 colors always suffice. But the minimum might be 2 (bipartite) or 3. You need to check bipartiteness first before trying 3-coloring.', example: 'Linear path graph 1-2-3-4: bipartite, needs only 2 colors. Triangle 1-2-3: needs 3 colors.' },
-            { title: 'Higher Degree Constraint', difficulty: 'Hard', description: 'Gardens can have up to 5 paths (degree 5). Use 6 flower types. Assign flowers greedily.', whyDifferent: 'With higher degree, the greedy approach still works (degree+1 colors suffice by greedy coloring theorem), but more neighbor colors must be tracked per node.', example: 'Garden connected to 5 others using colors 1-5. The 6th color (6) is assigned to this garden.' },
-            { title: 'Maximize Same-Color Pairs', difficulty: 'Hard', description: 'Assign 4 flower types such that the maximum number of non-adjacent garden pairs share the same color.', whyDifferent: 'Greedy coloring does not optimize for this. You need to balance color group sizes while respecting constraints, combining coloring with optimization.', example: '10 gardens in a path. Greedy gives alternating colors. Optimal assigns same color to non-adjacent groups to maximize matching pairs.' },
-            { title: 'Fixed Color Assignments', difficulty: 'Medium', description: 'Some gardens already have a fixed flower type. Complete the assignment for remaining gardens.', whyDifferent: 'Pre-assigned colors constrain choices. The greedy algorithm must respect existing assignments, and conflicts may arise if pre-assignments are inconsistent.', example: 'Garden 1 is fixed to color 3, Garden 2 (adjacent to 1) needs a color != 3. Assign from {1,2,4}.' },
-            { title: 'Validate an Assignment', difficulty: 'Easy', description: 'Given a proposed flower assignment, verify that no two adjacent gardens have the same flower type.', whyDifferent: 'This reverses the problem from construction to verification. Simply iterate over all edges and check the constraint, an O(E) operation.', example: 'Assignment [1,2,3,2] with edges [[1,2],[2,3],[3,4]]. Check: 1!=2, 2!=3, 3!=2. Valid.' }
+            { id: '09-two-colorable/03-flower-planting-no-adjacent/twist-01-minimize-colors-used', name: 'Minimize Colors Used', difficulty: 'Medium' },
+            { id: '09-two-colorable/03-flower-planting-no-adjacent/twist-02-higher-degree-constraint', name: 'Higher Degree Constraint', difficulty: 'Hard' },
+            { id: '09-two-colorable/03-flower-planting-no-adjacent/twist-03-maximize-same-color-pairs', name: 'Maximize Same-Color Pairs', difficulty: 'Hard' },
+            { id: '09-two-colorable/03-flower-planting-no-adjacent/twist-04-fixed-color-assignments', name: 'Fixed Color Assignments', difficulty: 'Medium' },
+            { id: '09-two-colorable/03-flower-planting-no-adjacent/twist-05-validate-an-assignment', name: 'Validate an Assignment', difficulty: 'Easy' }
         ],
         similar: [
 

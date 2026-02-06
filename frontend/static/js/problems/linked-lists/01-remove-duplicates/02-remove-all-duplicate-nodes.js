@@ -202,41 +202,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Unsorted List Variant',
-                difficulty: 'Hard',
-                description: 'The list is unsorted. Remove ALL nodes whose values appear more than once. You cannot sort the list first.',
-                whyDifferent: 'Without sorted order, duplicates are not adjacent. You need two passes: one to count frequencies (hash map), and another to remove nodes with count > 1. The single-pointer sorted approach completely breaks.',
-                example: 'Input: 3->2->1->3->4->2. Values 3 and 2 appear twice, so remove all of them. Output: 1->4.'
-            },
-            {
-                title: 'Doubly Linked Sorted List',
-                difficulty: 'Medium',
-                description: 'The sorted list is doubly linked. Remove all nodes with duplicate values while maintaining valid prev pointers. The dummy node technique still applies.',
-                whyDifferent: 'While the core skipping logic is the same, every deletion requires updating the prev pointer of the surviving node. Missing a prev update creates a corrupted list that appears to work forward but breaks backward.',
-                example: 'Input: null<->1<->2<->3<->3<->4<->4<->5. Output: null<->1<->2<->5 with all prev/next intact.'
-            },
-            {
-                title: 'Recursive Approach',
-                difficulty: 'Medium',
-                description: 'Solve this problem using pure recursion: the function takes a head and returns the head of a list with all duplicate-valued nodes removed.',
-                whyDifferent: 'Recursion naturally processes from the tail backward. You must handle the "skip all nodes with this value" logic within the recursive structure, deciding at each level whether the current value matches the next.',
-                example: 'removeAllDups(1->2->3->3->4->4->5) => 1 linked to removeAllDups(2->3->3->4->4->5) => eventually 1->2->5.'
-            },
-            {
-                title: 'Return Removed Nodes as Separate List',
-                difficulty: 'Medium',
-                description: 'Instead of just removing duplicate nodes, collect them into a second linked list and return both: the cleaned list and the removed-nodes list.',
-                whyDifferent: 'You need to manage two output lists simultaneously while traversing. This requires careful pointer management to append removed nodes to the second list without losing references.',
-                example: 'Input: 1->2->3->3->4->4->5. Output list 1: 1->2->5. Output list 2: 3->3->4->4.'
-            },
-            {
-                title: 'Sentinel Node Deep Dive',
-                difficulty: 'Easy',
-                description: 'Solve the problem once WITH a dummy/sentinel node and once WITHOUT. Compare the edge case handling for when the head itself is a duplicate that must be removed.',
-                whyDifferent: 'Without a sentinel node, removing the head requires special-case logic and returning a potentially different head. The sentinel approach unifies all cases. This twist highlights why the sentinel trick is so powerful for linked list deletion problems.',
-                example: 'Input: 1->1->2->3. Without sentinel: must handle head removal as special case. With sentinel: dummy->1->1->2->3, uniform deletion logic.'
-            }
+            { id: '01-remove-duplicates/02-remove-all-duplicate-nodes/twist-01-unsorted-list-variant', name: 'Unsorted List Variant', difficulty: 'Hard' },
+            { id: '01-remove-duplicates/02-remove-all-duplicate-nodes/twist-02-doubly-linked-sorted-list', name: 'Doubly Linked Sorted List', difficulty: 'Medium' },
+            { id: '01-remove-duplicates/02-remove-all-duplicate-nodes/twist-03-recursive-approach', name: 'Recursive Approach', difficulty: 'Medium' },
+            { id: '01-remove-duplicates/02-remove-all-duplicate-nodes/twist-04-return-removed-nodes-as-separate-list', name: 'Return Removed Nodes as Separate List', difficulty: 'Medium' },
+            { id: '01-remove-duplicates/02-remove-all-duplicate-nodes/twist-05-sentinel-node-deep-dive', name: 'Sentinel Node Deep Dive', difficulty: 'Easy' }
         ],
         similar: [
 

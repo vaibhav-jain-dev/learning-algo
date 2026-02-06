@@ -242,41 +242,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Clone Directed Graph with Cycles',
-                difficulty: 'Medium',
-                description: 'Clone a directed graph that may contain cycles. Each node has a list of directed edges. Ensure cycles in the clone mirror cycles in the original.',
-                whyDifferent: 'The undirected graph BFS/DFS approach works but you must be extra careful that directed edges are cloned in the correct direction. A node might be reachable from multiple paths, and all incoming edges must point to the same cloned node.',
-                example: 'Directed: 1->2, 2->3, 3->1 (cycle). Clone must have: 1\'->2\', 2\'->3\', 3\'->1\' with 1\',2\',3\' as new objects.'
-            },
-            {
-                title: 'Clone Weighted Graph',
-                difficulty: 'Medium',
-                description: 'Each edge has a weight. Clone the graph preserving edge weights. Nodes have a val and a list of (neighbor, weight) pairs.',
-                whyDifferent: 'The BFS/DFS traversal is the same, but the data structure changes. You must clone edges as (cloned_neighbor, weight) pairs. The hash map approach still works but the neighbor cloning step carries additional data.',
-                example: 'Node 1: [(2, 5), (3, 10)]. Clone: Node 1\': [(2\', 5), (3\', 10)] where 2\' and 3\' are new objects.'
-            },
-            {
-                title: 'Iterative BFS vs Recursive DFS Comparison',
-                difficulty: 'Medium',
-                description: 'Implement both BFS (queue-based) and DFS (recursive with memoization) solutions. Analyze their behavior on graphs with different shapes (wide vs deep).',
-                whyDifferent: 'BFS uses a queue and processes level by level; DFS goes deep first. For very deep graphs, recursive DFS risks stack overflow while BFS handles them fine. For very wide graphs, BFS queue grows large. The choice matters in practice.',
-                example: 'Deep chain: 1->2->3->...->1000. DFS recursion depth = 1000 (may overflow). BFS queue max size = 1.'
-            },
-            {
-                title: 'Clone Graph Without Hash Map',
-                difficulty: 'Very Hard',
-                description: 'Clone the graph using O(1) extra space (beyond the clone itself). No hash map allowed. Hint: similar to the interleaving trick from copy-list-random-pointer.',
-                whyDifferent: 'Without a hash map, you need a way to map original nodes to clones. For linked lists, interleaving works. For graphs, you could temporarily modify the original graph structure (e.g., adding clone references) then restore it. This is extremely tricky.',
-                example: 'Temporarily store clone reference in original node, build clone neighbors, then clean up original nodes.'
-            },
-            {
-                title: 'Verify Graph Clone Correctness',
-                difficulty: 'Medium',
-                description: 'Write a function that takes the original graph and clone, and verifies: same structure, same values, no shared node objects, and all edges preserved.',
-                whyDifferent: 'Shifts from construction to validation. You must do a parallel BFS/DFS on both graphs simultaneously, checking structural equivalence at each step while confirming no object references are shared.',
-                example: 'Parallel BFS: dequeue (orig_node, clone_node). Check val matches. Check neighbor count matches. Check no orig_node === any clone_node.'
-            }
+            { id: '03-linked-list-construction/03-clone-graph/twist-01-clone-directed-graph-with-cycles', name: 'Clone Directed Graph with Cycles', difficulty: 'Medium' },
+            { id: '03-linked-list-construction/03-clone-graph/twist-02-clone-weighted-graph', name: 'Clone Weighted Graph', difficulty: 'Medium' },
+            { id: '03-linked-list-construction/03-clone-graph/twist-03-iterative-bfs-vs-recursive-dfs-comparison', name: 'Iterative BFS vs Recursive DFS Comparison', difficulty: 'Medium' },
+            { id: '03-linked-list-construction/03-clone-graph/twist-04-clone-graph-without-hash-map', name: 'Clone Graph Without Hash Map', difficulty: 'Very Hard' },
+            { id: '03-linked-list-construction/03-clone-graph/twist-05-verify-graph-clone-correctness', name: 'Verify Graph Clone Correctness', difficulty: 'Medium' }
         ],
         similar: [
 
