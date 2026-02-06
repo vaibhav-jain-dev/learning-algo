@@ -145,41 +145,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Count Unique Squared Values',
-                difficulty: 'Easy',
-                description: 'Instead of returning the deduplicated array, just return the count of unique squared values.',
-                whyDifferent: 'Simplifies output but allows for a more efficient approach: use absolute value comparisons with two pointers without building the result array.',
-                example: 'array=[-3,-2,-1,1,2,3] → 3 (unique squares: 1, 4, 9)'
-            },
-            {
-                title: 'Sorted Squared Keep Last Occurrence',
-                difficulty: 'Medium',
-                description: 'When duplicates exist, keep track of which original element (positive or negative) contributed to each unique square. Return pairs of (square, original_value) keeping the rightmost original.',
-                whyDifferent: 'Requires tracking provenance alongside deduplication, adding metadata management to the merge step.',
-                example: 'array=[-3,-1,1,3] → [(1,1),(9,3)] (keep positive versions as rightmost)'
-            },
-            {
-                title: 'K Most Frequent Squared Values',
-                difficulty: 'Medium',
-                description: 'After squaring, find the k squared values that appear most frequently (counting how many original elements map to each square).',
-                whyDifferent: 'Combines squaring with frequency counting and top-k selection, requiring a hash map or exploiting the sorted structure.',
-                example: 'array=[-3,-2,-1,0,1,2,3], k=2 → [1,4] or [4,9] (each appears twice: -1&1, -2&2, -3&3)'
-            },
-            {
-                title: 'Deduplicated Squares in Reverse Order',
-                difficulty: 'Easy',
-                description: 'Return unique squared values in descending order instead of ascending.',
-                whyDifferent: 'Changes the fill direction of the two-pointer approach: instead of filling from the end and then deduplicating, you can deduplicate as you fill from the start.',
-                example: 'array=[-5,-3,0,2,3,5] → [25,9,4,0]'
-            },
-            {
-                title: 'Sorted Squared No Duplicates with Original Indices',
-                difficulty: 'Hard',
-                description: 'Return unique squared values along with all original indices that contributed to each value.',
-                whyDifferent: 'Requires maintaining index lists while deduplicating, turning a simple merge into a grouping operation.',
-                example: 'array=[-3,-1,1,3] → [{val:1, indices:[1,2]}, {val:9, indices:[0,3]}]'
-            }
+            { id: '03-sorted-squared-array/02-sorted-squared-no-duplicates/twist-01-count-unique-squared-values', name: 'Count Unique Squared Values', difficulty: 'Easy' },
+            { id: '03-sorted-squared-array/02-sorted-squared-no-duplicates/twist-02-sorted-squared-keep-last-occurrence', name: 'Sorted Squared Keep Last Occurrence', difficulty: 'Medium' },
+            { id: '03-sorted-squared-array/02-sorted-squared-no-duplicates/twist-03-k-most-frequent-squared-values', name: 'K Most Frequent Squared Values', difficulty: 'Medium' },
+            { id: '03-sorted-squared-array/02-sorted-squared-no-duplicates/twist-04-deduplicated-squares-in-reverse-order', name: 'Deduplicated Squares in Reverse Order', difficulty: 'Easy' },
+            { id: '03-sorted-squared-array/02-sorted-squared-no-duplicates/twist-05-sorted-squared-no-duplicates-with-original-indices', name: 'Sorted Squared No Duplicates with Original Indices', difficulty: 'Hard' }
         ],
         similar: [
 

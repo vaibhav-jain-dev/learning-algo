@@ -261,41 +261,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Serialize BST to Minimum Bytes',
-                difficulty: 'Hard',
-                description: 'Serialize the BST using the minimum number of bytes possible. Use variable-length encoding, bit packing, or delta encoding to achieve maximum compression.',
-                whyDifferent: 'Instead of string representation, you must think about binary encoding, bit-level operations, and compression techniques. The BST property allows delta encoding since values are bounded by parent constraints.',
-                example: 'BST: [100,50,150] -> Instead of "100,50,150" (11 bytes), encode as binary with deltas: ~6 bytes.'
-            },
-            {
-                title: 'Serialize and Deserialize General Binary Tree',
-                difficulty: 'Hard',
-                description: 'Serialize a general binary tree (not BST). Since the BST property no longer holds, you cannot reconstruct from preorder alone.',
-                whyDifferent: 'Without BST ordering, preorder traversal is ambiguous -- you need null markers or both preorder and inorder. This fundamentally changes the serialization format and increases the encoded size.',
-                example: 'Tree: [1,2,3,null,null,4,5] -> Must include null markers: "1,2,#,#,3,4,#,#,5,#,#".'
-            },
-            {
-                title: 'Streaming Deserialization',
-                difficulty: 'Hard',
-                description: 'Deserialize the BST from a stream where you receive one value at a time. Build the tree incrementally as values arrive, without buffering all values first.',
-                whyDifferent: 'Standard deserialization reads all data upfront. Streaming requires maintaining partial tree state and deciding where each new value belongs as it arrives, using the BST bounds tracking in an online fashion.',
-                example: 'Stream: 5, 3, 2, 4, 7, 6, 8. After receiving "5,3,2": partial tree [5,3,null,2]. After "4": [5,3,null,2,4].'
-            },
-            {
-                title: 'Serialize BST with Subtree Checksums',
-                difficulty: 'Very Hard',
-                description: 'Serialize the BST such that each subtree has an embedded checksum. During deserialization, verify that no corruption occurred. If corruption is detected, report which subtree is corrupted.',
-                whyDifferent: 'Adds error detection to the serialization problem. You must design a checksum scheme that is hierarchical (each node\'s checksum depends on its children\'s), turning this into a Merkle tree problem.',
-                example: 'Serialized: "5[hash],3[hash],7[hash]". If node 3 is corrupted to 9, deserialization detects the left subtree checksum mismatch.'
-            },
-            {
-                title: 'Diff Two Serialized BSTs',
-                difficulty: 'Hard',
-                description: 'Given two serialized BST strings, determine the minimum edit operations (insert/delete/modify node) to transform one BST into the other without fully deserializing either tree.',
-                whyDifferent: 'Working directly on serialized representations requires understanding how the string format maps to tree structure. You must identify structural differences from the preorder encoding without building the actual trees.',
-                example: 'BST1: "5,3,2,4,7" BST2: "5,3,2,4,7,6,8" -> Diff: insert 6 and 8 as children of 7.'
-            }
+            { id: '02-bst-construction/03-serialize-deserialize-bst/twist-01-serialize-bst-to-minimum-bytes', name: 'Serialize BST to Minimum Bytes', difficulty: 'Hard' },
+            { id: '02-bst-construction/03-serialize-deserialize-bst/twist-02-serialize-and-deserialize-general-binary-tree', name: 'Serialize and Deserialize General Binary Tree', difficulty: 'Hard' },
+            { id: '02-bst-construction/03-serialize-deserialize-bst/twist-03-streaming-deserialization', name: 'Streaming Deserialization', difficulty: 'Hard' },
+            { id: '02-bst-construction/03-serialize-deserialize-bst/twist-04-serialize-bst-with-subtree-checksums', name: 'Serialize BST with Subtree Checksums', difficulty: 'Very Hard' },
+            { id: '02-bst-construction/03-serialize-deserialize-bst/twist-05-diff-two-serialized-bsts', name: 'Diff Two Serialized BSTs', difficulty: 'Hard' }
         ],
         similar: [
 

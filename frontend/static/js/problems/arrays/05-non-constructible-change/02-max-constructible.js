@@ -136,34 +136,10 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Max Constructible with Variable Budget Denominations',
-                difficulty: 'Hard',
-                description: 'Instead of adding coins of value 1, you can add coins of any single denomination d (chosen upfront). Find the optimal d and resulting max constructible.',
-                whyDifferent: 'Must try different denominations for the budget coins, each giving different coverage extension patterns. Requires searching over possible d values.',
-                example: 'coins=[1,5], budget=2, choosing d=2: [1,2,2,5] covers 1-10. Choosing d=1: [1,1,1,5] covers 1-8. Choose d=2.'
-            },
-            {
-                title: 'Max Constructible with Removable Coins',
-                difficulty: 'Hard',
-                description: 'You can remove up to k coins from the collection. Find the arrangement that maximizes the minimum non-constructible value.',
-                whyDifferent: 'Counterintuitive: removing coins could increase coverage if you remove coins that create gaps. Actually, removal always decreases coverage, so this becomes about minimizing damage.',
-                example: 'coins=[1,1,1,1,1,100], k=1 → remove 100, remaining [1,1,1,1,1] → max constructible = 5'
-            },
-            {
-                title: 'Max Constructible Range Starting from K',
-                difficulty: 'Medium',
-                description: 'Find the maximum consecutive range [K, K+M] that can be constructed, starting from a given value K.',
-                whyDifferent: 'The starting point is not 1, so you must first determine if K is constructible, then extend upward from there.',
-                example: 'coins=[3,5,7], K=8 → can make 8(3+5), 10(3+7), 12(5+7), 15(3+5+7) but not 9 → range [8,8]'
-            },
-            {
-                title: 'Max Constructible with Paired Budget',
-                difficulty: 'Medium',
-                description: 'Budget coins come in pairs: each budget addition gives you two coins of value 1. Find max constructible.',
-                whyDifferent: 'Each budget spend adds 2 to coverage instead of 1, making the budget more powerful but the granularity is different.',
-                example: 'coins=[1,5], budget=1 (gives 2 coins of 1) → [1,1,1,5] → max constructible = 8'
-            }
+            { id: '05-non-constructible-change/02-max-constructible/twist-01-max-constructible-with-variable-budget-denominations', name: 'Max Constructible with Variable Budget Denominations', difficulty: 'Hard' },
+            { id: '05-non-constructible-change/02-max-constructible/twist-02-max-constructible-with-removable-coins', name: 'Max Constructible with Removable Coins', difficulty: 'Hard' },
+            { id: '05-non-constructible-change/02-max-constructible/twist-03-max-constructible-range-starting-from-k', name: 'Max Constructible Range Starting from K', difficulty: 'Medium' },
+            { id: '05-non-constructible-change/02-max-constructible/twist-04-max-constructible-with-paired-budget', name: 'Max Constructible with Paired Budget', difficulty: 'Medium' }
         ],
         similar: [
 

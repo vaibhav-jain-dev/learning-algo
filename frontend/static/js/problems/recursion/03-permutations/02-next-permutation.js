@@ -146,11 +146,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Previous Permutation', difficulty: 'Medium', description: 'Instead of finding the next lexicographically greater permutation, find the previous lexicographically smaller permutation.', whyDifferent: 'Reverses the scanning direction logic -- you must find the first increasing pair from the right and swap with the largest smaller element, then reverse.', example: 'For [1,3,2], the previous permutation is [1,2,3]. For [3,2,1] (smallest), wrap to [3,2,1] -> already smallest, so no change or wrap to largest.' },
-            { title: 'Kth Next Permutation', difficulty: 'Hard', description: 'Given an array and an integer k, find the permutation that is exactly k steps ahead in lexicographic order, without generating all intermediate permutations.', whyDifferent: 'Requires factoradic number system thinking to jump directly to the target permutation instead of iterating one step at a time.', example: 'For [1,2,3] with k=3, jump directly to [2,3,1] without computing [1,3,2] and [2,1,3] in between.' },
-            { title: 'Next Permutation with Constraints', difficulty: 'Hard', description: 'Find the next permutation where certain positions are fixed and cannot be swapped.', whyDifferent: 'The standard pivot-and-swap approach breaks when some indices are immovable, requiring a constrained search that respects fixed positions.', example: 'For [1,2,3,4] with position 1 fixed (value 2 stays), next permutation is [1,2,4,3] not [1,3,2,4].' },
-            { title: 'Next Permutation of a String', difficulty: 'Easy', description: 'Apply the next permutation algorithm to a string of characters instead of numbers, returning the next lexicographic string.', whyDifferent: 'While algorithmically similar, working with characters introduces considerations around character encoding, case sensitivity, and string immutability.', example: 'For "abdc", the next permutation string is "acbd". For "dcba", wrap around to "abcd".' },
-            { title: 'Rank of Permutation', difficulty: 'Very Hard', description: 'Given a permutation, determine its rank (1-indexed position) among all permutations of its elements in lexicographic order.', whyDifferent: 'Inverts the problem from generating to counting. Requires computing how many permutations come before the given one using factorial arithmetic.', example: 'For [2,1,3], rank is 3 because the order is: [1,2,3]=1, [1,3,2]=2, [2,1,3]=3.' }
+            { id: '03-permutations/02-next-permutation/twist-01-previous-permutation', name: 'Previous Permutation', difficulty: 'Medium' },
+            { id: '03-permutations/02-next-permutation/twist-02-kth-next-permutation', name: 'Kth Next Permutation', difficulty: 'Hard' },
+            { id: '03-permutations/02-next-permutation/twist-03-next-permutation-with-constraints', name: 'Next Permutation with Constraints', difficulty: 'Hard' },
+            { id: '03-permutations/02-next-permutation/twist-04-next-permutation-of-a-string', name: 'Next Permutation of a String', difficulty: 'Easy' },
+            { id: '03-permutations/02-next-permutation/twist-05-rank-of-permutation', name: 'Rank of Permutation', difficulty: 'Very Hard' }
         ],
         similar: [
 

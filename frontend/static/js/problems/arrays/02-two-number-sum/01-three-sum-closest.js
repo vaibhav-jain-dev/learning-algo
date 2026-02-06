@@ -151,41 +151,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'K-Sum Closest',
-                difficulty: 'Hard',
-                description: 'Generalize to finding k numbers whose sum is closest to target, not just 3.',
-                whyDifferent: 'Requires recursive decomposition: reduce k-sum to (k-1)-sum, adding layers of iteration. The two-pointer optimization only applies at the innermost level.',
-                example: 'nums=[1,2,3,4,5], k=4, target=15 → 14 (2+3+4+5)'
-            },
-            {
-                title: 'Three Sum Closest with No Sorting Allowed',
-                difficulty: 'Hard',
-                description: 'Find the three numbers whose sum is closest to target, but you cannot sort the array.',
-                whyDifferent: 'Without sorting, the two-pointer technique is unavailable. You must use hash maps or accept O(n^3) brute force, fundamentally changing the approach.',
-                example: 'nums=[-1,2,1,-4], target=1 → 2 (same answer, different algorithm)'
-            },
-            {
-                title: 'Three Sum Closest with Element Reuse',
-                difficulty: 'Medium',
-                description: 'You may use the same element up to twice (but not three times). Find the closest sum to target.',
-                whyDifferent: 'Changes the constraint from distinct indices to allowing repetition, which affects duplicate handling and pointer movement logic.',
-                example: 'nums=[1,3,5], target=7 → 7 (1+3+3, reusing 3)'
-            },
-            {
-                title: 'Three Sums Within Epsilon of Target',
-                difficulty: 'Medium',
-                description: 'Return all unique triplets whose sum is within epsilon distance of the target.',
-                whyDifferent: 'Changes from finding one optimal answer to collecting all answers within a range, requiring careful enumeration without early termination.',
-                example: 'nums=[-1,0,1,2,-1,-4], target=0, epsilon=1 → all triplets with sum in [-1,1]'
-            },
-            {
-                title: 'Online Three Sum Closest',
-                difficulty: 'Very Hard',
-                description: 'Numbers arrive one at a time in a stream. After each arrival, report the closest three-sum to target using available numbers.',
-                whyDifferent: 'Cannot sort once upfront; must maintain a dynamic sorted structure and efficiently update the closest sum as new elements arrive.',
-                example: 'stream=[1,-1,2,4], target=3 → after 3 elements: closest=2 (1+-1+2), after 4: closest=3 (1+-1+4-1 or various)'
-            }
+            { id: '02-two-number-sum/01-three-sum-closest/twist-01-k-sum-closest', name: 'K-Sum Closest', difficulty: 'Hard' },
+            { id: '02-two-number-sum/01-three-sum-closest/twist-02-three-sum-closest-with-no-sorting-allowed', name: 'Three Sum Closest with No Sorting Allowed', difficulty: 'Hard' },
+            { id: '02-two-number-sum/01-three-sum-closest/twist-03-three-sum-closest-with-element-reuse', name: 'Three Sum Closest with Element Reuse', difficulty: 'Medium' },
+            { id: '02-two-number-sum/01-three-sum-closest/twist-04-three-sums-within-epsilon-of-target', name: 'Three Sums Within Epsilon of Target', difficulty: 'Medium' },
+            { id: '02-two-number-sum/01-three-sum-closest/twist-05-online-three-sum-closest', name: 'Online Three Sum Closest', difficulty: 'Very Hard' }
         ],
         similar: []
     };

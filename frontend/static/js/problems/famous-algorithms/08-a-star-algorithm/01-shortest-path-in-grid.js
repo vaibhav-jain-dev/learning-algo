@@ -213,11 +213,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'BFS Without Heuristic', difficulty: 'Easy', description: 'Solve the shortest path using plain BFS instead of A*, since all edges have unit weight.', whyDifferent: 'For unweighted grids, BFS guarantees shortest path without needing a heuristic or priority queue, making it simpler and potentially faster due to queue vs heap constants.', example: 'BFS from (0,0) explores level by level. When it first reaches (n-1,n-1), the path length is guaranteed optimal.' },
-            { title: 'Path Reconstruction', difficulty: 'Medium', description: 'Return the actual path (list of coordinates) from start to end, not just the length.', whyDifferent: 'Requires maintaining a parent/predecessor map during search, then backtracking from the destination to the source to reconstruct the path.', example: 'For a 3x3 grid, return [(0,0),(0,1),(0,2),(1,2),(2,2)] as the path, not just length 5.' },
-            { title: 'K Shortest Paths', difficulty: 'Very Hard', description: 'Find the k shortest paths from start to end in the binary grid (paths may share cells).', whyDifferent: 'A* finds only the shortest path. Finding k shortest requires allowing nodes to be visited multiple times and using Yen\'s algorithm or a modified A*.', example: 'In a grid with multiple routes, the 1st shortest path has length 4, 2nd has length 5, 3rd has length 6. Return all k paths.' },
-            { title: 'Dynamic Obstacles', difficulty: 'Hard', description: 'Obstacles appear and disappear at known time steps. Find the shortest path accounting for time-dependent obstacles.', whyDifferent: 'The state space becomes 3D (row, col, time), as a cell might be blocked at time t but open at time t+1, requiring time-expanded graph search.', example: 'Cell (1,1) is blocked at times 0-2 but open at time 3+. You might need to wait or take a detour, making the search 3D.' },
-            { title: 'Minimum Obstacles to Remove', difficulty: 'Hard', description: 'Instead of finding a path avoiding obstacles, find the path from start to end that requires removing the fewest obstacles.', whyDifferent: 'Transforms to a 0-1 BFS problem where moving to an empty cell costs 0 and moving to an obstacle costs 1 (to remove it). Uses deque instead of priority queue.', example: 'Grid has a wall of obstacles. The shortest path by cell count goes around, but removing 2 obstacles creates a much shorter direct path.' }
+            { id: '08-a-star-algorithm/01-shortest-path-in-grid/twist-01-bfs-without-heuristic', name: 'BFS Without Heuristic', difficulty: 'Easy' },
+            { id: '08-a-star-algorithm/01-shortest-path-in-grid/twist-02-path-reconstruction', name: 'Path Reconstruction', difficulty: 'Medium' },
+            { id: '08-a-star-algorithm/01-shortest-path-in-grid/twist-03-k-shortest-paths', name: 'K Shortest Paths', difficulty: 'Very Hard' },
+            { id: '08-a-star-algorithm/01-shortest-path-in-grid/twist-04-dynamic-obstacles', name: 'Dynamic Obstacles', difficulty: 'Hard' },
+            { id: '08-a-star-algorithm/01-shortest-path-in-grid/twist-05-minimum-obstacles-to-remove', name: 'Minimum Obstacles to Remove', difficulty: 'Hard' }
         ],
         similar: [
 

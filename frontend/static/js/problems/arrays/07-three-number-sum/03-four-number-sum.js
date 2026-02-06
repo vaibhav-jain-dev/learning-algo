@@ -135,11 +135,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Four Sum Closest', difficulty: 'Hard', description: 'Instead of finding quadruplets that sum exactly to the target, find the quadruplet whose sum is closest to the target.', whyDifferent: 'You must track the minimum absolute difference across all quadruplets, changing how you prune and when you update the result.', example: 'array = [1, 2, 3, 4], target = 15. Closest sum is 1+2+3+4 = 10.' },
-            { title: 'Unique Quadruplet Values', difficulty: 'Hard', description: 'Find four-number-sum but each number in the quadruplet must be distinct in value (not just index). Handle arrays with duplicates carefully.', whyDifferent: 'Duplicate handling becomes critical. Sorting plus skip logic or hash-based dedup is required.', example: 'array = [1, 1, 1, 2, 2, 3], target = 7. Only [1, 1, 2, 3] is valid (not repeated).' },
-            { title: 'Four Sum Below Target', difficulty: 'Hard', description: 'Count all unique quadruplets whose sum is strictly less than the target value.', whyDifferent: 'Instead of finding exact matches, you must count all valid combinations below a threshold, changing the search strategy entirely.', example: 'array = [1, 2, 3, 4, 5], target = 12. Count quadruplets summing to < 12.' },
-            { title: 'Four Sum with Constraints', difficulty: 'Very Hard', description: 'Find quadruplets summing to target where the elements must appear in the same relative order as in the original array (i < j < k < l).', whyDifferent: 'Order constraints prevent sorting, requiring a hash-map-based approach that respects index ordering.', example: 'array = [7, 6, 4, -1, 1, 2], target = 16. Only quadruplets with ascending indices count.' },
-            { title: 'Maximum Product Quadruplet', difficulty: 'Hard', description: 'Instead of summing to a target, find the quadruplet with the maximum product among those that sum to the target.', whyDifferent: 'Two objectives compete: matching the target sum while maximizing product, requiring different optimization thinking.', example: 'array = [1, 2, 3, 4, -1, -2, -3], target = 4. Among valid quadruplets, find max product.' }
+            { id: '07-three-number-sum/03-four-number-sum/twist-01-four-sum-closest', name: 'Four Sum Closest', difficulty: 'Hard' },
+            { id: '07-three-number-sum/03-four-number-sum/twist-02-unique-quadruplet-values', name: 'Unique Quadruplet Values', difficulty: 'Hard' },
+            { id: '07-three-number-sum/03-four-number-sum/twist-03-four-sum-below-target', name: 'Four Sum Below Target', difficulty: 'Hard' },
+            { id: '07-three-number-sum/03-four-number-sum/twist-04-four-sum-with-constraints', name: 'Four Sum with Constraints', difficulty: 'Very Hard' },
+            { id: '07-three-number-sum/03-four-number-sum/twist-05-maximum-product-quadruplet', name: 'Maximum Product Quadruplet', difficulty: 'Hard' }
         ],
         similar: [
 

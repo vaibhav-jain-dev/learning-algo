@@ -151,11 +151,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Limited Courses Per Semester', difficulty: 'Hard', description: 'You can take at most k courses per semester. Find the minimum number of semesters to complete all courses.', whyDifferent: 'With a capacity constraint, you cannot take all available courses each semester, requiring greedy or DP-based selection of which courses to prioritize.', example: 'With 4 available courses but k=2, you need at least 2 semesters even if all are independent, plus more if there are dependencies.' },
-            { title: 'Course Dependencies with Weights', difficulty: 'Hard', description: 'Each course takes a different number of weeks to complete. Courses in the same semester run in parallel. Find the minimum total weeks.', whyDifferent: 'The semester duration becomes the maximum course length in that semester, making it a critical path problem rather than a simple level count.', example: 'Semester 1: courses A(3 weeks) and B(5 weeks) run in parallel = 5 weeks. Total time depends on the critical path.' },
-            { title: 'Semester Schedule Output', difficulty: 'Medium', description: 'Return the actual course groupings per semester, not just the count of semesters.', whyDifferent: 'Requires recording which courses are taken in each BFS level, not just counting levels, adding bookkeeping to the topological sort.', example: 'For 4 courses with relations [[1,3],[2,3]], return [[1,2],[3]] showing semester assignments.' },
-            { title: 'Optional Prerequisites', difficulty: 'Hard', description: 'Some prerequisites are optional (recommended but not required). Find the minimum semesters if you skip all optional prerequisites.', whyDifferent: 'Requires partitioning edges into required and optional, then finding the critical path considering only required edges while tracking optional ones for reporting.', example: 'If course 3 requires course 1 but only recommends course 2, you can take 3 after just completing 1.' },
-            { title: 'Maximum Parallelism', difficulty: 'Medium', description: 'Find the maximum number of courses that can be taken simultaneously in any single semester.', whyDifferent: 'Instead of counting semesters, find the widest level in the BFS -- the semester where the most courses have all prerequisites met simultaneously.', example: 'For 6 courses where 4 become available after completing the first 2, maximum parallelism is 4.' }
+            { id: '03-topological-sort/03-parallel-courses/twist-01-limited-courses-per-semester', name: 'Limited Courses Per Semester', difficulty: 'Hard' },
+            { id: '03-topological-sort/03-parallel-courses/twist-02-course-dependencies-with-weights', name: 'Course Dependencies with Weights', difficulty: 'Hard' },
+            { id: '03-topological-sort/03-parallel-courses/twist-03-semester-schedule-output', name: 'Semester Schedule Output', difficulty: 'Medium' },
+            { id: '03-topological-sort/03-parallel-courses/twist-04-optional-prerequisites', name: 'Optional Prerequisites', difficulty: 'Hard' },
+            { id: '03-topological-sort/03-parallel-courses/twist-05-maximum-parallelism', name: 'Maximum Parallelism', difficulty: 'Medium' }
         ],
         similar: [
 

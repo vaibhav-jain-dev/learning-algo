@@ -50,11 +50,11 @@
     }
         ],
         twists: [
-            { title: 'Move to Front Instead', difficulty: 'Easy', description: 'Move all instances of the target integer to the front of the array instead of the end, without maintaining order of other elements.', whyDifferent: 'The pointer logic reverses: the write pointer starts at the beginning, and you scan from the end.', example: 'array = [1, 2, 3, 2, 4], toMove = 2. Result: [2, 2, 3, 1, 4] or similar.' },
-            { title: 'Move and Count Swaps', difficulty: 'Medium', description: 'Move all target elements to the end and return the minimum number of swaps performed.', whyDifferent: 'Forces you to count actual swap operations rather than just achieving the end state, requiring careful pointer management.', example: 'array = [2, 1, 2, 2, 3, 4, 2], toMove = 2. After moving, count = 2 swaps.' },
-            { title: 'Move Multiple Values', difficulty: 'Medium', description: 'Given a set of values to move (not just one), move all of them to the end of the array.', whyDifferent: 'Checking membership in a set of values changes the comparison logic and may require a hash set for efficiency.', example: 'array = [1, 2, 3, 4, 5], toMove = {2, 4}. Result: [1, 3, 5, 2, 4] or [1, 5, 3, 4, 2].' },
-            { title: 'Move Preserving Relative Order', difficulty: 'Medium', description: 'Move target elements to the end while preserving the relative order of all remaining elements.', whyDifferent: 'Swapping disrupts order; you need a read/write pointer approach instead, fundamentally changing the algorithm.', example: 'array = [2, 1, 2, 3, 2, 4], toMove = 2. Result must be [1, 3, 4, 2, 2, 2].' },
-            { title: 'Alternating Placement', difficulty: 'Hard', description: 'Rearrange the array so target elements alternate with non-target elements. If not possible, place remaining at the end.', whyDifferent: 'Requires a two-phase approach: separate elements, then interleave them, a completely different strategy from simple partitioning.', example: 'array = [2, 1, 2, 3, 2, 4], toMove = 2. Result: [1, 2, 3, 2, 4, 2].' }
+            { id: '09-move-element-to-end/twist-01-move-to-front-instead', name: 'Move to Front Instead', difficulty: 'Easy' },
+            { id: '09-move-element-to-end/twist-02-move-and-count-swaps', name: 'Move and Count Swaps', difficulty: 'Medium' },
+            { id: '09-move-element-to-end/twist-03-move-multiple-values', name: 'Move Multiple Values', difficulty: 'Medium' },
+            { id: '09-move-element-to-end/twist-04-move-preserving-relative-order', name: 'Move Preserving Relative Order', difficulty: 'Medium' },
+            { id: '09-move-element-to-end/twist-05-alternating-placement', name: 'Alternating Placement', difficulty: 'Hard' }
         ],
         similar: [
     { id: '09-move-element-to-end/01-move-element-preserve-order', name: '01 Move Element Preserve Order', difficulty: 'Medium' },

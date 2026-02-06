@@ -189,11 +189,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Can Become Monotonic with K Changes', difficulty: 'Hard', description: 'Determine if the array can become monotonic by changing at most K elements (generalized from K=1).', whyDifferent: 'Multiple allowed changes require a different approach: finding the longest monotonic subsequence and checking if n - LMS <= K.', example: 'array = [4, 2, 3, 1], K = 2. Change 4 and 1: [2, 2, 3, 3]. Return true.' },
-            { title: 'Can Become Monotonic by Swapping', difficulty: 'Hard', description: 'Instead of changing elements to any value, determine if the array can become monotonic with at most one swap of two elements.', whyDifferent: 'Swapping is more restrictive than changing: both positions must benefit from the swap simultaneously.', example: 'array = [1, 5, 3, 4, 2]. Swap 5 and 2: [1, 2, 3, 4, 5]. Return true.' },
-            { title: 'Which Element to Change', difficulty: 'Medium', description: 'If the array can become monotonic by changing one element, return the index of the element to change and its new value.', whyDifferent: 'Not just a yes/no answer: must identify the problematic element and compute the optimal replacement value.', example: 'array = [1, 5, 3, 4, 5]. Change index 1 from 5 to 2. Return {index: 1, newValue: 2}.' },
-            { title: 'Can Become Strictly Monotonic', difficulty: 'Medium', description: 'Determine if the array can become strictly monotonic (no equal neighbors) by changing at most one element.', whyDifferent: 'Stricter constraint eliminates solutions where the changed value equals a neighbor, adding boundary conditions.', example: 'array = [1, 3, 3, 4]. Change second 3 to 2 or first 3 to 2: [1, 2, 3, 4]. Return true.' },
-            { title: 'Can Become Monotonic by Removing', difficulty: 'Medium', description: 'Instead of changing, can you make it monotonic by removing at most one element?', whyDifferent: 'Removal shifts all subsequent indices, creating a gap. Must check if removing either endpoint of a violation fixes the entire array.', example: 'array = [1, 4, 2, 3]. Remove 4: [1, 2, 3]. Return true.' }
+            { id: '10-monotonic-array/03-can-become-monotonic/twist-01-can-become-monotonic-with-k-changes', name: 'Can Become Monotonic with K Changes', difficulty: 'Hard' },
+            { id: '10-monotonic-array/03-can-become-monotonic/twist-02-can-become-monotonic-by-swapping', name: 'Can Become Monotonic by Swapping', difficulty: 'Hard' },
+            { id: '10-monotonic-array/03-can-become-monotonic/twist-03-which-element-to-change', name: 'Which Element to Change', difficulty: 'Medium' },
+            { id: '10-monotonic-array/03-can-become-monotonic/twist-04-can-become-strictly-monotonic', name: 'Can Become Strictly Monotonic', difficulty: 'Medium' },
+            { id: '10-monotonic-array/03-can-become-monotonic/twist-05-can-become-monotonic-by-removing', name: 'Can Become Monotonic by Removing', difficulty: 'Medium' }
         ],
         similar: [
 

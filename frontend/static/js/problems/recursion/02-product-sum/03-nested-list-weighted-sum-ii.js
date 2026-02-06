@@ -159,41 +159,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Two-Pass Recursive Approach',
-                difficulty: 'Medium',
-                description: 'Solve using two separate recursive passes: first find the maximum depth, then compute the weighted sum using (maxDepth - currentDepth + 1) as the weight.',
-                whyDifferent: 'The BFS level-accumulation trick avoids needing to know max depth upfront. The two-pass approach requires a fundamentally different strategy: decomposing the problem into two independent recursive traversals.',
-                example: 'For [[1,1],2,[1,1]]: Pass 1 finds maxDepth=2. Pass 2 computes: depth 1 integers (the 2) get weight 2, depth 2 integers (the four 1s) get weight 1. Total = 2*2 + 4*1 = 8.'
-            },
-            {
-                title: 'Single-Pass Recursive with Math Trick',
-                difficulty: 'Hard',
-                description: 'Compute the inverse-weighted sum in a single recursive pass without knowing max depth in advance. Hint: the inverse-weighted sum equals (maxDepth+1)*unweightedSum - normalWeightedSum.',
-                whyDifferent: 'Requires algebraic insight: instead of computing inverse weights directly, you compute the normal weighted sum and unweighted sum simultaneously, then derive the answer mathematically.',
-                example: 'For [[1,1],2,[1,1]]: normalWeightedSum (deeper=heavier) = 1*2+1*2+2*1+1*2+1*2=10. unweightedSum=6. maxDepth=2. Inverse = (2+1)*6 - 10 = 18-10 = 8.'
-            },
-            {
-                title: 'Iterative BFS vs DFS Comparison',
-                difficulty: 'Medium',
-                description: 'Implement both a BFS (queue-based, level-order) and a DFS (stack-based) iterative solution. Explain why BFS is more natural for this problem.',
-                whyDifferent: 'BFS naturally processes all elements at each depth level together, making the accumulation trick straightforward. DFS processes elements depth-first, requiring you to track depth per element, which is less elegant for this problem.',
-                example: 'BFS for [[1,1],2,[1,1]]: Level 1 has [2], sum=2. Level 2 has [1,1,1,1], sum=4. Running total: after L1=2, after L2=2+6=8. DFS would need to tag each value with its depth.'
-            },
-            {
-                title: 'Mutual Recursion Approach',
-                difficulty: 'Hard',
-                description: 'Solve using two mutually recursive functions: one that processes a list at a given depth, and another that processes a single element. The list function calls the element function, which may call the list function for nested lists.',
-                whyDifferent: 'Mutual recursion splits the logic into cooperating functions. While not the most efficient approach, it demonstrates an alternative recursion pattern where control alternates between two functions.',
-                example: 'processList(arr, depth) iterates arr, calling processElement(el, depth) for each. processElement checks: if integer, return value; if list, return processList(el, depth+1).'
-            },
-            {
-                title: 'Output Prediction with Tricky Nesting',
-                difficulty: 'Medium',
-                description: 'Without running code, compute the inverse-weighted sum of [1, [2, [3]], [4, [5, [6]]]]. Be careful with varying depths in different branches.',
-                whyDifferent: 'Tests your ability to mentally trace the algorithm with asymmetric nesting. Different branches have different depths, so the max depth affects all weights globally. You must find the global max depth first.',
-                example: 'Max depth = 4 (path to 6). Weights: depth 1 (items: 1) weight=4, depth 2 (items: 2,4) weight=3, depth 3 (items: 3,5) weight=2, depth 4 (items: 6) weight=1. Sum = 1*4+2*3+4*3+3*2+5*2+6*1 = 4+6+12+6+10+6 = 44.'
-            }
+            { id: '02-product-sum/03-nested-list-weighted-sum-ii/twist-01-two-pass-recursive-approach', name: 'Two-Pass Recursive Approach', difficulty: 'Medium' },
+            { id: '02-product-sum/03-nested-list-weighted-sum-ii/twist-02-single-pass-recursive-with-math-trick', name: 'Single-Pass Recursive with Math Trick', difficulty: 'Hard' },
+            { id: '02-product-sum/03-nested-list-weighted-sum-ii/twist-03-iterative-bfs-vs-dfs-comparison', name: 'Iterative BFS vs DFS Comparison', difficulty: 'Medium' },
+            { id: '02-product-sum/03-nested-list-weighted-sum-ii/twist-04-mutual-recursion-approach', name: 'Mutual Recursion Approach', difficulty: 'Hard' },
+            { id: '02-product-sum/03-nested-list-weighted-sum-ii/twist-05-output-prediction-with-tricky-nesting', name: 'Output Prediction with Tricky Nesting', difficulty: 'Medium' }
         ],
         similar: [
 

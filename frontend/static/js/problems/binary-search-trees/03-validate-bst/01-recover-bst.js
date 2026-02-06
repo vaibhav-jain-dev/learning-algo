@@ -255,41 +255,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Recover BST with K Swapped Nodes',
-                difficulty: 'Very Hard',
-                description: 'Instead of exactly two swapped nodes, K pairs of nodes have been swapped. Find and fix all K swaps to restore the BST.',
-                whyDifferent: 'With two swaps you get at most two inversions in inorder. With K swaps, the inversions can overlap and interact, making it much harder to identify which nodes should be paired for swapping back.',
-                example: 'Tree with 2 swaps: inorder [1,8,3,4,5,6,7,2] (swapped 2<->8). Must identify both swap pairs from the inversion pattern.'
-            },
-            {
-                title: 'Recover BST Using O(1) Space',
-                difficulty: 'Hard',
-                description: 'Recover the BST using Morris traversal to achieve O(1) auxiliary space instead of O(h) recursion stack.',
-                whyDifferent: 'Morris traversal modifies tree pointers temporarily, so you must track the two swapped nodes while simultaneously managing thread creation and cleanup. The interleaving of recovery logic with pointer manipulation is tricky.',
-                example: 'Same output as base problem, but implemented with Morris inorder traversal using no extra stack or recursion.'
-            },
-            {
-                title: 'Detect How Many Nodes Are Swapped',
-                difficulty: 'Medium',
-                description: 'Given a binary tree, determine the minimum number of pairwise value swaps needed to make it a valid BST (without changing structure).',
-                whyDifferent: 'This generalizes from knowing exactly two nodes are swapped to computing the minimum swaps. It requires finding the permutation cycle decomposition of actual vs. expected inorder positions.',
-                example: 'Tree inorder: [3,1,2] should be [1,2,3]. This is a 3-cycle requiring 2 swaps: swap(3,1)->swap(3,2).'
-            },
-            {
-                title: 'Recover BST by Moving Nodes (Not Swapping Values)',
-                difficulty: 'Very Hard',
-                description: 'Instead of swapping values, physically detach the two misplaced nodes and reinsert them into their correct positions in the tree structure.',
-                whyDifferent: 'Moving nodes requires relinking parent pointers, handling cases where one misplaced node is an ancestor of the other, and reattaching subtrees of the moved nodes. This is a structural modification, not just a value swap.',
-                example: 'Tree: [3,1,4,null,null,2] with nodes 2 and 3 swapped. Must physically move node 2 to root position and node 3 to leaf, relinking all parent/child pointers.'
-            },
-            {
-                title: 'Verify Recovery is Unique',
-                difficulty: 'Hard',
-                description: 'After identifying the two swapped nodes, verify that swapping them back is the ONLY way to fix the BST. If multiple valid recoveries exist, return all of them.',
-                whyDifferent: 'The base problem assumes a unique recovery. This twist requires proving uniqueness or enumerating alternatives, which means checking if different swap pairs could also produce a valid BST from the same broken tree.',
-                example: 'Tree: [2,3,1] -> Swap 3 and 1 gives [2,1,3] (valid). Is there another swap that also works? No, this recovery is unique.'
-            }
+            { id: '03-validate-bst/01-recover-bst/twist-01-recover-bst-with-k-swapped-nodes', name: 'Recover BST with K Swapped Nodes', difficulty: 'Very Hard' },
+            { id: '03-validate-bst/01-recover-bst/twist-02-recover-bst-using-o1-space', name: 'Recover BST Using O(1) Space', difficulty: 'Hard' },
+            { id: '03-validate-bst/01-recover-bst/twist-03-detect-how-many-nodes-are-swapped', name: 'Detect How Many Nodes Are Swapped', difficulty: 'Medium' },
+            { id: '03-validate-bst/01-recover-bst/twist-04-recover-bst-by-moving-nodes-not-swapping-values', name: 'Recover BST by Moving Nodes (Not Swapping Values)', difficulty: 'Very Hard' },
+            { id: '03-validate-bst/01-recover-bst/twist-05-verify-recovery-is-unique', name: 'Verify Recovery is Unique', difficulty: 'Hard' }
         ],
         similar: [
 

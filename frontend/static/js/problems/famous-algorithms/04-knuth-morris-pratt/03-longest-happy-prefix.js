@@ -129,11 +129,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'All Happy Prefixes', difficulty: 'Medium', description: 'Return all happy prefixes of the string (not just the longest), sorted by length.', whyDifferent: 'Requires following the LPS chain from the last position backward -- lps[n-1] gives the longest, then lps[lps[n-1]-1] gives the next, and so on.', example: 'For "aabaabaa", happy prefixes are "a", "aa", "aabaa" -- all prefixes that are also suffixes.' },
-            { title: 'Rolling Hash Approach', difficulty: 'Medium', description: 'Solve the longest happy prefix problem using rolling hash comparison instead of the KMP LPS array.', whyDifferent: 'Uses a completely different technique -- compute hashes of prefixes and suffixes of increasing length, comparing them in O(1) per length.', example: 'For "level", compare hash("l") with hash of last 1 char, hash("le") with last 2 chars, etc. Longest match is "l".' },
-            { title: 'Longest Happy Suffix', difficulty: 'Easy', description: 'Find the longest proper suffix that is also a prefix (same as happy prefix but phrased differently to test understanding).', whyDifferent: 'This is actually the same problem -- a happy prefix IS a suffix by definition. The twist tests whether you recognize the symmetry.', example: 'For "abcabc", the longest happy prefix/suffix is "abc". Understanding that prefix=suffix in this context is key.' },
-            { title: 'Count Distinct Happy Prefixes', difficulty: 'Medium', description: 'Count how many distinct happy prefixes exist for the string.', whyDifferent: 'Requires traversing the full LPS chain from the end and counting distinct values, understanding the nested structure of prefix-suffix matches.', example: 'For "aaaa", happy prefixes are "a", "aa", "aaa" -- count is 3.' },
-            { title: 'Shortest Period', difficulty: 'Hard', description: 'Find the shortest period of the string -- the smallest string p such that s is a prefix of p repeated infinitely.', whyDifferent: 'Directly derived from the LPS value: period = n - lps[n-1]. But understanding why this formula works requires deep insight into the KMP failure function.', example: 'For "ababab", period is "ab" (length 2). For "abcabc", period is "abc" (length 3). For "abcd", period is "abcd" itself (length 4).' }
+            { id: '04-knuth-morris-pratt/03-longest-happy-prefix/twist-01-all-happy-prefixes', name: 'All Happy Prefixes', difficulty: 'Medium' },
+            { id: '04-knuth-morris-pratt/03-longest-happy-prefix/twist-02-rolling-hash-approach', name: 'Rolling Hash Approach', difficulty: 'Medium' },
+            { id: '04-knuth-morris-pratt/03-longest-happy-prefix/twist-03-longest-happy-suffix', name: 'Longest Happy Suffix', difficulty: 'Easy' },
+            { id: '04-knuth-morris-pratt/03-longest-happy-prefix/twist-04-count-distinct-happy-prefixes', name: 'Count Distinct Happy Prefixes', difficulty: 'Medium' },
+            { id: '04-knuth-morris-pratt/03-longest-happy-prefix/twist-05-shortest-period', name: 'Shortest Period', difficulty: 'Hard' }
         ],
         similar: [
 

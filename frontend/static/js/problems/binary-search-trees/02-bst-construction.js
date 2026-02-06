@@ -40,48 +40,12 @@
     }
         ],
         twists: [
-            {
-                title: 'Self-Balancing BST (AVL Insert/Remove)',
-                difficulty: 'Very Hard',
-                description: 'Extend the BST class to maintain AVL balance. After each insert or remove, perform rotations to ensure the height difference between left and right subtrees is at most 1.',
-                whyDifferent: 'Standard BST operations ignore balance. AVL requires tracking height at each node, detecting imbalance, and performing single or double rotations -- a fundamentally more complex state management problem.',
-                example: 'Insert sequence [1,2,3] into AVL: after inserting 3, left-rotate at 1 to get balanced tree [2,1,3].'
-            },
-            {
-                title: 'BST with Rank (Order Statistics)',
-                difficulty: 'Hard',
-                description: 'Augment the BST so each node stores the size of its subtree. Support an additional operation: findKthSmallest(k) in O(h) time.',
-                whyDifferent: 'Requires maintaining subtree sizes during insert and remove, and using those sizes to navigate directly to the kth element without full traversal. Every mutation must update sizes along the path.',
-                example: 'Tree: [10,5,15,2,7], findKthSmallest(3) -> 7. Insert 6, findKthSmallest(3) -> 6.'
-            },
-            {
-                title: 'Persistent BST',
-                difficulty: 'Very Hard',
-                description: 'Implement insert and remove so that previous versions of the tree are preserved. Each mutation returns a new root while keeping the old tree intact via path copying.',
-                whyDifferent: 'Instead of mutating nodes in place, you create new nodes along the insertion/deletion path, sharing unchanged subtrees. This is a fundamentally different memory and pointer management pattern.',
-                example: 'v1 = insert(null, 5), v2 = insert(v1, 3). v1 still has only node 5. v2 has nodes 5 and 3.'
-            },
-            {
-                title: 'BST with Lazy Deletion',
-                difficulty: 'Medium',
-                description: 'Instead of physically removing nodes, mark them as deleted. Modify contains to skip deleted nodes. Implement a compact() method that rebuilds the tree without deleted nodes.',
-                whyDifferent: 'Lazy deletion changes how you reason about tree validity and traversal. Contains must check the deleted flag, and the tree can accumulate garbage that affects performance until compaction.',
-                example: 'Insert [10,5,15], remove(5) marks 5 as deleted. contains(5) returns false. Tree still has 3 nodes until compact().'
-            },
-            {
-                title: 'Thread-Safe BST',
-                difficulty: 'Hard',
-                description: 'Design the BST class to handle concurrent insert, remove, and contains operations. Multiple readers can proceed simultaneously, but writers need exclusive access to affected subtrees.',
-                whyDifferent: 'Concurrency introduces race conditions. You must think about locking granularity -- locking the whole tree is simple but slow, while fine-grained node-level locking requires careful deadlock avoidance during rotations and removals.',
-                example: 'Thread A inserts 5, Thread B inserts 3 simultaneously. Both must complete correctly without corrupting the tree structure.'
-            },
-            {
-                title: 'BST Remove Without Finding Minimum',
-                difficulty: 'Medium',
-                description: 'Implement remove where, instead of replacing with the inorder successor (minimum of right subtree), you randomly choose between predecessor and successor to maintain better balance statistically.',
-                whyDifferent: 'The standard approach always pulls from one side, potentially creating imbalanced trees over many deletions. Randomized choice requires implementing both predecessor and successor finding and introduces probabilistic thinking.',
-                example: 'Remove 10 from [10,5,15,2,7,12,20]: randomly choose either 7 (predecessor) or 12 (successor) as replacement.'
-            }
+            { id: '02-bst-construction/twist-01-self-balancing-bst-avl-insertremove', name: 'Self-Balancing BST (AVL Insert/Remove)', difficulty: 'Very Hard' },
+            { id: '02-bst-construction/twist-02-bst-with-rank-order-statistics', name: 'BST with Rank (Order Statistics)', difficulty: 'Hard' },
+            { id: '02-bst-construction/twist-03-persistent-bst', name: 'Persistent BST', difficulty: 'Very Hard' },
+            { id: '02-bst-construction/twist-04-bst-with-lazy-deletion', name: 'BST with Lazy Deletion', difficulty: 'Medium' },
+            { id: '02-bst-construction/twist-05-thread-safe-bst', name: 'Thread-Safe BST', difficulty: 'Hard' },
+            { id: '02-bst-construction/twist-06-bst-remove-without-finding-minimum', name: 'BST Remove Without Finding Minimum', difficulty: 'Medium' }
         ],
         similar: [
     { id: '02-bst-construction/02-bst-construction/01-bst-iterator', name: 'BST Iterator', difficulty: 'Medium' },

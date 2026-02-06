@@ -126,41 +126,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Generate All Paths vs Count',
-                difficulty: 'Medium',
-                description: 'Instead of counting the number of ways, generate and return all distinct step sequences. For example, for n=4, k=2, return [[1,1,1,1],[1,1,2],[1,2,1],[2,1,1],[2,2]].',
-                whyDifferent: 'Counting uses DP with O(n) time, but generating all paths requires backtracking and produces exponential output. The problem shifts from dynamic programming to exhaustive enumeration.',
-                example: 'n=3, k=2 -> [[1,1,1],[1,2],[2,1]]. You must backtrack through choices 1..k at each step, building the path incrementally.'
-            },
-            {
-                title: 'Memoization Top-Down Approach',
-                difficulty: 'Easy',
-                description: 'Solve using pure top-down recursion with memoization instead of the bottom-up sliding window. Compare the trade-offs.',
-                whyDifferent: 'Top-down memoization naturally follows the recursive definition but uses O(n) space for the cache. The sliding window optimization requires a fundamentally different way of thinking about the problem.',
-                example: 'climb(n, k, memo) = sum of climb(n-i, k, memo) for i in 1..k. For n=4, k=2: climb(4) = climb(3) + climb(2), each cached after first computation.'
-            },
-            {
-                title: 'Stack Overflow for Large Inputs',
-                difficulty: 'Medium',
-                description: 'The naive recursive solution fails for n=100000. Design an iterative solution using the sliding window technique that handles arbitrarily large n with O(k) space.',
-                whyDifferent: 'Forces the transition from recursive thinking to iterative sliding window. You must maintain a running sum and efficiently remove the element leaving the window, which is a different mental model than recursion.',
-                example: 'For n=100000, k=3: maintain a circular buffer of size 4, updating the window sum as you advance. No recursion, no stack overflow.'
-            },
-            {
-                title: 'Steps with Costs',
-                difficulty: 'Hard',
-                description: 'Each step i has a cost cost[i]. Instead of counting paths, find the minimum cost to reach the top, where at each position you can take 1 to k steps.',
-                whyDifferent: 'Changes the recurrence from summation to minimization. The same recursive/DP structure applies but the combining operation is min() instead of sum(), altering the optimization perspective.',
-                example: 'n=4, k=2, costs=[1,3,2,4]. dp[0]=0, dp[1]=1, dp[2]=min(dp[1]+3, dp[0]+3)=4, dp[3]=min(dp[2]+2, dp[1]+2)=3, dp[4]=min(dp[3]+4, dp[2]+4)=7.'
-            },
-            {
-                title: 'Time Complexity Analysis',
-                difficulty: 'Medium',
-                description: 'Analyze the time complexity of the naive recursive solution without memoization for general k. How does it compare to Fibonacci when k=2? What is the base of the exponential?',
-                whyDifferent: 'Requires mathematical reasoning about k-way branching. For k=2 the base is phi~1.618, but for larger k the base approaches 2. Understanding this connection deepens insight into why memoization is critical.',
-                example: 'For k=2: O(phi^n). For k=3: O(tribonacci_constant^n) where tribonacci_constant ~= 1.839. For k>=n: O(2^n) since every subset of steps is valid.'
-            }
+            { id: '01-nth-fibonacci/02-climbing-stairs-k-steps/twist-01-generate-all-paths-vs-count', name: 'Generate All Paths vs Count', difficulty: 'Medium' },
+            { id: '01-nth-fibonacci/02-climbing-stairs-k-steps/twist-02-memoization-top-down-approach', name: 'Memoization Top-Down Approach', difficulty: 'Easy' },
+            { id: '01-nth-fibonacci/02-climbing-stairs-k-steps/twist-03-stack-overflow-for-large-inputs', name: 'Stack Overflow for Large Inputs', difficulty: 'Medium' },
+            { id: '01-nth-fibonacci/02-climbing-stairs-k-steps/twist-04-steps-with-costs', name: 'Steps with Costs', difficulty: 'Hard' },
+            { id: '01-nth-fibonacci/02-climbing-stairs-k-steps/twist-05-time-complexity-analysis', name: 'Time Complexity Analysis', difficulty: 'Medium' }
         ],
         similar: [
 

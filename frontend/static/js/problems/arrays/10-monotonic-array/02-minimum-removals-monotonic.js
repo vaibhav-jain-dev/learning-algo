@@ -175,11 +175,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Minimum Removals for Strict Monotonicity', difficulty: 'Hard', description: 'Find minimum removals to make the array strictly increasing or strictly decreasing (no equal adjacent elements).', whyDifferent: 'The LIS must be strictly increasing, changing the binary search from bisect_right to bisect_left.', example: 'array = [1, 2, 2, 3]. Need to remove one 2 for strict increase: min removals = 1.' },
-            { title: 'Minimum Removals with Cost', difficulty: 'Very Hard', description: 'Each element has a removal cost. Find the minimum total cost to make the array monotonic.', whyDifferent: 'Cannot simply maximize subsequence length; must minimize weighted cost, requiring weighted LIS or DP variation.', example: 'array = [3, 1, 2], costs = [10, 1, 1]. Removing 1 and 2 costs 2, removing 3 costs 10. Remove [1,2] for cost 2.' },
-            { title: 'Removals to Make K-Monotonic', difficulty: 'Hard', description: 'Find minimum removals so that every window of size K in the remaining array is monotonic.', whyDifferent: 'Local monotonicity constraint over windows is different from global monotonicity, requiring sliding window analysis.', example: 'array = [1, 3, 2, 4, 3], K = 3. Every window of 3 must be monotonic.' },
-            { title: 'Identify Removed Elements', difficulty: 'Hard', description: 'Not just count, but return which elements should be removed to achieve monotonicity with minimum removals.', whyDifferent: 'Must reconstruct the actual LIS/LDS and output the complement, requiring backtracking through DP state.', example: 'array = [1, 3, 2, 4, 5, 3]. Remove [3, 3] to get [1, 2, 4, 5]. Return indices [1, 5].' },
-            { title: 'Minimum Changes Instead of Removals', difficulty: 'Hard', description: 'Instead of removing elements, you can change any element to any value. Find minimum changes to make array monotonic.', whyDifferent: 'Changes are more powerful than removals. The greedy approach involves deciding optimal replacement values.', example: 'array = [1, 5, 3, 4, 5]. Change 5 at index 1 to 2: [1,2,3,4,5]. Only 1 change needed.' }
+            { id: '10-monotonic-array/02-minimum-removals-monotonic/twist-01-minimum-removals-for-strict-monotonicity', name: 'Minimum Removals for Strict Monotonicity', difficulty: 'Hard' },
+            { id: '10-monotonic-array/02-minimum-removals-monotonic/twist-02-minimum-removals-with-cost', name: 'Minimum Removals with Cost', difficulty: 'Very Hard' },
+            { id: '10-monotonic-array/02-minimum-removals-monotonic/twist-03-removals-to-make-k-monotonic', name: 'Removals to Make K-Monotonic', difficulty: 'Hard' },
+            { id: '10-monotonic-array/02-minimum-removals-monotonic/twist-04-identify-removed-elements', name: 'Identify Removed Elements', difficulty: 'Hard' },
+            { id: '10-monotonic-array/02-minimum-removals-monotonic/twist-05-minimum-changes-instead-of-removals', name: 'Minimum Changes Instead of Removals', difficulty: 'Hard' }
         ],
         similar: [
 

@@ -42,41 +42,11 @@
     }
         ],
         twists: [
-            {
-                title: 'Tournament with Variable Points',
-                difficulty: 'Medium',
-                description: 'Instead of 3 points per win, each match awards a different number of points (given as a third array). Determine the winner.',
-                whyDifferent: 'The hash table accumulation approach remains, but the variable points mean you cannot easily predict the leader without processing all matches.',
-                example: 'competitions=[["A","B"],["B","C"]], results=[1,0], points=[3,5] → B gets 5 for second match win'
-            },
-            {
-                title: 'Top K Teams',
-                difficulty: 'Medium',
-                description: 'Instead of just the winner, return the top k teams ranked by their total points.',
-                whyDifferent: 'Requires sorting or a heap after accumulation instead of just tracking a single maximum, changing the output phase.',
-                example: 'competitions=[["A","B"],["B","C"],["C","A"]], results=[1,1,1], k=2 → ["A","B"] (A:6, B:3, C:3)'
-            },
-            {
-                title: 'Predict Minimum Wins for Victory',
-                difficulty: 'Hard',
-                description: 'Given the schedule but not the results, what is the minimum number of wins a specific team needs to guarantee being the overall winner?',
-                whyDifferent: 'Changes from score tracking to a combinatorial/optimization problem requiring worst-case analysis of opponent wins.',
-                example: '4 teams, 6 matches each plays 3 → team A needs at least 3 wins to guarantee victory regardless of other results'
-            },
-            {
-                title: 'Tournament Winner with Draws',
-                difficulty: 'Medium',
-                description: 'Matches can now end in a draw (result=2), giving each team 1 point. Determine the winner.',
-                whyDifferent: 'Adds a third outcome state, requiring modification of the winner determination logic for each match and different point allocation.',
-                example: 'competitions=[["A","B"],["B","C"]], results=[2,1] → A:1, B:4 (1 from draw + 3 from win), C:0'
-            },
-            {
-                title: 'Streaming Tournament Updates',
-                difficulty: 'Medium',
-                description: 'Results arrive one at a time. After each result, report the current leader. Optimize for frequent queries.',
-                whyDifferent: 'Requires maintaining a max-heap or sorted structure of scores to efficiently report the leader after each update, rather than just tracking a running max.',
-                example: 'After match 1: leader=A(3). After match 2: leader could change to B(6). Real-time updates.'
-            }
+            { id: '04-tournament-winner/twist-01-tournament-with-variable-points', name: 'Tournament with Variable Points', difficulty: 'Medium' },
+            { id: '04-tournament-winner/twist-02-top-k-teams', name: 'Top K Teams', difficulty: 'Medium' },
+            { id: '04-tournament-winner/twist-03-predict-minimum-wins-for-victory', name: 'Predict Minimum Wins for Victory', difficulty: 'Hard' },
+            { id: '04-tournament-winner/twist-04-tournament-winner-with-draws', name: 'Tournament Winner with Draws', difficulty: 'Medium' },
+            { id: '04-tournament-winner/twist-05-streaming-tournament-updates', name: 'Streaming Tournament Updates', difficulty: 'Medium' }
         ],
         similar: [
     { id: '04-tournament-winner/01-tournament-bracket', name: '01 Tournament Bracket', difficulty: 'Medium' },

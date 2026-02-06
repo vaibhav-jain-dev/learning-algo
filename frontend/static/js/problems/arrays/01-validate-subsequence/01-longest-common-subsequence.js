@@ -160,41 +160,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Longest Common Subsequence of Three Strings',
-                difficulty: 'Hard',
-                description: 'Find the LCS of three strings simultaneously instead of two.',
-                whyDifferent: 'Extends the 2D DP table to 3D, significantly increasing complexity and requiring careful index management across three dimensions.',
-                example: 'text1="abcde", text2="ace", text3="aue" → 2 ("ae" is common to all three)'
-            },
-            {
-                title: 'Print All Longest Common Subsequences',
-                difficulty: 'Hard',
-                description: 'Instead of just the length, return all distinct LCS strings of maximum length.',
-                whyDifferent: 'Requires backtracking through the DP table with branching at ties, turning a single-answer problem into a multi-answer enumeration problem.',
-                example: 'text1="abcbdab", text2="bdcab" → ["bcab", "bdab"] (both length 4)'
-            },
-            {
-                title: 'LCS with At Most K Mismatches',
-                difficulty: 'Hard',
-                description: 'Find the longest common subsequence allowing up to k character mismatches between the matched pairs.',
-                whyDifferent: 'Adds a third dimension to the DP state for tracking mismatches, changing the recurrence relation significantly.',
-                example: 'text1="abcde", text2="axcye", k=1 → 4 ("abce" with one mismatch b↔x or d↔y)'
-            },
-            {
-                title: 'Shortest Common Supersequence',
-                difficulty: 'Hard',
-                description: 'Find the shortest string that has both text1 and text2 as subsequences.',
-                whyDifferent: 'Inverts the LCS thinking: instead of finding what is common, you must figure out how to merge both strings with minimum length using the LCS as overlap.',
-                example: 'text1="abac", text2="cab" → "cabac" (length 5)'
-            },
-            {
-                title: 'LCS on Circular Strings',
-                difficulty: 'Very Hard',
-                description: 'Both strings are circular (the end wraps to the beginning). Find the LCS considering all rotations.',
-                whyDifferent: 'You must consider all rotational alignments, turning a single DP computation into potentially O(n) DP computations or requiring a clever concatenation trick.',
-                example: 'text1="abc" (rotations: abc, bca, cab), text2="cab" → 3 (cab rotation of text1 matches exactly)'
-            }
+            { id: '01-validate-subsequence/01-longest-common-subsequence/twist-01-longest-common-subsequence-of-three-strings', name: 'Longest Common Subsequence of Three Strings', difficulty: 'Hard' },
+            { id: '01-validate-subsequence/01-longest-common-subsequence/twist-02-print-all-longest-common-subsequences', name: 'Print All Longest Common Subsequences', difficulty: 'Hard' },
+            { id: '01-validate-subsequence/01-longest-common-subsequence/twist-03-lcs-with-at-most-k-mismatches', name: 'LCS with At Most K Mismatches', difficulty: 'Hard' },
+            { id: '01-validate-subsequence/01-longest-common-subsequence/twist-04-shortest-common-supersequence', name: 'Shortest Common Supersequence', difficulty: 'Hard' },
+            { id: '01-validate-subsequence/01-longest-common-subsequence/twist-05-lcs-on-circular-strings', name: 'LCS on Circular Strings', difficulty: 'Very Hard' }
         ],
         similar: []
     };
