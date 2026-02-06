@@ -5037,6 +5037,7 @@
         ];
 
         monaco.languages.registerCompletionItemProvider('python', {
+            triggerCharacters: ['.', '(', ',', ' '],
             provideCompletionItems: function(model, position) {
                 var word = model.getWordUntilPosition(position);
                 var range = {
@@ -5046,18 +5047,66 @@
                     endColumn: word.endColumn
                 };
 
-                var suggestions = pythonSnippets.map(function(s) {
-                    return Object.assign({}, s, { range: range });
-                });
+                // Check if user typed a dot (member access)
+                var lineContent = model.getLineContent(position.lineNumber);
+                var charBefore = lineContent.charAt(position.column - 2);
 
-                pythonBuiltins.forEach(function(b) {
-                    suggestions.push({
-                        label: b,
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: b,
-                        range: range
+                var suggestions = [];
+
+                if (charBefore === '.') {
+                    // After dot: suggest common methods
+                    var objWord = model.getWordAtPosition({ lineNumber: position.lineNumber, column: position.column - 2 });
+                    var methods = [
+                        'append', 'extend', 'insert', 'remove', 'pop', 'clear', 'index', 'count', 'sort', 'reverse', 'copy',
+                        'keys', 'values', 'items', 'get', 'update', 'setdefault', 'pop',
+                        'add', 'discard', 'union', 'intersection', 'difference', 'issubset',
+                        'split', 'join', 'strip', 'lstrip', 'rstrip', 'replace', 'find', 'startswith', 'endswith', 'upper', 'lower', 'format',
+                        'encode', 'decode', 'isdigit', 'isalpha', 'isalnum'
+                    ];
+                    methods.forEach(function(m) {
+                        suggestions.push({
+                            label: m,
+                            kind: monaco.languages.CompletionItemKind.Method,
+                            insertText: m,
+                            range: range,
+                            sortText: '0' + m
+                        });
                     });
-                });
+                } else {
+                    // Normal: suggest snippets + builtins + keywords
+                    suggestions = pythonSnippets.map(function(s) {
+                        return Object.assign({}, s, { range: range });
+                    });
+
+                    // Python keywords for syntax highlighting reinforcement
+                    var pythonKeywords = [
+                        'and', 'as', 'assert', 'async', 'await', 'break', 'class', 'continue',
+                        'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 'from',
+                        'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not',
+                        'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
+                        'True', 'False', 'None'
+                    ];
+
+                    pythonKeywords.forEach(function(kw) {
+                        suggestions.push({
+                            label: kw,
+                            kind: monaco.languages.CompletionItemKind.Keyword,
+                            insertText: kw,
+                            range: range,
+                            sortText: '1' + kw
+                        });
+                    });
+
+                    pythonBuiltins.forEach(function(b) {
+                        suggestions.push({
+                            label: b,
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            insertText: b,
+                            range: range,
+                            sortText: '2' + b
+                        });
+                    });
+                }
 
                 return { suggestions: suggestions };
             }
@@ -5093,6 +5142,7 @@
         ];
 
         monaco.languages.registerCompletionItemProvider('go', {
+            triggerCharacters: ['.', '(', ','],
             provideCompletionItems: function(model, position) {
                 var word = model.getWordUntilPosition(position);
                 var range = {
@@ -5257,6 +5307,123 @@
         });
     }
 
+    // ---------------------------------------------------------------
+    // Document Formatting Providers
+    // Provides basic auto-formatting for Python and Go
+    // ---------------------------------------------------------------
+    function registerFormattingProviders() {
+        if (!window.monaco) return;
+        var m = window.monaco;
+
+        // Python formatting provider
+        m.languages.registerDocumentFormattingEditProvider('python', {
+            provideDocumentFormattingEdits: function(model) {
+                var lines = model.getValue().split('\n');
+                var formatted = [];
+                var indentLevel = 0;
+                var indentStr = '    '; // 4 spaces for Python
+
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i];
+                    var trimmed = line.trim();
+
+                    // Skip empty lines
+                    if (trimmed === '') {
+                        formatted.push('');
+                        continue;
+                    }
+
+                    // Decrease indent for closing constructs
+                    if (/^(elif |else:|except |except:|finally:|return\b|break\b|continue\b|pass\b)/.test(trimmed)) {
+                        if (/^(elif |else:|except |except:|finally:)/.test(trimmed)) {
+                            indentLevel = Math.max(0, indentLevel - 1);
+                        }
+                    }
+
+                    // Check for dedent patterns (closing brackets/parens at start)
+                    if (/^[)\]}]/.test(trimmed)) {
+                        indentLevel = Math.max(0, indentLevel - 1);
+                    }
+
+                    // Apply indentation
+                    var indent = '';
+                    for (var j = 0; j < indentLevel; j++) indent += indentStr;
+                    formatted.push(indent + trimmed);
+
+                    // Increase indent for block starters
+                    if (/:\s*(#.*)?$/.test(trimmed) && /^(def |class |if |elif |else:|for |while |try:|except |except:|finally:|with |async )/.test(trimmed)) {
+                        indentLevel++;
+                    }
+                    // Opening brackets increase indent
+                    var opens = (trimmed.match(/[(\[{]/g) || []).length;
+                    var closes = (trimmed.match(/[)\]}]/g) || []).length;
+                    if (opens > closes) indentLevel++;
+                    else if (closes > opens && !/^[)\]}]/.test(trimmed)) indentLevel = Math.max(0, indentLevel - 1);
+
+                    // return/break/continue/pass decrease for next line
+                    if (/^(return\b|break\b|continue\b|pass\b)/.test(trimmed) && i < lines.length - 1) {
+                        var nextTrimmed = lines[i + 1] ? lines[i + 1].trim() : '';
+                        if (nextTrimmed && !/^(def |class |elif |else:|except |finally:|#)/.test(nextTrimmed)) {
+                            indentLevel = Math.max(0, indentLevel - 1);
+                        }
+                    }
+                }
+
+                var result = formatted.join('\n');
+                // Clean up excessive blank lines (max 2 consecutive)
+                result = result.replace(/\n{3,}/g, '\n\n');
+
+                return [{
+                    range: model.getFullModelRange(),
+                    text: result
+                }];
+            }
+        });
+
+        // Go formatting provider
+        m.languages.registerDocumentFormattingEditProvider('go', {
+            provideDocumentFormattingEdits: function(model) {
+                var lines = model.getValue().split('\n');
+                var formatted = [];
+                var indentLevel = 0;
+                var indentStr = '\t'; // Tab for Go
+
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i];
+                    var trimmed = line.trim();
+
+                    if (trimmed === '') {
+                        formatted.push('');
+                        continue;
+                    }
+
+                    // Decrease indent for closing braces
+                    if (/^[)}]/.test(trimmed)) {
+                        indentLevel = Math.max(0, indentLevel - 1);
+                    }
+
+                    // Apply indentation
+                    var indent = '';
+                    for (var j = 0; j < indentLevel; j++) indent += indentStr;
+                    formatted.push(indent + trimmed);
+
+                    // Increase indent after opening braces
+                    if (/\{\s*(\/\/.*)?$/.test(trimmed) && !/^\s*\/\//.test(trimmed)) {
+                        indentLevel++;
+                    }
+                }
+
+                var result = formatted.join('\n');
+                result = result.replace(/\n{3,}/g, '\n\n');
+
+                return [{
+                    range: model.getFullModelRange(),
+                    text: result
+                }];
+            }
+        });
+    }
+
     var monacoCompletionsRegistered = false;
 
     function createMonacoEditor(wrapper) {
@@ -5268,6 +5435,7 @@
                 registerPythonCompletions();
                 registerGoCompletions();
                 registerDefinitionProviders();
+                registerFormattingProviders();
                 monacoCompletionsRegistered = true;
             }
 
@@ -5492,24 +5660,17 @@
     };
 
     window.formatCode = function() {
-        if (editor) {
-            // Use Monaco's built-in format action
-            if (editor.getAction) {
-                var formatAction = editor.getAction('editor.action.formatDocument');
-                if (formatAction) {
-                    formatAction.run();
-                    return;
+        if (!editor) return;
+        // Use Monaco's format document action (uses our registered providers)
+        var formatAction = editor.getAction('editor.action.formatDocument');
+        if (formatAction) {
+            formatAction.run().then(function() {
+                // Re-lint after formatting
+                if (window.EditorLinter && editor) {
+                    var lang = currentLanguage === 'go' ? 'go' : 'python';
+                    window.EditorLinter.startLinting(editor, lang);
                 }
-            }
-            // Fallback: trigger re-indent via selection
-            if (editor.getModel) {
-                var model = editor.getModel();
-                var fullRange = model.getFullModelRange();
-                editor.setSelection(fullRange);
-                var indentAction = editor.getAction('editor.action.reindentselectedlines');
-                if (indentAction) indentAction.run();
-                editor.setPosition({ lineNumber: 1, column: 1 });
-            }
+            });
         }
     };
 
