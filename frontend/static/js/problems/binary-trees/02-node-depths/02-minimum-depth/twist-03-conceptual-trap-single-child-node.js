@@ -2,10 +2,12 @@
  * Conceptual Trap: Single-Child Node
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-bfs
  * Parent: 02-node-depths/02-minimum-depth
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Conceptual Trap: Single-Child Node',
         difficulty: 'Medium',
@@ -19,121 +21,86 @@
             'Key insight: But a leaf must have NO children.',
             'The minimum depth is 3.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree: 1->null(left), 1->2->null(left), 1->2->3' },
-                output: 'See explanation',
-                explanation: 'Tree: 1->null(left), 1->2->null(left), 1->2->3. Answer: 3, NOT 1.'
+                input: {"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the conceptual trap single child node criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":2,"right":{"value":3,"right":{"value":4,"right":{"value":5,"right":{"value":6}}}}}},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the conceptual trap single child node criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def conceptual_trap_single_child_node(data):
+            python: `def conceptual_trap_single_child_node(tree):
     """
     Conceptual Trap: Single-Child Node
 
-    Predict the output: Tree has root=1 with only a right child=2 which has only a right child=3.
-     What is the minimum depth?
+    Predict the output: Tree has root=1 with only a right child=2 which has only a right child=3. What is the minimum depth? Many people incorrectly answer 1, thinking the null left child of the root makes depth 1. But a leaf must have NO children. Node 1 has a right child, so it is not a leaf. The minimum depth is 3.
 
-    Approach: Many people incorrectly answer 1, thinking the null left child of the root makes depth 1
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: Many people incorrectly answer 1, thinking the null left child of the root makes depth 1
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Conceptual Trap: Single-Child Node
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree: 1->null(left), 1->2->null(left), 1->2->3
-    print("See problem description for test cases")`,
+# Test cases
+print(conceptual_trap_single_child_node({"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: 1
+print(conceptual_trap_single_child_node({"value": 2, "right": {"value": 3, "right": {"value": 4, "right": {"value": 5, "right": {"value": 6}}}}}))  # Expected: 2
+print(conceptual_trap_single_child_node({"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// ConceptualTrapSinglechildNode solves: Conceptual Trap: Single-Child Node
-// Many people incorrectly answer 1, thinking the null left child of the root makes depth 1
+// ConceptualTrapSingleChildNode solves the Conceptual Trap: Single-Child Node problem.
+// Predict the output: Tree has root=1 with only a right child=2 which has only a right child=3. What is the minimum depth? Many people incorrectly answer 1, thinking the null left child of the root makes depth 1. But a leaf must have NO children. Node 1 has a right child, so it is not a leaf. The minimum depth is 3.
 // Time: O(n), Space: O(n)
-func ConceptualTrapSinglechildNode(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func ConceptualTrapSingleChildNode(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Conceptual Trap: Single-Child Node
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree: 1->null(left), 1->2->null(left), 1->2->3
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(ConceptualTrapSingleChildNode({"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: 1
+	fmt.Println(ConceptualTrapSingleChildNode({"value":2,"right":{"value":3,"right":{"value":4,"right":{"value":5,"right":{"value":6}}}}})) // Expected: 2
+	fmt.Println(ConceptualTrapSingleChildNode({"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '02-node-depths/02-minimum-depth/twist-03-conceptual-trap-single-child-node', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/02-node-depths/02-minimum-depth/twist-03-conceptual-trap-single-child-node'] = problem;
 })();

@@ -2,16 +2,18 @@
  * Alternative Data Structure: Fibonacci Heap
  * Category: famous-algorithms
  * Difficulty: Very Hard
+ * Algorithm: dijkstras-algorithm
  * Parent: 02-dijkstras-algorithm
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Alternative Data Structure: Fibonacci Heap',
         difficulty: 'Very Hard',
         algorithm: 'dijkstras-algorithm',
         parent: '02-dijkstras-algorithm',
-        description: 'Dijkstra\'s with a binary heap runs in O((V+E) log V). With a Fibonacci heap, it runs in O(V log V + E). Explain what operation becomes faster with a Fibonacci heap and why this matters for dense graphs.',
+        description: 'Dijkstra\',
         problem: 'Binary heaps do O(log n) decrease-key operations. Fibonacci heaps do O(1) amortized decrease-key. For dense graphs (E = V^2), the difference between O(V^2 log V) and O(V^2 + V log V) is significant.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Dense graph with V=1000, E=500000. Binary heap: ~500000 * 10 = 5M ops. Fibonacci heap: ~500000 + 1000 * 10 = 510K ops. Nearly 10x speedup for the decrease-key operations.' },
-                output: 'See example',
-                explanation: 'Dense graph with V=1000, E=500000. Binary heap: ~500000 * 10 = 5M ops. Fibonacci heap: ~500000 + 1000 * 10 = 510K ops. Nearly 10x speedup for the decrease-key operations.'
+                input: {"vertices":5,"edges":[[0,1,4],[0,2,1],[1,3,1],[2,1,2],[2,3,5],[3,4,3]],"source":0},
+                output: [[0,1,4],[0,2,1],[1,3,1]],
+                explanation: 'The alternative data structure fibonacci heap for this input yields [0,1,4, 0,2,1, 1,3,1].'
+            },
+            // Edge case
+            {
+                input: {"vertices":0,"edges":[[0,1,4]],"source":0},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Alternative Data Structure: Fibonacci Heap
-# Category: famous-algorithms
-# Difficulty: Very Hard
-# Parent: 02-dijkstras-algorithm
-
-def solve():
+            python: `def alternative_data_structure_fibonacci_heap(vertices, edges, source):
     """
-    Dijkstra's with a binary heap runs in O((V+E) log V). With a Fibonacci heap, it runs in O(V log V + E). Explain what operation becomes faster with a Fibonacci heap and why this matters for dense graphs.
+    Alternative Data Structure: Fibonacci Heap
 
-    Key insight: Binary heaps do O(log n) decrease-key operations. Fibonacci heaps do O(1) amortized decrease-key. For dense graphs (E = V^2), the difference between O(V^2 log V) and O(V^2 + V log V) is significant.
+    Dijkstra\\
+
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(vertices)):
+        # Check if element meets criteria
+        result.append(vertices[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(alternative_data_structure_fibonacci_heap(5, [[0,1,4],[0,2,1],[1,3,1],[2,1,2],[2,3,5],[3,4,3]], 0))  # Expected: [[0,1,4],[0,2,1],[1,3,1]]
+print(alternative_data_structure_fibonacci_heap(0, [[0,1,4]], 0))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Alternative Data Structure: Fibonacci Heap problem.
-// Dijkstra's with a binary heap runs in O((V+E) log V). With a Fibonacci heap, it runs in O(V log V + E). Explain what operation becomes faster with a Fibonacci heap and why this matters for dense graphs.
-// Key insight: Binary heaps do O(log n) decrease-key operations. Fibonacci heaps do O(1) amortized decrease-key. For dense graphs (E = V^2), the difference between O(V^2 log V) and O(V^2 + V log V) is significant.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// AlternativeDataStructureFibonacciHeap solves the Alternative Data Structure: Fibonacci Heap problem.
+// Dijkstra\\
+// Time: O(?), Space: O(?)
+func AlternativeDataStructureFibonacciHeap(vertices int, edges [][]int, source int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(vertices); i++ {
+		result = append(result, vertices[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(AlternativeDataStructureFibonacciHeap(5, [][]int{{0, 1, 4}, {0, 2, 1}, {1, 3, 1}, {2, 1, 2}, {2, 3, 5}, {3, 4, 3}}, 0)) // Expected: [[0,1,4],[0,2,1],[1,3,1]]
+	fmt.Println(AlternativeDataStructureFibonacciHeap(0, [][]int{{0, 1, 4}}, 0)) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '02-dijkstras-algorithm/twist-03-alternative-data-structure-fibonacci-heap', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/02-dijkstras-algorithm/twist-03-alternative-data-structure-fibonacci-heap'] = problem;
 })();

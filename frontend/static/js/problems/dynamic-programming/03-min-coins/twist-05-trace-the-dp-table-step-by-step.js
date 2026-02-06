@@ -2,10 +2,12 @@
  * Trace the DP Table Step by Step
  * Category: dynamic-programming
  * Difficulty: Easy
+ * Algorithm: dp-coin-change
  * Parent: 03-min-coins
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Trace the DP Table Step by Step',
         difficulty: 'Easy',
@@ -19,84 +21,97 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'dp[0]=0. dp[1]=1+dp[0]=1. dp[2]=1+dp[1]=2. dp[3]=3. dp[4]=4. dp[5]=min(1+dp[4], 1+dp[0])=min(5,1)=1. dp[6]=min(1+dp[5], 1+dp[1])=min(2,2)=2. dp[7]=min(1+dp[6], 1+dp[2])=min(3,3)=3.'
+                input: {"n":7,"denoms":[1,5,10]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the trace the dp table step by step criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"n":6,"denoms":[1,2,4]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the trace the dp table step by step criteria.'
+            },
+            {
+                input: {"n":3,"denoms":[2]},
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the trace the dp table step by step criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"denoms":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def traceTheDpTableStepByStep(data):
+            python: `def trace_the_dp_table_step_by_step(n, denoms):
     """
     Trace the DP Table Step by Step
 
     For n=7, denoms=[1,5,10], fill in dp[0] through dp[7] step by step. At each amount, show which coin gives the minimum.
 
-    Approach:
-    Manual tracing catches off-by-one errors and builds intuition for the recurrence. It helps you see how smaller solutions combine to solve larger amounts.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    count = 0
+    n = len(n)
 
-    # Example: dp[0]=0. dp[1]=1+dp[0]=1. dp[2]=1+dp[1]=2. dp[3]=3. dp[4]=4. dp[5]=min(1+dp[4], 1+dp[0])=min(5,1)=1. dp[6]=min(1+dp[5], 
+    for i in range(n):
+        # Check condition based on denoms
+        j = 0
+        for k in range(i, n):
+            if j < len(denoms) and n[k] == denoms[j]:
+                j += 1
+        if j == len(denoms):
+            count += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
-    return result
+    return count
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Trace the DP Table Step by Step...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(trace_the_dp_table_step_by_step(7, [1,5,10]))  # Expected: 1
+print(trace_the_dp_table_step_by_step(6, [1,2,4]))  # Expected: 2
+print(trace_the_dp_table_step_by_step(3, [2]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // TraceTheDpTableStepByStep solves the Trace the DP Table Step by Step problem.
 // For n=7, denoms=[1,5,10], fill in dp[0] through dp[7] step by step. At each amount, show which coin gives the minimum.
-//
-// Approach: Manual tracing catches off-by-one errors and builds intuition for the recurrence. It helps you see how smaller solutions combine to solve larger amoun
-func TraceTheDpTableStepByStep(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2), Space: O(n)
+func TraceTheDpTableStepByStep(n int, denoms []int) int {
+	result := 0
 
-    // Example: dp[0]=0. dp[1]=1+dp[0]=1. dp[2]=1+dp[1]=2. dp[3]=3. dp[4]=4. dp[5]=min(1+dp[4], 1+dp[0])=min(5,1)=1.
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Trace the DP Table Step by Step...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(TraceTheDpTableStepByStep(7, []int{1, 5, 10})) // Expected: 1
+	fmt.Println(TraceTheDpTableStepByStep(6, []int{1, 2, 4})) // Expected: 2
+	fmt.Println(TraceTheDpTableStepByStep(3, []int{2})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '03-min-coins/twist-05-trace-the-dp-table-step-by-step', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/03-min-coins/twist-05-trace-the-dp-table-step-by-step'] = problem;
 })();

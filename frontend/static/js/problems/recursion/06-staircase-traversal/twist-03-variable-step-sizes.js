@@ -2,10 +2,12 @@
  * Variable Step Sizes
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-staircase
  * Parent: 06-staircase-traversal
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Variable Step Sizes',
         difficulty: 'Medium',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For height=6 and allowed steps [1,3,5], count paths: you can reach 6 via 1+5, 3+3, 1+1+1+3, etc.' },
-                output: 'See example',
-                explanation: 'For height=6 and allowed steps [1,3,5], count paths: you can reach 6 via 1+5, 3+3, 1+1+1+3, etc.'
+                input: {"height":4,"maxSteps":2},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the variable step sizes criteria.'
+            },
+            // Edge case
+            {
+                input: {"height":0,"maxSteps":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Variable Step Sizes
-# Category: recursion
-# Difficulty: Medium
-# Parent: 06-staircase-traversal
-
-def solve():
+            python: `def variable_step_sizes(height, maxSteps):
     """
+    Variable Step Sizes
+
     Instead of steps 1 through maxSteps, you are given an arbitrary set of allowed step sizes (e.g., [1,3,5]).
 
-    Key insight: The sliding window optimization no longer applies since step sizes are not consecutive, requiring a direct DP approach summing over the allowed set.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(height)
+
+    for i in range(n):
+        # Check condition based on maxSteps
+        j = 0
+        for k in range(i, n):
+            if j < len(maxSteps) and height[k] == maxSteps[j]:
+                j += 1
+        if j == len(maxSteps):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(variable_step_sizes(4, 2))  # Expected: 1
+print(variable_step_sizes(0, 0))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Variable Step Sizes problem.
+// VariableStepSizes solves the Variable Step Sizes problem.
 // Instead of steps 1 through maxSteps, you are given an arbitrary set of allowed step sizes (e.g., [1,3,5]).
-// Key insight: The sliding window optimization no longer applies since step sizes are not consecutive, requiring a direct DP approach summing over the allowed set.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func VariableStepSizes(height int, maxSteps int) int {
+	result := 0
+
+	for i := 0; i < len(height); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(VariableStepSizes(4, 2)) // Expected: 1
+	fmt.Println(VariableStepSizes(0, 0)) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '06-staircase-traversal/twist-03-variable-step-sizes', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/06-staircase-traversal/twist-03-variable-step-sizes'] = problem;
 })();

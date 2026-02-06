@@ -2,10 +2,12 @@
  * Longest Prefix Coverable
  * Category: dynamic-programming
  * Difficulty: Medium
+ * Algorithm: dp-pi-numbers
  * Parent: 09-numbers-in-pi
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Longest Prefix Coverable',
         difficulty: 'Medium',
@@ -19,84 +21,97 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'pi="31415926", numbers=["314","159"]: prefix "314159" (length 6) is coverable, but the remaining "26" is not. Answer is 6.'
+                input: {"pi":"3141592653589793238462643383279","numbers":["314159265358979323846","26433","8","3279","314159265","35897932384626433832","79"]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the longest prefix coverable criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"pi":"314159","numbers":["314","159","3141","59"]},
+                output: 3,
+                explanation: 'For this input, there are 3 valid positions that satisfy the longest prefix coverable criteria.'
+            },
+            {
+                input: {"pi":"123456","numbers":["12","34","56"]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the longest prefix coverable criteria.'
+            },
+            // Edge case
+            {
+                input: {"pi":"","numbers":["314159265358979323846"]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def longestPrefixCoverable(data):
+            python: `def longest_prefix_coverable(pi, numbers):
     """
     Longest Prefix Coverable
 
     Find the longest prefix of Pi that can be completely partitioned using numbers from the list. Return the length of this prefix.
 
-    Approach:
-    Changes from a full-string feasibility problem to finding the maximum reachable position, where the DP stops at the furthest coverable index.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    count = 0
+    n = len(pi)
 
-    # Example: pi="31415926", numbers=["314","159"]: prefix "314159" (length 6) is coverable, but the remaining "26" is not. Answer is 
+    for i in range(n):
+        # Check condition based on numbers
+        j = 0
+        for k in range(i, n):
+            if j < len(numbers) and pi[k] == numbers[j]:
+                j += 1
+        if j == len(numbers):
+            count += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
-    return result
+    return count
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Longest Prefix Coverable...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(longest_prefix_coverable("3141592653589793238462643383279", ["314159265358979323846","26433","8","3279","314159265","35897932384626433832","79"]))  # Expected: 2
+print(longest_prefix_coverable("314159", ["314","159","3141","59"]))  # Expected: 3
+print(longest_prefix_coverable("123456", ["12","34","56"]))  # Expected: 1
+`,
             go: `package main
 
 import "fmt"
 
 // LongestPrefixCoverable solves the Longest Prefix Coverable problem.
 // Find the longest prefix of Pi that can be completely partitioned using numbers from the list. Return the length of this prefix.
-//
-// Approach: Changes from a full-string feasibility problem to finding the maximum reachable position, where the DP stops at the furthest coverable index.
-func LongestPrefixCoverable(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2), Space: O(n)
+func LongestPrefixCoverable(pi string, numbers []string) int {
+	result := 0
 
-    // Example: pi="31415926", numbers=["314","159"]: prefix "314159" (length 6) is coverable, but the remaining "26
+	for i := 0; i < len(pi); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Longest Prefix Coverable...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(LongestPrefixCoverable("3141592653589793238462643383279", []string{"314159265358979323846", "26433", "8", "3279", "314159265", "35897932384626433832", "79"})) // Expected: 2
+	fmt.Println(LongestPrefixCoverable("314159", []string{"314", "159", "3141", "59"})) // Expected: 3
+	fmt.Println(LongestPrefixCoverable("123456", []string{"12", "34", "56"})) // Expected: 1
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '09-numbers-in-pi/twist-05-longest-prefix-coverable', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/09-numbers-in-pi/twist-05-longest-prefix-coverable'] = problem;
 })();

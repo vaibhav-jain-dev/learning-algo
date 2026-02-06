@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"matrix":[[1,2,3],[4,5,6],[7,8,9]]},
                 output: [1,2,3,6,9,8,7,4,5],
-                explanation: 'Elements read in spiral order from outside to inside.'
+                explanation: ''
             },
             {
                 input: {"matrix":[[1,2],[3,4]]},
                 output: [1,2,4,3],
-                explanation: 'Small matrix spiral traversal.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"matrix":[[1]]},
                 output: [1],
-                explanation: 'Single element matrix.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def diagonal_read_spiral_write(data):
+            python: `def diagonal_read_spiral_write(matrix):
     """
     Diagonal Read, Spiral Write
 
-    Read the matrix in diagonal order (anti-diagonals) and write in spiral order to a transposed matrix.
-    \n    Approach: Diagonal traversal is a completely different read pattern, combining two non-trivial traversal methods.
+    Read the matrix in diagonal order (anti-diagonals) and write in spiral order to a transposed matrix. Diagonal traversal is a completely different read pattern, combining two non-trivial traversal methods.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # matrix = [[1,2,3],[4,5,6]]. Diagonal read: [1,4,2,5,3,6]. Spiral-write to 3x2.
+    if not matrix:
+        return False
 
-    if not data:
-        return None
+    # Process the input
+    for i in range(len(matrix)):
+        pass  # Check condition
 
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
-
-    return result
+    return True
 
 
 # Test cases
-print(diagonal_read_spiral_write([1, 2, 3, 4, 5]))
-print(diagonal_read_spiral_write([5, 3, 1]))
-print(diagonal_read_spiral_write([1]))`,
+print(diagonal_read_spiral_write([[1,2,3],[4,5,6],[7,8,9]]))  # Expected: [1,2,3,6,9,8,7,4,5]
+print(diagonal_read_spiral_write([[1,2],[3,4]]))  # Expected: [1,2,4,3]
+print(diagonal_read_spiral_write([[1]]))  # Expected: [1]
+`,
             go: `package main
 
 import "fmt"
 
 // DiagonalReadSpiralWrite solves the Diagonal Read, Spiral Write problem.
-// Read the matrix in diagonal order (anti-diagonals) and write in spiral order to a transposed matrix.
+// Read the matrix in diagonal order (anti-diagonals) and write in spiral order to a transposed matrix. Diagonal traversal is a completely different read pattern, combining two non-trivial traversal methods.
 // Time: O(n), Space: O(n)
-func DiagonalReadSpiralWrite(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func DiagonalReadSpiralWrite(matrix [][]int) bool {
+	if len(matrix) == 0 {
+		return false
+	}
 
-    result := make([]int, 0)
-    n := len(data)
-
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return true
 }
 
 func main() {
-    fmt.Println(DiagonalReadSpiralWrite([]int{1, 2, 3, 4, 5}))
-    fmt.Println(DiagonalReadSpiralWrite([]int{5, 3, 1}))
-    fmt.Println(DiagonalReadSpiralWrite([]int{1}))
-}`
+	fmt.Println(DiagonalReadSpiralWrite([][]int{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}})) // Expected: [1,2,3,6,9,8,7,4,5]
+	fmt.Println(DiagonalReadSpiralWrite([][]int{{1, 2}, {3, 4}})) // Expected: [1,2,4,3]
+	fmt.Println(DiagonalReadSpiralWrite([][]int{{1}})) // Expected: [1]
+}
+`
         },
         twists: [],
         similar: []

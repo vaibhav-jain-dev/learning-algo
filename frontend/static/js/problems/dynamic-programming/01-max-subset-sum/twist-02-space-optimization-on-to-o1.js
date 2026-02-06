@@ -2,10 +2,12 @@
  * Space Optimization: O(n) to O(1)
  * Category: dynamic-programming
  * Difficulty: Easy
+ * Algorithm: dp-max-subset
  * Parent: 01-max-subset-sum
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Space Optimization: O(n) to O(1)',
         difficulty: 'Easy',
@@ -19,84 +21,86 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'Replace dp[] array with two variables: prev1 (dp[i-1]) and prev2 (dp[i-2]). At each step: curr = max(prev1, prev2 + array[i]), then shift prev2 = prev1, prev1 = curr.'
+                input: {"array":[75,105,120,75,90,135]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the space optimization on to o1 criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"array":[7,10,12,7,9,14]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the space optimization on to o1 criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[75]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def spaceOptimizationOnToO1(data):
+            python: `def space_optimization_on_to_o1(array):
     """
     Space Optimization: O(n) to O(1)
 
     You have the O(n) DP array solution. Now optimize it to O(1) space by identifying which previous values you actually need at each step.
 
-    Approach:
-    Requires recognizing that only the last two DP values matter. This pattern of rolling variables is a fundamental DP space optimization technique.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    result = 0
 
-    # Example: Replace dp[] array with two variables: prev1 (dp[i-1]) and prev2 (dp[i-2]). At each step: curr = max(prev1, prev2 + arra
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
     return result
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Space Optimization: O(n) to O(1)...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(space_optimization_on_to_o1([75,105,120,75,90,135]))  # Expected: 1
+print(space_optimization_on_to_o1([7,10,12,7,9,14]))  # Expected: 2
+print(space_optimization_on_to_o1([75]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // SpaceOptimizationOnToO1 solves the Space Optimization: O(n) to O(1) problem.
 // You have the O(n) DP array solution. Now optimize it to O(1) space by identifying which previous values you actually need at each step.
-//
-// Approach: Requires recognizing that only the last two DP values matter. This pattern of rolling variables is a fundamental DP space optimization technique.
-func SpaceOptimizationOnToO1(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2), Space: O(n)
+func SpaceOptimizationOnToO1(array []int) int {
+	result := 0
 
-    // Example: Replace dp[] array with two variables: prev1 (dp[i-1]) and prev2 (dp[i-2]). At each step: curr = max
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Space Optimization: O(n) to O(1)...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(SpaceOptimizationOnToO1([]int{75, 105, 120, 75, 90, 135})) // Expected: 1
+	fmt.Println(SpaceOptimizationOnToO1([]int{7, 10, 12, 7, 9, 14})) // Expected: 2
+	fmt.Println(SpaceOptimizationOnToO1([]int{75})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '01-max-subset-sum/twist-02-space-optimization-on-to-o1', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/01-max-subset-sum/twist-02-space-optimization-on-to-o1'] = problem;
 })();

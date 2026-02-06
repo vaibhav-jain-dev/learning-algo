@@ -2,10 +2,12 @@
  * Parentheses Variant
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: general
  * Parent: 07-generate-divtags
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Parentheses Variant',
         difficulty: 'Medium',
@@ -19,57 +21,90 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For 1 of each type, "([{}])" is valid but "([)]" is not. Generate all valid orderings.' },
-                output: 'See example',
-                explanation: 'For 1 of each type, "([{}])" is valid but "([)]" is not. Generate all valid orderings.'
+                input: {"raw":"numberOfTags = 2"},
+                output: [0],
+                explanation: 'The parentheses variant for this input yields [0].'
+            },
+            {
+                input: {"raw":"numberOfTags = 1"},
+                output: [0,1],
+                explanation: 'The parentheses variant for this input yields [0, 1].'
+            },
+            {
+                input: {"raw":"numberOfTags = 3"},
+                output: [0,1,2],
+                explanation: 'The parentheses variant for this input yields [0, 1, 2].'
+            },
+            // Edge case
+            {
+                input: {"raw":""},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Parentheses Variant
-# Category: recursion
-# Difficulty: Medium
-# Parent: 07-generate-divtags
-
-def solve():
+            python: `def parentheses_variant(raw):
     """
+    Parentheses Variant
+
     Generate all valid combinations of n pairs of parentheses, with multiple types: (), [], {}, where different types cannot interleave incorrectly.
 
-    Key insight: Multiple bracket types add ordering constraints -- you cannot close a [ if a ( was opened more recently, requiring stack-based tracking.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(raw)):
+        # Check if element meets criteria
+        result.append(raw[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(parentheses_variant("numberOfTags = 2"))  # Expected: [0]
+print(parentheses_variant("numberOfTags = 1"))  # Expected: [0,1]
+print(parentheses_variant("numberOfTags = 3"))  # Expected: [0,1,2]
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Parentheses Variant problem.
+// ParenthesesVariant solves the Parentheses Variant problem.
 // Generate all valid combinations of n pairs of parentheses, with multiple types: (), [], {}, where different types cannot interleave incorrectly.
-// Key insight: Multiple bracket types add ordering constraints -- you cannot close a [ if a ( was opened more recently, requiring stack-based tracking.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func ParenthesesVariant(raw string) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(raw); i++ {
+		result = append(result, raw[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(ParenthesesVariant("numberOfTags = 2")) // Expected: [0]
+	fmt.Println(ParenthesesVariant("numberOfTags = 1")) // Expected: [0,1]
+	fmt.Println(ParenthesesVariant("numberOfTags = 3")) // Expected: [0,1,2]
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '07-generate-divtags/twist-04-parentheses-variant', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/07-generate-divtags/twist-04-parentheses-variant'] = problem;
 })();

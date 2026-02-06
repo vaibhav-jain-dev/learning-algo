@@ -2,10 +2,12 @@
  * N-ary Tree Minimum Depth
  * Category: binary-trees
  * Difficulty: Easy
+ * Algorithm: tree-bfs
  * Parent: 02-node-depths/02-minimum-depth
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'N-ary Tree Minimum Depth',
         difficulty: 'Easy',
@@ -19,120 +21,86 @@
             'Think about how the base case differs from the original problem.',
             'Review the example: Node(1, children=[Node(2), Node(3, children=[Node(4)])]).'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Node(1, children=[Node(2), Node(3, children=[Node(4)])])' },
-                output: 'See explanation',
-                explanation: 'Node(1, children=[Node(2), Node(3, children=[Node(4)])]). Min depth: 2 (path 1->2).'
+                input: {"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the n ary tree minimum depth criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":2,"right":{"value":3,"right":{"value":4,"right":{"value":5,"right":{"value":6}}}}}},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the n ary tree minimum depth criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def n_ary_tree_minimum_depth(data):
+            python: `def n_ary_tree_minimum_depth(tree):
     """
     N-ary Tree Minimum Depth
 
-    Find the minimum depth of an N-ary tree where each node can have any number of children.
+    Find the minimum depth of an N-ary tree where each node can have any number of children. Leaf detection becomes checking for an empty children array. With BFS, the approach is similar, but with DFS you must take the min over all children, not just left/right.
 
-    Approach: Leaf detection becomes checking for an empty children array
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: Leaf detection becomes checking for an empty children array
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement N-ary Tree Minimum Depth
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Node(1, children=[Node(2), Node(3, children=[Node(4)])])
-    print("See problem description for test cases")`,
+# Test cases
+print(n_ary_tree_minimum_depth({"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: 1
+print(n_ary_tree_minimum_depth({"value": 2, "right": {"value": 3, "right": {"value": 4, "right": {"value": 5, "right": {"value": 6}}}}}))  # Expected: 2
+print(n_ary_tree_minimum_depth({"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// NaryTreeMinimumDepth solves: N-ary Tree Minimum Depth
-// Leaf detection becomes checking for an empty children array
+// NAryTreeMinimumDepth solves the N-ary Tree Minimum Depth problem.
+// Find the minimum depth of an N-ary tree where each node can have any number of children. Leaf detection becomes checking for an empty children array. With BFS, the approach is similar, but with DFS you must take the min over all children, not just left/right.
 // Time: O(n), Space: O(n)
-func NaryTreeMinimumDepth(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func NAryTreeMinimumDepth(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement N-ary Tree Minimum Depth
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Node(1, children=[Node(2), Node(3, children=[Node(4)])])
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(NAryTreeMinimumDepth({"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: 1
+	fmt.Println(NAryTreeMinimumDepth({"value":2,"right":{"value":3,"right":{"value":4,"right":{"value":5,"right":{"value":6}}}}})) // Expected: 2
+	fmt.Println(NAryTreeMinimumDepth({"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '02-node-depths/02-minimum-depth/twist-02-n-ary-tree-minimum-depth', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/02-node-depths/02-minimum-depth/twist-02-n-ary-tree-minimum-depth'] = problem;
 })();

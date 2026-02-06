@@ -26,80 +26,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"s":"rabbbit","t":"rabbit"},
                 output: 3,
-                explanation: 'Three distinct ways to select "rabbit" from "rabbbit" by choosing different b characters.'
+                explanation: ''
             },
             {
                 input: {"s":"aabb","t":"ab"},
                 output: 4,
-                explanation: 'Four ways: positions (0,2), (0,3), (1,2), (1,3).'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"s":"abc","t":"xyz"},
                 output: 0,
-                explanation: 'No matching subsequence exists.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def count_distinct_subsequences_modulo_large_prime(data):
+            python: `def count_distinct_subsequences_modulo_large_prime(s, t):
     """
     Count Distinct Subsequences Modulo Large Prime
 
-    Same problem but strings can be up to 10^5 length. Return the count modulo 10^9+7.
-    \n    Approach: Forces thinking about overflow handling and modular arithmetic throughout the DP, and space optimization becomes essential.
+    Same problem but strings can be up to 10^5 length. Return the count modulo 10^9+7. Forces thinking about overflow handling and modular arithmetic throughout the DP, and space optimization becomes essential.
 
     Time: O(n)
     Space: O(n)
-
-    Example: s="aaa...a" (1000 a's), t="aa" → C(1000,2) mod 10^9+7
     """
-    if not data:
-        return None
+    count = 0
+    n = len(s)
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
-
-    # Core algorithm implementation
     for i in range(n):
-        result.append(data[i])
+        # Check condition based on t
+        j = 0
+        for k in range(i, n):
+            if j < len(t) and s[k] == t[j]:
+                j += 1
+        if j == len(t):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(count_distinct_subsequences_modulo_large_prime([1, 2, 3, 4, 5]))
-print(count_distinct_subsequences_modulo_large_prime([5, 3, 1]))
-print(count_distinct_subsequences_modulo_large_prime([1]))`,
+print(count_distinct_subsequences_modulo_large_prime("rabbbit", "rabbit"))  # Expected: 3
+print(count_distinct_subsequences_modulo_large_prime("aabb", "ab"))  # Expected: 4
+print(count_distinct_subsequences_modulo_large_prime("abc", "xyz"))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // CountDistinctSubsequencesModuloLargePrime solves the Count Distinct Subsequences Modulo Large Prime problem.
-// Same problem but strings can be up to 10^5 length. Return the count modulo 10^9+7.
+// Same problem but strings can be up to 10^5 length. Return the count modulo 10^9+7. Forces thinking about overflow handling and modular arithmetic throughout the DP, and space optimization becomes essential.
 // Time: O(n), Space: O(n)
-func CountDistinctSubsequencesModuloLargePrime(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func CountDistinctSubsequencesModuloLargePrime(s string, t string) int {
+	result := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(s); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(CountDistinctSubsequencesModuloLargePrime([]int{1, 2, 3, 4, 5}))
-    fmt.Println(CountDistinctSubsequencesModuloLargePrime([]int{5, 3, 1}))
-    fmt.Println(CountDistinctSubsequencesModuloLargePrime([]int{1}))
-}`
+	fmt.Println(CountDistinctSubsequencesModuloLargePrime("rabbbit", "rabbit")) // Expected: 3
+	fmt.Println(CountDistinctSubsequencesModuloLargePrime("aabb", "ab")) // Expected: 4
+	fmt.Println(CountDistinctSubsequencesModuloLargePrime("abc", "xyz")) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []

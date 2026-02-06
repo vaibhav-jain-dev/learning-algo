@@ -26,80 +26,84 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"s":"rabbbit","t":"rabbit"},
                 output: 3,
-                explanation: 'Three distinct ways to select "rabbit" from "rabbbit" by choosing different b characters.'
+                explanation: ''
             },
             {
                 input: {"s":"aabb","t":"ab"},
                 output: 4,
-                explanation: 'Four ways: positions (0,2), (0,3), (1,2), (1,3).'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"s":"abc","t":"xyz"},
                 output: 0,
-                explanation: 'No matching subsequence exists.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def minimum_deletions_to_reach_exactly_k_subsequences(data):
+            python: `def minimum_deletions_to_reach_exactly_k_subsequences(s, t):
     """
     Minimum Deletions to Reach Exactly K Subsequences
 
-    Given s and t, delete the minimum characters from s so that the number of distinct subsequences matching t equals exactly k.
-    \n    Approach: Inverts the counting problem into an optimization problem, requiring binary search or careful DP over deletion choices.
+    Given s and t, delete the minimum characters from s so that the number of distinct subsequences matching t equals exactly k. Inverts the counting problem into an optimization problem, requiring binary search or careful DP over deletion choices.
 
     Time: O(n)
     Space: O(n)
-
-    Example: s="rabbbit", t="rabbit", k=1 → delete 1 "b" to get exactly 1 way
     """
-    if not data:
-        return None
+    n = len(s)
+    m = len(t)
+    j = 0
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
-
-    # Core algorithm implementation
     for i in range(n):
-        result.append(data[i])
+        if j < m and s[i] == t[j]:
+            j += 1
 
-    return result
+    if j < m:
+        return -1  # Not possible
+
+    return n - m
 
 
 # Test cases
-print(minimum_deletions_to_reach_exactly_k_subsequences([1, 2, 3, 4, 5]))
-print(minimum_deletions_to_reach_exactly_k_subsequences([5, 3, 1]))
-print(minimum_deletions_to_reach_exactly_k_subsequences([1]))`,
+print(minimum_deletions_to_reach_exactly_k_subsequences("rabbbit", "rabbit"))  # Expected: 3
+print(minimum_deletions_to_reach_exactly_k_subsequences("aabb", "ab"))  # Expected: 4
+print(minimum_deletions_to_reach_exactly_k_subsequences("abc", "xyz"))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // MinimumDeletionsToReachExactlyKSubsequences solves the Minimum Deletions to Reach Exactly K Subsequences problem.
-// Given s and t, delete the minimum characters from s so that the number of distinct subsequences matching t equals exactly k.
+// Given s and t, delete the minimum characters from s so that the number of distinct subsequences matching t equals exactly k. Inverts the counting problem into an optimization problem, requiring binary search or careful DP over deletion choices.
 // Time: O(n), Space: O(n)
-func MinimumDeletionsToReachExactlyKSubsequences(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MinimumDeletionsToReachExactlyKSubsequences(s string, t string) int {
+	n := len(s)
+	m := len(t)
+	j := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < n && j < m; i++ {
+		if s[i] == t[j] {
+			j++
+		}
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
+	if j < m {
+		return -1
+	}
 
-    return result
+	return n - m
 }
 
 func main() {
-    fmt.Println(MinimumDeletionsToReachExactlyKSubsequences([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MinimumDeletionsToReachExactlyKSubsequences([]int{5, 3, 1}))
-    fmt.Println(MinimumDeletionsToReachExactlyKSubsequences([]int{1}))
-}`
+	fmt.Println(MinimumDeletionsToReachExactlyKSubsequences("rabbbit", "rabbit")) // Expected: 3
+	fmt.Println(MinimumDeletionsToReachExactlyKSubsequences("aabb", "ab")) // Expected: 4
+	fmt.Println(MinimumDeletionsToReachExactlyKSubsequences("abc", "xyz")) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []

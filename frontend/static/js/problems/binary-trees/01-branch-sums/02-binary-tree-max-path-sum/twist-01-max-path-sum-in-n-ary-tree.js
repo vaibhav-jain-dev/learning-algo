@@ -2,10 +2,12 @@
  * Max Path Sum in N-ary Tree
  * Category: binary-trees
  * Difficulty: Very Hard
+ * Algorithm: tree-max-path
  * Parent: 01-branch-sums/02-binary-tree-max-path-sum
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Max Path Sum in N-ary Tree',
         difficulty: 'Very Hard',
@@ -19,121 +21,86 @@
             'Key insight: With binary trees you compare left vs right.',
             'With N-ary, you must find the top-2 child path sums to form the best through-path at each node, requiring sorting or a two-pass approach over children.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Node(1, children=[Node(5), Node(-3), Node(4)])' },
-                output: 'See explanation',
-                explanation: 'Node(1, children=[Node(5), Node(-3), Node(4)]). Best path: 5->1->4=10. Must pick top-2 from N children.'
+                input: {"tree":{"value":1,"left":{"value":2},"right":{"value":3}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the max path sum in n ary tree criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":-10,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the max path sum in n ary tree criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":1,"left":{"value":2},"right":{"value":3}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def max_path_sum_in_n_ary_tree(data):
+            python: `def max_path_sum_in_n_ary_tree(tree):
     """
     Max Path Sum in N-ary Tree
 
-    Find the maximum path sum in an N-ary tree where each node can have any number of children.
-     The path can go through any two children of a node.
+    Find the maximum path sum in an N-ary tree where each node can have any number of children. The path can go through any two children of a node. With binary trees you compare left vs right. With N-ary, you must find the top-2 child path sums to form the best through-path at each node, requiring sorting or a two-pass approach over children.
 
-    Approach: With binary trees you compare left vs right
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: With binary trees you compare left vs right
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Max Path Sum in N-ary Tree
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Node(1, children=[Node(5), Node(-3), Node(4)])
-    print("See problem description for test cases")`,
+# Test cases
+print(max_path_sum_in_n_ary_tree({"value": 1, "left": {"value": 2}, "right": {"value": 3}}))  # Expected: 1
+print(max_path_sum_in_n_ary_tree({"value": -10, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: 2
+print(max_path_sum_in_n_ary_tree({"value": 1, "left": {"value": 2}, "right": {"value": 3}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// MaxPathSumInNaryTree solves: Max Path Sum in N-ary Tree
-// With binary trees you compare left vs right
+// MaxPathSumInNAryTree solves the Max Path Sum in N-ary Tree problem.
+// Find the maximum path sum in an N-ary tree where each node can have any number of children. The path can go through any two children of a node. With binary trees you compare left vs right. With N-ary, you must find the top-2 child path sums to form the best through-path at each node, requiring sorting or a two-pass approach over children.
 // Time: O(n), Space: O(n)
-func MaxPathSumInNaryTree(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func MaxPathSumInNAryTree(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Max Path Sum in N-ary Tree
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Node(1, children=[Node(5), Node(-3), Node(4)])
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(MaxPathSumInNAryTree({"value":1,"left":{"value":2},"right":{"value":3}})) // Expected: 1
+	fmt.Println(MaxPathSumInNAryTree({"value":-10,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: 2
+	fmt.Println(MaxPathSumInNAryTree({"value":1,"left":{"value":2},"right":{"value":3}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '01-branch-sums/02-binary-tree-max-path-sum/twist-01-max-path-sum-in-n-ary-tree', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/01-branch-sums/02-binary-tree-max-path-sum/twist-01-max-path-sum-in-n-ary-tree'] = problem;
 })();

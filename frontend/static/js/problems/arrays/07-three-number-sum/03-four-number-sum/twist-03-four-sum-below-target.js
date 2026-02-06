@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5],"target":9},
                 output: [[1,3,5],[2,3,4]],
-                explanation: 'Found all valid combinations summing to target.'
+                explanation: ''
             },
             {
                 input: {"array":[-1,0,1,2],"target":0},
                 output: [[-1,0,1]],
-                explanation: 'Negative numbers included in the valid combination.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1,2,3],"target":100},
                 output: [],
-                explanation: 'No valid combination exists for this target.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def four_sum_below_target(data):
+            python: `def four_sum_below_target(array, target, threshold):
     """
     Four Sum Below Target
 
-    Count all unique quadruplets whose sum is strictly less than the target value.
-    \n    Approach: Instead of finding exact matches, you must count all valid combinations below a threshold, changing the search strategy entirely.
+    Count all unique quadruplets whose sum is strictly less than the target value. Instead of finding exact matches, you must count all valid combinations below a threshold, changing the search strategy entirely.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 2, 3, 4, 5], target = 12. Count quadruplets summing to < 12.
+    count = 0
+    n = len(array)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and array[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(four_sum_below_target([1, 2, 3, 4, 5]))
-print(four_sum_below_target([5, 3, 1]))
-print(four_sum_below_target([1]))`,
+print(four_sum_below_target([1,2,3,4,5], 9, None))  # Expected: [[1,3,5],[2,3,4]]
+print(four_sum_below_target([-1,0,1,2], 0, None))  # Expected: [[-1,0,1]]
+print(four_sum_below_target([1,2,3], 100, None))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
 // FourSumBelowTarget solves the Four Sum Below Target problem.
-// Count all unique quadruplets whose sum is strictly less than the target value.
+// Count all unique quadruplets whose sum is strictly less than the target value. Instead of finding exact matches, you must count all valid combinations below a threshold, changing the search strategy entirely.
 // Time: O(n), Space: O(n)
-func FourSumBelowTarget(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func FourSumBelowTarget(array []int, target int, threshold int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(FourSumBelowTarget([]int{1, 2, 3, 4, 5}))
-    fmt.Println(FourSumBelowTarget([]int{5, 3, 1}))
-    fmt.Println(FourSumBelowTarget([]int{1}))
-}`
+	fmt.Println(FourSumBelowTarget([]int{1, 2, 3, 4, 5}, 9, 5)) // Expected: [[1,3,5],[2,3,4]]
+	fmt.Println(FourSumBelowTarget([]int{-1, 0, 1, 2}, 0, 5)) // Expected: [[-1,0,1]]
+	fmt.Println(FourSumBelowTarget([]int{1, 2, 3}, 100, 5)) // Expected: []
+}
+`
         },
         twists: [],
         similar: []

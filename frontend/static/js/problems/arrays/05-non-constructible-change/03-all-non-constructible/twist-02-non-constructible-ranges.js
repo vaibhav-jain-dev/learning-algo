@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"coins":[1,2,5]},
                 output: 4,
-                explanation: 'With coins [1,2,5], the first non-constructible value is 4.'
+                explanation: ''
             },
             {
                 input: {"coins":[1,1,1,1]},
                 output: 5,
-                explanation: 'Can make 1 through 4, but not 5.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"coins":[5,10]},
                 output: 1,
-                explanation: 'Cannot make 1 with only coins of value 5 and 10.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def non_constructible_ranges(data):
+            python: `def non_constructible_ranges(coins, limit):
     """
     Non-Constructible Ranges
 
-    Return the non-constructible values as compressed ranges [start, end] instead of individual values.
-    \n    Approach: Requires identifying contiguous gaps in the constructible set and representing them compactly, adding a grouping/compression step.
+    Return the non-constructible values as compressed ranges [start, end] instead of individual values. Requires identifying contiguous gaps in the constructible set and representing them compactly, adding a grouping/compression step.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # coins=[1,5,10], limit=20 → [[2,4],[7,9],[12,14],[17,19]] (ranges of non-constructible)
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in coins:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(non_constructible_ranges([1, 2, 3, 4, 5]))
-print(non_constructible_ranges([5, 3, 1]))
-print(non_constructible_ranges([1]))`,
+print(non_constructible_ranges([1,2,5], None))  # Expected: 4
+print(non_constructible_ranges([1,1,1,1], None))  # Expected: 5
+print(non_constructible_ranges([5,10], None))  # Expected: 1
+`,
             go: `package main
 
 import "fmt"
 
 // NonConstructibleRanges solves the Non-Constructible Ranges problem.
-// Return the non-constructible values as compressed ranges [start, end] instead of individual values.
+// Return the non-constructible values as compressed ranges [start, end] instead of individual values. Requires identifying contiguous gaps in the constructible set and representing them compactly, adding a grouping/compression step.
 // Time: O(n), Space: O(n)
-func NonConstructibleRanges(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func NonConstructibleRanges(coins []int, limit int) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range coins {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(NonConstructibleRanges([]int{1, 2, 3, 4, 5}))
-    fmt.Println(NonConstructibleRanges([]int{5, 3, 1}))
-    fmt.Println(NonConstructibleRanges([]int{1}))
-}`
+	fmt.Println(NonConstructibleRanges([]int{1, 2, 5}, nil)) // Expected: 4
+	fmt.Println(NonConstructibleRanges([]int{1, 1, 1, 1}, nil)) // Expected: 5
+	fmt.Println(NonConstructibleRanges([]int{5, 10}, nil)) // Expected: 1
+}
+`
         },
         twists: [],
         similar: []

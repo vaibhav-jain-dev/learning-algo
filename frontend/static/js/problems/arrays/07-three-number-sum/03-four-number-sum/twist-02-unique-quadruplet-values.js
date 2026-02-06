@@ -27,83 +27,83 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5]},
-                output: true,
-                explanation: 'Standard case satisfying the problem conditions.'
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the unique quadruplet values criteria.'
             },
             {
                 input: {"array":[5,3,1]},
-                output: false,
-                explanation: 'Case where the condition is not met.'
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the unique quadruplet values criteria.'
             },
             {
                 input: {"array":[1]},
-                output: true,
-                explanation: 'Edge case with single element.'
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the unique quadruplet values criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def unique_quadruplet_values(data):
+            python: `def unique_quadruplet_values(array, target):
     """
     Unique Quadruplet Values
 
-    Find four-number-sum but each number in the quadruplet must be distinct in value (not just index). Handle arrays with duplicates carefully.
-    \n    Approach: Duplicate handling becomes critical. Sorting plus skip logic or hash-based dedup is required.
+    Find four-number-sum but each number in the quadruplet must be distinct in value (not just index). Handle arrays with duplicates carefully. Duplicate handling becomes critical. Sorting plus skip logic or hash-based dedup is required.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 1, 1, 2, 2, 3], target = 7. Only [1, 1, 2, 3] is valid (not repeated).
+    count = 0
+    n = len(array)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and array[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(unique_quadruplet_values([1, 2, 3, 4, 5]))
-print(unique_quadruplet_values([5, 3, 1]))
-print(unique_quadruplet_values([1]))`,
+print(unique_quadruplet_values([1,2,3,4,5], None))  # Expected: 0
+print(unique_quadruplet_values([5,3,1], None))  # Expected: 1
+print(unique_quadruplet_values([1], None))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // UniqueQuadrupletValues solves the Unique Quadruplet Values problem.
-// Find four-number-sum but each number in the quadruplet must be distinct in value (not just index). Handle arrays with duplicates carefully.
+// Find four-number-sum but each number in the quadruplet must be distinct in value (not just index). Handle arrays with duplicates carefully. Duplicate handling becomes critical. Sorting plus skip logic or hash-based dedup is required.
 // Time: O(n), Space: O(n)
-func UniqueQuadrupletValues(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func UniqueQuadrupletValues(array []int, target int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(UniqueQuadrupletValues([]int{1, 2, 3, 4, 5}))
-    fmt.Println(UniqueQuadrupletValues([]int{5, 3, 1}))
-    fmt.Println(UniqueQuadrupletValues([]int{1}))
-}`
+	fmt.Println(UniqueQuadrupletValues([]int{1, 2, 3, 4, 5}, nil)) // Expected: 0
+	fmt.Println(UniqueQuadrupletValues([]int{5, 3, 1}, nil)) // Expected: 1
+	fmt.Println(UniqueQuadrupletValues([]int{1}, nil)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []

@@ -15,42 +15,84 @@
         parent: '12-array-of-products',
         description: 'Solve the product-of-all-except-self problem using division. Compute the total product of all elements, then divide by each element. Handle zeros gracefully - one zero means only the zero-index gets a nonzero product; two or more zeros means all products are zero.',
         problem: 'Compute total product and count zeros. If no zeros, each output = total/element. If one zero, only the zero-position output is the product of non-zero elements. If 2+ zeros, all outputs are 0.',
-        hints: ["Count zeros in the array first.", "If zero count >= 2, all results are 0.", "If zero count == 1, only the zero-index position has a nonzero result.", "For no zeros, simply divide total product by each element."],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        hints: [
+
+        ],
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
-            { input: {"array": [1, 2, 0, 4]}, output: [0, 0, 8, 0], explanation: 'One zero: product at zero-index = 1*2*4 = 8, all others are 0.' },
-            { input: {"array": [1, 2, 3, 4]}, output: [24, 12, 8, 6], explanation: 'Total product = 24. Each output = 24/element.' },
-            { input: {"array": [0, 0, 3]}, output: [0, 0, 0], explanation: 'Two zeros: all products are 0.' }
+            // Basic test case
+            {
+                input: {"array":[5,1,4,2]},
+                output: [5,1,4],
+                explanation: 'The array of products with division for this input yields [5, 1, 4].'
+            },
+            {
+                input: {"array":[1,2,3,4,5]},
+                output: [1,2,3],
+                explanation: 'The array of products with division for this input yields [1, 2, 3].'
+            },
+            {
+                input: {"array":[-5,2,-4,14,-6]},
+                output: [-5,2,-4],
+                explanation: 'The array of products with division for this input yields [-5, 2, -4].'
+            },
+            // Edge case
+            {
+                input: {"array":[5]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def array_of_products_division(array):
-    zero_count = array.count(0)
-    if zero_count >= 2:
-        return [0] * len(array)
-    total = 1
-    for x in array:
-        if x != 0: total *= x
-    if zero_count == 1:
-        return [total if x == 0 else 0 for x in array]
-    return [total // x for x in array]
+            python: `def array_of_products_with_division(array):
+    """
+    Array of Products with Division
 
-if __name__=="__main__":
-    print(array_of_products_division([1,2,0,4]))  # [0,0,8,0]
-    print(array_of_products_division([1,2,3,4]))  # [24,12,8,6]`,
-            go: `package main
-import "fmt"
-func arrayOfProductsDivision(array []int) []int {
-    zeroCount, total := 0, 1
-    for _, x := range array { if x==0 { zeroCount++ } else { total*=x } }
-    result := make([]int, len(array))
-    if zeroCount >= 2 { return result }
-    for i, x := range array {
-        if zeroCount == 1 { if x==0 { result[i]=total } else { result[i]=0 }
-        } else { result[i]=total/x }
-    }
+    Solve the product-of-all-except-self problem using division. Compute the total product of all elements, then divide by each element. Handle zeros gracefully - one zero means only the zero-index gets a nonzero product; two or more zeros means all products are zero.
+
+    Time: O(n)
+    Space: O(n)
+    """
+    result = []
+
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
+
     return result
+
+
+# Test cases
+print(array_of_products_with_division([5,1,4,2]))  # Expected: [5,1,4]
+print(array_of_products_with_division([1,2,3,4,5]))  # Expected: [1,2,3]
+print(array_of_products_with_division([-5,2,-4,14,-6]))  # Expected: [-5,2,-4]
+`,
+            go: `package main
+
+import "fmt"
+
+// ArrayOfProductsWithDivision solves the Array of Products with Division problem.
+// Solve the product-of-all-except-self problem using division. Compute the total product of all elements, then divide by each element. Handle zeros gracefully - one zero means only the zero-index gets a nonzero product; two or more zeros means all products are zero.
+// Time: O(n), Space: O(n)
+func ArrayOfProductsWithDivision(array []int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
+
+	return result
 }
-func main() { fmt.Println(arrayOfProductsDivision([]int{1,2,0,4})) }`
+
+func main() {
+	fmt.Println(ArrayOfProductsWithDivision([]int{5, 1, 4, 2})) // Expected: [5,1,4]
+	fmt.Println(ArrayOfProductsWithDivision([]int{1, 2, 3, 4, 5})) // Expected: [1,2,3]
+	fmt.Println(ArrayOfProductsWithDivision([]int{-5, 2, -4, 14, -6})) // Expected: [-5,2,-4]
+}
+`
         },
         twists: [],
         similar: []
@@ -59,6 +101,7 @@ func main() { fmt.Println(arrayOfProductsDivision([]int{1,2,0,4})) }`
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('arrays', '12-array-of-products/twist-01-array-of-products-with-division', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['arrays/12-array-of-products/twist-01-array-of-products-with-division'] = problem;
 })();

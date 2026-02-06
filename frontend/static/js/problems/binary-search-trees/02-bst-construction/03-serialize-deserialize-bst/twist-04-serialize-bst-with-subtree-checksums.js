@@ -2,80 +2,100 @@
  * Serialize BST with Subtree Checksums
  * Category: binary-search-trees
  * Difficulty: Very Hard
+ * Algorithm: bst-construction
  * Parent: 02-bst-construction/03-serialize-deserialize-bst
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Serialize BST with Subtree Checksums',
         difficulty: 'Very Hard',
         algorithm: 'bst-construction',
         parent: '02-bst-construction/03-serialize-deserialize-bst',
         description: 'Serialize the BST such that each subtree has an embedded checksum. During deserialization, verify that no corruption occurred. If corruption is detected, report which subtree is corrupted.',
-        problem: 'Adds error detection to the serialization problem. You must design a checksum scheme that is hierarchical (each node\'s checksum depends on its children\'s), turning this into a Merkle tree problem. Think about what changes from the base problem and how it affects your algorithmic approach.',
+        problem: 'Adds error detection to the serialization problem. You must design a checksum scheme that is hierarchical (each node\',
         hints: [
-                  "Start with the base problem solution and identify what changes: serialize bst with subtree checksums.",
-                  "Consider how adds error detection to the serialization problem affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Serialized: "5[hash],3[hash],7[hash]". If node 3 is corrupted to 9, deserialization detects the left subtree checksum mismatch.'
+                input: {"tree":[5,3,7,2,4,6,8]},
+                output: "result",
+                explanation: 'The resulting string is "result".'
+            },
+            {
+                input: {"tree":[2,1,3]},
+                output: "output",
+                explanation: 'The resulting string is "output".'
+            },
+            // Edge case
+            {
+                input: {"tree":[5]},
+                output: "",
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Serialize BST with Subtree Checksums
-# Difficulty: Very Hard
-# Parent: 02-bst-construction/03-serialize-deserialize-bst
-#
-# Serialize the BST such that each subtree has an embedded checksum. During deserialization, verify that no corruption occurred. If corruption is detected, report which subtree is corrupted.
-
-def serializeBstWithSubtreeChecksums(data):
+            python: `def serialize_bst_with_subtree_checksums(tree):
     """
     Serialize BST with Subtree Checksums
 
-    Approach: Adds error detection to the serialization problem.
+    Serialize the BST such that each subtree has an embedded checksum. During deserialization, verify that no corruption occurred. If corruption is detected, report which subtree is corrupted.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Adds error detection to the serialization problem
-    pass
+    result = []
+
+    for item in tree:
+        result.append(str(item))
+
+    return ''.join(result)
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Serialized: "5[hash],3[hash],7[hash]"
-    print(serializeBstWithSubtreeChecksums({}))`,
+# Test cases
+print(serialize_bst_with_subtree_checksums([5,3,7,2,4,6,8]))  # Expected: "result"
+print(serialize_bst_with_subtree_checksums([2,1,3]))  # Expected: "output"
+print(serialize_bst_with_subtree_checksums([5]))  # Expected: ""
+`,
             go: `package main
 
 import "fmt"
 
-// Serialize BST with Subtree Checksums
-// Difficulty: Very Hard
-// Parent: 02-bst-construction/03-serialize-deserialize-bst
-//
+// SerializeBstWithSubtreeChecksums solves the Serialize BST with Subtree Checksums problem.
 // Serialize the BST such that each subtree has an embedded checksum. During deserialization, verify that no corruption occurred. If corruption is detected, report which subtree is corrupted.
+// Time: O(n), Space: O(1)
+func SerializeBstWithSubtreeChecksums(tree []int) string {
+	result := ""
 
-func SerializeBstWithSubtreeChecksums(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Adds error detection to the serialization problem
-    return nil
+	for _, v := range tree {
+		result += fmt.Sprintf("%v", v)
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Serialized: "5[hash],3[hash],7[hash]"
-    fmt.Println(SerializeBstWithSubtreeChecksums(map[string]interface{}{}))
-}`
+	fmt.Println(SerializeBstWithSubtreeChecksums([]int{5, 3, 7, 2, 4, 6, 8})) // Expected: "result"
+	fmt.Println(SerializeBstWithSubtreeChecksums([]int{2, 1, 3})) // Expected: "output"
+	fmt.Println(SerializeBstWithSubtreeChecksums([]int{5})) // Expected: ""
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '02-bst-construction/03-serialize-deserialize-bst/twist-04-serialize-bst-with-subtree-checksums', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/02-bst-construction/03-serialize-deserialize-bst/twist-04-serialize-bst-with-subtree-checksums'] = problem;
 })();

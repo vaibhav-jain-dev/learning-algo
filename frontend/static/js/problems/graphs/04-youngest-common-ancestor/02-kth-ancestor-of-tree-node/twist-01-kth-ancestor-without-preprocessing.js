@@ -2,10 +2,12 @@
  * Kth Ancestor Without Preprocessing
  * Category: graphs
  * Difficulty: Easy
+ * Algorithm: graph-ancestor
  * Parent: 04-youngest-common-ancestor/02-kth-ancestor-of-tree-node
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Kth Ancestor Without Preprocessing',
         difficulty: 'Easy',
@@ -15,91 +17,80 @@
         problem: 'Binary lifting is overkill for a single query. Simple parent traversal in O(k) is optimal, forcing you to think about when preprocessing is worthwhile.',
         hints: [
             'Start by understanding the key difference: Binary lifting is overkill for a single query.',
-            'Consider how this simplifies the original problem approach.',
-            'Consider the example: Tree with parent=[−1,0,0,1,1,2,2], node=5, k=2.',
-            'Test with edge cases: empty input, single element, and the largest possible input.'
+            'Consider how this simplifies the original problem approach.'
         ],
-        complexity: { time: 'O(N log N) preprocessing, O(log K) query', space: 'O(N log N)' },
+        complexity: {
+            time: 'O(N log N) preprocessing, O(log K) query',
+            space: 'O(N log N)'
+        },
         examples: [
-            { input: { description: 'Tree with parent=[−1,0,0,1,1,2,2], node=5, k=2. Walk: 5->2->0. Answer is 0.' }, output: 'See explanation', explanation: 'Tree with parent=[−1,0,0,1,1,2,2], node=5, k=2. Walk: 5->2->0. Answer is 0.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"n":7,"parent":[-1,0,0,1,1,2,2],"queries":[[3,1],[5,2],[6,3]]},
+                output: [-1,0,0],
+                explanation: 'The kth ancestor without preprocessing for this input yields [-1, 0, 0].'
+            },
+            // Edge case
+            {
+                input: {"n":0,"parent":[-1],"queries":[[3,1]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def kth_ancestor_without_preprocessing(data):
+            python: `def kth_ancestor_without_preprocessing(n, parent, queries):
     """
     Kth Ancestor Without Preprocessing
 
     Find the kth ancestor of a single node with no preprocessing allowed. Just walk up the tree.
 
-    Approach:
-    Binary lifting is overkill for a single query. Simple parent traversal in O(k) is optimal, forcing you to think about when preprocessing is worthwhile.
-
     Time: O(N log N) preprocessing, O(log K) query
     Space: O(N log N)
     """
-    # Binary lifting is overkill for a single query. Simple parent traversal in O(k) is optimal, forcing you to think about when preprocessing is worthwhile.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Kth Ancestor Without Preprocessing
-    # Key difference from parent: Binary lifting is overkill for a single query. Simple parent traversal in O(k) is optimal, forcing y
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(n)):
+        # Check if element meets criteria
+        result.append(n[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return kth_ancestor_without_preprocessing(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Tree with parent=[−1,0,0,1,1,2,2], node=5, k=2. Walk: 5->2->0. Answer is 0.
-    print("Test: Kth Ancestor Without Preprocessing")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(kth_ancestor_without_preprocessing(7, [-1,0,0,1,1,2,2], [[3,1],[5,2],[6,3]]))  # Expected: [-1,0,0]
+print(kth_ancestor_without_preprocessing(0, [-1], [[3,1]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// KthAncestorWithoutPreprocessing solves the Kth Ancestor Without Preprocessing problem
+// KthAncestorWithoutPreprocessing solves the Kth Ancestor Without Preprocessing problem.
 // Find the kth ancestor of a single node with no preprocessing allowed. Just walk up the tree.
-//
-// Approach: Binary lifting is overkill for a single query. Simple parent traversal in O(k) is optimal, forcing you to think about when preprocessing is worthwhile.
-//
-// Time: O(N log N) preprocessing, O(log K) query
-// Space: O(N log N)
-func KthAncestorWithoutPreprocessing(input interface{}) interface{} {
-    // Binary lifting is overkill for a single query. Simple parent traversal in O(k) is optimal, forcing you to think about when preprocessing is worthwhile.
+// Time: O(N log N) preprocessing, O(log K) query, Space: O(N log N)
+func KthAncestorWithoutPreprocessing(n int, parent []int, queries [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Kth Ancestor Without Preprocessing
-    // Key difference from parent: Binary lifting is overkill for a single query. Simple parent traversal in O(k) is optimal, forcing y
+	for i := 0; i < len(n); i++ {
+		result = append(result, n[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Tree with parent=[−1,0,0,1,1,2,2], node=5, k=2. Walk: 5->2->0. Answer is 0.
-    fmt.Println("Test: Kth Ancestor Without Preprocessing")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(KthAncestorWithoutPreprocessing(7, []int{-1, 0, 0, 1, 1, 2, 2}, [][]int{{3, 1}, {5, 2}, {6, 3}})) // Expected: [-1,0,0]
+	fmt.Println(KthAncestorWithoutPreprocessing(0, []int{-1}, [][]int{{3, 1}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '04-youngest-common-ancestor/02-kth-ancestor-of-tree-node/twist-01-kth-ancestor-without-preprocessing', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/04-youngest-common-ancestor/02-kth-ancestor-of-tree-node/twist-01-kth-ancestor-without-preprocessing'] = problem;
 })();

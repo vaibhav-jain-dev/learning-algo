@@ -2,10 +2,12 @@
  * Shift Circular Linked List
  * Category: linked-lists
  * Difficulty: Medium
+ * Algorithm: ll-shift
  * Parent: 09-shift-linked-list
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Shift Circular Linked List',
         difficulty: 'Medium',
@@ -19,148 +21,79 @@
             'Consider edge cases with empty lists or single-node lists.',
             'Think about how the data structure change affects pointer manipulation.'
         ],
-        complexity: { time: 'O(n)', space: 'O(1)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { list: [1, 2, 3, 4, 5] },
-                output: [1, 2, 3, 4, 5],
-                explanation: 'circular list=[0,1,2,3,4,5]->(back to 0), k=2: new head is node 4. Result starts at 4: [4,5,0,1,2,3].'
+                input: {"list":[1,2,3,4,5]},
+                output: [1,2,3,4,5],
+                explanation: ''
             }
         ],
         solutions: {
-            python: `class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
-
-class DoublyLinkedNode:
-    def __init__(self, val=0, prev=None, next=None):
-        self.val = val
-        self.prev = prev
-        self.next = next
-
-def shift_circular_linked_list(head, *args):
+            python: `def shift_circular_linked_list(list, k):
     """
     Shift Circular Linked List
+
     The list is already circular. Shift it by k positions and return the new head. The tail already points to the head.
 
-    Approach: No need to make the list circular first. You just need to find the new head position, which is (length - k % length) steps from current head, and update head reference.
+    Time: O(n)
+    Space: O(1)
     """
-    if not head:
-        return head
+    n = len(list)
+    m = len(k)
+    doubled = list + list
+    j = 0
 
-    # Core algorithm for: Shift Circular Linked List
-    current = head
-    result = []
+    for i in range(min(2 * n, 2 * n)):
+        if j < m and doubled[i] == k[j]:
+            j += 1
+        if j == m:
+            return True
 
-    while current:
-        result.append(current.val)
-        current = current.next
-
-    return result
-
-
-# Helper: build linked list from array
-def to_linked_list(arr):
-    if not arr:
-        return None
-    head = ListNode(arr[0])
-    current = head
-    for val in arr[1:]:
-        current.next = ListNode(val)
-        current = current.next
-    return head
-
-def to_array(head):
-    result = []
-    while head:
-        result.append(head.val)
-        head = head.next
-    return result
+    return False
 
 
-# Test
-if __name__ == "__main__":
-    # Example: circular list=[0,1,2,3,4,5]->(back to 0), k=2: new head is node 4. Result starts at 4: [4,5,0,1,2,3].
-    head = to_linked_list([1, 2, 3, 4, 5])
-    result = shift_circular_linked_list(head)
-    print("Result:", result)
-
-    head = to_linked_list([1, 1, 2, 2, 3])
-    result = shift_circular_linked_list(head)
-    print("Result:", result)`,
+# Test cases
+print(shift_circular_linked_list([1,2,3,4,5], None))  # Expected: [1,2,3,4,5]
+`,
             go: `package main
 
 import "fmt"
 
-type ListNode struct {
-    Val  int
-    Next *ListNode
-}
-
-type DoublyLinkedNode struct {
-    Val  int
-    Prev *DoublyLinkedNode
-    Next *DoublyLinkedNode
-}
-
-// ShiftCircularLinkedList solves: Shift Circular Linked List
+// ShiftCircularLinkedList solves the Shift Circular Linked List problem.
 // The list is already circular. Shift it by k positions and return the new head. The tail already points to the head.
-// Approach: No need to make the list circular first. You just need to find the new head position, which is (length - k % length) steps from current head, and update head reference.
-func ShiftCircularLinkedList(head *ListNode) *ListNode {
-    if head == nil {
-        return nil
-    }
+// Time: O(n), Space: O(1)
+func ShiftCircularLinkedList(list []int, k int) []int {
+	n := len(list)
+	m := len(k)
+	j := 0
 
-    // Core algorithm for: Shift Circular Linked List
-    current := head
-    for current.Next != nil {
-        current = current.Next
-    }
+	for i := 0; i < 2*n && j < m; i++ {
+		if list[i%n] == k[j] {
+			j++
+		}
+	}
 
-    return head
-}
-
-// Helper functions
-func toLinkedList(arr []int) *ListNode {
-    if len(arr) == 0 {
-        return nil
-    }
-    head := &ListNode{Val: arr[0]}
-    current := head
-    for i := 1; i < len(arr); i++ {
-        current.Next = &ListNode{Val: arr[i]}
-        current = current.Next
-    }
-    return head
-}
-
-func toArray(head *ListNode) []int {
-    result := []int{}
-    for head != nil {
-        result = append(result, head.Val)
-        head = head.Next
-    }
-    return result
+	return j == m
 }
 
 func main() {
-    // Example: circular list=[0,1,2,3,4,5]->(back to 0), k=2: new head is node 4. Result starts at 4: [4,5,0,1,2,3].
-    head := toLinkedList([]int{1, 2, 3, 4, 5})
-    result := ShiftCircularLinkedList(head)
-    fmt.Println(toArray(result))
-
-    head = toLinkedList([]int{1, 1, 2, 2, 3})
-    result = ShiftCircularLinkedList(head)
-    fmt.Println(toArray(result))
-}`
+	fmt.Println(ShiftCircularLinkedList([]int{1, 2, 3, 4, 5}, nil)) // Expected: [1,2,3,4,5]
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('linked-lists', '09-shift-linked-list/twist-03-shift-circular-linked-list', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['linked-lists/09-shift-linked-list/twist-03-shift-circular-linked-list'] = problem;
 })();

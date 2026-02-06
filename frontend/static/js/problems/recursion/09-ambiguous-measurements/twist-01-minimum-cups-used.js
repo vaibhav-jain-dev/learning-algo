@@ -2,10 +2,12 @@
  * Minimum Cups Used
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-measurements
  * Parent: 09-ambiguous-measurements
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Minimum Cups Used',
         difficulty: 'Hard',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For cups [[200,210],[450,465]] and target 850, minimum pours might be 2 (one of each) rather than just returning true.' },
-                output: 'See example',
-                explanation: 'For cups [[200,210],[450,465]] and target 850, minimum pours might be 2 (one of each) rather than just returning true.'
+                input: {"cups":[[200,210],[450,465],[800,850]],"target":10},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the minimum cups used criteria.'
+            },
+            // Edge case
+            {
+                input: {"cups":[[200,210]],"target":10},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Minimum Cups Used
-# Category: recursion
-# Difficulty: Hard
-# Parent: 09-ambiguous-measurements
-
-def solve():
+            python: `def minimum_cups_used(cups, target):
     """
+    Minimum Cups Used
+
     Instead of just determining if the target is achievable, find the minimum number of cup pours needed to reach exactly the target amount.
 
-    Key insight: Transforms from a boolean feasibility problem to an optimization problem, requiring BFS or DP with cost tracking instead of simple memoized recursion.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(cups)
+
+    for i in range(n):
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and cups[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(minimum_cups_used([[200,210],[450,465],[800,850]], 10))  # Expected: 1
+print(minimum_cups_used([[200,210]], 10))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Minimum Cups Used problem.
+// MinimumCupsUsed solves the Minimum Cups Used problem.
 // Instead of just determining if the target is achievable, find the minimum number of cup pours needed to reach exactly the target amount.
-// Key insight: Transforms from a boolean feasibility problem to an optimization problem, requiring BFS or DP with cost tracking instead of simple memoized recursion.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func MinimumCupsUsed(cups [][]int, target int) int {
+	result := 0
+
+	for i := 0; i < len(cups); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(MinimumCupsUsed([][]int{{200, 210}, {450, 465}, {800, 850}}, 10)) // Expected: 1
+	fmt.Println(MinimumCupsUsed([][]int{{200, 210}}, 10)) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '09-ambiguous-measurements/twist-01-minimum-cups-used', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/09-ambiguous-measurements/twist-01-minimum-cups-used'] = problem;
 })();

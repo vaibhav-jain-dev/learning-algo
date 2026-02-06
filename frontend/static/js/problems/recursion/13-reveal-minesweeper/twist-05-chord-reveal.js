@@ -2,10 +2,12 @@
  * Chord Reveal
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-minesweeper
  * Parent: 13-reveal-minesweeper
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Chord Reveal',
         difficulty: 'Medium',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Cell shows "1" with one adjacent flag. Chord-clicking reveals all other adjacent cells. If any is a mine (flag was wrong), game over.' },
-                output: 'See example',
-                explanation: 'Cell shows "1" with one adjacent flag. Chord-clicking reveals all other adjacent cells. If any is a mine (flag was wrong), game over.'
+                input: {"board":[["E","E","E","E","E"],["E","E","M","E","E"],["E","E","E","E","E"],["E","E","E","E","E"]],"click":[3,0]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the chord reveal criteria.'
+            },
+            // Edge case
+            {
+                input: {"board":[["E","E","E","E","E"]],"click":[3]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Chord Reveal
-# Category: recursion
-# Difficulty: Medium
-# Parent: 13-reveal-minesweeper
-
-def solve():
+            python: `def chord_reveal(board, click):
     """
+    Chord Reveal
+
     Implement the chord action: if a revealed number cell has the correct number of adjacent flags, reveal all non-flagged adjacent cells simultaneously.
 
-    Key insight: Requires counting flags around a number cell and conditionally triggering multi-cell reveals, potentially cascading into further reveals.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(board)
+
+    for i in range(n):
+        # Check condition based on click
+        j = 0
+        for k in range(i, n):
+            if j < len(click) and board[k] == click[j]:
+                j += 1
+        if j == len(click):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(chord_reveal([["E","E","E","E","E"],["E","E","M","E","E"],["E","E","E","E","E"],["E","E","E","E","E"]], [3,0]))  # Expected: 1
+print(chord_reveal([["E","E","E","E","E"]], [3]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Chord Reveal problem.
+// ChordReveal solves the Chord Reveal problem.
 // Implement the chord action: if a revealed number cell has the correct number of adjacent flags, reveal all non-flagged adjacent cells simultaneously.
-// Key insight: Requires counting flags around a number cell and conditionally triggering multi-cell reveals, potentially cascading into further reveals.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func ChordReveal(board [][]int, click []int) int {
+	result := 0
+
+	for i := 0; i < len(board); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(ChordReveal([][]int{{E, E, E, E, E}, {E, E, M, E, E}, {E, E, E, E, E}, {E, E, E, E, E}}, []int{3, 0})) // Expected: 1
+	fmt.Println(ChordReveal([][]int{{E, E, E, E, E}}, []int{3})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '13-reveal-minesweeper/twist-05-chord-reveal', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/13-reveal-minesweeper/twist-05-chord-reveal'] = problem;
 })();

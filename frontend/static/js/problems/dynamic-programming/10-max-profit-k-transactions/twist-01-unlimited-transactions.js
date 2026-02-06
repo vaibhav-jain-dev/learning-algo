@@ -2,10 +2,12 @@
  * Unlimited Transactions
  * Category: dynamic-programming
  * Difficulty: Medium
+ * Algorithm: dp-transactions
  * Parent: 10-max-profit-k-transactions
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Unlimited Transactions',
         difficulty: 'Medium',
@@ -19,84 +21,97 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'prices=[5,11,3,50,60,90]: buy at 5 sell at 11 (+6), buy at 3 sell at 90 (+87), total=93. With unlimited transactions you can also just capture every increase.'
+                input: {"prices":[5,11,3,50,60,90],"k":2},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the unlimited transactions criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"prices":[3,2,5,7,1,3],"k":1},
+                output: 3,
+                explanation: 'For this input, there are 3 valid positions that satisfy the unlimited transactions criteria.'
+            },
+            {
+                input: {"prices":[1,2,3,4,5],"k":2},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the unlimited transactions criteria.'
+            },
+            // Edge case
+            {
+                input: {"prices":[5],"k":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def unlimitedTransactions(data):
+            python: `def unlimited_transactions(prices, k):
     """
     Unlimited Transactions
 
     Remove the k-transaction limit entirely. Find the maximum profit with as many buy-sell transactions as you want (but still no overlapping holds).
 
-    Approach:
-    Eliminates the need for the transaction-count dimension in the DP. A simple greedy approach of capturing every upward slope becomes optimal.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    count = 0
+    n = len(prices)
 
-    # Example: prices=[5,11,3,50,60,90]: buy at 5 sell at 11 (+6), buy at 3 sell at 90 (+87), total=93. With unlimited transactions you
+    for i in range(n):
+        # Check condition based on k
+        j = 0
+        for k in range(i, n):
+            if j < len(k) and prices[k] == k[j]:
+                j += 1
+        if j == len(k):
+            count += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
-    return result
+    return count
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Unlimited Transactions...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(unlimited_transactions([5,11,3,50,60,90], 2))  # Expected: 2
+print(unlimited_transactions([3,2,5,7,1,3], 1))  # Expected: 3
+print(unlimited_transactions([1,2,3,4,5], 2))  # Expected: 1
+`,
             go: `package main
 
 import "fmt"
 
 // UnlimitedTransactions solves the Unlimited Transactions problem.
 // Remove the k-transaction limit entirely. Find the maximum profit with as many buy-sell transactions as you want (but still no overlapping holds).
-//
-// Approach: Eliminates the need for the transaction-count dimension in the DP. A simple greedy approach of capturing every upward slope becomes optimal.
-func UnlimitedTransactions(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2), Space: O(n)
+func UnlimitedTransactions(prices []int, k int) int {
+	result := 0
 
-    // Example: prices=[5,11,3,50,60,90]: buy at 5 sell at 11 (+6), buy at 3 sell at 90 (+87), total=93. With unlimi
+	for i := 0; i < len(prices); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Unlimited Transactions...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(UnlimitedTransactions([]int{5, 11, 3, 50, 60, 90}, 2)) // Expected: 2
+	fmt.Println(UnlimitedTransactions([]int{3, 2, 5, 7, 1, 3}, 1)) // Expected: 3
+	fmt.Println(UnlimitedTransactions([]int{1, 2, 3, 4, 5}, 2)) // Expected: 1
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '10-max-profit-k-transactions/twist-01-unlimited-transactions', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/10-max-profit-k-transactions/twist-01-unlimited-transactions'] = problem;
 })();

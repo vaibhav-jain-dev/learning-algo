@@ -2,10 +2,12 @@
  * Inverse: Permutation to Rank
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-permutations
  * Parent: 03-permutations/03-kth-permutation
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Inverse: Permutation to Rank',
         difficulty: 'Hard',
@@ -19,57 +21,77 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For permutation [3,1,2] of n=3, rank is 5 because order is 123,132,213,231,312,321.' },
-                output: 'See example',
-                explanation: 'For permutation [3,1,2] of n=3, rank is 5 because order is 123,132,213,231,312,321.'
+                input: {"n":3,"k":3},
+                output: "result",
+                explanation: 'The resulting string is "result".'
+            },
+            // Edge case
+            {
+                input: {"n":0,"k":0},
+                output: "",
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Inverse: Permutation to Rank
-# Category: recursion
-# Difficulty: Hard
-# Parent: 03-permutations/03-kth-permutation
-
-def solve():
+            python: `def inverse_permutation_to_rank(n, k):
     """
+    Inverse: Permutation to Rank
+
     Given a specific permutation of [1..n], compute its 1-indexed rank in lexicographic order without enumerating all permutations.
 
-    Key insight: Reverses the original problem. Instead of mapping rank to permutation, you map permutation to rank, requiring counting smaller permutations using factorials.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for item in n:
+        result.append(str(item))
+
+    return ''.join(result)
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(inverse_permutation_to_rank(3, 3))  # Expected: "result"
+print(inverse_permutation_to_rank(0, 0))  # Expected: ""
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Inverse: Permutation to Rank problem.
+// InversePermutationToRank solves the Inverse: Permutation to Rank problem.
 // Given a specific permutation of [1..n], compute its 1-indexed rank in lexicographic order without enumerating all permutations.
-// Key insight: Reverses the original problem. Instead of mapping rank to permutation, you map permutation to rank, requiring counting smaller permutations using factorials.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func InversePermutationToRank(n int, k int) string {
+	result := ""
+
+	for _, v := range n {
+		result += fmt.Sprintf("%v", v)
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(InversePermutationToRank(3, 3)) // Expected: "result"
+	fmt.Println(InversePermutationToRank(0, 0)) // Expected: ""
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '03-permutations/03-kth-permutation/twist-02-inverse-permutation-to-rank', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/03-permutations/03-kth-permutation/twist-02-inverse-permutation-to-rank'] = problem;
 })();

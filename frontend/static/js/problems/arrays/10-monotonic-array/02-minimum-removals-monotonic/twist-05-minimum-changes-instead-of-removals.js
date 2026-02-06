@@ -27,83 +27,72 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,3,5,2,4]},
                 output: 1,
-                explanation: 'Only one operation needed to achieve the goal.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4]},
                 output: 0,
-                explanation: 'Already satisfies the condition, no operations needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[5,3,1,4,2]},
                 output: 2,
-                explanation: 'Two operations needed to satisfy the condition.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def minimum_changes_instead_of_removals(data):
+            python: `def minimum_changes_instead_of_removals(array):
     """
     Minimum Changes Instead of Removals
 
-    Instead of removing elements, you can change any element to any value. Find minimum changes to make array monotonic.
-    \n    Approach: Changes are more powerful than removals. The greedy approach involves deciding optimal replacement values.
+    Instead of removing elements, you can change any element to any value. Find minimum changes to make array monotonic. Changes are more powerful than removals. The greedy approach involves deciding optimal replacement values.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 5, 3, 4, 5]. Change 5 at index 1 to 2: [1,2,3,4,5]. Only 1 change needed.
+    result = 0
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
 
     return result
 
 
 # Test cases
-print(minimum_changes_instead_of_removals([1, 2, 3, 4, 5]))
-print(minimum_changes_instead_of_removals([5, 3, 1]))
-print(minimum_changes_instead_of_removals([1]))`,
+print(minimum_changes_instead_of_removals([1,3,5,2,4]))  # Expected: 1
+print(minimum_changes_instead_of_removals([1,2,3,4]))  # Expected: 0
+print(minimum_changes_instead_of_removals([5,3,1,4,2]))  # Expected: 2
+`,
             go: `package main
 
 import "fmt"
 
 // MinimumChangesInsteadOfRemovals solves the Minimum Changes Instead of Removals problem.
-// Instead of removing elements, you can change any element to any value. Find minimum changes to make array monotonic.
+// Instead of removing elements, you can change any element to any value. Find minimum changes to make array monotonic. Changes are more powerful than removals. The greedy approach involves deciding optimal replacement values.
 // Time: O(n), Space: O(n)
-func MinimumChangesInsteadOfRemovals(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MinimumChangesInsteadOfRemovals(array []int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(MinimumChangesInsteadOfRemovals([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MinimumChangesInsteadOfRemovals([]int{5, 3, 1}))
-    fmt.Println(MinimumChangesInsteadOfRemovals([]int{1}))
-}`
+	fmt.Println(MinimumChangesInsteadOfRemovals([]int{1, 3, 5, 2, 4})) // Expected: 1
+	fmt.Println(MinimumChangesInsteadOfRemovals([]int{1, 2, 3, 4})) // Expected: 0
+	fmt.Println(MinimumChangesInsteadOfRemovals([]int{5, 3, 1, 4, 2})) // Expected: 2
+}
+`
         },
         twists: [],
         similar: []

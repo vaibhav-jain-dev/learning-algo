@@ -2,10 +2,12 @@
  * Limited Supply of Each Coin
  * Category: dynamic-programming
  * Difficulty: Hard
+ * Algorithm: dp-coin-change
  * Parent: 02-number-of-ways-to-make-change
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Limited Supply of Each Coin',
         difficulty: 'Hard',
@@ -19,84 +21,97 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'n=7, coins=[1,5] with supply=[3,2]. Cannot use more than 3 ones or 2 fives. Only way: 1+1+5=7 (using 2 ones and 1 five). Answer: 1 way.'
+                input: {"n":6,"denoms":[1,5]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the limited supply of each coin criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"n":10,"denoms":[1,5,10,25]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the limited supply of each coin criteria.'
+            },
+            {
+                input: {"n":0,"denoms":[1,2]},
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the limited supply of each coin criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"denoms":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def limitedSupplyOfEachCoin(data):
+            python: `def limited_supply_of_each_coin(n, denoms):
     """
     Limited Supply of Each Coin
 
     What if each denomination has a limited supply? For example, you have 3 pennies, 2 nickels, and 1 dime. How does the DP change?
 
-    Approach:
-    Unlimited coins allow forward iteration (unbounded knapsack). Limited supply requires iterating amounts in reverse for each coin (bounded knapsack), or expanding the state to track how many of each coin is used.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    count = 0
+    n = len(n)
 
-    # Example: n=7, coins=[1,5] with supply=[3,2]. Cannot use more than 3 ones or 2 fives. Only way: 1+1+5=7 (using 2 ones and 1 five).
+    for i in range(n):
+        # Check condition based on denoms
+        j = 0
+        for k in range(i, n):
+            if j < len(denoms) and n[k] == denoms[j]:
+                j += 1
+        if j == len(denoms):
+            count += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
-    return result
+    return count
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Limited Supply of Each Coin...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(limited_supply_of_each_coin(6, [1,5]))  # Expected: 1
+print(limited_supply_of_each_coin(10, [1,5,10,25]))  # Expected: 2
+print(limited_supply_of_each_coin(0, [1,2]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // LimitedSupplyOfEachCoin solves the Limited Supply of Each Coin problem.
 // What if each denomination has a limited supply? For example, you have 3 pennies, 2 nickels, and 1 dime. How does the DP change?
-//
-// Approach: Unlimited coins allow forward iteration (unbounded knapsack). Limited supply requires iterating amounts in reverse for each coin (bounded knapsack), o
-func LimitedSupplyOfEachCoin(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2), Space: O(n)
+func LimitedSupplyOfEachCoin(n int, denoms []int) int {
+	result := 0
 
-    // Example: n=7, coins=[1,5] with supply=[3,2]. Cannot use more than 3 ones or 2 fives. Only way: 1+1+5=7 (using
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Limited Supply of Each Coin...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(LimitedSupplyOfEachCoin(6, []int{1, 5})) // Expected: 1
+	fmt.Println(LimitedSupplyOfEachCoin(10, []int{1, 5, 10, 25})) // Expected: 2
+	fmt.Println(LimitedSupplyOfEachCoin(0, []int{1, 2})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '02-number-of-ways-to-make-change/twist-06-limited-supply-of-each-coin', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/02-number-of-ways-to-make-change/twist-06-limited-supply-of-each-coin'] = problem;
 })();

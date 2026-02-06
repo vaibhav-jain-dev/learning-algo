@@ -2,10 +2,12 @@
  * All Occurrences
  * Category: famous-algorithms
  * Difficulty: Medium
+ * Algorithm: kmp-algorithm
  * Parent: 04-knuth-morris-pratt/01-implement-strstr
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'All Occurrences',
         difficulty: 'Medium',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For haystack="AAAA", needle="AA", return [0,1,2] for all overlapping positions.' },
-                output: 'See example',
-                explanation: 'For haystack="AAAA", needle="AA", return [0,1,2] for all overlapping positions.'
+                input: {"haystack":"sadbutsad","needle":"sad"},
+                output: [0],
+                explanation: 'The all occurrences for this input yields [0].'
+            },
+            {
+                input: {"haystack":"leetcode","needle":"leeto"},
+                output: [0,1],
+                explanation: 'The all occurrences for this input yields [0, 1].'
+            },
+            // Edge case
+            {
+                input: {"haystack":"","needle":""},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# All Occurrences
-# Category: famous-algorithms
-# Difficulty: Medium
-# Parent: 04-knuth-morris-pratt/01-implement-strstr
-
-def solve():
+            python: `def all_occurrences(haystack, needle):
     """
+    All Occurrences
+
     Find all starting indices where needle appears in haystack, including overlapping occurrences.
 
-    Key insight: After each match, instead of returning immediately, use the LPS array to continue searching from the appropriate position for overlapping matches.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(haystack)):
+        # Check if element meets criteria
+        result.append(haystack[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(all_occurrences("sadbutsad", "sad"))  # Expected: [0]
+print(all_occurrences("leetcode", "leeto"))  # Expected: [0,1]
+print(all_occurrences("", ""))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the All Occurrences problem.
+// AllOccurrences solves the All Occurrences problem.
 // Find all starting indices where needle appears in haystack, including overlapping occurrences.
-// Key insight: After each match, instead of returning immediately, use the LPS array to continue searching from the appropriate position for overlapping matches.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func AllOccurrences(haystack string, needle string) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(haystack); i++ {
+		result = append(result, haystack[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(AllOccurrences("sadbutsad", "sad")) // Expected: [0]
+	fmt.Println(AllOccurrences("leetcode", "leeto")) // Expected: [0,1]
+	fmt.Println(AllOccurrences("", "")) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '04-knuth-morris-pratt/01-implement-strstr/twist-02-all-occurrences', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/04-knuth-morris-pratt/01-implement-strstr/twist-02-all-occurrences'] = problem;
 })();

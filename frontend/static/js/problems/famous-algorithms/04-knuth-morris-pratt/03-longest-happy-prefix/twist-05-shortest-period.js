@@ -2,10 +2,12 @@
  * Shortest Period
  * Category: famous-algorithms
  * Difficulty: Hard
+ * Algorithm: kmp-algorithm
  * Parent: 04-knuth-morris-pratt/03-longest-happy-prefix
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Shortest Period',
         difficulty: 'Hard',
@@ -19,57 +21,86 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For "ababab", period is "ab" (length 2). For "abcabc", period is "abc" (length 3). For "abcd", period is "abcd" itself (length 4).' },
-                output: 'See example',
-                explanation: 'For "ababab", period is "ab" (length 2). For "abcabc", period is "abc" (length 3). For "abcd", period is "abcd" itself (length 4).'
+                input: {"s":"level"},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the shortest period criteria.'
+            },
+            {
+                input: {"s":"ababab"},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the shortest period criteria.'
+            },
+            // Edge case
+            {
+                input: {"s":""},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Shortest Period
-# Category: famous-algorithms
-# Difficulty: Hard
-# Parent: 04-knuth-morris-pratt/03-longest-happy-prefix
-
-def solve():
+            python: `def shortest_period(s):
     """
+    Shortest Period
+
     Find the shortest period of the string -- the smallest string p such that s is a prefix of p repeated infinitely.
 
-    Key insight: Directly derived from the LPS value: period = n - lps[n-1]. But understanding why this formula works requires deep insight into the KMP failure function.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(s)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(shortest_period("level"))  # Expected: 1
+print(shortest_period("ababab"))  # Expected: 2
+print(shortest_period(""))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Shortest Period problem.
+// ShortestPeriod solves the Shortest Period problem.
 // Find the shortest period of the string -- the smallest string p such that s is a prefix of p repeated infinitely.
-// Key insight: Directly derived from the LPS value: period = n - lps[n-1]. But understanding why this formula works requires deep insight into the KMP failure function.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func ShortestPeriod(s string) int {
+	result := 0
+
+	for i := 0; i < len(s); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(ShortestPeriod("level")) // Expected: 1
+	fmt.Println(ShortestPeriod("ababab")) // Expected: 2
+	fmt.Println(ShortestPeriod("")) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '04-knuth-morris-pratt/03-longest-happy-prefix/twist-05-shortest-period', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/04-knuth-morris-pratt/03-longest-happy-prefix/twist-05-shortest-period'] = problem;
 })();

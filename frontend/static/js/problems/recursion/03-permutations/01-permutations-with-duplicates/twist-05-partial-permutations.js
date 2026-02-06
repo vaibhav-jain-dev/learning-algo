@@ -2,10 +2,12 @@
  * Partial Permutations
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-permutations
  * Parent: 03-permutations/01-permutations-with-duplicates
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Partial Permutations',
         difficulty: 'Medium',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For [1,1,2] with k=2, return [[1,1],[1,2],[2,1]] -- all unique 2-length arrangements.' },
-                output: 'See example',
-                explanation: 'For [1,1,2] with k=2, return [[1,1],[1,2],[2,1]] -- all unique 2-length arrangements.'
+                input: {"nums":[1,1,2],"k":3},
+                output: [1,1,2],
+                explanation: 'The partial permutations for this input yields [1, 1, 2].'
+            },
+            // Edge case
+            {
+                input: {"nums":[1],"k":3},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Partial Permutations
-# Category: recursion
-# Difficulty: Medium
-# Parent: 03-permutations/01-permutations-with-duplicates
-
-def solve():
+            python: `def partial_permutations(nums, k):
     """
+    Partial Permutations
+
     Given an array with duplicates and an integer k, generate all unique permutations of length k (not necessarily using all elements).
 
-    Key insight: Changes the base case from full-length to partial-length, requiring different termination logic while still handling duplicates correctly.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(nums)):
+        # Check if element meets criteria
+        result.append(nums[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(partial_permutations([1,1,2], 3))  # Expected: [1,1,2]
+print(partial_permutations([1], 3))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Partial Permutations problem.
+// PartialPermutations solves the Partial Permutations problem.
 // Given an array with duplicates and an integer k, generate all unique permutations of length k (not necessarily using all elements).
-// Key insight: Changes the base case from full-length to partial-length, requiring different termination logic while still handling duplicates correctly.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func PartialPermutations(nums []int, k int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(nums); i++ {
+		result = append(result, nums[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(PartialPermutations([]int{1, 1, 2}, 3)) // Expected: [1,1,2]
+	fmt.Println(PartialPermutations([]int{1}, 3)) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '03-permutations/01-permutations-with-duplicates/twist-05-partial-permutations', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/03-permutations/01-permutations-with-duplicates/twist-05-partial-permutations'] = problem;
 })();

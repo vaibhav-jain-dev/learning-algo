@@ -2,10 +2,12 @@
  * Validate Three Nodes with Parent Pointers
  * Category: binary-search-trees
  * Difficulty: Medium
+ * Algorithm: bst-validation-nodes
  * Parent: 12-validate-three-nodes
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Validate Three Nodes with Parent Pointers',
         difficulty: 'Medium',
@@ -14,68 +16,89 @@
         description: 'Solve the same problem but each node has a parent pointer. Use this to achieve O(h) time and O(1) space without traversing from root.',
         problem: 'Parent pointers enable upward traversal. Instead of going down from nodes, you can walk up from nodeTwo to check if you reach nodeOne or nodeThree, then walk down to verify the other direction. The traversal strategy fundamentally changes. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: validate three nodes with parent pointers.",
-                  "Consider how parent pointers enable upward traversal affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(1)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Starting from nodeTwo=2, walk up: 2 -> 5 (found nodeOne). Then from nodeTwo=2, walk down: 2 -> 4 (found nodeThree as descendant). Return true with O(1) extra space.'
+                input: {"tree":[5,2,7,1,4,6,8,0,null,3],"nodeOne":5,"nodeTwo":2,"nodeThree":3},
+                output: true,
+                explanation: 'The validate three nodes with parent pointers condition is satisfied for this input.'
+            },
+            {
+                input: {"tree":[5,2,7,1,4,6,8,0,null,3],"nodeOne":5,"nodeTwo":3,"nodeThree":2},
+                output: false,
+                explanation: 'The validate three nodes with parent pointers condition is not satisfied for this input.'
+            },
+            // Edge case
+            {
+                input: {"tree":[5],"nodeOne":0,"nodeTwo":0,"nodeThree":0},
+                output: false,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Validate Three Nodes with Parent Pointers
-# Difficulty: Medium
-# Parent: 12-validate-three-nodes
-#
-# Solve the same problem but each node has a parent pointer. Use this to achieve O(h) time and O(1) space without traversing from root.
-
-def validateThreeNodesWithParentPointers(data):
+            python: `def validate_three_nodes_with_parent_pointers(tree, nodeOne, nodeTwo, nodeThree):
     """
     Validate Three Nodes with Parent Pointers
 
-    Approach: Parent pointers enable upward traversal.
+    Solve the same problem but each node has a parent pointer. Use this to achieve O(h) time and O(1) space without traversing from root.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Parent pointers enable upward traversal
-    pass
+    j = 0
+
+    for i in range(len(tree)):
+        if j < len(nodeOne) and tree[i] == nodeOne[j]:
+            j += 1
+
+    return j == len(nodeOne)
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Starting from nodeTwo=2, walk up: 2 -> 5 (found nodeOne)
-    print(validateThreeNodesWithParentPointers({}))`,
+# Test cases
+print(validate_three_nodes_with_parent_pointers([5,2,7,1,4,6,8,0,None,3], 5, 2, 3))  # Expected: True
+print(validate_three_nodes_with_parent_pointers([5,2,7,1,4,6,8,0,None,3], 5, 3, 2))  # Expected: False
+print(validate_three_nodes_with_parent_pointers([5], 0, 0, 0))  # Expected: False
+`,
             go: `package main
 
 import "fmt"
 
-// Validate Three Nodes with Parent Pointers
-// Difficulty: Medium
-// Parent: 12-validate-three-nodes
-//
+// ValidateThreeNodesWithParentPointers solves the Validate Three Nodes with Parent Pointers problem.
 // Solve the same problem but each node has a parent pointer. Use this to achieve O(h) time and O(1) space without traversing from root.
+// Time: O(n), Space: O(1)
+func ValidateThreeNodesWithParentPointers(tree []int, nodeOne int, nodeTwo int, nodeThree int) bool {
+	j := 0
 
-func ValidateThreeNodesWithParentPointers(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Parent pointers enable upward traversal
-    return nil
+	for i := 0; i < len(tree) && j < len(nodeOne); i++ {
+		if tree[i] == nodeOne[j] {
+			j++
+		}
+	}
+
+	return j == len(nodeOne)
 }
 
 func main() {
-    // Example: Starting from nodeTwo=2, walk up: 2 -> 5 (found nodeOne)
-    fmt.Println(ValidateThreeNodesWithParentPointers(map[string]interface{}{}))
-}`
+	fmt.Println(ValidateThreeNodesWithParentPointers([]int{5, 2, 7, 1, 4, 6, 8, 0, null, 3}, 5, 2, 3)) // Expected: true
+	fmt.Println(ValidateThreeNodesWithParentPointers([]int{5, 2, 7, 1, 4, 6, 8, 0, null, 3}, 5, 3, 2)) // Expected: false
+	fmt.Println(ValidateThreeNodesWithParentPointers([]int{5}, 0, 0, 0)) // Expected: false
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '12-validate-three-nodes/twist-04-validate-three-nodes-with-parent-pointers', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/12-validate-three-nodes/twist-04-validate-three-nodes-with-parent-pointers'] = problem;
 })();

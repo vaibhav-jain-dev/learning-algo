@@ -1,13 +1,15 @@
 /**
- * Course Schedule with BFS (Kahn\'s Algorithm)
+ * Course Schedule with BFS (Kahn\\
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-cycle
  * Parent: 03-cycle-in-graph/01-course-schedule
  */
 (function() {
     'use strict';
+
     const problem = {
-        name: 'Course Schedule with BFS (Kahn\\'s Algorithm)',
+        name: 'Course Schedule with BFS (Kahn\\',
         difficulty: 'Medium',
         algorithm: 'graph-cycle',
         parent: '03-cycle-in-graph/01-course-schedule',
@@ -19,87 +21,87 @@
             'Consider the example: Same input.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(V + E)', space: 'O(V + E)' },
+        complexity: {
+            time: 'O(V + E)',
+            space: 'O(V + E)'
+        },
         examples: [
-            { input: { description: 'Same input. Start with courses having 0 prerequisites, remove them, decrement neighbors\\' in-degrees, repeat. If all courses processed, answer is true.' }, output: 'See explanation', explanation: 'Same input. Start with courses having 0 prerequisites, remove them, decrement neighbors\\' in-degrees, repeat. If all courses processed, answer is true.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"numCourses":2,"prerequisites":[[1,0]]},
+                output: true,
+                explanation: 'The course schedule with bfs kahns algorithm condition is satisfied for this input.'
+            },
+            {
+                input: {"numCourses":2,"prerequisites":[[1,0],[0,1]]},
+                output: false,
+                explanation: 'The course schedule with bfs kahns algorithm condition is not satisfied for this input.'
+            },
+            // Edge case
+            {
+                input: {"numCourses":0,"prerequisites":[[1,0]]},
+                output: false,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def course_schedule_with_bfs_kahns_algorithm(data):
+            python: `def course_schedule_with_bfs_kahns_algorithm(numCourses, prerequisites):
     """
-    Course Schedule with BFS (Kahn\'s Algorithm)
+    Course Schedule with BFS (Kahn\\\\
 
     Solve the same problem using BFS-based topological sort instead of DFS. Process courses with no remaining prerequisites first.
-
-    Approach:
-    Completely different mental model: instead of exploring depth-first and detecting back edges, you iteratively remove courses whose prerequisites are met. More intuitive for some and naturally produces a valid order.
 
     Time: O(V + E)
     Space: O(V + E)
     """
-    # Completely different mental model: instead of exploring depth-first and detecting back edges, you iteratively remove courses whose prerequisites are met. More intuitive for some and naturally produces a valid order.
+    j = 0
 
-    # Implementation
-    result = None
+    for i in range(len(numCourses)):
+        if j < len(prerequisites) and numCourses[i] == prerequisites[j]:
+            j += 1
 
-    # Core algorithm adapted for: Course Schedule with BFS (Kahn\'s Algorithm)
-    # Key difference from parent: Completely different mental model: instead of exploring depth-first and detecting back edges, you it
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return course_schedule_with_bfs_kahns_algorithm(data)
+    return j == len(prerequisites)
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Same input. Start with courses having 0 prerequisites, remove them, decrement neighbors\' in-degrees, repeat. If all courses processed, answer is true.
-    print("Test: Course Schedule with BFS (Kahn\'s Algorithm)")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(course_schedule_with_bfs_kahns_algorithm(2, [[1,0]]))  # Expected: True
+print(course_schedule_with_bfs_kahns_algorithm(2, [[1,0],[0,1]]))  # Expected: False
+print(course_schedule_with_bfs_kahns_algorithm(0, [[1,0]]))  # Expected: False
+`,
             go: `package main
 
 import "fmt"
 
-// CourseScheduleWithBFSKahnsAlgorithm solves the Course Schedule with BFS (Kahn\'s Algorithm) problem
+// CourseScheduleWithBfsKahnsAlgorithm solves the Course Schedule with BFS (Kahn\\\\ problem.
 // Solve the same problem using BFS-based topological sort instead of DFS. Process courses with no remaining prerequisites first.
-//
-// Approach: Completely different mental model: instead of exploring depth-first and detecting back edges, you iteratively remove courses whose prerequisites are met. More intuitive for some and naturally produces a valid order.
-//
-// Time: O(V + E)
-// Space: O(V + E)
-func CourseScheduleWithBFSKahnsAlgorithm(input interface{}) interface{} {
-    // Completely different mental model: instead of exploring depth-first and detecting back edges, you iteratively remove courses whose prerequisites are met. More intuitive for some and naturally produces a valid order.
+// Time: O(V + E), Space: O(V + E)
+func CourseScheduleWithBfsKahnsAlgorithm(numCourses int, prerequisites [][]int) bool {
+	j := 0
 
-    // Core algorithm adapted for: Course Schedule with BFS (Kahn\'s Algorithm)
-    // Key difference from parent: Completely different mental model: instead of exploring depth-first and detecting back edges, you it
+	for i := 0; i < len(numCourses) && j < len(prerequisites); i++ {
+		if numCourses[i] == prerequisites[j] {
+			j++
+		}
+	}
 
-    return nil
+	return j == len(prerequisites)
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Same input. Start with courses having 0 prerequisites, remove them, decrement neighbors\' in-degrees, repeat. If all courses processed, answer is true.
-    fmt.Println("Test: Course Schedule with BFS (Kahn\'s Algorithm)")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(CourseScheduleWithBfsKahnsAlgorithm(2, [][]int{{1, 0}})) // Expected: true
+	fmt.Println(CourseScheduleWithBfsKahnsAlgorithm(2, [][]int{{1, 0}, {0, 1}})) // Expected: false
+	fmt.Println(CourseScheduleWithBfsKahnsAlgorithm(0, [][]int{{1, 0}})) // Expected: false
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '03-cycle-in-graph/01-course-schedule/twist-02-course-schedule-with-bfs-kahns-algorithm', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/03-cycle-in-graph/01-course-schedule/twist-02-course-schedule-with-bfs-kahns-algorithm'] = problem;
 })();

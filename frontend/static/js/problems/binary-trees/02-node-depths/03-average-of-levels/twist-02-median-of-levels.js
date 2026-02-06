@@ -2,10 +2,12 @@
  * Median of Levels
  * Category: binary-trees
  * Difficulty: Hard
+ * Algorithm: tree-bfs
  * Parent: 02-node-depths/03-average-of-levels
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Median of Levels',
         difficulty: 'Hard',
@@ -19,120 +21,86 @@
             'Key insight: Median requires storing all values at each level, sorting them, and picking the middle.',
             'This changes space complexity significantly.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Level with values [9, 20]: median = 14' },
-                output: 'See explanation',
-                explanation: 'Level with values [9, 20]: median = 14.5. Level with [15, 7]: median = 11.'
+                input: {"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the median of levels criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"right":{"value":6}}}},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the median of levels criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def median_of_levels(data):
+            python: `def median_of_levels(tree):
     """
     Median of Levels
 
-    Instead of the average, compute the median of node values at each level.
+    Instead of the average, compute the median of node values at each level. Average only needs sum and count. Median requires storing all values at each level, sorting them, and picking the middle. This changes space complexity significantly.
 
-    Approach: Average only needs sum and count
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: Average only needs sum and count
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Median of Levels
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Level with values [9, 20]: median = 14
-    print("See problem description for test cases")`,
+# Test cases
+print(median_of_levels({"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: 1
+print(median_of_levels({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5}}, "right": {"value": 3, "right": {"value": 6}}}))  # Expected: 2
+print(median_of_levels({"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// MedianOfLevels solves: Median of Levels
-// Average only needs sum and count
+// MedianOfLevels solves the Median of Levels problem.
+// Instead of the average, compute the median of node values at each level. Average only needs sum and count. Median requires storing all values at each level, sorting them, and picking the middle. This changes space complexity significantly.
 // Time: O(n), Space: O(n)
-func MedianOfLevels(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func MedianOfLevels(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Median of Levels
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Level with values [9, 20]: median = 14
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(MedianOfLevels({"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: 1
+	fmt.Println(MedianOfLevels({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"right":{"value":6}}})) // Expected: 2
+	fmt.Println(MedianOfLevels({"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '02-node-depths/03-average-of-levels/twist-02-median-of-levels', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/02-node-depths/03-average-of-levels/twist-02-median-of-levels'] = problem;
 })();

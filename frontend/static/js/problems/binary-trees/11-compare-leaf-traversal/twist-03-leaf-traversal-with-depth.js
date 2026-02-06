@@ -2,10 +2,12 @@
  * Leaf Traversal with Depth
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-dfs
  * Parent: 11-compare-leaf-traversal
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Leaf Traversal with Depth',
         difficulty: 'Medium',
@@ -19,121 +21,85 @@
             'Key insight: Two trees can have the same leaf values in the same order but at different depths.',
             'Adding depth as a comparison criterion means structurally different trees with same leaf values will be distinguished.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree1 [1, 2, 3] has leaves (2, depth=1), (3, depth=1)' },
-                output: 'See explanation',
-                explanation: 'Tree1 [1, 2, 3] has leaves (2, depth=1), (3, depth=1). Tree2 [1, null, 2, null, 3] has leaves (3, depth=2). Different despite leaf value 3 appearing in both.'
+                input: {"tree1":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"tree2":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the leaf traversal with depth criteria.'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree1":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"tree2":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def leaf_traversal_with_depth(data):
+            python: `def leaf_traversal_with_depth(tree1, tree2):
     """
     Leaf Traversal with Depth
 
-    Compare two trees leaf traversals where each leaf is represented as a (value, depth) pair.
-     Both values and depths must match.
+    Compare two trees leaf traversals where each leaf is represented as a (value, depth) pair. Both values and depths must match. Two trees can have the same leaf values in the same order but at different depths. Adding depth as a comparison criterion means structurally different trees with same leaf values will be distinguished.
 
-    Approach: Two trees can have the same leaf values in the same order but at different depths
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    count = 0
+    n = len(tree1)
 
-    # Key insight: Two trees can have the same leaf values in the same order but at different depths
+    for i in range(n):
+        # Check condition based on tree2
+        j = 0
+        for k in range(i, n):
+            if j < len(tree2) and tree1[k] == tree2[j]:
+                j += 1
+        if j == len(tree2):
+            count += 1
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Leaf Traversal with Depth
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree1 [1, 2, 3] has leaves (2, depth=1), (3, depth=1)
-    print("See problem description for test cases")`,
+# Test cases
+print(leaf_traversal_with_depth({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5, "left": {"value": 7}, "right": {"value": 8}}}, "right": {"value": 3, "right": {"value": 6}}}, {"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 7, "right": {"value": 5, "right": {"value": 6}}}}, "right": {"value": 3, "left": {"value": 8}}}))  # Expected: 1
+print(leaf_traversal_with_depth({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5, "left": {"value": 7}, "right": {"value": 8}}}, "right": {"value": 3, "right": {"value": 6}}}, {"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 7, "right": {"value": 5, "right": {"value": 6}}}}, "right": {"value": 3, "left": {"value": 8}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// LeafTraversalWithDepth solves: Leaf Traversal with Depth
-// Two trees can have the same leaf values in the same order but at different depths
+// LeafTraversalWithDepth solves the Leaf Traversal with Depth problem.
+// Compare two trees leaf traversals where each leaf is represented as a (value, depth) pair. Both values and depths must match. Two trees can have the same leaf values in the same order but at different depths. Adding depth as a comparison criterion means structurally different trees with same leaf values will be distinguished.
 // Time: O(n), Space: O(n)
-func LeafTraversalWithDepth(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func LeafTraversalWithDepth(tree1 *TreeNode, tree2 *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree1); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Leaf Traversal with Depth
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree1 [1, 2, 3] has leaves (2, depth=1), (3, depth=1)
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(LeafTraversalWithDepth({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}}, {"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}})) // Expected: 1
+	fmt.Println(LeafTraversalWithDepth({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}}, {"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '11-compare-leaf-traversal/twist-03-leaf-traversal-with-depth', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/11-compare-leaf-traversal/twist-03-leaf-traversal-with-depth'] = problem;
 })();

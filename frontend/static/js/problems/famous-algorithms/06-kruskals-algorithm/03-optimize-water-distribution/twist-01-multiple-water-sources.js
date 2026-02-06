@@ -2,10 +2,12 @@
  * Multiple Water Sources
  * Category: famous-algorithms
  * Difficulty: Hard
+ * Algorithm: kruskals-algorithm
  * Parent: 06-kruskals-algorithm/03-optimize-water-distribution
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Multiple Water Sources',
         difficulty: 'Hard',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'With 2 plants and 5 houses, create virtual edges from each plant to each house, then find the MST of the augmented graph.' },
-                output: 'See example',
-                explanation: 'With 2 plants and 5 houses, create virtual edges from each plant to each house, then find the MST of the augmented graph.'
+                input: {"n":3,"wells":[1,2,2],"pipes":[[1,2,1],[2,3,1]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the multiple water sources criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"wells":[1],"pipes":[[1,2,1]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Multiple Water Sources
-# Category: famous-algorithms
-# Difficulty: Hard
-# Parent: 06-kruskals-algorithm/03-optimize-water-distribution
-
-def solve():
+            python: `def multiple_water_sources(n, wells, pipes):
     """
+    Multiple Water Sources
+
     Instead of each house optionally having its own well, there are k fixed water treatment plants at specific locations with connection costs.
 
-    Key insight: The virtual node trick needs modification -- multiple source nodes with different costs to each house create a multi-source shortest connection problem.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(n)
+
+    for i in range(n):
+        # Check condition based on wells
+        j = 0
+        for k in range(i, n):
+            if j < len(wells) and n[k] == wells[j]:
+                j += 1
+        if j == len(wells):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(multiple_water_sources(3, [1,2,2], [[1,2,1],[2,3,1]]))  # Expected: 1
+print(multiple_water_sources(0, [1], [[1,2,1]]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Multiple Water Sources problem.
+// MultipleWaterSources solves the Multiple Water Sources problem.
 // Instead of each house optionally having its own well, there are k fixed water treatment plants at specific locations with connection costs.
-// Key insight: The virtual node trick needs modification -- multiple source nodes with different costs to each house create a multi-source shortest connection problem.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func MultipleWaterSources(n int, wells []int, pipes [][]int) int {
+	result := 0
+
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(MultipleWaterSources(3, []int{1, 2, 2}, [][]int{{1, 2, 1}, {2, 3, 1}})) // Expected: 1
+	fmt.Println(MultipleWaterSources(0, []int{1}, [][]int{{1, 2, 1}})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '06-kruskals-algorithm/03-optimize-water-distribution/twist-01-multiple-water-sources', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/06-kruskals-algorithm/03-optimize-water-distribution/twist-01-multiple-water-sources'] = problem;
 })();

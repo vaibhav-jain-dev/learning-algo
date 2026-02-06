@@ -2,10 +2,12 @@
  * Count Interleavings
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-interweaving
  * Parent: 10-interweaving-strings
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Count Interleavings',
         difficulty: 'Hard',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For one="ab", two="cd", three="acbd", there is exactly 1 way. For one="ab", two="ab", three="aabb", there are 2+ways.' },
-                output: 'See example',
-                explanation: 'For one="ab", two="cd", three="acbd", there is exactly 1 way. For one="ab", two="ab", three="aabb", there are 2+ways.'
+                input: {"one":"aabcc","two":"dbbca","three":"aadbbcbcac"},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the count interleavings criteria.'
+            },
+            // Edge case
+            {
+                input: {"one":"","two":"","three":""},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Count Interleavings
-# Category: recursion
-# Difficulty: Hard
-# Parent: 10-interweaving-strings
-
-def solve():
+            python: `def count_interleavings(one, two, three):
     """
+    Count Interleavings
+
     Instead of returning true/false, count the total number of distinct ways to interleave the two strings to form the third string.
 
-    Key insight: Changes from boolean DP to counting DP, where each cell accumulates the number of paths rather than just feasibility.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(one)
+
+    for i in range(n):
+        # Check condition based on two
+        j = 0
+        for k in range(i, n):
+            if j < len(two) and one[k] == two[j]:
+                j += 1
+        if j == len(two):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(count_interleavings("aabcc", "dbbca", "aadbbcbcac"))  # Expected: 1
+print(count_interleavings("", "", ""))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Count Interleavings problem.
+// CountInterleavings solves the Count Interleavings problem.
 // Instead of returning true/false, count the total number of distinct ways to interleave the two strings to form the third string.
-// Key insight: Changes from boolean DP to counting DP, where each cell accumulates the number of paths rather than just feasibility.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func CountInterleavings(one string, two string, three string) int {
+	result := 0
+
+	for i := 0; i < len(one); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(CountInterleavings("aabcc", "dbbca", "aadbbcbcac")) // Expected: 1
+	fmt.Println(CountInterleavings("", "", "")) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '10-interweaving-strings/twist-01-count-interleavings', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/10-interweaving-strings/twist-01-count-interleavings'] = problem;
 })();

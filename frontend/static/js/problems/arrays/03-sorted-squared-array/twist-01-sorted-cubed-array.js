@@ -27,83 +27,71 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[-3,-1,0,2,4]},
                 output: [0,1,4,9,16],
-                explanation: 'Elements transformed and sorted correctly.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: [1,4,9],
-                explanation: 'All positive - order maintained after transformation.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[-5,-3,-1]},
                 output: [1,9,25],
-                explanation: 'All negative - order reversed after transformation.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def sorted_cubed_array(data):
+            python: `def sorted_cubed_array(array):
     """
     Sorted Cubed Array
 
-    Instead of squaring, cube each element and return the sorted result. Cubing preserves sign, which changes the problem significantly.
-    \n    Approach: Unlike squaring, cubing preserves negative signs, so the relative order may already be correct. The two-pointer-from-ends approach needs reconsideration.
+    Instead of squaring, cube each element and return the sorted result. Cubing preserves sign, which changes the problem significantly. Unlike squaring, cubing preserves negative signs, so the relative order may already be correct. The two-pointer-from-ends approach needs reconsideration.
 
     Time: O(n log n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array=[-3,-1,0,2,4] → [-27,-1,0,8,64] (already sorted since cubing preserves order)
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
 # Test cases
-print(sorted_cubed_array([1, 2, 3, 4, 5]))
-print(sorted_cubed_array([5, 3, 1]))
-print(sorted_cubed_array([1]))`,
+print(sorted_cubed_array([-3,-1,0,2,4]))  # Expected: [0,1,4,9,16]
+print(sorted_cubed_array([1,2,3]))  # Expected: [1,4,9]
+print(sorted_cubed_array([-5,-3,-1]))  # Expected: [1,9,25]
+`,
             go: `package main
 
 import "fmt"
 
 // SortedCubedArray solves the Sorted Cubed Array problem.
-// Instead of squaring, cube each element and return the sorted result. Cubing preserves sign, which changes the problem significantly.
+// Instead of squaring, cube each element and return the sorted result. Cubing preserves sign, which changes the problem significantly. Unlike squaring, cubing preserves negative signs, so the relative order may already be correct. The two-pointer-from-ends approach needs reconsideration.
 // Time: O(n log n), Space: O(n)
-func SortedCubedArray(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func SortedCubedArray(array []int) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(SortedCubedArray([]int{1, 2, 3, 4, 5}))
-    fmt.Println(SortedCubedArray([]int{5, 3, 1}))
-    fmt.Println(SortedCubedArray([]int{1}))
-}`
+	fmt.Println(SortedCubedArray([]int{-3, -1, 0, 2, 4})) // Expected: [0,1,4,9,16]
+	fmt.Println(SortedCubedArray([]int{1, 2, 3})) // Expected: [1,4,9]
+	fmt.Println(SortedCubedArray([]int{-5, -3, -1})) // Expected: [1,9,25]
+}
+`
         },
         twists: [],
         similar: []

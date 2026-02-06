@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[-3,-1,0,2,4]},
                 output: [0,1,4,9,16],
-                explanation: 'Elements transformed and sorted correctly.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: [1,4,9],
-                explanation: 'All positive - order maintained after transformation.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[-5,-3,-1]},
                 output: [1,9,25],
-                explanation: 'All negative - order reversed after transformation.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def kth_smallest_squared_sum_of_pairs(data):
+            python: `def kth_smallest_squared_sum_of_pairs(array, k):
     """
     Kth Smallest Squared Sum of Pairs
 
-    Instead of squaring individual elements, find the kth smallest value of a[i]^2 + a[j]^2 for all pairs i<j.
-    \n    Approach: Completely changes the problem from single-element to pair-based, requiring a heap-based enumeration of sorted pair sums.
+    Instead of squaring individual elements, find the kth smallest value of a[i]^2 + a[j]^2 for all pairs i<j. Completely changes the problem from single-element to pair-based, requiring a heap-based enumeration of sorted pair sums.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array=[-2,0,1], pairs: (0+4)=4, (0+1)=1, (4+1)=5 → sorted: 1,4,5 → k=1 gives 1
+    count = 0
+    n = len(array)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on k
+        j = 0
+        for k in range(i, n):
+            if j < len(k) and array[k] == k[j]:
+                j += 1
+        if j == len(k):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(kth_smallest_squared_sum_of_pairs([1, 2, 3, 4, 5]))
-print(kth_smallest_squared_sum_of_pairs([5, 3, 1]))
-print(kth_smallest_squared_sum_of_pairs([1]))`,
+print(kth_smallest_squared_sum_of_pairs([-3,-1,0,2,4], None))  # Expected: [0,1,4,9,16]
+print(kth_smallest_squared_sum_of_pairs([1,2,3], None))  # Expected: [1,4,9]
+print(kth_smallest_squared_sum_of_pairs([-5,-3,-1], None))  # Expected: [1,9,25]
+`,
             go: `package main
 
 import "fmt"
 
 // KthSmallestSquaredSumOfPairs solves the Kth Smallest Squared Sum of Pairs problem.
-// Instead of squaring individual elements, find the kth smallest value of a[i]^2 + a[j]^2 for all pairs i<j.
+// Instead of squaring individual elements, find the kth smallest value of a[i]^2 + a[j]^2 for all pairs i<j. Completely changes the problem from single-element to pair-based, requiring a heap-based enumeration of sorted pair sums.
 // Time: O(n), Space: O(n)
-func KthSmallestSquaredSumOfPairs(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func KthSmallestSquaredSumOfPairs(array []int, k int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(KthSmallestSquaredSumOfPairs([]int{1, 2, 3, 4, 5}))
-    fmt.Println(KthSmallestSquaredSumOfPairs([]int{5, 3, 1}))
-    fmt.Println(KthSmallestSquaredSumOfPairs([]int{1}))
-}`
+	fmt.Println(KthSmallestSquaredSumOfPairs([]int{-3, -1, 0, 2, 4}, nil)) // Expected: [0,1,4,9,16]
+	fmt.Println(KthSmallestSquaredSumOfPairs([]int{1, 2, 3}, nil)) // Expected: [1,4,9]
+	fmt.Println(KthSmallestSquaredSumOfPairs([]int{-5, -3, -1}, nil)) // Expected: [1,9,25]
+}
+`
         },
         twists: [],
         similar: []

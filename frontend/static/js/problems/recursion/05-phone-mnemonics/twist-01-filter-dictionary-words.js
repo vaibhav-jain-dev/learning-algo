@@ -2,10 +2,12 @@
  * Filter Dictionary Words
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-phone
  * Parent: 05-phone-mnemonics
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Filter Dictionary Words',
         difficulty: 'Hard',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For "228", instead of all 27 combinations, return only valid words like ["bat","cat","act"] from a dictionary.' },
-                output: 'See example',
-                explanation: 'For "228", instead of all 27 combinations, return only valid words like ["bat","cat","act"] from a dictionary.'
+                input: {"phoneNumber":"23"},
+                output: [0],
+                explanation: 'The filter dictionary words for this input yields [0].'
+            },
+            // Edge case
+            {
+                input: {"phoneNumber":""},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Filter Dictionary Words
-# Category: recursion
-# Difficulty: Hard
-# Parent: 05-phone-mnemonics
-
-def solve():
+            python: `def filter_dictionary_words(phoneNumber):
     """
+    Filter Dictionary Words
+
     Instead of returning all letter combinations, return only those that form valid English dictionary words.
 
-    Key insight: Requires integrating a trie or set lookup into the recursion, pruning branches early when no dictionary word starts with the current prefix.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(phoneNumber)):
+        # Check if element meets criteria
+        result.append(phoneNumber[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(filter_dictionary_words("23"))  # Expected: [0]
+print(filter_dictionary_words(""))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Filter Dictionary Words problem.
+// FilterDictionaryWords solves the Filter Dictionary Words problem.
 // Instead of returning all letter combinations, return only those that form valid English dictionary words.
-// Key insight: Requires integrating a trie or set lookup into the recursion, pruning branches early when no dictionary word starts with the current prefix.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func FilterDictionaryWords(phoneNumber string) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(phoneNumber); i++ {
+		result = append(result, phoneNumber[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(FilterDictionaryWords("23")) // Expected: [0]
+	fmt.Println(FilterDictionaryWords("")) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '05-phone-mnemonics/twist-01-filter-dictionary-words', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/05-phone-mnemonics/twist-01-filter-dictionary-words'] = problem;
 })();

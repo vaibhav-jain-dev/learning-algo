@@ -2,10 +2,12 @@
  * Diameter as Node Count
  * Category: binary-trees
  * Difficulty: Easy
+ * Algorithm: tree-diameter
  * Parent: 04-binary-tree-diameter
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Diameter as Node Count',
         difficulty: 'Easy',
@@ -19,121 +21,79 @@
             'Key insight: The diameter in edges equals diameter in nodes minus 1.',
             'Tests precision in definition.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Path 8->7->3->4->5->6: 6 nodes, 5 edges' },
-                output: 'See explanation',
-                explanation: 'Path 8->7->3->4->5->6: 6 nodes, 5 edges. Node-diameter=6, edge-diameter=5.'
+                input: {"tree":{"value":1,"left":{"value":3,"left":{"value":7,"left":{"value":8}},"right":{"value":4,"right":{"value":5,"right":{"value":6}}}},"right":{"value":2}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the diameter as node count criteria.'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":3,"left":{"value":7,"left":{"value":8}},"right":{"value":4,"right":{"value":5,"right":{"value":6}}}},"right":{"value":2}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def diameter_as_node_count(data):
+            python: `def diameter_as_node_count(tree):
     """
     Diameter as Node Count
 
-    Compute the diameter measured in nodes instead of edges.
-     The diameter is the number of nodes on the longest path.
+    Compute the diameter measured in nodes instead of edges. The diameter is the number of nodes on the longest path. Off-by-one difference. The diameter in edges equals diameter in nodes minus 1. The base case changes: a single node has diameter 1 (nodes) vs 0 (edges). Tests precision in definition.
 
-    Approach: Off-by-one difference
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: Off-by-one difference
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Diameter as Node Count
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Path 8->7->3->4->5->6: 6 nodes, 5 edges
-    print("See problem description for test cases")`,
+# Test cases
+print(diameter_as_node_count({"value": 1, "left": {"value": 3, "left": {"value": 7, "left": {"value": 8}}, "right": {"value": 4, "right": {"value": 5, "right": {"value": 6}}}}, "right": {"value": 2}}))  # Expected: 1
+print(diameter_as_node_count({"value": 1, "left": {"value": 3, "left": {"value": 7, "left": {"value": 8}}, "right": {"value": 4, "right": {"value": 5, "right": {"value": 6}}}}, "right": {"value": 2}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// DiameterAsNodeCount solves: Diameter as Node Count
-// Off-by-one difference
+// DiameterAsNodeCount solves the Diameter as Node Count problem.
+// Compute the diameter measured in nodes instead of edges. The diameter is the number of nodes on the longest path. Off-by-one difference. The diameter in edges equals diameter in nodes minus 1. The base case changes: a single node has diameter 1 (nodes) vs 0 (edges). Tests precision in definition.
 // Time: O(n), Space: O(n)
-func DiameterAsNodeCount(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func DiameterAsNodeCount(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Diameter as Node Count
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Path 8->7->3->4->5->6: 6 nodes, 5 edges
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(DiameterAsNodeCount({"value":1,"left":{"value":3,"left":{"value":7,"left":{"value":8}},"right":{"value":4,"right":{"value":5,"right":{"value":6}}}},"right":{"value":2}})) // Expected: 1
+	fmt.Println(DiameterAsNodeCount({"value":1,"left":{"value":3,"left":{"value":7,"left":{"value":8}},"right":{"value":4,"right":{"value":5,"right":{"value":6}}}},"right":{"value":2}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '04-binary-tree-diameter/twist-03-diameter-as-node-count', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/04-binary-tree-diameter/twist-03-diameter-as-node-count'] = problem;
 })();

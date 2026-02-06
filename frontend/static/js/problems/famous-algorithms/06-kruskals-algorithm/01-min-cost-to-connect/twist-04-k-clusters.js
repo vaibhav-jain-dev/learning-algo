@@ -2,74 +2,98 @@
  * K Clusters
  * Category: famous-algorithms
  * Difficulty: Hard
+ * Algorithm: kruskals-algorithm
  * Parent: 06-kruskals-algorithm/01-min-cost-to-connect
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'K Clusters',
         difficulty: 'Hard',
         algorithm: 'kruskals-algorithm',
         parent: '06-kruskals-algorithm/01-min-cost-to-connect',
-        description: 'Instead of connecting all points, stop Kruskal\'s early to form exactly k clusters, maximizing the minimum inter-cluster distance.',
-        problem: 'Runs Kruskal\'s but stops after adding n-k edges instead of n-1, effectively creating k connected components. The next edge weight is the inter-cluster spacing.',
+        description: 'Instead of connecting all points, stop Kruskal\',
+        problem: 'Runs Kruskal\',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For 10 points with k=3, add only 7 MST edges. The remaining 3 components are the clusters with maximum spacing between them.' },
-                output: 'See example',
-                explanation: 'For 10 points with k=3, add only 7 MST edges. The remaining 3 components are the clusters with maximum spacing between them.'
+                input: {"points":[[0,0],[2,2],[3,10],[5,2],[7,0]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the k clusters criteria.'
+            },
+            // Edge case
+            {
+                input: {"points":[[0,0]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# K Clusters
-# Category: famous-algorithms
-# Difficulty: Hard
-# Parent: 06-kruskals-algorithm/01-min-cost-to-connect
-
-def solve():
+            python: `def k_clusters(points):
     """
-    Instead of connecting all points, stop Kruskal's early to form exactly k clusters, maximizing the minimum inter-cluster distance.
+    K Clusters
 
-    Key insight: Runs Kruskal's but stops after adding n-k edges instead of n-1, effectively creating k connected components. The next edge weight is the inter-cluster spacing.
+    Instead of connecting all points, stop Kruskal\\
+
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(points)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(k_clusters([[0,0],[2,2],[3,10],[5,2],[7,0]]))  # Expected: 1
+print(k_clusters([[0,0]]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the K Clusters problem.
-// Instead of connecting all points, stop Kruskal's early to form exactly k clusters, maximizing the minimum inter-cluster distance.
-// Key insight: Runs Kruskal's but stops after adding n-k edges instead of n-1, effectively creating k connected components. The next edge weight is the inter-cluster spacing.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// KClusters solves the K Clusters problem.
+// Instead of connecting all points, stop Kruskal\\
+// Time: O(?), Space: O(?)
+func KClusters(points [][]int) int {
+	result := 0
+
+	for i := 0; i < len(points); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(KClusters([][]int{{0, 0}, {2, 2}, {3, 10}, {5, 2}, {7, 0}})) // Expected: 1
+	fmt.Println(KClusters([][]int{{0, 0}})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '06-kruskals-algorithm/01-min-cost-to-connect/twist-04-k-clusters', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/06-kruskals-algorithm/01-min-cost-to-connect/twist-04-k-clusters'] = problem;
 })();

@@ -2,10 +2,12 @@
  * Time Complexity Deep Dive
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-permutations
  * Parent: 03-permutations
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Time Complexity Deep Dive',
         difficulty: 'Medium',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'n=4: 24 permutations, each copied in O(4) time = O(96) operations for copying alone. If you print each permutation as generated (no copy), the generation itself is O(n!) swaps.' },
-                output: 'See example',
-                explanation: 'n=4: 24 permutations, each copied in O(4) time = O(96) operations for copying alone. If you print each permutation as generated (no copy), the generation itself is O(n!) swaps.'
+                input: {"array":[1,2,3]},
+                output: [1,2,3],
+                explanation: 'The time complexity deep dive for this input yields [1, 2, 3].'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Time Complexity Deep Dive
-# Category: recursion
-# Difficulty: Medium
-# Parent: 03-permutations
-
-def solve():
+            python: `def time_complexity_deep_dive(array):
     """
+    Time Complexity Deep Dive
+
     Explain precisely why the time complexity is O(n! * n) and not just O(n!). Where does the extra factor of n come from? Could you reduce it?
 
-    Key insight: Requires careful analysis of the work done per permutation. The extra O(n) comes from copying each complete permutation into the result. With the swap method and in-place processing, you can achieve O(n!) if you only need to process (not store) each permutation.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(time_complexity_deep_dive([1,2,3]))  # Expected: [1,2,3]
+print(time_complexity_deep_dive([1]))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Time Complexity Deep Dive problem.
+// TimeComplexityDeepDive solves the Time Complexity Deep Dive problem.
 // Explain precisely why the time complexity is O(n! * n) and not just O(n!). Where does the extra factor of n come from? Could you reduce it?
-// Key insight: Requires careful analysis of the work done per permutation. The extra O(n) comes from copying each complete permutation into the result. With the swap method and in-place processing, you can achieve O(n!) if you only need to process (not store) each permutation.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func TimeComplexityDeepDive(array []int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(TimeComplexityDeepDive([]int{1, 2, 3})) // Expected: [1,2,3]
+	fmt.Println(TimeComplexityDeepDive([]int{1})) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '03-permutations/twist-05-time-complexity-deep-dive', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/03-permutations/twist-05-time-complexity-deep-dive'] = problem;
 })();

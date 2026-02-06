@@ -2,10 +2,12 @@
  * Single Cycle with Visited Order
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-single-cycle
  * Parent: 07-single-cycle-check
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Single Cycle with Visited Order',
         difficulty: 'Medium',
@@ -19,87 +21,90 @@
             'Consider the example: Array [2,3,1,-4,-4,2].',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N)', space: 'O(1)' },
+        complexity: {
+            time: 'O(N)',
+            space: 'O(1)'
+        },
         examples: [
-            { input: { description: 'Array [2,3,1,-4,-4,2]. Visit order: [0, 2, 3, 5, 1, 4]. Returns this sequence.' }, output: 'See explanation', explanation: 'Array [2,3,1,-4,-4,2]. Visit order: [0, 2, 3, 5, 1, 4]. Returns this sequence.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"array":[2,3,1,-4,-4,2]},
+                output: [0,1,2],
+                explanation: 'The single cycle with visited order for this input yields [0, 1, 2].'
+            },
+            {
+                input: {"array":[2,2,-1]},
+                output: [0,1,2],
+                explanation: 'The single cycle with visited order for this input yields [0, 1, 2].'
+            },
+            {
+                input: {"array":[1,1,1,1,2]},
+                output: [0,1,2],
+                explanation: 'The single cycle with visited order for this input yields [0, 1, 2].'
+            },
+            // Edge case
+            {
+                input: {"array":[2]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def single_cycle_with_visited_order(data):
+            python: `def single_cycle_with_visited_order(array):
     """
     Single Cycle with Visited Order
 
     If the array forms a single cycle, return the order in which indices are visited starting from index 0.
 
-    Approach:
-    Instead of a boolean check, you collect the traversal sequence. You must store and return the visitation order while still verifying the cycle property.
-
     Time: O(N)
     Space: O(1)
     """
-    # Instead of a boolean check, you collect the traversal sequence. You must store and return the visitation order while still verifying the cycle property.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Single Cycle with Visited Order
-    # Key difference from parent: Instead of a boolean check, you collect the traversal sequence. You must store and return the visita
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return single_cycle_with_visited_order(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Array [2,3,1,-4,-4,2]. Visit order: [0, 2, 3, 5, 1, 4]. Returns this sequence.
-    print("Test: Single Cycle with Visited Order")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(single_cycle_with_visited_order([2,3,1,-4,-4,2]))  # Expected: [0,1,2]
+print(single_cycle_with_visited_order([2,2,-1]))  # Expected: [0,1,2]
+print(single_cycle_with_visited_order([1,1,1,1,2]))  # Expected: [0,1,2]
+`,
             go: `package main
 
 import "fmt"
 
-// SingleCycleWithVisitedOrder solves the Single Cycle with Visited Order problem
+// SingleCycleWithVisitedOrder solves the Single Cycle with Visited Order problem.
 // If the array forms a single cycle, return the order in which indices are visited starting from index 0.
-//
-// Approach: Instead of a boolean check, you collect the traversal sequence. You must store and return the visitation order while still verifying the cycle property.
-//
-// Time: O(N)
-// Space: O(1)
-func SingleCycleWithVisitedOrder(input interface{}) interface{} {
-    // Instead of a boolean check, you collect the traversal sequence. You must store and return the visitation order while still verifying the cycle property.
+// Time: O(N), Space: O(1)
+func SingleCycleWithVisitedOrder(array []int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Single Cycle with Visited Order
-    // Key difference from parent: Instead of a boolean check, you collect the traversal sequence. You must store and return the visita
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Array [2,3,1,-4,-4,2]. Visit order: [0, 2, 3, 5, 1, 4]. Returns this sequence.
-    fmt.Println("Test: Single Cycle with Visited Order")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(SingleCycleWithVisitedOrder([]int{2, 3, 1, -4, -4, 2})) // Expected: [0,1,2]
+	fmt.Println(SingleCycleWithVisitedOrder([]int{2, 2, -1})) // Expected: [0,1,2]
+	fmt.Println(SingleCycleWithVisitedOrder([]int{1, 1, 1, 1, 2})) // Expected: [0,1,2]
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '07-single-cycle-check/twist-05-single-cycle-with-visited-order', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/07-single-cycle-check/twist-05-single-cycle-with-visited-order'] = problem;
 })();

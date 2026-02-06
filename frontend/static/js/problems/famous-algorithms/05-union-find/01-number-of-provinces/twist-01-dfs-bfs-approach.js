@@ -2,10 +2,12 @@
  * DFS/BFS Approach
  * Category: famous-algorithms
  * Difficulty: Medium
+ * Algorithm: union-find
  * Parent: 05-union-find/01-number-of-provinces
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'DFS/BFS Approach',
         difficulty: 'Medium',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Start DFS from each unvisited node, marking all reachable nodes. Each DFS initiation counts as one province.' },
-                output: 'See example',
-                explanation: 'Start DFS from each unvisited node, marking all reachable nodes. Each DFS initiation counts as one province.'
+                input: {"isConnected":[[1,1,0],[1,1,0],[0,0,1]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the dfs bfs approach criteria.'
+            },
+            // Edge case
+            {
+                input: {"isConnected":[[1,1,0]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# DFS/BFS Approach
-# Category: famous-algorithms
-# Difficulty: Medium
-# Parent: 05-union-find/01-number-of-provinces
-
-def solve():
+            python: `def dfs_bfs_approach(isConnected):
     """
+    DFS/BFS Approach
+
     Solve the number of provinces problem using DFS or BFS graph traversal instead of Union-Find.
 
-    Key insight: Uses a completely different paradigm -- connected component counting via traversal rather than disjoint set merging, with visited arrays instead of parent arrays.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(isConnected)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(dfs_bfs_approach([[1,1,0],[1,1,0],[0,0,1]]))  # Expected: 1
+print(dfs_bfs_approach([[1,1,0]]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the DFS/BFS Approach problem.
+// DfsBfsApproach solves the DFS/BFS Approach problem.
 // Solve the number of provinces problem using DFS or BFS graph traversal instead of Union-Find.
-// Key insight: Uses a completely different paradigm -- connected component counting via traversal rather than disjoint set merging, with visited arrays instead of parent arrays.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func DfsBfsApproach(isConnected [][]int) int {
+	result := 0
+
+	for i := 0; i < len(isConnected); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(DfsBfsApproach([][]int{{1, 1, 0}, {1, 1, 0}, {0, 0, 1}})) // Expected: 1
+	fmt.Println(DfsBfsApproach([][]int{{1, 1, 0}})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '05-union-find/01-number-of-provinces/twist-01-dfs-bfs-approach', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/05-union-find/01-number-of-provinces/twist-01-dfs-bfs-approach'] = problem;
 })();

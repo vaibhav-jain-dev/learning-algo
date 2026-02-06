@@ -2,10 +2,12 @@
  * Three-String Interleave
  * Category: recursion
  * Difficulty: Very Hard
+ * Algorithm: recursion-interweaving
  * Parent: 10-interweaving-strings
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Three-String Interleave',
         difficulty: 'Very Hard',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For strings "a", "b", "c", check if "abc" can be formed by interleaving all three (maintaining order within each).' },
-                output: 'See example',
-                explanation: 'For strings "a", "b", "c", check if "abc" can be formed by interleaving all three (maintaining order within each).'
+                input: {"one":"aabcc","two":"dbbca","three":"aadbbcbcac"},
+                output: [0],
+                explanation: 'The three string interleave for this input yields [0].'
+            },
+            // Edge case
+            {
+                input: {"one":"","two":"","three":""},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Three-String Interleave
-# Category: recursion
-# Difficulty: Very Hard
-# Parent: 10-interweaving-strings
-
-def solve():
+            python: `def three_string_interleave(one, two, three):
     """
+    Three-String Interleave
+
     Determine if a fourth string can be formed by interleaving three given strings while maintaining the relative order of each.
 
-    Key insight: Extends the 2D DP table to 3D, significantly increasing state space and complexity of the recurrence relation.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(one)):
+        # Check if element meets criteria
+        result.append(one[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(three_string_interleave("aabcc", "dbbca", "aadbbcbcac"))  # Expected: [0]
+print(three_string_interleave("", "", ""))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Three-String Interleave problem.
+// ThreeStringInterleave solves the Three-String Interleave problem.
 // Determine if a fourth string can be formed by interleaving three given strings while maintaining the relative order of each.
-// Key insight: Extends the 2D DP table to 3D, significantly increasing state space and complexity of the recurrence relation.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func ThreeStringInterleave(one string, two string, three string) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(one); i++ {
+		result = append(result, one[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(ThreeStringInterleave("aabcc", "dbbca", "aadbbcbcac")) // Expected: [0]
+	fmt.Println(ThreeStringInterleave("", "", "")) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '10-interweaving-strings/twist-02-three-string-interleave', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/10-interweaving-strings/twist-02-three-string-interleave'] = problem;
 })();

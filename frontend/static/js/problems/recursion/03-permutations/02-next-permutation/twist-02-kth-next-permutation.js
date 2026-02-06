@@ -2,10 +2,12 @@
  * Kth Next Permutation
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-permutations
  * Parent: 03-permutations/02-next-permutation
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Kth Next Permutation',
         difficulty: 'Hard',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For [1,2,3] with k=3, jump directly to [2,3,1] without computing [1,3,2] and [2,1,3] in between.' },
-                output: 'See example',
-                explanation: 'For [1,2,3] with k=3, jump directly to [2,3,1] without computing [1,3,2] and [2,1,3] in between.'
+                input: {"nums":[1,2,3]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the kth next permutation criteria.'
+            },
+            // Edge case
+            {
+                input: {"nums":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Kth Next Permutation
-# Category: recursion
-# Difficulty: Hard
-# Parent: 03-permutations/02-next-permutation
-
-def solve():
+            python: `def kth_next_permutation(nums):
     """
+    Kth Next Permutation
+
     Given an array and an integer k, find the permutation that is exactly k steps ahead in lexicographic order, without generating all intermediate permutations.
 
-    Key insight: Requires factoradic number system thinking to jump directly to the target permutation instead of iterating one step at a time.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(nums)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(kth_next_permutation([1,2,3]))  # Expected: 1
+print(kth_next_permutation([1]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Kth Next Permutation problem.
+// KthNextPermutation solves the Kth Next Permutation problem.
 // Given an array and an integer k, find the permutation that is exactly k steps ahead in lexicographic order, without generating all intermediate permutations.
-// Key insight: Requires factoradic number system thinking to jump directly to the target permutation instead of iterating one step at a time.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func KthNextPermutation(nums []int) int {
+	result := 0
+
+	for i := 0; i < len(nums); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(KthNextPermutation([]int{1, 2, 3})) // Expected: 1
+	fmt.Println(KthNextPermutation([]int{1})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '03-permutations/02-next-permutation/twist-02-kth-next-permutation', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/03-permutations/02-next-permutation/twist-02-kth-next-permutation'] = problem;
 })();

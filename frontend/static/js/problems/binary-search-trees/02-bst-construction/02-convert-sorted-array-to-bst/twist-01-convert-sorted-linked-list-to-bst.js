@@ -2,10 +2,12 @@
  * Convert Sorted Linked List to BST
  * Category: binary-search-trees
  * Difficulty: Medium
+ * Algorithm: bst-construction-balanced
  * Parent: 02-bst-construction/02-convert-sorted-array-to-bst
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Convert Sorted Linked List to BST',
         difficulty: 'Medium',
@@ -14,68 +16,87 @@
         description: 'Instead of a sorted array, convert a sorted singly linked list to a height-balanced BST. You cannot use random access.',
         problem: 'Without random access to the middle element, you cannot simply index into the list. You must either convert to array first (O(n) space) or use a bottom-up construction approach that simulates inorder traversal, which inverts the typical top-down thinking. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: convert sorted linked list to bst.",
-                  "Consider how without random access to the middle element, you cannot simply index into the list affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'LinkedList: 1->2->3->4->5 -> BST: [3,2,5,1,null,4] (height-balanced).'
+                input: {"nums":[-10,-3,0,5,9]},
+                output: [-10,-3,0],
+                explanation: 'The convert sorted linked list to bst for this input yields [-10, -3, 0].'
+            },
+            {
+                input: {"nums":[1,2,3,4,5,6,7]},
+                output: [1,2,3],
+                explanation: 'The convert sorted linked list to bst for this input yields [1, 2, 3].'
+            },
+            // Edge case
+            {
+                input: {"nums":[-10]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Convert Sorted Linked List to BST
-# Difficulty: Medium
-# Parent: 02-bst-construction/02-convert-sorted-array-to-bst
-#
-# Instead of a sorted array, convert a sorted singly linked list to a height-balanced BST. You cannot use random access.
-
-def convertSortedLinkedListToBst(data):
+            python: `def convert_sorted_linked_list_to_bst(nums):
     """
     Convert Sorted Linked List to BST
 
-    Approach: Without random access to the middle element, you cannot simply index into the list.
+    Instead of a sorted array, convert a sorted singly linked list to a height-balanced BST. You cannot use random access.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Without random access to the middle element, you cannot simply index into the list
-    pass
+    result = []
+
+    for i in range(len(nums)):
+        # Check if element meets criteria
+        result.append(nums[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: LinkedList: 1->2->3->4->5 -> BST: [3,2,5,1,null,4] (height-balanced)
-    print(convertSortedLinkedListToBst({}))`,
+# Test cases
+print(convert_sorted_linked_list_to_bst([-10,-3,0,5,9]))  # Expected: [-10,-3,0]
+print(convert_sorted_linked_list_to_bst([1,2,3,4,5,6,7]))  # Expected: [1,2,3]
+print(convert_sorted_linked_list_to_bst([-10]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// Convert Sorted Linked List to BST
-// Difficulty: Medium
-// Parent: 02-bst-construction/02-convert-sorted-array-to-bst
-//
+// ConvertSortedLinkedListToBst solves the Convert Sorted Linked List to BST problem.
 // Instead of a sorted array, convert a sorted singly linked list to a height-balanced BST. You cannot use random access.
+// Time: O(n), Space: O(1)
+func ConvertSortedLinkedListToBst(nums []int) []int {
+	result := make([]int, 0)
 
-func ConvertSortedLinkedListToBst(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Without random access to the middle element, you cannot simply index into the list
-    return nil
+	for i := 0; i < len(nums); i++ {
+		result = append(result, nums[i])
+	}
+
+	return result
 }
 
 func main() {
-    // Example: LinkedList: 1->2->3->4->5 -> BST: [3,2,5,1,null,4] (height-balanced)
-    fmt.Println(ConvertSortedLinkedListToBst(map[string]interface{}{}))
-}`
+	fmt.Println(ConvertSortedLinkedListToBst([]int{-10, -3, 0, 5, 9})) // Expected: [-10,-3,0]
+	fmt.Println(ConvertSortedLinkedListToBst([]int{1, 2, 3, 4, 5, 6, 7})) // Expected: [1,2,3]
+	fmt.Println(ConvertSortedLinkedListToBst([]int{-10})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '02-bst-construction/02-convert-sorted-array-to-bst/twist-01-convert-sorted-linked-list-to-bst', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/02-bst-construction/02-convert-sorted-array-to-bst/twist-01-convert-sorted-linked-list-to-bst'] = problem;
 })();

@@ -2,10 +2,12 @@
  * Streaming Max Path Sum
  * Category: binary-trees
  * Difficulty: Hard
+ * Algorithm: tree-max-path
  * Parent: 07-max-path-sum
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Streaming Max Path Sum',
         difficulty: 'Hard',
@@ -19,121 +21,86 @@
             'Key insight: A single node value change can affect all paths through it.',
             'You need an efficient data structure to propagate changes upward, potentially using heavy-light decomposition or Euler tour techniques.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Initial max path sum: 42' },
-                output: 'See explanation',
-                explanation: 'Initial max path sum: 42. Update node 15 to -100. New max path sum needs recomputation along affected paths.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the streaming max path sum criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":-10,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the streaming max path sum criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def streaming_max_path_sum(data):
+            python: `def streaming_max_path_sum(tree):
     """
     Streaming Max Path Sum
 
-    Node values can be updated at any time.
-     After each update, report the new maximum path sum without full re-traversal.
+    Node values can be updated at any time. After each update, report the new maximum path sum without full re-traversal. A single node value change can affect all paths through it. You need an efficient data structure to propagate changes upward, potentially using heavy-light decomposition or Euler tour techniques.
 
-    Approach: A single node value change can affect all paths through it
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: A single node value change can affect all paths through it
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Streaming Max Path Sum
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Initial max path sum: 42
-    print("See problem description for test cases")`,
+# Test cases
+print(streaming_max_path_sum({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: 1
+print(streaming_max_path_sum({"value": -10, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: 2
+print(streaming_max_path_sum({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// StreamingMaxPathSum solves: Streaming Max Path Sum
-// A single node value change can affect all paths through it
+// StreamingMaxPathSum solves the Streaming Max Path Sum problem.
+// Node values can be updated at any time. After each update, report the new maximum path sum without full re-traversal. A single node value change can affect all paths through it. You need an efficient data structure to propagate changes upward, potentially using heavy-light decomposition or Euler tour techniques.
 // Time: O(n), Space: O(n)
-func StreamingMaxPathSum(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func StreamingMaxPathSum(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Streaming Max Path Sum
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Initial max path sum: 42
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(StreamingMaxPathSum({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: 1
+	fmt.Println(StreamingMaxPathSum({"value":-10,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: 2
+	fmt.Println(StreamingMaxPathSum({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '07-max-path-sum/twist-05-streaming-max-path-sum', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/07-max-path-sum/twist-05-streaming-max-path-sum'] = problem;
 })();

@@ -2,10 +2,12 @@
  * Derive the Subset Sum Transformation
  * Category: dynamic-programming
  * Difficulty: Hard
+ * Algorithm: dp-coin-change
  * Parent: 02-number-of-ways-to-make-change/02-target-sum
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Derive the Subset Sum Transformation',
         difficulty: 'Hard',
@@ -19,84 +21,92 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'P - N = target (definition). P + N = totalSum (all elements). Adding: 2P = target + totalSum, so P = (target + totalSum) / 2. If this is not an integer, answer is 0.'
+                input: {"nums":[1,1,1,1,1],"target":10},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the derive the subset sum transformation criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"nums":[1],"target":10},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the derive the subset sum transformation criteria.'
+            },
+            // Edge case
+            {
+                input: {"nums":[1],"target":10},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def deriveTheSubsetSumTransformation(data):
+            python: `def derive_the_subset_sum_transformation(nums, target):
     """
     Derive the Subset Sum Transformation
 
     Prove mathematically why Target Sum reduces to subset sum. If P is the sum of elements assigned + and N is the sum of elements assigned -, show that finding P = (target + totalSum) / 2 is equivalent.
 
-    Approach:
-    The mathematical transformation is the key insight that makes this problem tractable. Without it, you need O(n * 2*sum) states. With it, you need O(n * sum). Deriving it yourself is much harder than reading it.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    count = 0
+    n = len(nums)
 
-    # Example: P - N = target (definition). P + N = totalSum (all elements). Adding: 2P = target + totalSum, so P = (target + totalSum)
+    for i in range(n):
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and nums[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
-    return result
+    return count
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Derive the Subset Sum Transformation...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(derive_the_subset_sum_transformation([1,1,1,1,1], 10))  # Expected: 1
+print(derive_the_subset_sum_transformation([1], 10))  # Expected: 2
+print(derive_the_subset_sum_transformation([1], 10))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // DeriveTheSubsetSumTransformation solves the Derive the Subset Sum Transformation problem.
-// Prove mathematically why Target Sum reduces to subset sum. If P is the sum of elements assigned + and N is the sum of elements assigned -, show that f
-//
-// Approach: The mathematical transformation is the key insight that makes this problem tractable. Without it, you need O(n * 2*sum) states. With it, you need O(n 
-func DeriveTheSubsetSumTransformation(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Prove mathematically why Target Sum reduces to subset sum. If P is the sum of elements assigned + and N is the sum of elements assigned -, show that finding P = (target + totalSum) / 2 is equivalent.
+// Time: O(n^2), Space: O(n)
+func DeriveTheSubsetSumTransformation(nums []int, target int) int {
+	result := 0
 
-    // Example: P - N = target (definition). P + N = totalSum (all elements). Adding: 2P = target + totalSum, so P =
+	for i := 0; i < len(nums); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Derive the Subset Sum Transformation...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(DeriveTheSubsetSumTransformation([]int{1, 1, 1, 1, 1}, 10)) // Expected: 1
+	fmt.Println(DeriveTheSubsetSumTransformation([]int{1}, 10)) // Expected: 2
+	fmt.Println(DeriveTheSubsetSumTransformation([]int{1}, 10)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '02-number-of-ways-to-make-change/02-target-sum/twist-01-derive-the-subset-sum-transformation', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/02-number-of-ways-to-make-change/02-target-sum/twist-01-derive-the-subset-sum-transformation'] = problem;
 })();

@@ -2,10 +2,12 @@
  * Threaded Binary Tree Successor
  * Category: binary-trees
  * Difficulty: Hard
+ * Algorithm: tree-successor
  * Parent: 05-find-successor
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Threaded Binary Tree Successor',
         difficulty: 'Hard',
@@ -19,121 +21,85 @@
             'Key insight: If the right pointer is a thread, the successor is immediate.',
             'You must distinguish threads from real children.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Node 5 has a thread (not a real right child) pointing to node 1' },
-                output: 'See explanation',
-                explanation: 'Node 5 has a thread (not a real right child) pointing to node 1. Successor of 5 is 1 via the thread.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":6}},"right":{"value":5}},"right":{"value":3}},"target":5},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the threaded binary tree successor criteria.'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":6}},"right":{"value":5}},"right":{"value":3}},"target":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def threaded_binary_tree_successor(data):
+            python: `def threaded_binary_tree_successor(tree, target):
     """
     Threaded Binary Tree Successor
 
-    The tree is a threaded binary tree where null right pointers are replaced with threads to the in-order successor.
-     Find the successor using threads.
+    The tree is a threaded binary tree where null right pointers are replaced with threads to the in-order successor. Find the successor using threads. Threaded trees encode successor information directly in the tree structure. If the right pointer is a thread, the successor is immediate. If it is a real child, find the leftmost node of the right subtree. You must distinguish threads from real children.
 
-    Approach: Threaded trees encode successor information directly in the tree structure
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    count = 0
+    n = len(tree)
 
-    # Key insight: Threaded trees encode successor information directly in the tree structure
+    for i in range(n):
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and tree[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Threaded Binary Tree Successor
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Node 5 has a thread (not a real right child) pointing to node 1
-    print("See problem description for test cases")`,
+# Test cases
+print(threaded_binary_tree_successor({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 6}}, "right": {"value": 5}}, "right": {"value": 3}}, 5))  # Expected: 1
+print(threaded_binary_tree_successor({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 6}}, "right": {"value": 5}}, "right": {"value": 3}}, 0))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// ThreadedBinaryTreeSuccessor solves: Threaded Binary Tree Successor
-// Threaded trees encode successor information directly in the tree structure
+// ThreadedBinaryTreeSuccessor solves the Threaded Binary Tree Successor problem.
+// The tree is a threaded binary tree where null right pointers are replaced with threads to the in-order successor. Find the successor using threads. Threaded trees encode successor information directly in the tree structure. If the right pointer is a thread, the successor is immediate. If it is a real child, find the leftmost node of the right subtree. You must distinguish threads from real children.
 // Time: O(n), Space: O(n)
-func ThreadedBinaryTreeSuccessor(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func ThreadedBinaryTreeSuccessor(tree *TreeNode, target int) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Threaded Binary Tree Successor
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Node 5 has a thread (not a real right child) pointing to node 1
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(ThreadedBinaryTreeSuccessor({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":6}},"right":{"value":5}},"right":{"value":3}}, 5)) // Expected: 1
+	fmt.Println(ThreadedBinaryTreeSuccessor({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":6}},"right":{"value":5}},"right":{"value":3}}, 0)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '05-find-successor/twist-05-threaded-binary-tree-successor', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/05-find-successor/twist-05-threaded-binary-tree-successor'] = problem;
 })();

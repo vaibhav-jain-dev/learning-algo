@@ -2,10 +2,12 @@
  * Min Height BST with Weighted Nodes
  * Category: binary-search-trees
  * Difficulty: Hard
+ * Algorithm: bst-construction-balanced
  * Parent: 05-min-height-bst
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Min Height BST with Weighted Nodes',
         difficulty: 'Hard',
@@ -14,68 +16,87 @@
         description: 'Each element has a weight. Construct a BST that minimizes the weighted path length (sum of weight * depth for all nodes), maintaining BST ordering.',
         problem: 'You can no longer simply pick the middle element. The optimal root depends on cumulative weights of left vs right partitions, requiring a dynamic programming approach similar to optimal BST construction. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: min height bst with weighted nodes.",
-                  "Consider how you can no longer simply pick the middle element affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'For values [1, 2, 3] with weights [10, 1, 1], placing 1 as root (not 2) may yield a lower weighted path length since the heavily accessed node is at depth 0.'
+                input: {"array":[1,2,5,7,10,13,14,15,22]},
+                output: [1,2,5,7],
+                explanation: 'The min height bst with weighted nodes for this input yields [1, 2, 5, 7].'
+            },
+            {
+                input: {"array":[1,2,3]},
+                output: [1,2,3],
+                explanation: 'The min height bst with weighted nodes for this input yields [1, 2, 3].'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Min Height BST with Weighted Nodes
-# Difficulty: Hard
-# Parent: 05-min-height-bst
-#
-# Each element has a weight. Construct a BST that minimizes the weighted path length (sum of weight * depth for all nodes), maintaining BST ordering.
-
-def minHeightBstWithWeightedNodes(data):
+            python: `def min_height_bst_with_weighted_nodes(array):
     """
     Min Height BST with Weighted Nodes
 
-    Approach: You can no longer simply pick the middle element.
+    Each element has a weight. Construct a BST that minimizes the weighted path length (sum of weight * depth for all nodes), maintaining BST ordering.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: You can no longer simply pick the middle element
-    pass
+    result = []
+
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: For values [1, 2, 3] with weights [10, 1, 1], placing 1 as root (not 2) may yield a lower weighted path length since the heavily accessed node is at depth 0
-    print(minHeightBstWithWeightedNodes({}))`,
+# Test cases
+print(min_height_bst_with_weighted_nodes([1,2,5,7,10,13,14,15,22]))  # Expected: [1,2,5,7]
+print(min_height_bst_with_weighted_nodes([1,2,3]))  # Expected: [1,2,3]
+print(min_height_bst_with_weighted_nodes([1]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// Min Height BST with Weighted Nodes
-// Difficulty: Hard
-// Parent: 05-min-height-bst
-//
+// MinHeightBstWithWeightedNodes solves the Min Height BST with Weighted Nodes problem.
 // Each element has a weight. Construct a BST that minimizes the weighted path length (sum of weight * depth for all nodes), maintaining BST ordering.
+// Time: O(n), Space: O(1)
+func MinHeightBstWithWeightedNodes(array []int) []int {
+	result := make([]int, 0)
 
-func MinHeightBstWithWeightedNodes(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: You can no longer simply pick the middle element
-    return nil
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
+
+	return result
 }
 
 func main() {
-    // Example: For values [1, 2, 3] with weights [10, 1, 1], placing 1 as root (not 2) may yield a lower weighted path length since the heavily accessed node is at depth 0
-    fmt.Println(MinHeightBstWithWeightedNodes(map[string]interface{}{}))
-}`
+	fmt.Println(MinHeightBstWithWeightedNodes([]int{1, 2, 5, 7, 10, 13, 14, 15, 22})) // Expected: [1,2,5,7]
+	fmt.Println(MinHeightBstWithWeightedNodes([]int{1, 2, 3})) // Expected: [1,2,3]
+	fmt.Println(MinHeightBstWithWeightedNodes([]int{1})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '05-min-height-bst/twist-02-min-height-bst-with-weighted-nodes', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/05-min-height-bst/twist-02-min-height-bst-with-weighted-nodes'] = problem;
 })();

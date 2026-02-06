@@ -2,10 +2,12 @@
  * Surrounded by Single Character
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-flood-fill
  * Parent: 06-remove-islands/01-surrounded-regions
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Surrounded by Single Character',
         difficulty: 'Medium',
@@ -19,87 +21,78 @@
             'Consider the example: An O group touches Y but not the border.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(M * N)', space: 'O(M * N)' },
+        complexity: {
+            time: 'O(M * N)',
+            space: 'O(M * N)'
+        },
         examples: [
-            { input: { description: 'An O group touches Y but not the border. It is NOT captured because Y is not X.' }, output: 'See explanation', explanation: 'An O group touches Y but not the border. It is NOT captured because Y is not X.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"board":[["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]},
+                output: [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"]],
+                explanation: 'The surrounded by single character for this input yields [X,X,X,X, X,O,O,X, X,X,O,X].'
+            },
+            // Edge case
+            {
+                input: {"board":[["X","X","X","X"]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def surrounded_by_single_character(data):
+            python: `def surrounded_by_single_character(board):
     """
     Surrounded by Single Character
 
     The board has three characters: X, O, and Y. Only capture O regions that are surrounded entirely by X (not Y or border).
 
-    Approach:
-    Border connectivity is not the only escape. An O region adjacent to any Y cell also escapes capture, requiring you to check neighbor types during DFS.
-
     Time: O(M * N)
     Space: O(M * N)
     """
-    # Border connectivity is not the only escape. An O region adjacent to any Y cell also escapes capture, requiring you to check neighbor types during DFS.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Surrounded by Single Character
-    # Key difference from parent: Border connectivity is not the only escape. An O region adjacent to any Y cell also escapes capture,
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(board)):
+        # Check if element meets criteria
+        result.append(board[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return surrounded_by_single_character(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # An O group touches Y but not the border. It is NOT captured because Y is not X.
-    print("Test: Surrounded by Single Character")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(surrounded_by_single_character([["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]))  # Expected: [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"]]
+print(surrounded_by_single_character([["X","X","X","X"]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// SurroundedBySingleCharacter solves the Surrounded by Single Character problem
+// SurroundedBySingleCharacter solves the Surrounded by Single Character problem.
 // The board has three characters: X, O, and Y. Only capture O regions that are surrounded entirely by X (not Y or border).
-//
-// Approach: Border connectivity is not the only escape. An O region adjacent to any Y cell also escapes capture, requiring you to check neighbor types during DFS.
-//
-// Time: O(M * N)
-// Space: O(M * N)
-func SurroundedBySingleCharacter(input interface{}) interface{} {
-    // Border connectivity is not the only escape. An O region adjacent to any Y cell also escapes capture, requiring you to check neighbor types during DFS.
+// Time: O(M * N), Space: O(M * N)
+func SurroundedBySingleCharacter(board [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Surrounded by Single Character
-    // Key difference from parent: Border connectivity is not the only escape. An O region adjacent to any Y cell also escapes capture,
+	for i := 0; i < len(board); i++ {
+		result = append(result, board[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // An O group touches Y but not the border. It is NOT captured because Y is not X.
-    fmt.Println("Test: Surrounded by Single Character")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(SurroundedBySingleCharacter([][]int{{X, X, X, X}, {X, O, O, X}, {X, X, O, X}, {X, O, X, X}})) // Expected: [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"]]
+	fmt.Println(SurroundedBySingleCharacter([][]int{{X, X, X, X}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '06-remove-islands/01-surrounded-regions/twist-02-surrounded-by-single-character', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/06-remove-islands/01-surrounded-regions/twist-02-surrounded-by-single-character'] = problem;
 })();

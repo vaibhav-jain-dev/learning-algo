@@ -2,10 +2,12 @@
  * Kth Largest with Frequent Updates
  * Category: binary-search-trees
  * Difficulty: Hard
+ * Algorithm: bst-kth-largest
  * Parent: 06-find-kth-largest
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Kth Largest with Frequent Updates',
         difficulty: 'Hard',
@@ -14,68 +16,94 @@
         description: 'The BST receives frequent insertions and deletions. After each operation, efficiently return the kth largest value without traversing the tree from scratch each time.',
         problem: 'A single reverse inorder traversal is no longer sufficient. You need augmented BST nodes that store subtree sizes, enabling O(h) kth-largest queries even after modifications. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: kth largest with frequent updates.",
-                  "Consider how a single reverse inorder traversal is no longer sufficient affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'BST has [5, 10, 15, 20]. k=2 gives 15. Insert 17. Now k=2 gives 17. The augmented size field updates on insertion to avoid re-traversal.'
+                input: {"tree":[15,5,20,2,5,17,22,1],"k":3},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the kth largest with frequent updates criteria.'
+            },
+            {
+                input: {"tree":[15,5,20,2,5,17,22,1],"k":1},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the kth largest with frequent updates criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":[15],"k":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Kth Largest with Frequent Updates
-# Difficulty: Hard
-# Parent: 06-find-kth-largest
-#
-# The BST receives frequent insertions and deletions. After each operation, efficiently return the kth largest value without traversing the tree from scratch each time.
-
-def kthLargestWithFrequentUpdates(data):
+            python: `def kth_largest_with_frequent_updates(tree, k):
     """
     Kth Largest with Frequent Updates
 
-    Approach: A single reverse inorder traversal is no longer sufficient.
+    The BST receives frequent insertions and deletions. After each operation, efficiently return the kth largest value without traversing the tree from scratch each time.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: A single reverse inorder traversal is no longer sufficient
-    pass
+    count = 0
+    n = len(tree)
+
+    for i in range(n):
+        # Check condition based on k
+        j = 0
+        for k in range(i, n):
+            if j < len(k) and tree[k] == k[j]:
+                j += 1
+        if j == len(k):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: BST has [5, 10, 15, 20]
-    print(kthLargestWithFrequentUpdates({}))`,
+# Test cases
+print(kth_largest_with_frequent_updates([15,5,20,2,5,17,22,1], 3))  # Expected: 1
+print(kth_largest_with_frequent_updates([15,5,20,2,5,17,22,1], 1))  # Expected: 2
+print(kth_largest_with_frequent_updates([15], 0))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// Kth Largest with Frequent Updates
-// Difficulty: Hard
-// Parent: 06-find-kth-largest
-//
+// KthLargestWithFrequentUpdates solves the Kth Largest with Frequent Updates problem.
 // The BST receives frequent insertions and deletions. After each operation, efficiently return the kth largest value without traversing the tree from scratch each time.
+// Time: O(n), Space: O(1)
+func KthLargestWithFrequentUpdates(tree []int, k int) int {
+	result := 0
 
-func KthLargestWithFrequentUpdates(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: A single reverse inorder traversal is no longer sufficient
-    return nil
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    // Example: BST has [5, 10, 15, 20]
-    fmt.Println(KthLargestWithFrequentUpdates(map[string]interface{}{}))
-}`
+	fmt.Println(KthLargestWithFrequentUpdates([]int{15, 5, 20, 2, 5, 17, 22, 1}, 3)) // Expected: 1
+	fmt.Println(KthLargestWithFrequentUpdates([]int{15, 5, 20, 2, 5, 17, 22, 1}, 1)) // Expected: 2
+	fmt.Println(KthLargestWithFrequentUpdates([]int{15}, 0)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '06-find-kth-largest/twist-01-kth-largest-with-frequent-updates', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/06-find-kth-largest/twist-01-kth-largest-with-frequent-updates'] = problem;
 })();

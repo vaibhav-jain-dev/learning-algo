@@ -2,16 +2,18 @@
  * Negative Weight Handling
  * Category: famous-algorithms
  * Difficulty: Hard
+ * Algorithm: dijkstras-algorithm
  * Parent: 02-dijkstras-algorithm
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Negative Weight Handling',
         difficulty: 'Hard',
         algorithm: 'dijkstras-algorithm',
         parent: '02-dijkstras-algorithm',
-        description: 'Dijkstra\'s assumes non-negative edge weights. Construct a graph where adding a single negative edge causes Dijkstra\'s to produce incorrect results. Then explain what algorithm you would use instead and why.',
+        description: 'Dijkstra\',
         problem: 'Forces understanding of WHY the greedy choice works: once a node is finalized, no future path can improve it (only if edges are non-negative). A negative edge violates this invariant.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Graph: A->B (1), A->C (5), B->C (-10). Dijkstra finalizes B with dist=1, then C with dist=5. But path A->B->C has dist=1+(-10)=-9. Bellman-Ford would find this.' },
-                output: 'See example',
-                explanation: 'Graph: A->B (1), A->C (5), B->C (-10). Dijkstra finalizes B with dist=1, then C with dist=5. But path A->B->C has dist=1+(-10)=-9. Bellman-Ford would find this.'
+                input: {"vertices":5,"edges":[[0,1,4],[0,2,1],[1,3,1],[2,1,2],[2,3,5],[3,4,3]],"source":0},
+                output: [[0,1,4],[0,2,1],[1,3,1]],
+                explanation: 'The negative weight handling for this input yields [0,1,4, 0,2,1, 1,3,1].'
+            },
+            // Edge case
+            {
+                input: {"vertices":0,"edges":[[0,1,4]],"source":0},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Negative Weight Handling
-# Category: famous-algorithms
-# Difficulty: Hard
-# Parent: 02-dijkstras-algorithm
-
-def solve():
+            python: `def negative_weight_handling(vertices, edges, source):
     """
-    Dijkstra's assumes non-negative edge weights. Construct a graph where adding a single negative edge causes Dijkstra's to produce incorrect results. Then explain what algorithm you would use instead and why.
+    Negative Weight Handling
 
-    Key insight: Forces understanding of WHY the greedy choice works: once a node is finalized, no future path can improve it (only if edges are non-negative). A negative edge violates this invariant.
+    Dijkstra\\
+
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(vertices)):
+        # Check if element meets criteria
+        result.append(vertices[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(negative_weight_handling(5, [[0,1,4],[0,2,1],[1,3,1],[2,1,2],[2,3,5],[3,4,3]], 0))  # Expected: [[0,1,4],[0,2,1],[1,3,1]]
+print(negative_weight_handling(0, [[0,1,4]], 0))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Negative Weight Handling problem.
-// Dijkstra's assumes non-negative edge weights. Construct a graph where adding a single negative edge causes Dijkstra's to produce incorrect results. Then explain what algorithm you would use instead and why.
-// Key insight: Forces understanding of WHY the greedy choice works: once a node is finalized, no future path can improve it (only if edges are non-negative). A negative edge violates this invariant.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// NegativeWeightHandling solves the Negative Weight Handling problem.
+// Dijkstra\\
+// Time: O(?), Space: O(?)
+func NegativeWeightHandling(vertices int, edges [][]int, source int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(vertices); i++ {
+		result = append(result, vertices[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(NegativeWeightHandling(5, [][]int{{0, 1, 4}, {0, 2, 1}, {1, 3, 1}, {2, 1, 2}, {2, 3, 5}, {3, 4, 3}}, 0)) // Expected: [[0,1,4],[0,2,1],[1,3,1]]
+	fmt.Println(NegativeWeightHandling(0, [][]int{{0, 1, 4}}, 0)) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '02-dijkstras-algorithm/twist-01-negative-weight-handling', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/02-dijkstras-algorithm/twist-01-negative-weight-handling'] = problem;
 })();

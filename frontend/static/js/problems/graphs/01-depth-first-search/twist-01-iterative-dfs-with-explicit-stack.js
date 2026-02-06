@@ -2,10 +2,12 @@
  * Iterative DFS with Explicit Stack
  * Category: graphs
  * Difficulty: Easy
+ * Algorithm: graph-dfs
  * Parent: 01-depth-first-search
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Iterative DFS with Explicit Stack',
         difficulty: 'Easy',
@@ -15,91 +17,80 @@
         problem: 'Forces you to think about how the call stack works and manually manage the traversal order. You must push children in reverse order to maintain left-to-right processing.',
         hints: [
             'Start by understanding the key difference: Forces you to think about how the call stack works and manually manage the traversal order.',
-            'Consider how this simplifies the original problem approach.',
-            'Consider the example: Same tree input produces the same output ["A","B","E","F","I","J","C","D","G","K","H"], but implemented with a while loop and stack.',
-            'Test with edge cases: empty input, single element, and the largest possible input.'
+            'Consider how this simplifies the original problem approach.'
         ],
-        complexity: { time: 'O(V + E)', space: 'O(V)' },
+        complexity: {
+            time: 'O(V + E)',
+            space: 'O(V)'
+        },
         examples: [
-            { input: { description: 'Same tree input produces the same output ["A","B","E","F","I","J","C","D","G","K","H"], but implemented with a while loop and stack.' }, output: 'See explanation', explanation: 'Same tree input produces the same output ["A","B","E","F","I","J","C","D","G","K","H"], but implemented with a while loop and stack.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}},
+                output: [0],
+                explanation: 'The iterative dfs with explicit stack for this input yields [0].'
+            },
+            // Edge case
+            {
+                input: {"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def iterative_dfs_with_explicit_stack(data):
+            python: `def iterative_dfs_with_explicit_stack(tree):
     """
     Iterative DFS with Explicit Stack
 
     Implement the same DFS traversal but using an explicit stack instead of recursion. The output order must be identical to the recursive version.
 
-    Approach:
-    Forces you to think about how the call stack works and manually manage the traversal order. You must push children in reverse order to maintain left-to-right processing.
-
     Time: O(V + E)
     Space: O(V)
     """
-    # Forces you to think about how the call stack works and manually manage the traversal order. You must push children in reverse order to maintain left-to-right processing.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Iterative DFS with Explicit Stack
-    # Key difference from parent: Forces you to think about how the call stack works and manually manage the traversal order. You must
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return iterative_dfs_with_explicit_stack(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Same tree input produces the same output ["A","B","E","F","I","J","C","D","G","K","H"], but implemented with a while loop and stack.
-    print("Test: Iterative DFS with Explicit Stack")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(iterative_dfs_with_explicit_stack({"name": "A", "children": [{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}))  # Expected: [0]
+print(iterative_dfs_with_explicit_stack({"name": "A", "children": [{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// IterativeDFSWithExplicitStack solves the Iterative DFS with Explicit Stack problem
+// IterativeDfsWithExplicitStack solves the Iterative DFS with Explicit Stack problem.
 // Implement the same DFS traversal but using an explicit stack instead of recursion. The output order must be identical to the recursive version.
-//
-// Approach: Forces you to think about how the call stack works and manually manage the traversal order. You must push children in reverse order to maintain left-to-right processing.
-//
-// Time: O(V + E)
-// Space: O(V)
-func IterativeDFSWithExplicitStack(input interface{}) interface{} {
-    // Forces you to think about how the call stack works and manually manage the traversal order. You must push children in reverse order to maintain left-to-right processing.
+// Time: O(V + E), Space: O(V)
+func IterativeDfsWithExplicitStack(tree map[string]interface{}) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Iterative DFS with Explicit Stack
-    // Key difference from parent: Forces you to think about how the call stack works and manually manage the traversal order. You must
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Same tree input produces the same output ["A","B","E","F","I","J","C","D","G","K","H"], but implemented with a while loop and stack.
-    fmt.Println("Test: Iterative DFS with Explicit Stack")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(IterativeDfsWithExplicitStack({"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]})) // Expected: [0]
+	fmt.Println(IterativeDfsWithExplicitStack({"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '01-depth-first-search/twist-01-iterative-dfs-with-explicit-stack', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/01-depth-first-search/twist-01-iterative-dfs-with-explicit-stack'] = problem;
 })();

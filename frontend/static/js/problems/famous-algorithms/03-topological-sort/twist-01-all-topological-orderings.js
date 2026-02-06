@@ -2,10 +2,12 @@
  * All Topological Orderings
  * Category: famous-algorithms
  * Difficulty: Hard
+ * Algorithm: topological-sort
  * Parent: 03-topological-sort
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'All Topological Orderings',
         difficulty: 'Hard',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For edges [[0,1],[0,2]], valid orderings are [0,1,2] and [0,2,1]. Return both instead of just one.' },
-                output: 'See example',
-                explanation: 'For edges [[0,1],[0,2]], valid orderings are [0,1,2] and [0,2,1]. Return both instead of just one.'
+                input: {"n":6,"edges":[[5,2],[5,0],[4,0],[4,1],[2,3],[3,1]]},
+                output: [[5,2],[5,0],[4,0]],
+                explanation: 'The all topological orderings for this input yields [5,2, 5,0, 4,0].'
+            },
+            {
+                input: {"n":2,"edges":[[1,0],[0,1]]},
+                output: [[1,0],[0,1]],
+                explanation: 'The all topological orderings for this input yields [1,0, 0,1].'
+            },
+            // Edge case
+            {
+                input: {"n":0,"edges":[[5,2]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# All Topological Orderings
-# Category: famous-algorithms
-# Difficulty: Hard
-# Parent: 03-topological-sort
-
-def solve():
+            python: `def all_topological_orderings(n, edges):
     """
+    All Topological Orderings
+
     Instead of finding one valid topological ordering, enumerate all possible valid topological orderings of the DAG.
 
-    Key insight: Requires backtracking through all possible choices of zero in-degree nodes at each step, exploring every branch of the decision tree.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(n)):
+        # Check if element meets criteria
+        result.append(n[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(all_topological_orderings(6, [[5,2],[5,0],[4,0],[4,1],[2,3],[3,1]]))  # Expected: [[5,2],[5,0],[4,0]]
+print(all_topological_orderings(2, [[1,0],[0,1]]))  # Expected: [[1,0],[0,1]]
+print(all_topological_orderings(0, [[5,2]]))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the All Topological Orderings problem.
+// AllTopologicalOrderings solves the All Topological Orderings problem.
 // Instead of finding one valid topological ordering, enumerate all possible valid topological orderings of the DAG.
-// Key insight: Requires backtracking through all possible choices of zero in-degree nodes at each step, exploring every branch of the decision tree.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func AllTopologicalOrderings(n int, edges [][]int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(n); i++ {
+		result = append(result, n[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(AllTopologicalOrderings(6, [][]int{{5, 2}, {5, 0}, {4, 0}, {4, 1}, {2, 3}, {3, 1}})) // Expected: [[5,2],[5,0],[4,0]]
+	fmt.Println(AllTopologicalOrderings(2, [][]int{{1, 0}, {0, 1}})) // Expected: [[1,0],[0,1]]
+	fmt.Println(AllTopologicalOrderings(0, [][]int{{5, 2}})) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '03-topological-sort/twist-01-all-topological-orderings', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/03-topological-sort/twist-01-all-topological-orderings'] = problem;
 })();

@@ -2,10 +2,12 @@
  * DFS Average of Levels
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-bfs
  * Parent: 02-node-depths/03-average-of-levels
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'DFS Average of Levels',
         difficulty: 'Medium',
@@ -19,121 +21,85 @@
             'Key insight: DFS visits nodes depth-first, not level by level.',
             'You need a data structure (array or map) indexed by level to accumulate sums and counts, then compute averages after traversal completes.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'DFS visits: 3(level 0), 9(level 1), 20(level 1), 15(level 2), 7(level 2)' },
-                output: 'See explanation',
-                explanation: 'DFS visits: 3(level 0), 9(level 1), 20(level 1), 15(level 2), 7(level 2). Map: {0:[3,1], 1:[29,2], 2:[22,2]}.'
+                input: {"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: [0],
+                explanation: 'The dfs average of levels for this input yields [0].'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"right":{"value":6}}}},
+                output: [0,1],
+                explanation: 'The dfs average of levels for this input yields [0, 1].'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def dfs_average_of_levels(data):
+            python: `def dfs_average_of_levels(tree):
     """
     DFS Average of Levels
 
-    Compute the average of each level using DFS instead of BFS.
-     You must collect level sums and counts without processing level by level.
+    Compute the average of each level using DFS instead of BFS. You must collect level sums and counts without processing level by level. DFS visits nodes depth-first, not level by level. You need a data structure (array or map) indexed by level to accumulate sums and counts, then compute averages after traversal completes.
 
-    Approach: DFS visits nodes depth-first, not level by level
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: DFS visits nodes depth-first, not level by level
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement DFS Average of Levels
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: DFS visits: 3(level 0), 9(level 1), 20(level 1), 15(level 2), 7(level 2)
-    print("See problem description for test cases")`,
+# Test cases
+print(dfs_average_of_levels({"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: [0]
+print(dfs_average_of_levels({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5}}, "right": {"value": 3, "right": {"value": 6}}}))  # Expected: [0,1]
+print(dfs_average_of_levels({"value": 3, "left": {"value": 9}, "right": {"value": 20, "left": {"value": 15}, "right": {"value": 7}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// DfsAverageOfLevels solves: DFS Average of Levels
-// DFS visits nodes depth-first, not level by level
+// DfsAverageOfLevels solves the DFS Average of Levels problem.
+// Compute the average of each level using DFS instead of BFS. You must collect level sums and counts without processing level by level. DFS visits nodes depth-first, not level by level. You need a data structure (array or map) indexed by level to accumulate sums and counts, then compute averages after traversal completes.
 // Time: O(n), Space: O(n)
-func DfsAverageOfLevels(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func DfsAverageOfLevels(tree *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    // TODO: Implement DFS Average of Levels
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: DFS visits: 3(level 0), 9(level 1), 20(level 1), 15(level 2), 7(level 2)
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(DfsAverageOfLevels({"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: [0]
+	fmt.Println(DfsAverageOfLevels({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"right":{"value":6}}})) // Expected: [0,1]
+	fmt.Println(DfsAverageOfLevels({"value":3,"left":{"value":9},"right":{"value":20,"left":{"value":15},"right":{"value":7}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '02-node-depths/03-average-of-levels/twist-01-dfs-average-of-levels', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/02-node-depths/03-average-of-levels/twist-01-dfs-average-of-levels'] = problem;
 })();

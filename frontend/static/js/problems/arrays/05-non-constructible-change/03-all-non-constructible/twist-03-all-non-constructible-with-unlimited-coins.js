@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"coins":[1,2,5]},
                 output: 4,
-                explanation: 'With coins [1,2,5], the first non-constructible value is 4.'
+                explanation: ''
             },
             {
                 input: {"coins":[1,1,1,1]},
                 output: 5,
-                explanation: 'Can make 1 through 4, but not 5.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"coins":[5,10]},
                 output: 1,
-                explanation: 'Cannot make 1 with only coins of value 5 and 10.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def all_non_constructible_with_unlimited_coins(data):
+            python: `def all_non_constructible_with_unlimited_coins(coins, limit):
     """
     All Non-Constructible with Unlimited Coins
 
-    Each coin denomination can be used unlimited times. Find all non-constructible values up to the limit.
-    \n    Approach: Switches from subset-sum (0/1 knapsack) to unbounded knapsack DP, where the traversal direction in DP changes from backward to forward.
+    Each coin denomination can be used unlimited times. Find all non-constructible values up to the limit. Switches from subset-sum (0/1 knapsack) to unbounded knapsack DP, where the traversal direction in DP changes from backward to forward.
 
     Time: O(n^2)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # coins=[3,5], limit=20 → non-constructible: [1,2,4,7] (after 7, all values constructible)
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in coins:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(all_non_constructible_with_unlimited_coins([1, 2, 3, 4, 5]))
-print(all_non_constructible_with_unlimited_coins([5, 3, 1]))
-print(all_non_constructible_with_unlimited_coins([1]))`,
+print(all_non_constructible_with_unlimited_coins([1,2,5], None))  # Expected: 4
+print(all_non_constructible_with_unlimited_coins([1,1,1,1], None))  # Expected: 5
+print(all_non_constructible_with_unlimited_coins([5,10], None))  # Expected: 1
+`,
             go: `package main
 
 import "fmt"
 
 // AllNonConstructibleWithUnlimitedCoins solves the All Non-Constructible with Unlimited Coins problem.
-// Each coin denomination can be used unlimited times. Find all non-constructible values up to the limit.
+// Each coin denomination can be used unlimited times. Find all non-constructible values up to the limit. Switches from subset-sum (0/1 knapsack) to unbounded knapsack DP, where the traversal direction in DP changes from backward to forward.
 // Time: O(n^2), Space: O(n)
-func AllNonConstructibleWithUnlimitedCoins(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func AllNonConstructibleWithUnlimitedCoins(coins []int, limit int) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range coins {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(AllNonConstructibleWithUnlimitedCoins([]int{1, 2, 3, 4, 5}))
-    fmt.Println(AllNonConstructibleWithUnlimitedCoins([]int{5, 3, 1}))
-    fmt.Println(AllNonConstructibleWithUnlimitedCoins([]int{1}))
-}`
+	fmt.Println(AllNonConstructibleWithUnlimitedCoins([]int{1, 2, 5}, nil)) // Expected: 4
+	fmt.Println(AllNonConstructibleWithUnlimitedCoins([]int{1, 1, 1, 1}, nil)) // Expected: 5
+	fmt.Println(AllNonConstructibleWithUnlimitedCoins([]int{5, 10}, nil)) // Expected: 1
+}
+`
         },
         twists: [],
         similar: []

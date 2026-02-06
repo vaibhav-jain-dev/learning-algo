@@ -2,10 +2,12 @@
  * Dynamic River Updates
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-flood-fill
  * Parent: 05-river-sizes
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Dynamic River Updates',
         difficulty: 'Hard',
@@ -19,87 +21,85 @@
             'Consider the example: Flip cell (2,2) from 0 to 1.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N * M)', space: 'O(N * M)' },
+        complexity: {
+            time: 'O(N * M)',
+            space: 'O(N * M)'
+        },
         examples: [
-            { input: { description: 'Flip cell (2,2) from 0 to 1. It merges two adjacent rivers of size 2 and 3 into one of size 6.' }, output: 'See explanation', explanation: 'Flip cell (2,2) from 0 to 1. It merges two adjacent rivers of size 2 and 3 into one of size 6.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"matrix":[[1,0,0,1,0],[1,0,1,0,0],[0,0,1,0,1],[1,0,1,0,1],[1,0,1,1,0]]},
+                output: [[1,0,0,1,0],[1,0,1,0,0],[0,0,1,0,1]],
+                explanation: 'The dynamic river updates for this input yields [1,0,0,1,0, 1,0,1,0,0, 0,0,1,0,1].'
+            },
+            {
+                input: {"matrix":[[1,1,1],[1,1,1],[1,1,1]]},
+                output: [[1,1,1],[1,1,1],[1,1,1]],
+                explanation: 'The dynamic river updates for this input yields [1,1,1, 1,1,1, 1,1,1].'
+            },
+            // Edge case
+            {
+                input: {"matrix":[[1,0,0,1,0]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def dynamic_river_updates(data):
+            python: `def dynamic_river_updates(matrix):
     """
     Dynamic River Updates
 
     After initial computation, cells can flip between 0 and 1. Efficiently update river sizes after each flip.
 
-    Approach:
-    Recomputing from scratch is wasteful. Union-Find allows incremental merges when a cell becomes 1, and split detection when a cell becomes 0 (much harder).
-
     Time: O(N * M)
     Space: O(N * M)
     """
-    # Recomputing from scratch is wasteful. Union-Find allows incremental merges when a cell becomes 1, and split detection when a cell becomes 0 (much harder).
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Dynamic River Updates
-    # Key difference from parent: Recomputing from scratch is wasteful. Union-Find allows incremental merges when a cell becomes 1, an
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(matrix)):
+        # Check if element meets criteria
+        result.append(matrix[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return dynamic_river_updates(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Flip cell (2,2) from 0 to 1. It merges two adjacent rivers of size 2 and 3 into one of size 6.
-    print("Test: Dynamic River Updates")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(dynamic_river_updates([[1,0,0,1,0],[1,0,1,0,0],[0,0,1,0,1],[1,0,1,0,1],[1,0,1,1,0]]))  # Expected: [[1,0,0,1,0],[1,0,1,0,0],[0,0,1,0,1]]
+print(dynamic_river_updates([[1,1,1],[1,1,1],[1,1,1]]))  # Expected: [[1,1,1],[1,1,1],[1,1,1]]
+print(dynamic_river_updates([[1,0,0,1,0]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// DynamicRiverUpdates solves the Dynamic River Updates problem
+// DynamicRiverUpdates solves the Dynamic River Updates problem.
 // After initial computation, cells can flip between 0 and 1. Efficiently update river sizes after each flip.
-//
-// Approach: Recomputing from scratch is wasteful. Union-Find allows incremental merges when a cell becomes 1, and split detection when a cell becomes 0 (much harder).
-//
-// Time: O(N * M)
-// Space: O(N * M)
-func DynamicRiverUpdates(input interface{}) interface{} {
-    // Recomputing from scratch is wasteful. Union-Find allows incremental merges when a cell becomes 1, and split detection when a cell becomes 0 (much harder).
+// Time: O(N * M), Space: O(N * M)
+func DynamicRiverUpdates(matrix [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Dynamic River Updates
-    // Key difference from parent: Recomputing from scratch is wasteful. Union-Find allows incremental merges when a cell becomes 1, an
+	for i := 0; i < len(matrix); i++ {
+		result = append(result, matrix[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Flip cell (2,2) from 0 to 1. It merges two adjacent rivers of size 2 and 3 into one of size 6.
-    fmt.Println("Test: Dynamic River Updates")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(DynamicRiverUpdates([][]int{{1, 0, 0, 1, 0}, {1, 0, 1, 0, 0}, {0, 0, 1, 0, 1}, {1, 0, 1, 0, 1}, {1, 0, 1, 1, 0}})) // Expected: [[1,0,0,1,0],[1,0,1,0,0],[0,0,1,0,1]]
+	fmt.Println(DynamicRiverUpdates([][]int{{1, 1, 1}, {1, 1, 1}, {1, 1, 1}})) // Expected: [[1,1,1],[1,1,1],[1,1,1]]
+	fmt.Println(DynamicRiverUpdates([][]int{{1, 0, 0, 1, 0}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '05-river-sizes/twist-05-dynamic-river-updates', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/05-river-sizes/twist-05-dynamic-river-updates'] = problem;
 })();

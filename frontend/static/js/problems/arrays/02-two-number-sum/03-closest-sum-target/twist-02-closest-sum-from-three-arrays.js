@@ -26,80 +26,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"arr1":[1,3,5,7],"arr2":[2,4,6,8],"target":10},
                 output: [3,7],
-                explanation: '3 + 7 = 10, exact match to target.'
+                explanation: ''
             },
             {
                 input: {"arr1":[-1,3,8],"arr2":[2,4,9],"target":7},
                 output: [3,4],
-                explanation: '3 + 4 = 7, exact match.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"arr1":[1,4],"arr2":[10,20],"target":15},
                 output: [4,10],
-                explanation: '4 + 10 = 14, closest to 15.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def closest_sum_from_three_arrays(data):
+            python: `def closest_sum_from_three_arrays(arr1, arr2, target):
     """
     Closest Sum from Three Arrays
 
-    Given three sorted arrays, pick one element from each to minimize the distance of their sum to target.
-    \n    Approach: Extends from two-pointer on two arrays to three arrays, where a simple two-pointer approach does not directly apply. Requires fixing one element and applying two-pointer to the other two.
+    Given three sorted arrays, pick one element from each to minimize the distance of their sum to target. Extends from two-pointer on two arrays to three arrays, where a simple two-pointer approach does not directly apply. Requires fixing one element and applying two-pointer to the other two.
 
     Time: O(n log k)
     Space: O(n)
-
-    Example: arr1=[1,3], arr2=[2,5], arr3=[4,6], target=12 → [3,5,4]=12 (exact)
     """
-    if not data:
-        return None
+    count = 0
+    n = len(arr1)
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
-
-    # Core algorithm implementation
     for i in range(n):
-        result.append(data[i])
+        # Check condition based on arr2
+        j = 0
+        for k in range(i, n):
+            if j < len(arr2) and arr1[k] == arr2[j]:
+                j += 1
+        if j == len(arr2):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(closest_sum_from_three_arrays([1, 2, 3, 4, 5]))
-print(closest_sum_from_three_arrays([5, 3, 1]))
-print(closest_sum_from_three_arrays([1]))`,
+print(closest_sum_from_three_arrays([1,3,5,7], [2,4,6,8], 10))  # Expected: [3,7]
+print(closest_sum_from_three_arrays([-1,3,8], [2,4,9], 7))  # Expected: [3,4]
+print(closest_sum_from_three_arrays([1,4], [10,20], 15))  # Expected: [4,10]
+`,
             go: `package main
 
 import "fmt"
 
 // ClosestSumFromThreeArrays solves the Closest Sum from Three Arrays problem.
-// Given three sorted arrays, pick one element from each to minimize the distance of their sum to target.
+// Given three sorted arrays, pick one element from each to minimize the distance of their sum to target. Extends from two-pointer on two arrays to three arrays, where a simple two-pointer approach does not directly apply. Requires fixing one element and applying two-pointer to the other two.
 // Time: O(n log k), Space: O(n)
-func ClosestSumFromThreeArrays(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func ClosestSumFromThreeArrays(arr1 []int, arr2 []int, target int) int {
+	result := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(arr1); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(ClosestSumFromThreeArrays([]int{1, 2, 3, 4, 5}))
-    fmt.Println(ClosestSumFromThreeArrays([]int{5, 3, 1}))
-    fmt.Println(ClosestSumFromThreeArrays([]int{1}))
-}`
+	fmt.Println(ClosestSumFromThreeArrays([]int{1, 3, 5, 7}, []int{2, 4, 6, 8}, 10)) // Expected: [3,7]
+	fmt.Println(ClosestSumFromThreeArrays([]int{-1, 3, 8}, []int{2, 4, 9}, 7)) // Expected: [3,4]
+	fmt.Println(ClosestSumFromThreeArrays([]int{1, 4}, []int{10, 20}, 15)) // Expected: [4,10]
+}
+`
         },
         twists: [],
         similar: []

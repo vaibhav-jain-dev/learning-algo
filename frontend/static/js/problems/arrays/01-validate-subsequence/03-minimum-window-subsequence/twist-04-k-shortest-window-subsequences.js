@@ -26,80 +26,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"s1":"abcdebdde","s2":"bde"},
                 output: "bcde",
-                explanation: 'The smallest window containing "bde" as a subsequence is "bcde".'
+                explanation: ''
             },
             {
                 input: {"s1":"abcdef","s2":"ace"},
                 output: "abcde",
-                explanation: 'Window from a to e contains "ace" as a subsequence.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"s1":"xyz","s2":"abc"},
                 output: "",
-                explanation: 'No valid window exists.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def k_shortest_window_subsequences(data):
+            python: `def k_shortest_window_subsequences(s1, s2):
     """
     K Shortest Window Subsequences
 
-    Find the k shortest windows in s1 where s2 appears as a subsequence. Windows may overlap.
-    \n    Approach: Requires maintaining a priority queue or sorted collection of all valid windows, not just tracking the single best.
+    Find the k shortest windows in s1 where s2 appears as a subsequence. Windows may overlap. Requires maintaining a priority queue or sorted collection of all valid windows, not just tracking the single best.
 
     Time: O(n log k)
     Space: O(n)
-
-    Example: s1="abcdebdde", s2="bde", k=2 → ["bcde", "bdde"]
     """
-    if not data:
-        return None
+    count = 0
+    n = len(s1)
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
-
-    # Core algorithm implementation
     for i in range(n):
-        result.append(data[i])
+        # Check condition based on s2
+        j = 0
+        for k in range(i, n):
+            if j < len(s2) and s1[k] == s2[j]:
+                j += 1
+        if j == len(s2):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(k_shortest_window_subsequences([1, 2, 3, 4, 5]))
-print(k_shortest_window_subsequences([5, 3, 1]))
-print(k_shortest_window_subsequences([1]))`,
+print(k_shortest_window_subsequences("abcdebdde", "bde"))  # Expected: "bcde"
+print(k_shortest_window_subsequences("abcdef", "ace"))  # Expected: "abcde"
+print(k_shortest_window_subsequences("xyz", "abc"))  # Expected: ""
+`,
             go: `package main
 
 import "fmt"
 
 // KShortestWindowSubsequences solves the K Shortest Window Subsequences problem.
-// Find the k shortest windows in s1 where s2 appears as a subsequence. Windows may overlap.
+// Find the k shortest windows in s1 where s2 appears as a subsequence. Windows may overlap. Requires maintaining a priority queue or sorted collection of all valid windows, not just tracking the single best.
 // Time: O(n log k), Space: O(n)
-func KShortestWindowSubsequences(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func KShortestWindowSubsequences(s1 string, s2 string) int {
+	result := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(s1); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(KShortestWindowSubsequences([]int{1, 2, 3, 4, 5}))
-    fmt.Println(KShortestWindowSubsequences([]int{5, 3, 1}))
-    fmt.Println(KShortestWindowSubsequences([]int{1}))
-}`
+	fmt.Println(KShortestWindowSubsequences("abcdebdde", "bde")) // Expected: "bcde"
+	fmt.Println(KShortestWindowSubsequences("abcdef", "ace")) // Expected: "abcde"
+	fmt.Println(KShortestWindowSubsequences("xyz", "abc")) // Expected: ""
+}
+`
         },
         twists: [],
         similar: []

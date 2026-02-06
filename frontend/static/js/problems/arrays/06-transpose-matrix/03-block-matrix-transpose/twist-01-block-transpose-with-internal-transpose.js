@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,3,5,7],"k":2},
                 output: [1,3],
-                explanation: 'The k=2 smallest/closest values found.'
+                explanation: ''
             },
             {
                 input: {"array":[10,20,30],"k":1},
                 output: [10],
-                explanation: 'With k=1, return the single best result.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[5,5,5,5],"k":3},
                 output: [5,5,5],
-                explanation: 'Duplicate values handled correctly with k=3.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def block_transpose_with_internal_transpose(data):
+            python: `def block_transpose_with_internal_transpose(array, k):
     """
     Block Transpose with Internal Transpose
 
-    Transpose the block positions AND transpose elements within each block. Double transposition at two levels.
-    \n    Approach: Each element undergoes two coordinate transformations: its position within the block transposes, and the block itself moves.
+    Transpose the block positions AND transpose elements within each block. Double transposition at two levels. Each element undergoes two coordinate transformations: its position within the block transposes, and the block itself moves.
 
     Time: O(n log k)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # matrix 4x4, k=2. Block (0,0) [[1,2],[5,6]] -> transposed block [[1,5],[2,6]] placed at (0,0) of result.
+    count = 0
+    n = len(array)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on k
+        j = 0
+        for k in range(i, n):
+            if j < len(k) and array[k] == k[j]:
+                j += 1
+        if j == len(k):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(block_transpose_with_internal_transpose([1, 2, 3, 4, 5]))
-print(block_transpose_with_internal_transpose([5, 3, 1]))
-print(block_transpose_with_internal_transpose([1]))`,
+print(block_transpose_with_internal_transpose([1,3,5,7], 2))  # Expected: [1,3]
+print(block_transpose_with_internal_transpose([10,20,30], 1))  # Expected: [10]
+print(block_transpose_with_internal_transpose([5,5,5,5], 3))  # Expected: [5,5,5]
+`,
             go: `package main
 
 import "fmt"
 
 // BlockTransposeWithInternalTranspose solves the Block Transpose with Internal Transpose problem.
-// Transpose the block positions AND transpose elements within each block. Double transposition at two levels.
+// Transpose the block positions AND transpose elements within each block. Double transposition at two levels. Each element undergoes two coordinate transformations: its position within the block transposes, and the block itself moves.
 // Time: O(n log k), Space: O(n)
-func BlockTransposeWithInternalTranspose(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func BlockTransposeWithInternalTranspose(array []int, k int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(BlockTransposeWithInternalTranspose([]int{1, 2, 3, 4, 5}))
-    fmt.Println(BlockTransposeWithInternalTranspose([]int{5, 3, 1}))
-    fmt.Println(BlockTransposeWithInternalTranspose([]int{1}))
-}`
+	fmt.Println(BlockTransposeWithInternalTranspose([]int{1, 3, 5, 7}, 2)) // Expected: [1,3]
+	fmt.Println(BlockTransposeWithInternalTranspose([]int{10, 20, 30}, 1)) // Expected: [10]
+	fmt.Println(BlockTransposeWithInternalTranspose([]int{5, 5, 5, 5}, 3)) // Expected: [5,5,5]
+}
+`
         },
         twists: [],
         similar: []

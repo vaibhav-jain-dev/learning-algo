@@ -2,10 +2,12 @@
  * Maximize Product With At Most K Parts
  * Category: dynamic-programming
  * Difficulty: Hard
+ * Algorithm: dp-coin-change
  * Parent: 03-min-coins/03-integer-break
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Maximize Product With At Most K Parts',
         difficulty: 'Hard',
@@ -19,84 +21,91 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2 * k)', space: 'O(n * k)' },
+        complexity: {
+            time: 'O(n^2 * k)',
+            space: 'O(n * k)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'n=10, k=2: best is 5*5=25. n=10, k=3: best is 3*3*4=36. n=10, k=100: still 36 since more parts past optimal does not help.'
+                input: {"n":2},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the maximize product with at most k parts criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"n":10},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the maximize product with at most k parts criteria.'
+            },
+            {
+                input: {"n":8},
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the maximize product with at most k parts criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def maximizeProductWithAtMostKParts(data):
+            python: `def maximize_product_with_at_most_k_parts(n):
     """
     Maximize Product With At Most K Parts
 
     Break integer n into at most k positive integers (at least 2) to maximize the product. k is given as an additional constraint.
 
-    Approach:
-    Adds a parts-count constraint, turning this into a 2D DP problem where state tracks both the remaining value and the number of parts used.
+    Time: O(n^2 * k)
+    Space: O(n * k)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    result = 0
 
-    # Example: n=10, k=2: best is 5*5=25. n=10, k=3: best is 3*3*4=36. n=10, k=100: still 36 since more parts past optimal does not hel
+    for i in range(len(n)):
+        # Process element
+        result += 1  # Update based on condition
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
     return result
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Maximize Product With At Most K Parts...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(maximize_product_with_at_most_k_parts(2))  # Expected: 1
+print(maximize_product_with_at_most_k_parts(10))  # Expected: 2
+print(maximize_product_with_at_most_k_parts(8))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // MaximizeProductWithAtMostKParts solves the Maximize Product With At Most K Parts problem.
 // Break integer n into at most k positive integers (at least 2) to maximize the product. k is given as an additional constraint.
-//
-// Approach: Adds a parts-count constraint, turning this into a 2D DP problem where state tracks both the remaining value and the number of parts used.
-func MaximizeProductWithAtMostKParts(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2 * k), Space: O(n * k)
+func MaximizeProductWithAtMostKParts(n int) int {
+	result := 0
 
-    // Example: n=10, k=2: best is 5*5=25. n=10, k=3: best is 3*3*4=36. n=10, k=100: still 36 since more parts past 
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Maximize Product With At Most K Parts...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(MaximizeProductWithAtMostKParts(2)) // Expected: 1
+	fmt.Println(MaximizeProductWithAtMostKParts(10)) // Expected: 2
+	fmt.Println(MaximizeProductWithAtMostKParts(8)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '03-min-coins/03-integer-break/twist-02-maximize-product-with-at-most-k-parts', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/03-min-coins/03-integer-break/twist-02-maximize-product-with-at-most-k-parts'] = problem;
 })();

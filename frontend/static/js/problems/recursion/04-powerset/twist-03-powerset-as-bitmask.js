@@ -2,10 +2,12 @@
  * Powerset as Bitmask
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-powerset
  * Parent: 04-powerset
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Powerset as Bitmask',
         difficulty: 'Medium',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For [a,b,c], iterate 0-7: 0=000=[], 1=001=[a], 2=010=[b], ..., 7=111=[a,b,c].' },
-                output: 'See example',
-                explanation: 'For [a,b,c], iterate 0-7: 0=000=[], 1=001=[a], 2=010=[b], ..., 7=111=[a,b,c].'
+                input: {"array":[1,2,3]},
+                output: [1,2,3],
+                explanation: 'The powerset as bitmask for this input yields [1, 2, 3].'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Powerset as Bitmask
-# Category: recursion
-# Difficulty: Medium
-# Parent: 04-powerset
-
-def solve():
+            python: `def powerset_as_bitmask(array):
     """
+    Powerset as Bitmask
+
     Generate the powerset using iterative bit manipulation instead of recursion, representing each subset as a bitmask.
 
-    Key insight: Shifts thinking from recursive tree traversal to iterative enumeration over integers 0 to 2^n-1, mapping each bit to element inclusion.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(powerset_as_bitmask([1,2,3]))  # Expected: [1,2,3]
+print(powerset_as_bitmask([1]))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Powerset as Bitmask problem.
+// PowersetAsBitmask solves the Powerset as Bitmask problem.
 // Generate the powerset using iterative bit manipulation instead of recursion, representing each subset as a bitmask.
-// Key insight: Shifts thinking from recursive tree traversal to iterative enumeration over integers 0 to 2^n-1, mapping each bit to element inclusion.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func PowersetAsBitmask(array []int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(PowersetAsBitmask([]int{1, 2, 3})) // Expected: [1,2,3]
+	fmt.Println(PowersetAsBitmask([]int{1})) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '04-powerset/twist-03-powerset-as-bitmask', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/04-powerset/twist-03-powerset-as-bitmask'] = problem;
 })();

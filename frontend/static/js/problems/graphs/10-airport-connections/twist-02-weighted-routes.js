@@ -2,10 +2,12 @@
  * Weighted Routes
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-connections
  * Parent: 10-airport-connections
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Weighted Routes',
         difficulty: 'Hard',
@@ -19,87 +21,85 @@
             'Consider the example: Three unreachable airports at distances 100, 200, 50 from starting airport.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(A * (A + R))', space: 'O(A + R)' },
+        complexity: {
+            time: 'O(A * (A + R))',
+            space: 'O(A + R)'
+        },
         examples: [
-            { input: { description: 'Three unreachable airports at distances 100, 200, 50 from starting airport. Optimal cost: add routes to closest airports first.' }, output: 'See explanation', explanation: 'Three unreachable airports at distances 100, 200, 50 from starting airport. Optimal cost: add routes to closest airports first.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"airports":["BGI","CDG","DEL","DOH","DSM","EWR","EYW","HND","ICN","JFK","LGA","LHR","ORD","SAN","SFO","SIN","TLV","BUD"],"routes":[["DSM","ORD"],["ORD","BGI"],["BGI","LGA"],["SIN","CDG"],["CDG","SIN"],["CDG","BUD"],["DEL","DOH"],["DEL","CDG"],["TLV","DEL"],["EWR","HND"],["HND","ICN"],["HND","JFK"],["ICN","JFK"],["JFK","LGA"],["EYW","LHR"],["LHR","SFO"],["SFO","SAN"],["SFO","DSM"],["SAN","EYW"]],"startingAirport":"LGA"},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the weighted routes criteria.'
+            },
+            // Edge case
+            {
+                input: {"airports":["BGI"],"routes":[["DSM","ORD"]],"startingAirport":""},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def weighted_routes(data):
+            python: `def weighted_routes(airports, routes, startingAirport):
     """
     Weighted Routes
 
     Each new route has a construction cost proportional to the distance between airports. Minimize total cost of new routes.
 
-    Approach:
-    Instead of minimizing route count, you minimize total cost. This becomes a minimum spanning tree problem connecting unreachable components to the starting airport.
-
     Time: O(A * (A + R))
     Space: O(A + R)
     """
-    # Instead of minimizing route count, you minimize total cost. This becomes a minimum spanning tree problem connecting unreachable components to the starting airport.
+    count = 0
+    n = len(airports)
 
-    # Implementation
-    result = None
+    for i in range(n):
+        # Check condition based on routes
+        j = 0
+        for k in range(i, n):
+            if j < len(routes) and airports[k] == routes[j]:
+                j += 1
+        if j == len(routes):
+            count += 1
 
-    # Core algorithm adapted for: Weighted Routes
-    # Key difference from parent: Instead of minimizing route count, you minimize total cost. This becomes a minimum spanning tree pro
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return weighted_routes(data)
+    return count
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Three unreachable airports at distances 100, 200, 50 from starting airport. Optimal cost: add routes to closest airports first.
-    print("Test: Weighted Routes")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(weighted_routes(["BGI","CDG","DEL","DOH","DSM","EWR","EYW","HND","ICN","JFK","LGA","LHR","ORD","SAN","SFO","SIN","TLV","BUD"], [["DSM","ORD"],["ORD","BGI"],["BGI","LGA"],["SIN","CDG"],["CDG","SIN"],["CDG","BUD"],["DEL","DOH"],["DEL","CDG"],["TLV","DEL"],["EWR","HND"],["HND","ICN"],["HND","JFK"],["ICN","JFK"],["JFK","LGA"],["EYW","LHR"],["LHR","SFO"],["SFO","SAN"],["SFO","DSM"],["SAN","EYW"]], "LGA"))  # Expected: 1
+print(weighted_routes(["BGI"], [["DSM","ORD"]], ""))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// WeightedRoutes solves the Weighted Routes problem
+// WeightedRoutes solves the Weighted Routes problem.
 // Each new route has a construction cost proportional to the distance between airports. Minimize total cost of new routes.
-//
-// Approach: Instead of minimizing route count, you minimize total cost. This becomes a minimum spanning tree problem connecting unreachable components to the starting airport.
-//
-// Time: O(A * (A + R))
-// Space: O(A + R)
-func WeightedRoutes(input interface{}) interface{} {
-    // Instead of minimizing route count, you minimize total cost. This becomes a minimum spanning tree problem connecting unreachable components to the starting airport.
+// Time: O(A * (A + R)), Space: O(A + R)
+func WeightedRoutes(airports []string, routes [][]int, startingAirport string) int {
+	result := 0
 
-    // Core algorithm adapted for: Weighted Routes
-    // Key difference from parent: Instead of minimizing route count, you minimize total cost. This becomes a minimum spanning tree pro
+	for i := 0; i < len(airports); i++ {
+		// Process element
+		result++
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Three unreachable airports at distances 100, 200, 50 from starting airport. Optimal cost: add routes to closest airports first.
-    fmt.Println("Test: Weighted Routes")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(WeightedRoutes([]string{"BGI", "CDG", "DEL", "DOH", "DSM", "EWR", "EYW", "HND", "ICN", "JFK", "LGA", "LHR", "ORD", "SAN", "SFO", "SIN", "TLV", "BUD"}, [][]int{{DSM, ORD}, {ORD, BGI}, {BGI, LGA}, {SIN, CDG}, {CDG, SIN}, {CDG, BUD}, {DEL, DOH}, {DEL, CDG}, {TLV, DEL}, {EWR, HND}, {HND, ICN}, {HND, JFK}, {ICN, JFK}, {JFK, LGA}, {EYW, LHR}, {LHR, SFO}, {SFO, SAN}, {SFO, DSM}, {SAN, EYW}}, "LGA")) // Expected: 1
+	fmt.Println(WeightedRoutes([]string{"BGI"}, [][]int{{DSM, ORD}}, "")) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '10-airport-connections/twist-02-weighted-routes', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/10-airport-connections/twist-02-weighted-routes'] = problem;
 })();

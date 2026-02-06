@@ -26,80 +26,80 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[5,1,22,25,6,-1,8,10],"sequence":[1,6,-1,10]},
                 output: true,
-                explanation: 'The sequence elements appear in order within the array.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4,5],"sequence":[5,3,1]},
                 output: false,
-                explanation: 'The sequence elements do not appear in the required order.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1,1,1,1,1],"sequence":[1,1,1]},
                 output: true,
-                explanation: 'Duplicate elements are handled correctly.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def circular_array_subsequence(data):
+            python: `def circular_array_subsequence(array, sequence):
     """
     Circular Array Subsequence
 
-    What if the main array is circular? The sequence can wrap around from the end back to the beginning.
-    \n    Approach: You need to handle wrap-around logic with modular arithmetic and decide when to stop to avoid infinite loops.
+    What if the main array is circular? The sequence can wrap around from the end back to the beginning. You need to handle wrap-around logic with modular arithmetic and decide when to stop to avoid infinite loops.
 
     Time: O(n log k)
     Space: O(n)
-
-    Example: array=[4,5,1,2,3], sequence=[3,4,5] → true (wraps from 3 back to 4,5)
     """
-    if not data:
-        return None
+    n = len(array)
+    m = len(sequence)
+    doubled = array + array
+    j = 0
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
+    for i in range(min(2 * n, 2 * n)):
+        if j < m and doubled[i] == sequence[j]:
+            j += 1
+        if j == m:
+            return True
 
-    # Core algorithm implementation
-    for i in range(n):
-        result.append(data[i])
-
-    return result
+    return False
 
 
 # Test cases
-print(circular_array_subsequence([1, 2, 3, 4, 5]))
-print(circular_array_subsequence([5, 3, 1]))
-print(circular_array_subsequence([1]))`,
+print(circular_array_subsequence([5,1,22,25,6,-1,8,10], [1,6,-1,10]))  # Expected: True
+print(circular_array_subsequence([1,2,3,4,5], [5,3,1]))  # Expected: False
+print(circular_array_subsequence([1,1,1,1,1], [1,1,1]))  # Expected: True
+`,
             go: `package main
 
 import "fmt"
 
 // CircularArraySubsequence solves the Circular Array Subsequence problem.
-// What if the main array is circular? The sequence can wrap around from the end back to the beginning.
+// What if the main array is circular? The sequence can wrap around from the end back to the beginning. You need to handle wrap-around logic with modular arithmetic and decide when to stop to avoid infinite loops.
 // Time: O(n log k), Space: O(n)
-func CircularArraySubsequence(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func CircularArraySubsequence(array []int, sequence []int) bool {
+	n := len(array)
+	m := len(sequence)
+	j := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < 2*n && j < m; i++ {
+		if array[i%n] == sequence[j] {
+			j++
+		}
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return j == m
 }
 
 func main() {
-    fmt.Println(CircularArraySubsequence([]int{1, 2, 3, 4, 5}))
-    fmt.Println(CircularArraySubsequence([]int{5, 3, 1}))
-    fmt.Println(CircularArraySubsequence([]int{1}))
-}`
+	fmt.Println(CircularArraySubsequence([]int{5, 1, 22, 25, 6, -1, 8, 10}, []int{1, 6, -1, 10})) // Expected: true
+	fmt.Println(CircularArraySubsequence([]int{1, 2, 3, 4, 5}, []int{5, 3, 1})) // Expected: false
+	fmt.Println(CircularArraySubsequence([]int{1, 1, 1, 1, 1}, []int{1, 1, 1})) // Expected: true
+}
+`
         },
         twists: [],
         similar: []

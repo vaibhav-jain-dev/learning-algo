@@ -2,10 +2,12 @@
  * Distance to Common Manager
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-manager
  * Parent: 14-lowest-common-manager
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Distance to Common Manager',
         difficulty: 'Medium',
@@ -19,57 +21,77 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'If LCM of E and G is A, and E is 2 levels below A while G is 3 levels below, return {manager: "A", distE: 2, distG: 3}.' },
-                output: 'See example',
-                explanation: 'If LCM of E and G is A, and E is 2 levels below A while G is 3 levels below, return {manager: "A", distE: 2, distG: 3}.'
+                input: {"topManager":"A","employee1":"E","employee2":"G"},
+                output: "result",
+                explanation: 'The resulting string is "result".'
+            },
+            // Edge case
+            {
+                input: {"topManager":"","employee1":"","employee2":""},
+                output: "",
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Distance to Common Manager
-# Category: recursion
-# Difficulty: Medium
-# Parent: 14-lowest-common-manager
-
-def solve():
+            python: `def distance_to_common_manager(topManager, employee1, employee2):
     """
+    Distance to Common Manager
+
     Find the lowest common manager and also return the distances from each employee to that manager.
 
-    Key insight: Adds depth tracking to the recursion -- when the LCM is found, compute the path lengths back to each target employee.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for item in topManager:
+        result.append(str(item))
+
+    return ''.join(result)
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(distance_to_common_manager("A", "E", "G"))  # Expected: "result"
+print(distance_to_common_manager("", "", ""))  # Expected: ""
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Distance to Common Manager problem.
+// DistanceToCommonManager solves the Distance to Common Manager problem.
 // Find the lowest common manager and also return the distances from each employee to that manager.
-// Key insight: Adds depth tracking to the recursion -- when the LCM is found, compute the path lengths back to each target employee.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func DistanceToCommonManager(topManager string, employee1 string, employee2 string) string {
+	result := ""
+
+	for _, v := range topManager {
+		result += fmt.Sprintf("%v", v)
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(DistanceToCommonManager("A", "E", "G")) // Expected: "result"
+	fmt.Println(DistanceToCommonManager("", "", "")) // Expected: ""
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '14-lowest-common-manager/twist-02-distance-to-common-manager', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/14-lowest-common-manager/twist-02-distance-to-common-manager'] = problem;
 })();

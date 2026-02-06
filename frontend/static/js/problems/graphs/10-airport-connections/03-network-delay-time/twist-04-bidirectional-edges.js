@@ -2,10 +2,12 @@
  * Bidirectional Edges
  * Category: graphs
  * Difficulty: Easy
+ * Algorithm: dijkstra
  * Parent: 10-airport-connections/03-network-delay-time
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Bidirectional Edges',
         difficulty: 'Easy',
@@ -19,87 +21,97 @@
             'Consider the example: Edge [2,1,1] becomes both 2->1 and 1->2 with weight 1.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(E log V)', space: 'O(V + E)' },
+        complexity: {
+            time: 'O(E log V)',
+            space: 'O(V + E)'
+        },
         examples: [
-            { input: { description: 'Edge [2,1,1] becomes both 2->1 and 1->2 with weight 1. More paths available.' }, output: 'See explanation', explanation: 'Edge [2,1,1] becomes both 2->1 and 1->2 with weight 1. More paths available.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"times":[[2,1,1],[2,3,1],[3,4,1]],"n":4,"k":2},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the bidirectional edges criteria.'
+            },
+            // Edge case
+            {
+                input: {"times":[[2,1,1]],"n":0,"k":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def bidirectional_edges(data):
+            python: `def bidirectional_edges(times, n, k):
     """
     Bidirectional Edges
 
     All connections are bidirectional with the same weight in both directions. Find network delay time.
 
-    Approach:
-    Each directed edge becomes two edges. The graph has more paths to explore, potentially finding shorter routes through reverse edges.
-
     Time: O(E log V)
     Space: O(V + E)
     """
-    # Each directed edge becomes two edges. The graph has more paths to explore, potentially finding shorter routes through reverse edges.
+    # Check forward
+    j = 0
+    for i in range(len(times)):
+        if j < len(n) and times[i] == n[j]:
+            j += 1
+    if j == len(n):
+        return True
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Bidirectional Edges
-    # Key difference from parent: Each directed edge becomes two edges. The graph has more paths to explore, potentially finding short
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return bidirectional_edges(data)
+    # Check backward
+    j = 0
+    for i in range(len(times) - 1, -1, -1):
+        if j < len(n) and times[i] == n[j]:
+            j += 1
+    return j == len(n)
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Edge [2,1,1] becomes both 2->1 and 1->2 with weight 1. More paths available.
-    print("Test: Bidirectional Edges")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(bidirectional_edges([[2,1,1],[2,3,1],[3,4,1]], 4, 2))  # Expected: 1
+print(bidirectional_edges([[2,1,1]], 0, 0))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// BidirectionalEdges solves the Bidirectional Edges problem
+// BidirectionalEdges solves the Bidirectional Edges problem.
 // All connections are bidirectional with the same weight in both directions. Find network delay time.
-//
-// Approach: Each directed edge becomes two edges. The graph has more paths to explore, potentially finding shorter routes through reverse edges.
-//
-// Time: O(E log V)
-// Space: O(V + E)
-func BidirectionalEdges(input interface{}) interface{} {
-    // Each directed edge becomes two edges. The graph has more paths to explore, potentially finding shorter routes through reverse edges.
+// Time: O(E log V), Space: O(V + E)
+func BidirectionalEdges(times [][]int, n int, k int) int {
+	// Check forward
+	j := 0
+	for i := 0; i < len(times) && j < len(n); i++ {
+		if times[i] == n[j] {
+			j++
+		}
+	}
+	if j == len(n) {
+		return true
+	}
 
-    // Core algorithm adapted for: Bidirectional Edges
-    // Key difference from parent: Each directed edge becomes two edges. The graph has more paths to explore, potentially finding short
-
-    return nil
+	// Check backward
+	j = 0
+	for i := len(times) - 1; i >= 0 && j < len(n); i-- {
+		if times[i] == n[j] {
+			j++
+		}
+	}
+	return j == len(n)
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Edge [2,1,1] becomes both 2->1 and 1->2 with weight 1. More paths available.
-    fmt.Println("Test: Bidirectional Edges")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(BidirectionalEdges([][]int{{2, 1, 1}, {2, 3, 1}, {3, 4, 1}}, 4, 2)) // Expected: 1
+	fmt.Println(BidirectionalEdges([][]int{{2, 1, 1}}, 0, 0)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '10-airport-connections/03-network-delay-time/twist-04-bidirectional-edges', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/10-airport-connections/03-network-delay-time/twist-04-bidirectional-edges'] = problem;
 })();

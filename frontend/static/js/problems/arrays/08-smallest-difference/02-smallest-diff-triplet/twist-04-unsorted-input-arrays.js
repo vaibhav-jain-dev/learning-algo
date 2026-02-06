@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[-3,-1,0,2,4]},
                 output: [0,1,4,9,16],
-                explanation: 'Elements transformed and sorted correctly.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: [1,4,9],
-                explanation: 'All positive - order maintained after transformation.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[-5,-3,-1]},
                 output: [1,9,25],
-                explanation: 'All negative - order reversed after transformation.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def unsorted_input_arrays(data):
+            python: `def unsorted_input_arrays(arr1, arr2, arr3):
     """
     Unsorted Input Arrays
 
-    The three arrays are not sorted. Find the triplet minimizing (max - min) without sorting.
-    \n    Approach: Sorting is O(n log n) per array. Can you do better with hash-based or bucket-based approaches for special input ranges?
+    The three arrays are not sorted. Find the triplet minimizing (max - min) without sorting. Sorting is O(n log n) per array. Can you do better with hash-based or bucket-based approaches for special input ranges?
 
     Time: O(n log n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # arr1 = [5,1,4], arr2 = [20,10], arr3 = [19,14]. Same answer [5,10,14] but arrays unsorted.
+    count = 0
+    n = len(arr1)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on arr2
+        j = 0
+        for k in range(i, n):
+            if j < len(arr2) and arr1[k] == arr2[j]:
+                j += 1
+        if j == len(arr2):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(unsorted_input_arrays([1, 2, 3, 4, 5]))
-print(unsorted_input_arrays([5, 3, 1]))
-print(unsorted_input_arrays([1]))`,
+print(unsorted_input_arrays(None, None, None))  # Expected: [0,1,4,9,16]
+print(unsorted_input_arrays(None, None, None))  # Expected: [1,4,9]
+print(unsorted_input_arrays(None, None, None))  # Expected: [1,9,25]
+`,
             go: `package main
 
 import "fmt"
 
 // UnsortedInputArrays solves the Unsorted Input Arrays problem.
-// The three arrays are not sorted. Find the triplet minimizing (max - min) without sorting.
+// The three arrays are not sorted. Find the triplet minimizing (max - min) without sorting. Sorting is O(n log n) per array. Can you do better with hash-based or bucket-based approaches for special input ranges?
 // Time: O(n log n), Space: O(n)
-func UnsortedInputArrays(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func UnsortedInputArrays(arr1 []int, arr2 []int, arr3 []int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(arr1); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(UnsortedInputArrays([]int{1, 2, 3, 4, 5}))
-    fmt.Println(UnsortedInputArrays([]int{5, 3, 1}))
-    fmt.Println(UnsortedInputArrays([]int{1}))
-}`
+	fmt.Println(UnsortedInputArrays(nil, nil, nil)) // Expected: [0,1,4,9,16]
+	fmt.Println(UnsortedInputArrays(nil, nil, nil)) // Expected: [1,4,9]
+	fmt.Println(UnsortedInputArrays(nil, nil, nil)) // Expected: [1,9,25]
+}
+`
         },
         twists: [],
         similar: []

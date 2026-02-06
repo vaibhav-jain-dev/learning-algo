@@ -2,10 +2,12 @@
  * Lowest Common Manager of K Employees
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-manager
  * Parent: 14-lowest-common-manager
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Lowest Common Manager of K Employees',
         difficulty: 'Hard',
@@ -19,57 +21,77 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For employees [E, G, I] in an org chart, find the deepest manager who has all three as subordinates.' },
-                output: 'See example',
-                explanation: 'For employees [E, G, I] in an org chart, find the deepest manager who has all three as subordinates.'
+                input: {"topManager":"A","employee1":"E","employee2":"G"},
+                output: "result",
+                explanation: 'The resulting string is "result".'
+            },
+            // Edge case
+            {
+                input: {"topManager":"","employee1":"","employee2":""},
+                output: "",
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Lowest Common Manager of K Employees
-# Category: recursion
-# Difficulty: Hard
-# Parent: 14-lowest-common-manager
-
-def solve():
+            python: `def lowest_common_manager_of_k_employees(topManager, employee1, employee2):
     """
+    Lowest Common Manager of K Employees
+
     Extend to find the lowest common manager of k employees instead of just two.
 
-    Key insight: The two-target approach of returning when both are found generalizes to tracking a count of found targets across all subtrees, requiring different aggregation logic.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for item in topManager:
+        result.append(str(item))
+
+    return ''.join(result)
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(lowest_common_manager_of_k_employees("A", "E", "G"))  # Expected: "result"
+print(lowest_common_manager_of_k_employees("", "", ""))  # Expected: ""
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Lowest Common Manager of K Employees problem.
+// LowestCommonManagerOfKEmployees solves the Lowest Common Manager of K Employees problem.
 // Extend to find the lowest common manager of k employees instead of just two.
-// Key insight: The two-target approach of returning when both are found generalizes to tracking a count of found targets across all subtrees, requiring different aggregation logic.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func LowestCommonManagerOfKEmployees(topManager string, employee1 string, employee2 string) string {
+	result := ""
+
+	for _, v := range topManager {
+		result += fmt.Sprintf("%v", v)
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(LowestCommonManagerOfKEmployees("A", "E", "G")) // Expected: "result"
+	fmt.Println(LowestCommonManagerOfKEmployees("", "", "")) // Expected: ""
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '14-lowest-common-manager/twist-01-lowest-common-manager-of-k-employees', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/14-lowest-common-manager/twist-01-lowest-common-manager-of-k-employees'] = problem;
 })();

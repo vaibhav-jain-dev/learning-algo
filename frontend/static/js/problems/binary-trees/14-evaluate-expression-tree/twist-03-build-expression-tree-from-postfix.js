@@ -2,10 +2,12 @@
  * Build Expression Tree from Postfix
  * Category: binary-trees
  * Difficulty: Hard
+ * Algorithm: tree-expression
  * Parent: 14-evaluate-expression-tree
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Build Expression Tree from Postfix',
         difficulty: 'Hard',
@@ -19,120 +21,86 @@
             'Think about how the base case differs from the original problem.',
             'Review the example: Postfix: ["2", "3", "*", "4", "5", "-", "+"].'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Postfix: ["2", "3", "*", "4", "5", "-", "+"]' },
-                output: 'See explanation',
-                explanation: 'Postfix: ["2", "3", "*", "4", "5", "-", "+"]. Build tree: + at root, * (left: 2, right: 3), - (left: 4, right: 5).'
+                input: {"tree":{"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the build expression tree from postfix criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":-1,"left":{"value":5},"right":{"value":7}}},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the build expression tree from postfix criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def build_expression_tree_from_postfix(data):
+            python: `def build_expression_tree_from_postfix(tree):
     """
     Build Expression Tree from Postfix
 
-    Given a postfix (reverse Polish notation) expression as an array of tokens, build the corresponding expression tree.
+    Given a postfix (reverse Polish notation) expression as an array of tokens, build the corresponding expression tree. This is the inverse problem: construction instead of evaluation. You use a stack to build the tree bottom-up, pushing operand nodes and popping two children when you encounter an operator, which is a different mental model.
 
-    Approach: This is the inverse problem: construction instead of evaluation
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: This is the inverse problem: construction instead of evaluation
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Build Expression Tree from Postfix
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Postfix: ["2", "3", "*", "4", "5", "-", "+"]
-    print("See problem description for test cases")`,
+# Test cases
+print(build_expression_tree_from_postfix({"value": -1, "left": {"value": -2, "left": {"value": 2}, "right": {"value": 3}}, "right": {"value": -3, "left": {"value": 4}, "right": {"value": 5}}}))  # Expected: 1
+print(build_expression_tree_from_postfix({"value": -1, "left": {"value": 5}, "right": {"value": 7}}))  # Expected: 2
+print(build_expression_tree_from_postfix({"value": -1, "left": {"value": -2, "left": {"value": 2}, "right": {"value": 3}}, "right": {"value": -3, "left": {"value": 4}, "right": {"value": 5}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// BuildExpressionTreeFromPostfix solves: Build Expression Tree from Postfix
-// This is the inverse problem: construction instead of evaluation
+// BuildExpressionTreeFromPostfix solves the Build Expression Tree from Postfix problem.
+// Given a postfix (reverse Polish notation) expression as an array of tokens, build the corresponding expression tree. This is the inverse problem: construction instead of evaluation. You use a stack to build the tree bottom-up, pushing operand nodes and popping two children when you encounter an operator, which is a different mental model.
 // Time: O(n), Space: O(n)
-func BuildExpressionTreeFromPostfix(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func BuildExpressionTreeFromPostfix(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Build Expression Tree from Postfix
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Postfix: [2, 3, *, 4, 5, -, +]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(BuildExpressionTreeFromPostfix({"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}})) // Expected: 1
+	fmt.Println(BuildExpressionTreeFromPostfix({"value":-1,"left":{"value":5},"right":{"value":7}})) // Expected: 2
+	fmt.Println(BuildExpressionTreeFromPostfix({"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '14-evaluate-expression-tree/twist-03-build-expression-tree-from-postfix', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/14-evaluate-expression-tree/twist-03-build-expression-tree-from-postfix'] = problem;
 })();

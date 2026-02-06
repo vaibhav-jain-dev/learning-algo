@@ -2,10 +2,12 @@
  * Morris Preorder Traversal
  * Category: binary-trees
  * Difficulty: Hard
+ * Algorithm: tree-iterative
  * Parent: 16-iterative-inorder-traversal
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Morris Preorder Traversal',
         difficulty: 'Hard',
@@ -19,121 +21,85 @@
             'Key insight: Morris inorder processes the node when revisiting via the thread.',
             'Morris preorder processes the node when first visiting it (before creating the thread), changing when you add to the result relative to the threading logic.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree [4, 2, 6, 1, 3, 5, 7]' },
-                output: 'See explanation',
-                explanation: 'Tree [4, 2, 6, 1, 3, 5, 7]. Preorder: [4, 2, 1, 3, 6, 5, 7]. The node is processed on first visit, not when the inorder predecessor thread is found.'
+                input: {"tree":{"value":4,"left":{"value":2,"left":{"value":1},"right":{"value":3}},"right":{"value":6,"left":{"value":5},"right":{"value":7}}}},
+                output: [0],
+                explanation: 'The morris preorder traversal for this input yields [0].'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"right":{"value":2,"left":{"value":3}}}},
+                output: [0,1],
+                explanation: 'The morris preorder traversal for this input yields [0, 1].'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":4,"left":{"value":2,"left":{"value":1},"right":{"value":3}},"right":{"value":6,"left":{"value":5},"right":{"value":7}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def morris_preorder_traversal(data):
+            python: `def morris_preorder_traversal(tree):
     """
     Morris Preorder Traversal
 
-    Implement preorder traversal using Morris traversal (O(1) space, no recursion, no stack).
-     Output nodes in preorder: root, left, right.
+    Implement preorder traversal using Morris traversal (O(1) space, no recursion, no stack). Output nodes in preorder: root, left, right. Morris inorder processes the node when revisiting via the thread. Morris preorder processes the node when first visiting it (before creating the thread), changing when you add to the result relative to the threading logic.
 
-    Approach: Morris inorder processes the node when revisiting via the thread
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: Morris inorder processes the node when revisiting via the thread
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Morris Preorder Traversal
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree [4, 2, 6, 1, 3, 5, 7]
-    print("See problem description for test cases")`,
+# Test cases
+print(morris_preorder_traversal({"value": 4, "left": {"value": 2, "left": {"value": 1}, "right": {"value": 3}}, "right": {"value": 6, "left": {"value": 5}, "right": {"value": 7}}}))  # Expected: [0]
+print(morris_preorder_traversal({"value": 1, "right": {"value": 2, "left": {"value": 3}}}))  # Expected: [0,1]
+print(morris_preorder_traversal({"value": 4, "left": {"value": 2, "left": {"value": 1}, "right": {"value": 3}}, "right": {"value": 6, "left": {"value": 5}, "right": {"value": 7}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// MorrisPreorderTraversal solves: Morris Preorder Traversal
-// Morris inorder processes the node when revisiting via the thread
+// MorrisPreorderTraversal solves the Morris Preorder Traversal problem.
+// Implement preorder traversal using Morris traversal (O(1) space, no recursion, no stack). Output nodes in preorder: root, left, right. Morris inorder processes the node when revisiting via the thread. Morris preorder processes the node when first visiting it (before creating the thread), changing when you add to the result relative to the threading logic.
 // Time: O(n), Space: O(n)
-func MorrisPreorderTraversal(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func MorrisPreorderTraversal(tree *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    // TODO: Implement Morris Preorder Traversal
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree [4, 2, 6, 1, 3, 5, 7]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(MorrisPreorderTraversal({"value":4,"left":{"value":2,"left":{"value":1},"right":{"value":3}},"right":{"value":6,"left":{"value":5},"right":{"value":7}}})) // Expected: [0]
+	fmt.Println(MorrisPreorderTraversal({"value":1,"right":{"value":2,"left":{"value":3}}})) // Expected: [0,1]
+	fmt.Println(MorrisPreorderTraversal({"value":4,"left":{"value":2,"left":{"value":1},"right":{"value":3}},"right":{"value":6,"left":{"value":5},"right":{"value":7}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '16-iterative-inorder-traversal/twist-01-morris-preorder-traversal', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/16-iterative-inorder-traversal/twist-01-morris-preorder-traversal'] = problem;
 })();

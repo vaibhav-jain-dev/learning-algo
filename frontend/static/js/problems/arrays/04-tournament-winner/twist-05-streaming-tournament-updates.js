@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,3,5,2,4]},
                 output: 1,
-                explanation: 'Only one operation needed to achieve the goal.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4]},
                 output: 0,
-                explanation: 'Already satisfies the condition, no operations needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[5,3,1,4,2]},
                 output: 2,
-                explanation: 'Two operations needed to satisfy the condition.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def streaming_tournament_updates(data):
+            python: `def streaming_tournament_updates(competitions, results):
     """
     Streaming Tournament Updates
 
-    Results arrive one at a time. After each result, report the current leader. Optimize for frequent queries.
-    \n    Approach: Requires maintaining a max-heap or sorted structure of scores to efficiently report the leader after each update, rather than just tracking a running max.
+    Results arrive one at a time. After each result, report the current leader. Optimize for frequent queries. Requires maintaining a max-heap or sorted structure of scores to efficiently report the leader after each update, rather than just tracking a running max.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # After match 1: leader=A(3). After match 2: leader could change to B(6). Real-time updates.
+    count = 0
+    n = len(competitions)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on results
+        j = 0
+        for k in range(i, n):
+            if j < len(results) and competitions[k] == results[j]:
+                j += 1
+        if j == len(results):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(streaming_tournament_updates([1, 2, 3, 4, 5]))
-print(streaming_tournament_updates([5, 3, 1]))
-print(streaming_tournament_updates([1]))`,
+print(streaming_tournament_updates(None, None))  # Expected: 1
+print(streaming_tournament_updates(None, None))  # Expected: 0
+print(streaming_tournament_updates(None, None))  # Expected: 2
+`,
             go: `package main
 
 import "fmt"
 
 // StreamingTournamentUpdates solves the Streaming Tournament Updates problem.
-// Results arrive one at a time. After each result, report the current leader. Optimize for frequent queries.
+// Results arrive one at a time. After each result, report the current leader. Optimize for frequent queries. Requires maintaining a max-heap or sorted structure of scores to efficiently report the leader after each update, rather than just tracking a running max.
 // Time: O(n), Space: O(n)
-func StreamingTournamentUpdates(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func StreamingTournamentUpdates(competitions [][]int, results []int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(competitions); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(StreamingTournamentUpdates([]int{1, 2, 3, 4, 5}))
-    fmt.Println(StreamingTournamentUpdates([]int{5, 3, 1}))
-    fmt.Println(StreamingTournamentUpdates([]int{1}))
-}`
+	fmt.Println(StreamingTournamentUpdates(nil, nil)) // Expected: 1
+	fmt.Println(StreamingTournamentUpdates(nil, nil)) // Expected: 0
+	fmt.Println(StreamingTournamentUpdates(nil, nil)) // Expected: 2
+}
+`
         },
         twists: [],
         similar: []

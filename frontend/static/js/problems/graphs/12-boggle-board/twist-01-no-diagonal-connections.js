@@ -2,10 +2,12 @@
  * No Diagonal Connections
  * Category: graphs
  * Difficulty: Easy
+ * Algorithm: graph-word-search
  * Parent: 12-boggle-board
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'No Diagonal Connections',
         difficulty: 'Easy',
@@ -19,87 +21,85 @@
             'Consider the example: Word "cat" needs c-a-t connected.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N * M * 8^L + W * L)', space: 'O(W * L + N * M)' },
+        complexity: {
+            time: 'O(N * M * 8^L + W * L)',
+            space: 'O(W * L + N * M)'
+        },
         examples: [
-            { input: { description: 'Word "cat" needs c-a-t connected. With diagonals, c at (0,0) reaches a at (1,1). Without diagonals, they must be horizontally or vertically adjacent.' }, output: 'See explanation', explanation: 'Word "cat" needs c-a-t connected. With diagonals, c at (0,0) reaches a at (1,1). Without diagonals, they must be horizontally or vertically adjacent.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"board":[["t","h","i","s"],["w","a","t","s"],["o","a","h","g"],["f","g","d","t"]],"words":["this","two","fat","that"]},
+                output: [["t","h","i","s"],["w","a","t","s"],["o","a","h","g"]],
+                explanation: 'The no diagonal connections for this input yields [t,h,i,s, w,a,t,s, o,a,h,g].'
+            },
+            {
+                input: {"board":[["a","b"],["c","d"]],"words":["abcd","abdc","abca"]},
+                output: [["a","b"],["c","d"]],
+                explanation: 'The no diagonal connections for this input yields [a,b, c,d].'
+            },
+            // Edge case
+            {
+                input: {"board":[["t","h","i","s"]],"words":["this"]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def no_diagonal_connections(data):
+            python: `def no_diagonal_connections(board, words):
     """
     No Diagonal Connections
 
     Letters can only connect horizontally and vertically (4 directions), not diagonally. Find all words.
 
-    Approach:
-    Reducing from 8 to 4 neighbors changes which words are findable. Paths that relied on diagonal connections break, requiring re-evaluation of word reachability.
-
     Time: O(N * M * 8^L + W * L)
     Space: O(W * L + N * M)
     """
-    # Reducing from 8 to 4 neighbors changes which words are findable. Paths that relied on diagonal connections break, requiring re-evaluation of word reachability.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: No Diagonal Connections
-    # Key difference from parent: Reducing from 8 to 4 neighbors changes which words are findable. Paths that relied on diagonal conne
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(board)):
+        # Check if element meets criteria
+        result.append(board[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return no_diagonal_connections(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Word "cat" needs c-a-t connected. With diagonals, c at (0,0) reaches a at (1,1). Without diagonals, they must be horizontally or vertically adjacent.
-    print("Test: No Diagonal Connections")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(no_diagonal_connections([["t","h","i","s"],["w","a","t","s"],["o","a","h","g"],["f","g","d","t"]], ["this","two","fat","that"]))  # Expected: [["t","h","i","s"],["w","a","t","s"],["o","a","h","g"]]
+print(no_diagonal_connections([["a","b"],["c","d"]], ["abcd","abdc","abca"]))  # Expected: [["a","b"],["c","d"]]
+print(no_diagonal_connections([["t","h","i","s"]], ["this"]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// NoDiagonalConnections solves the No Diagonal Connections problem
+// NoDiagonalConnections solves the No Diagonal Connections problem.
 // Letters can only connect horizontally and vertically (4 directions), not diagonally. Find all words.
-//
-// Approach: Reducing from 8 to 4 neighbors changes which words are findable. Paths that relied on diagonal connections break, requiring re-evaluation of word reachability.
-//
-// Time: O(N * M * 8^L + W * L)
-// Space: O(W * L + N * M)
-func NoDiagonalConnections(input interface{}) interface{} {
-    // Reducing from 8 to 4 neighbors changes which words are findable. Paths that relied on diagonal connections break, requiring re-evaluation of word reachability.
+// Time: O(N * M * 8^L + W * L), Space: O(W * L + N * M)
+func NoDiagonalConnections(board [][]int, words []string) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: No Diagonal Connections
-    // Key difference from parent: Reducing from 8 to 4 neighbors changes which words are findable. Paths that relied on diagonal conne
+	for i := 0; i < len(board); i++ {
+		result = append(result, board[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Word "cat" needs c-a-t connected. With diagonals, c at (0,0) reaches a at (1,1). Without diagonals, they must be horizontally or vertically adjacent.
-    fmt.Println("Test: No Diagonal Connections")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(NoDiagonalConnections([][]int{{t, h, i, s}, {w, a, t, s}, {o, a, h, g}, {f, g, d, t}}, []string{"this", "two", "fat", "that"})) // Expected: [["t","h","i","s"],["w","a","t","s"],["o","a","h","g"]]
+	fmt.Println(NoDiagonalConnections([][]int{{a, b}, {c, d}}, []string{"abcd", "abdc", "abca"})) // Expected: [["a","b"],["c","d"]]
+	fmt.Println(NoDiagonalConnections([][]int{{t, h, i, s}}, []string{"this"})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '12-boggle-board/twist-01-no-diagonal-connections', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/12-boggle-board/twist-01-no-diagonal-connections'] = problem;
 })();

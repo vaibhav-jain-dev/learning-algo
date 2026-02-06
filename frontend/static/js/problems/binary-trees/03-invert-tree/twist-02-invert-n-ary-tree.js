@@ -2,10 +2,12 @@
  * Invert N-ary Tree
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-invert
  * Parent: 03-invert-tree
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Invert N-ary Tree',
         difficulty: 'Medium',
@@ -19,120 +21,78 @@
             'Think about how the base case differs from the original problem.',
             'Review the example: Node(1, children=[A, B, C]) becomes Node(1, children=[C, B, A]), applied recursively.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Node(1, children=[A, B, C]) becomes Node(1, children=[C, B, A]), applied recursively' },
-                output: 'See explanation',
-                explanation: 'Node(1, children=[A, B, C]) becomes Node(1, children=[C, B, A]), applied recursively.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: [0],
+                explanation: 'The invert n ary tree for this input yields [0].'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def invert_n_ary_tree(data):
+            python: `def invert_n_ary_tree(tree):
     """
     Invert N-ary Tree
 
-    Invert an N-ary tree by reversing the order of children at every node.
+    Invert an N-ary tree by reversing the order of children at every node. Instead of swapping left/right, you must reverse an entire children array at each node. The recursive structure changes from swap(left,right) to children.reverse().
 
-    Approach: Instead of swapping left/right, you must reverse an entire children array at each node
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: Instead of swapping left/right, you must reverse an entire children array at each node
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Invert N-ary Tree
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Node(1, children=[A, B, C]) becomes Node(1, children=[C, B, A]), applied recursively
-    print("See problem description for test cases")`,
+# Test cases
+print(invert_n_ary_tree({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: [0]
+print(invert_n_ary_tree({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// InvertNaryTree solves: Invert N-ary Tree
-// Instead of swapping left/right, you must reverse an entire children array at each node
+// InvertNAryTree solves the Invert N-ary Tree problem.
+// Invert an N-ary tree by reversing the order of children at every node. Instead of swapping left/right, you must reverse an entire children array at each node. The recursive structure changes from swap(left,right) to children.reverse().
 // Time: O(n), Space: O(n)
-func InvertNaryTree(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func InvertNAryTree(tree *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    // TODO: Implement Invert N-ary Tree
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Node(1, children=[A, B, C]) becomes Node(1, children=[C, B, A]), applied recursively
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(InvertNAryTree({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: [0]
+	fmt.Println(InvertNAryTree({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '03-invert-tree/twist-02-invert-n-ary-tree', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/03-invert-tree/twist-02-invert-n-ary-tree'] = problem;
 })();

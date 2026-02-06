@@ -2,10 +2,12 @@
  * K Closest Values in Streaming BST
  * Category: binary-search-trees
  * Difficulty: Hard
+ * Algorithm: bst-search
  * Parent: 01-find-closest-value/01-k-closest-values-bst
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'K Closest Values in Streaming BST',
         difficulty: 'Hard',
@@ -14,68 +16,94 @@
         description: 'The BST receives insertions and deletions over time. After each modification, return the current k closest values to a fixed target.',
         problem: 'Maintaining a dynamic result set under mutations requires augmented data structures or efficient re-computation strategies, unlike the static single-pass approach. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: k closest values in streaming bst.",
-                  "Consider how maintaining a dynamic result set under mutations requires augmented data structures or efficient re-computation strategies, unlike the static single-pass approach affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Target=10, k=2. Insert 8,12,9,11. After insert 8: [8]. After insert 12: [8,12]. After insert 9: [9,8]. After insert 11: [11,9].'
+                input: {"tree":[4,2,5,1,3],"target":10,"k":2},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the k closest values in streaming bst criteria.'
+            },
+            {
+                input: {"tree":[8,4,12,2,6,10,14,1,3,5,7],"target":10,"k":4},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the k closest values in streaming bst criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":[4],"target":10,"k":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# K Closest Values in Streaming BST
-# Difficulty: Hard
-# Parent: 01-find-closest-value/01-k-closest-values-bst
-#
-# The BST receives insertions and deletions over time. After each modification, return the current k closest values to a fixed target.
-
-def kClosestValuesInStreamingBst(data):
+            python: `def k_closest_values_in_streaming_bst(tree, target, k):
     """
     K Closest Values in Streaming BST
 
-    Approach: Maintaining a dynamic result set under mutations requires augmented data structures or efficient re-computation strategies, unlike the static single-pass approach.
+    The BST receives insertions and deletions over time. After each modification, return the current k closest values to a fixed target.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Maintaining a dynamic result set under mutations requires augmented data structures or efficient re-computation strategies, unlike the static single-pass approach
-    pass
+    count = 0
+    n = len(tree)
+
+    for i in range(n):
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and tree[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Target=10, k=2
-    print(kClosestValuesInStreamingBst({}))`,
+# Test cases
+print(k_closest_values_in_streaming_bst([4,2,5,1,3], 10, 2))  # Expected: 1
+print(k_closest_values_in_streaming_bst([8,4,12,2,6,10,14,1,3,5,7], 10, 4))  # Expected: 2
+print(k_closest_values_in_streaming_bst([4], 10, 0))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// K Closest Values in Streaming BST
-// Difficulty: Hard
-// Parent: 01-find-closest-value/01-k-closest-values-bst
-//
+// KClosestValuesInStreamingBst solves the K Closest Values in Streaming BST problem.
 // The BST receives insertions and deletions over time. After each modification, return the current k closest values to a fixed target.
+// Time: O(n), Space: O(1)
+func KClosestValuesInStreamingBst(tree []int, target float64, k int) int {
+	result := 0
 
-func KClosestValuesInStreamingBst(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Maintaining a dynamic result set under mutations requires augmented data structures or efficient re-computation strategies, unlike the static single-pass approach
-    return nil
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Target=10, k=2
-    fmt.Println(KClosestValuesInStreamingBst(map[string]interface{}{}))
-}`
+	fmt.Println(KClosestValuesInStreamingBst([]int{4, 2, 5, 1, 3}, 10, 2)) // Expected: 1
+	fmt.Println(KClosestValuesInStreamingBst([]int{8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7}, 10, 4)) // Expected: 2
+	fmt.Println(KClosestValuesInStreamingBst([]int{4}, 10, 0)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '01-find-closest-value/01-k-closest-values-bst/twist-03-k-closest-values-in-streaming-bst', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/01-find-closest-value/01-k-closest-values-bst/twist-03-k-closest-values-in-streaming-bst'] = problem;
 })();

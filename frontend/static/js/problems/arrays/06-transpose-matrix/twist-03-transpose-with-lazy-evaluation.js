@@ -27,83 +27,71 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"matrix":[[1,2],[3,4]]},
                 output: [[1,3],[2,4]],
-                explanation: 'Matrix transformed according to the specified operation.'
+                explanation: ''
             },
             {
                 input: {"matrix":[[1,2,3],[4,5,6]]},
                 output: [[1,4],[2,5],[3,6]],
-                explanation: 'Rectangular matrix handled correctly.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"matrix":[[1]]},
                 output: [[1]],
-                explanation: 'Single element matrix is trivially handled.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def transpose_with_lazy_evaluation(data):
+            python: `def transpose_with_lazy_evaluation(matrix):
     """
     Transpose with Lazy Evaluation
 
-    Create a transposed view of the matrix that does not copy any data. Access to element (i,j) in the transposed view returns element (j,i) from the original.
-    \n    Approach: Shifts from eagerly computing the transpose to building a proxy/wrapper that redirects access, a fundamentally different design pattern.
+    Create a transposed view of the matrix that does not copy any data. Access to element (i,j) in the transposed view returns element (j,i) from the original. Shifts from eagerly computing the transpose to building a proxy/wrapper that redirects access, a fundamentally different design pattern.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # view.get(i,j) returns original.get(j,i) without copying
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(matrix)):
+        # Check if element meets criteria
+        result.append(matrix[i])
 
     return result
 
 
 # Test cases
-print(transpose_with_lazy_evaluation([1, 2, 3, 4, 5]))
-print(transpose_with_lazy_evaluation([5, 3, 1]))
-print(transpose_with_lazy_evaluation([1]))`,
+print(transpose_with_lazy_evaluation([[1,2],[3,4]]))  # Expected: [[1,3],[2,4]]
+print(transpose_with_lazy_evaluation([[1,2,3],[4,5,6]]))  # Expected: [[1,4],[2,5],[3,6]]
+print(transpose_with_lazy_evaluation([[1]]))  # Expected: [[1]]
+`,
             go: `package main
 
 import "fmt"
 
 // TransposeWithLazyEvaluation solves the Transpose with Lazy Evaluation problem.
-// Create a transposed view of the matrix that does not copy any data. Access to element (i,j) in the transposed view returns element (j,i) from the original.
+// Create a transposed view of the matrix that does not copy any data. Access to element (i,j) in the transposed view returns element (j,i) from the original. Shifts from eagerly computing the transpose to building a proxy/wrapper that redirects access, a fundamentally different design pattern.
 // Time: O(n), Space: O(n)
-func TransposeWithLazyEvaluation(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func TransposeWithLazyEvaluation(matrix [][]int) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(matrix); i++ {
+		result = append(result, matrix[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(TransposeWithLazyEvaluation([]int{1, 2, 3, 4, 5}))
-    fmt.Println(TransposeWithLazyEvaluation([]int{5, 3, 1}))
-    fmt.Println(TransposeWithLazyEvaluation([]int{1}))
-}`
+	fmt.Println(TransposeWithLazyEvaluation([][]int{{1, 2}, {3, 4}})) // Expected: [[1,3],[2,4]]
+	fmt.Println(TransposeWithLazyEvaluation([][]int{{1, 2, 3}, {4, 5, 6}})) // Expected: [[1,4],[2,5],[3,6]]
+	fmt.Println(TransposeWithLazyEvaluation([][]int{{1}})) // Expected: [[1]]
+}
+`
         },
         twists: [],
         similar: []

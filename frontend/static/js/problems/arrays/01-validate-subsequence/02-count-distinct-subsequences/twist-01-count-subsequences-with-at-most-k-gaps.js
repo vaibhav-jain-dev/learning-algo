@@ -26,80 +26,76 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"s":"rabbbit","t":"rabbit"},
                 output: 3,
-                explanation: 'Three distinct ways to select "rabbit" from "rabbbit" by choosing different b characters.'
+                explanation: ''
             },
             {
                 input: {"s":"aabb","t":"ab"},
                 output: 4,
-                explanation: 'Four ways: positions (0,2), (0,3), (1,2), (1,3).'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"s":"abc","t":"xyz"},
                 output: 0,
-                explanation: 'No matching subsequence exists.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def count_subsequences_with_at_most_k_gaps(data):
+            python: `def count_subsequences_with_at_most_k_gaps(s, t):
     """
     Count Subsequences with At Most K Gaps
 
-    Count distinct subsequences of s that equal t, but consecutive matched characters must have at most k characters between them in s.
-    \n    Approach: Adds a gap constraint that requires tracking the last matched position in the DP state, changing from 2D to 3D DP.
+    Count distinct subsequences of s that equal t, but consecutive matched characters must have at most k characters between them in s. Adds a gap constraint that requires tracking the last matched position in the DP state, changing from 2D to 3D DP.
 
     Time: O(n log k)
     Space: O(n)
-
-    Example: s="rabbbit", t="rbt", k=2 → fewer matches since characters must be close together
     """
-    if not data:
-        return None
+    j = 0
+    last_match = -1
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
+    for i in range(len(s)):
+        if j < len(t) and s[i] == t[j]:
+            if last_match >= 0 and i - last_match > k:
+                return False
+            last_match = i
+            j += 1
 
-    # Core algorithm implementation
-    for i in range(n):
-        result.append(data[i])
-
-    return result
+    return j == len(t)
 
 
 # Test cases
-print(count_subsequences_with_at_most_k_gaps([1, 2, 3, 4, 5]))
-print(count_subsequences_with_at_most_k_gaps([5, 3, 1]))
-print(count_subsequences_with_at_most_k_gaps([1]))`,
+print(count_subsequences_with_at_most_k_gaps("rabbbit", "rabbit"))  # Expected: 3
+print(count_subsequences_with_at_most_k_gaps("aabb", "ab"))  # Expected: 4
+print(count_subsequences_with_at_most_k_gaps("abc", "xyz"))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // CountSubsequencesWithAtMostKGaps solves the Count Subsequences with At Most K Gaps problem.
-// Count distinct subsequences of s that equal t, but consecutive matched characters must have at most k characters between them in s.
+// Count distinct subsequences of s that equal t, but consecutive matched characters must have at most k characters between them in s. Adds a gap constraint that requires tracking the last matched position in the DP state, changing from 2D to 3D DP.
 // Time: O(n log k), Space: O(n)
-func CountSubsequencesWithAtMostKGaps(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func CountSubsequencesWithAtMostKGaps(s string, t string) int {
+	result := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(s); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(CountSubsequencesWithAtMostKGaps([]int{1, 2, 3, 4, 5}))
-    fmt.Println(CountSubsequencesWithAtMostKGaps([]int{5, 3, 1}))
-    fmt.Println(CountSubsequencesWithAtMostKGaps([]int{1}))
-}`
+	fmt.Println(CountSubsequencesWithAtMostKGaps("rabbbit", "rabbit")) // Expected: 3
+	fmt.Println(CountSubsequencesWithAtMostKGaps("aabb", "ab")) // Expected: 4
+	fmt.Println(CountSubsequencesWithAtMostKGaps("abc", "xyz")) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []

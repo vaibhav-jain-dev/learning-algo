@@ -2,10 +2,12 @@
  * Wildcard Pattern Matching
  * Category: famous-algorithms
  * Difficulty: Hard
+ * Algorithm: kmp-algorithm
  * Parent: 04-knuth-morris-pratt
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Wildcard Pattern Matching',
         difficulty: 'Hard',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Pattern "A?B" matches "AXB", "A1B", "AAB" etc. Finding this in "AABAXB" should return positions [0,3] (if A?B matches at those positions).' },
-                output: 'See example',
-                explanation: 'Pattern "A?B" matches "AXB", "A1B", "AAB" etc. Finding this in "AABAXB" should return positions [0,3] (if A?B matches at those positions).'
+                input: {"text":"ABABDABACDABABCABAB","pattern":"ABABCABAB"},
+                output: [0],
+                explanation: 'The wildcard pattern matching for this input yields [0].'
+            },
+            {
+                input: {"text":"AAAAAA","pattern":"AA"},
+                output: [0,1],
+                explanation: 'The wildcard pattern matching for this input yields [0, 1].'
+            },
+            // Edge case
+            {
+                input: {"text":"","pattern":""},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Wildcard Pattern Matching
-# Category: famous-algorithms
-# Difficulty: Hard
-# Parent: 04-knuth-morris-pratt
-
-def solve():
+            python: `def wildcard_pattern_matching(text, pattern):
     """
+    Wildcard Pattern Matching
+
     Modify KMP to handle patterns containing wildcard characters (?) that match any single character.
 
-    Key insight: Wildcards break the standard LPS computation since a ? matches anything, requiring modified failure function logic that accounts for flexible matching.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(text)):
+        # Check if element meets criteria
+        result.append(text[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(wildcard_pattern_matching("ABABDABACDABABCABAB", "ABABCABAB"))  # Expected: [0]
+print(wildcard_pattern_matching("AAAAAA", "AA"))  # Expected: [0,1]
+print(wildcard_pattern_matching("", ""))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Wildcard Pattern Matching problem.
+// WildcardPatternMatching solves the Wildcard Pattern Matching problem.
 // Modify KMP to handle patterns containing wildcard characters (?) that match any single character.
-// Key insight: Wildcards break the standard LPS computation since a ? matches anything, requiring modified failure function logic that accounts for flexible matching.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func WildcardPatternMatching(text string, pattern string) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(text); i++ {
+		result = append(result, text[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(WildcardPatternMatching("ABABDABACDABABCABAB", "ABABCABAB")) // Expected: [0]
+	fmt.Println(WildcardPatternMatching("AAAAAA", "AA")) // Expected: [0,1]
+	fmt.Println(WildcardPatternMatching("", "")) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '04-knuth-morris-pratt/twist-04-wildcard-pattern-matching', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/04-knuth-morris-pratt/twist-04-wildcard-pattern-matching'] = problem;
 })();

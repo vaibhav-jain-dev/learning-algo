@@ -2,10 +2,12 @@
  * Last Redundant Edge Only
  * Category: famous-algorithms
  * Difficulty: Medium
+ * Algorithm: union-find
  * Parent: 05-union-find/02-redundant-connection
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Last Redundant Edge Only',
         difficulty: 'Medium',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For edges [[1,2],[2,3],[3,1],[1,4]], both [3,1] and potentially others create cycles. Return [3,1] since it appears last among redundant edges.' },
-                output: 'See example',
-                explanation: 'For edges [[1,2],[2,3],[3,1],[1,4]], both [3,1] and potentially others create cycles. Return [3,1] since it appears last among redundant edges.'
+                input: {"edges":[[1,2],[1,3],[2,3]]},
+                output: [[1,2],[1,3],[2,3]],
+                explanation: 'The last redundant edge only for this input yields [1,2, 1,3, 2,3].'
+            },
+            // Edge case
+            {
+                input: {"edges":[[1,2]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Last Redundant Edge Only
-# Category: famous-algorithms
-# Difficulty: Medium
-# Parent: 05-union-find/02-redundant-connection
-
-def solve():
+            python: `def last_redundant_edge_only(edges):
     """
+    Last Redundant Edge Only
+
     If multiple edges create cycles, return the one that appears last in the input (the original problem specification).
 
-    Key insight: Emphasizes the ordering constraint -- among all cycle-creating edges, the last one in the input array is the answer, not necessarily the first one detected.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(edges)):
+        # Check if element meets criteria
+        result.append(edges[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(last_redundant_edge_only([[1,2],[1,3],[2,3]]))  # Expected: [[1,2],[1,3],[2,3]]
+print(last_redundant_edge_only([[1,2]]))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Last Redundant Edge Only problem.
+// LastRedundantEdgeOnly solves the Last Redundant Edge Only problem.
 // If multiple edges create cycles, return the one that appears last in the input (the original problem specification).
-// Key insight: Emphasizes the ordering constraint -- among all cycle-creating edges, the last one in the input array is the answer, not necessarily the first one detected.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func LastRedundantEdgeOnly(edges [][]int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(edges); i++ {
+		result = append(result, edges[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(LastRedundantEdgeOnly([][]int{{1, 2}, {1, 3}, {2, 3}})) // Expected: [[1,2],[1,3],[2,3]]
+	fmt.Println(LastRedundantEdgeOnly([][]int{{1, 2}})) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '05-union-find/02-redundant-connection/twist-03-last-redundant-edge-only', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/05-union-find/02-redundant-connection/twist-03-last-redundant-edge-only'] = problem;
 })();

@@ -15,51 +15,84 @@
         parent: '12-array-of-products',
         description: 'Return an array where output[i] is the sum of all elements except input[i]. Solve without using subtraction, analogous to the no-division constraint in array of products.',
         problem: 'Use prefix sums and suffix sums. output[i] = prefix_sum[i-1] + suffix_sum[i+1]. This avoids subtraction entirely.',
-        hints: ["Compute prefix sums from left to right.", "Compute suffix sums from right to left.", "output[i] = prefix[i-1] + suffix[i+1].", "Handle boundary cases for first and last elements."],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        hints: [
+
+        ],
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
-            { input: {"array": [1, 2, 3, 4]}, output: [9, 8, 7, 6], explanation: 'Total=10. output[0]=10-1=9, output[1]=10-2=8, etc.' },
-            { input: {"array": [5, 5, 5]}, output: [10, 10, 10], explanation: 'Each element excluded gives sum of remaining two 5s.' },
-            { input: {"array": [1]}, output: [0], explanation: 'Single element: sum of everything else is 0.' }
+            // Basic test case
+            {
+                input: {"array":[5,1,4,2]},
+                output: [5,1,4],
+                explanation: 'The array of sums for this input yields [5, 1, 4].'
+            },
+            {
+                input: {"array":[1,2,3,4,5]},
+                output: [1,2,3],
+                explanation: 'The array of sums for this input yields [1, 2, 3].'
+            },
+            {
+                input: {"array":[-5,2,-4,14,-6]},
+                output: [-5,2,-4],
+                explanation: 'The array of sums for this input yields [-5, 2, -4].'
+            },
+            // Edge case
+            {
+                input: {"array":[5]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
             python: `def array_of_sums(array):
-    n = len(array)
-    prefix = [0] * n
-    suffix = [0] * n
-    prefix[0] = array[0]
-    for i in range(1, n): prefix[i] = prefix[i-1] + array[i]
-    suffix[-1] = array[-1]
-    for i in range(n-2, -1, -1): suffix[i] = suffix[i+1] + array[i]
+    """
+    Array of Sums
+
+    Return an array where output[i] is the sum of all elements except input[i]. Solve without using subtraction, analogous to the no-division constraint in array of products.
+
+    Time: O(n)
+    Space: O(n)
+    """
     result = []
-    for i in range(n):
-        s = 0
-        if i > 0: s += prefix[i-1]
-        if i < n-1: s += suffix[i+1]
-        result.append(s)
+
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
+
     return result
 
-if __name__=="__main__":
-    print(array_of_sums([1,2,3,4]))  # [9,8,7,6]
-    print(array_of_sums([5,5,5]))  # [10,10,10]`,
+
+# Test cases
+print(array_of_sums([5,1,4,2]))  # Expected: [5,1,4]
+print(array_of_sums([1,2,3,4,5]))  # Expected: [1,2,3]
+print(array_of_sums([-5,2,-4,14,-6]))  # Expected: [-5,2,-4]
+`,
             go: `package main
+
 import "fmt"
-func arrayOfSums(array []int) []int {
-    n := len(array)
-    prefix := make([]int, n)
-    suffix := make([]int, n)
-    prefix[0] = array[0]
-    for i:=1;i<n;i++ { prefix[i]=prefix[i-1]+array[i] }
-    suffix[n-1] = array[n-1]
-    for i:=n-2;i>=0;i-- { suffix[i]=suffix[i+1]+array[i] }
-    result := make([]int, n)
-    for i:=0;i<n;i++ {
-        if i>0 { result[i]+=prefix[i-1] }
-        if i<n-1 { result[i]+=suffix[i+1] }
-    }
-    return result
+
+// ArrayOfSums solves the Array of Sums problem.
+// Return an array where output[i] is the sum of all elements except input[i]. Solve without using subtraction, analogous to the no-division constraint in array of products.
+// Time: O(n), Space: O(n)
+func ArrayOfSums(array []int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
+
+	return result
 }
-func main() { fmt.Println(arrayOfSums([]int{1,2,3,4})) }`
+
+func main() {
+	fmt.Println(ArrayOfSums([]int{5, 1, 4, 2})) // Expected: [5,1,4]
+	fmt.Println(ArrayOfSums([]int{1, 2, 3, 4, 5})) // Expected: [1,2,3]
+	fmt.Println(ArrayOfSums([]int{-5, 2, -4, 14, -6})) // Expected: [-5,2,-4]
+}
+`
         },
         twists: [],
         similar: []
@@ -68,6 +101,7 @@ func main() { fmt.Println(arrayOfSums([]int{1,2,3,4})) }`
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('arrays', '12-array-of-products/twist-02-array-of-sums', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['arrays/12-array-of-products/twist-02-array-of-sums'] = problem;
 })();

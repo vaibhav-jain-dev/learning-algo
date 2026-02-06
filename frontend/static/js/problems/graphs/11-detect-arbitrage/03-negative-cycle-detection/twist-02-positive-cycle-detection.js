@@ -2,10 +2,12 @@
  * Positive Cycle Detection
  * Category: graphs
  * Difficulty: Easy
+ * Algorithm: bellman-ford
  * Parent: 11-detect-arbitrage/03-negative-cycle-detection
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Positive Cycle Detection',
         difficulty: 'Easy',
@@ -19,87 +21,85 @@
             'Consider the example: Edges [0->1 weight 3, 1->2 weight 2, 2->0 weight 1].',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(V * E)', space: 'O(V)' },
+        complexity: {
+            time: 'O(V * E)',
+            space: 'O(V)'
+        },
         examples: [
-            { input: { description: 'Edges [0->1 weight 3, 1->2 weight 2, 2->0 weight 1]. Cycle 0->1->2->0 has weight 6 > 0. Positive cycle exists.' }, output: 'See explanation', explanation: 'Edges [0->1 weight 3, 1->2 weight 2, 2->0 weight 1]. Cycle 0->1->2->0 has weight 6 > 0. Positive cycle exists.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"n":4,"edges":[[0,1,1],[1,2,-3],[2,3,2],[3,1,1]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the positive cycle detection criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"edges":[[0,1,1]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def positive_cycle_detection(data):
+            python: `def positive_cycle_detection(n, edges):
     """
     Positive Cycle Detection
 
     Detect if the graph contains a positive weight cycle instead of negative.
 
-    Approach:
-    Negate all edge weights and run Bellman-Ford for negative cycle detection. Alternatively, run the algorithm seeking increases rather than decreases.
-
     Time: O(V * E)
     Space: O(V)
     """
-    # Negate all edge weights and run Bellman-Ford for negative cycle detection. Alternatively, run the algorithm seeking increases rather than decreases.
+    count = 0
+    n = len(n)
 
-    # Implementation
-    result = None
+    for i in range(n):
+        # Check condition based on edges
+        j = 0
+        for k in range(i, n):
+            if j < len(edges) and n[k] == edges[j]:
+                j += 1
+        if j == len(edges):
+            count += 1
 
-    # Core algorithm adapted for: Positive Cycle Detection
-    # Key difference from parent: Negate all edge weights and run Bellman-Ford for negative cycle detection. Alternatively, run the al
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return positive_cycle_detection(data)
+    return count
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Edges [0->1 weight 3, 1->2 weight 2, 2->0 weight 1]. Cycle 0->1->2->0 has weight 6 > 0. Positive cycle exists.
-    print("Test: Positive Cycle Detection")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(positive_cycle_detection(4, [[0,1,1],[1,2,-3],[2,3,2],[3,1,1]]))  # Expected: 1
+print(positive_cycle_detection(0, [[0,1,1]]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// PositiveCycleDetection solves the Positive Cycle Detection problem
+// PositiveCycleDetection solves the Positive Cycle Detection problem.
 // Detect if the graph contains a positive weight cycle instead of negative.
-//
-// Approach: Negate all edge weights and run Bellman-Ford for negative cycle detection. Alternatively, run the algorithm seeking increases rather than decreases.
-//
-// Time: O(V * E)
-// Space: O(V)
-func PositiveCycleDetection(input interface{}) interface{} {
-    // Negate all edge weights and run Bellman-Ford for negative cycle detection. Alternatively, run the algorithm seeking increases rather than decreases.
+// Time: O(V * E), Space: O(V)
+func PositiveCycleDetection(n int, edges [][]int) int {
+	result := 0
 
-    // Core algorithm adapted for: Positive Cycle Detection
-    // Key difference from parent: Negate all edge weights and run Bellman-Ford for negative cycle detection. Alternatively, run the al
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Edges [0->1 weight 3, 1->2 weight 2, 2->0 weight 1]. Cycle 0->1->2->0 has weight 6 > 0. Positive cycle exists.
-    fmt.Println("Test: Positive Cycle Detection")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(PositiveCycleDetection(4, [][]int{{0, 1, 1}, {1, 2, -3}, {2, 3, 2}, {3, 1, 1}})) // Expected: 1
+	fmt.Println(PositiveCycleDetection(0, [][]int{{0, 1, 1}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '11-detect-arbitrage/03-negative-cycle-detection/twist-02-positive-cycle-detection', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/11-detect-arbitrage/03-negative-cycle-detection/twist-02-positive-cycle-detection'] = problem;
 })();

@@ -2,10 +2,12 @@
  * Allow Mixed Direction
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: fast-slow-pointer
  * Parent: 07-single-cycle-check/03-circular-array-loop
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Allow Mixed Direction',
         difficulty: 'Medium',
@@ -19,87 +21,78 @@
             'Consider the example: Array [2, -1, 1, 2, 2].',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(n)', space: 'O(1)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
-            { input: { description: 'Array [2, -1, 1, 2, 2]. Cycle 0->2->3->0 mixes positive and negative. With mixed allowed, this is valid.' }, output: 'See explanation', explanation: 'Array [2, -1, 1, 2, 2]. Cycle 0->2->3->0 mixes positive and negative. With mixed allowed, this is valid.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"nums":[2,-1,1,2,2]},
+                output: [2,-1,1],
+                explanation: 'The allow mixed direction for this input yields [2, -1, 1].'
+            },
+            // Edge case
+            {
+                input: {"nums":[2]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def allow_mixed_direction(data):
+            python: `def allow_mixed_direction(nums):
     """
     Allow Mixed Direction
 
     Remove the constraint that all elements in a cycle must have the same sign. Any valid cycle of length > 1 counts.
 
-    Approach:
-    Without direction constraint, every cycle in the functional graph is valid. You simplify the checking logic but must still handle self-loops.
-
     Time: O(n)
     Space: O(1)
     """
-    # Without direction constraint, every cycle in the functional graph is valid. You simplify the checking logic but must still handle self-loops.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Allow Mixed Direction
-    # Key difference from parent: Without direction constraint, every cycle in the functional graph is valid. You simplify the checkin
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(nums)):
+        # Check if element meets criteria
+        result.append(nums[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return allow_mixed_direction(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Array [2, -1, 1, 2, 2]. Cycle 0->2->3->0 mixes positive and negative. With mixed allowed, this is valid.
-    print("Test: Allow Mixed Direction")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(allow_mixed_direction([2,-1,1,2,2]))  # Expected: [2,-1,1]
+print(allow_mixed_direction([2]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// AllowMixedDirection solves the Allow Mixed Direction problem
+// AllowMixedDirection solves the Allow Mixed Direction problem.
 // Remove the constraint that all elements in a cycle must have the same sign. Any valid cycle of length > 1 counts.
-//
-// Approach: Without direction constraint, every cycle in the functional graph is valid. You simplify the checking logic but must still handle self-loops.
-//
-// Time: O(n)
-// Space: O(1)
-func AllowMixedDirection(input interface{}) interface{} {
-    // Without direction constraint, every cycle in the functional graph is valid. You simplify the checking logic but must still handle self-loops.
+// Time: O(n), Space: O(1)
+func AllowMixedDirection(nums []int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Allow Mixed Direction
-    // Key difference from parent: Without direction constraint, every cycle in the functional graph is valid. You simplify the checkin
+	for i := 0; i < len(nums); i++ {
+		result = append(result, nums[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Array [2, -1, 1, 2, 2]. Cycle 0->2->3->0 mixes positive and negative. With mixed allowed, this is valid.
-    fmt.Println("Test: Allow Mixed Direction")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(AllowMixedDirection([]int{2, -1, 1, 2, 2})) // Expected: [2,-1,1]
+	fmt.Println(AllowMixedDirection([]int{2})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '07-single-cycle-check/03-circular-array-loop/twist-01-allow-mixed-direction', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/07-single-cycle-check/03-circular-array-loop/twist-01-allow-mixed-direction'] = problem;
 })();

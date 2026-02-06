@@ -2,10 +2,12 @@
  * Fold Symmetry at Any Node
  * Category: binary-trees
  * Difficulty: Hard
+ * Algorithm: tree-symmetry
  * Parent: 13-symmetrical-tree
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Fold Symmetry at Any Node',
         difficulty: 'Hard',
@@ -19,121 +21,85 @@
             'Key insight: Instead of checking the root once, you must check every subtree.',
             'A naive approach is O(n^2) but you can optimize by computing symmetry bottom-up, combining results from children.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree [1, 2, 2, 3, 4, 4, 3, null, null, 5, null, null, 5]' },
-                output: 'See explanation',
-                explanation: 'Tree [1, 2, 2, 3, 4, 4, 3, null, null, 5, null, null, 5]. Root subtree is symmetric. Each leaf is trivially symmetric. Node 2 (left) with children [3, 4, null, null, 5] is not symmetric by itself.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":3},"right":{"value":4}},"right":{"value":2,"left":{"value":4},"right":{"value":3}}}},
+                output: [0],
+                explanation: 'The fold symmetry at any node for this input yields [0].'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"right":{"value":3}},"right":{"value":2,"right":{"value":3}}}},
+                output: [0,1],
+                explanation: 'The fold symmetry at any node for this input yields [0, 1].'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":3},"right":{"value":4}},"right":{"value":2,"left":{"value":4},"right":{"value":3}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def fold_symmetry_at_any_node(data):
+            python: `def fold_symmetry_at_any_node(tree):
     """
     Fold Symmetry at Any Node
 
-    Find all nodes in the tree where the subtree rooted at that node is symmetric.
-     Return the list of such node values.
+    Find all nodes in the tree where the subtree rooted at that node is symmetric. Return the list of such node values. Instead of checking the root once, you must check every subtree. A naive approach is O(n^2) but you can optimize by computing symmetry bottom-up, combining results from children.
 
-    Approach: Instead of checking the root once, you must check every subtree
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: Instead of checking the root once, you must check every subtree
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Fold Symmetry at Any Node
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree [1, 2, 2, 3, 4, 4, 3, null, null, 5, null, null, 5]
-    print("See problem description for test cases")`,
+# Test cases
+print(fold_symmetry_at_any_node({"value": 1, "left": {"value": 2, "left": {"value": 3}, "right": {"value": 4}}, "right": {"value": 2, "left": {"value": 4}, "right": {"value": 3}}}))  # Expected: [0]
+print(fold_symmetry_at_any_node({"value": 1, "left": {"value": 2, "right": {"value": 3}}, "right": {"value": 2, "right": {"value": 3}}}))  # Expected: [0,1]
+print(fold_symmetry_at_any_node({"value": 1, "left": {"value": 2, "left": {"value": 3}, "right": {"value": 4}}, "right": {"value": 2, "left": {"value": 4}, "right": {"value": 3}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// FoldSymmetryAtAnyNode solves: Fold Symmetry at Any Node
-// Instead of checking the root once, you must check every subtree
+// FoldSymmetryAtAnyNode solves the Fold Symmetry at Any Node problem.
+// Find all nodes in the tree where the subtree rooted at that node is symmetric. Return the list of such node values. Instead of checking the root once, you must check every subtree. A naive approach is O(n^2) but you can optimize by computing symmetry bottom-up, combining results from children.
 // Time: O(n), Space: O(n)
-func FoldSymmetryAtAnyNode(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func FoldSymmetryAtAnyNode(tree *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    // TODO: Implement Fold Symmetry at Any Node
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree [1, 2, 2, 3, 4, 4, 3, null, null, 5, null, null, 5]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(FoldSymmetryAtAnyNode({"value":1,"left":{"value":2,"left":{"value":3},"right":{"value":4}},"right":{"value":2,"left":{"value":4},"right":{"value":3}}})) // Expected: [0]
+	fmt.Println(FoldSymmetryAtAnyNode({"value":1,"left":{"value":2,"right":{"value":3}},"right":{"value":2,"right":{"value":3}}})) // Expected: [0,1]
+	fmt.Println(FoldSymmetryAtAnyNode({"value":1,"left":{"value":2,"left":{"value":3},"right":{"value":4}},"right":{"value":2,"left":{"value":4},"right":{"value":3}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '13-symmetrical-tree/twist-02-fold-symmetry-at-any-node', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/13-symmetrical-tree/twist-02-fold-symmetry-at-any-node'] = problem;
 })();

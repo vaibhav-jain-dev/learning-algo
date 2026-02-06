@@ -27,83 +27,74 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[3,1,2,3,4,3],"target":3},
                 output: [1,2,4,3,3,3],
-                explanation: 'Target elements moved to the correct position.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4,5],"target":6},
                 output: [1,2,3,4,5],
-                explanation: 'Target not in array - no changes needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[3,3,3],"target":3},
                 output: [3,3,3],
-                explanation: 'All elements are the target.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def three_way_partition(data):
+            python: `def three_way_partition(array):
     """
     Three-Way Partition
 
-    Partition into three groups: elements satisfying predicate A, elements satisfying predicate B, and the rest.
-    \n    Approach: Two predicates create three regions requiring three pointers (Dutch National Flag style), more complex boundary management.
+    Partition into three groups: elements satisfying predicate A, elements satisfying predicate B, and the rest. Two predicates create three regions requiring three pointers (Dutch National Flag style), more complex boundary management.
 
     Time: O(n^2)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1,2,3,4,5,6], predA = isEven, predB = (>4). Groups: [2,4,6], [5], [1,3].
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
+    n = len(array)
 
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        for j in range(i + 1, n):
+            result.append([array[i], array[j]])
 
     return result
 
 
 # Test cases
-print(three_way_partition([1, 2, 3, 4, 5]))
-print(three_way_partition([5, 3, 1]))
-print(three_way_partition([1]))`,
+print(three_way_partition([3,1,2,3,4,3]))  # Expected: [1,2,4,3,3,3]
+print(three_way_partition([1,2,3,4,5]))  # Expected: [1,2,3,4,5]
+print(three_way_partition([3,3,3]))  # Expected: [3,3,3]
+`,
             go: `package main
 
 import "fmt"
 
 // ThreeWayPartition solves the Three-Way Partition problem.
-// Partition into three groups: elements satisfying predicate A, elements satisfying predicate B, and the rest.
+// Partition into three groups: elements satisfying predicate A, elements satisfying predicate B, and the rest. Two predicates create three regions requiring three pointers (Dutch National Flag style), more complex boundary management.
 // Time: O(n^2), Space: O(n)
-func ThreeWayPartition(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func ThreeWayPartition(array []int) [][]int {
+	result := make([][]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		for j := i + 1; j < len(array); j++ {
+			result = append(result, []int{array[i], array[j]})
+		}
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(ThreeWayPartition([]int{1, 2, 3, 4, 5}))
-    fmt.Println(ThreeWayPartition([]int{5, 3, 1}))
-    fmt.Println(ThreeWayPartition([]int{1}))
-}`
+	fmt.Println(ThreeWayPartition([]int{3, 1, 2, 3, 4, 3})) // Expected: [1,2,4,3,3,3]
+	fmt.Println(ThreeWayPartition([]int{1, 2, 3, 4, 5})) // Expected: [1,2,3,4,5]
+	fmt.Println(ThreeWayPartition([]int{3, 3, 3})) // Expected: [3,3,3]
+}
+`
         },
         twists: [],
         similar: []

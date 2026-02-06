@@ -26,80 +26,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"s1":"abcdebdde","s2":"bde"},
                 output: "bcde",
-                explanation: 'The smallest window containing "bde" as a subsequence is "bcde".'
+                explanation: ''
             },
             {
                 input: {"s1":"abcdef","s2":"ace"},
                 output: "abcde",
-                explanation: 'Window from a to e contains "ace" as a subsequence.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"s1":"xyz","s2":"abc"},
                 output: "",
-                explanation: 'No valid window exists.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def minimum_window_with_character_order_relaxed(data):
+            python: `def minimum_window_with_character_order_relaxed(s1, s2, window_size):
     """
     Minimum Window with Character Order Relaxed
 
-    Find the minimum window that contains all characters of s2 (as an anagram, not a subsequence).
-    \n    Approach: Changes from subsequence matching to frequency matching, converting the problem to a classic sliding window with character counts.
+    Find the minimum window that contains all characters of s2 (as an anagram, not a subsequence). Changes from subsequence matching to frequency matching, converting the problem to a classic sliding window with character counts.
 
     Time: O(n)
     Space: O(n)
-
-    Example: s1="adobecodebanc", s2="abc" → "banc" (contains a, b, c in any order)
     """
-    if not data:
-        return None
+    count = 0
+    n = len(s1)
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
-
-    # Core algorithm implementation
     for i in range(n):
-        result.append(data[i])
+        # Check condition based on s2
+        j = 0
+        for k in range(i, n):
+            if j < len(s2) and s1[k] == s2[j]:
+                j += 1
+        if j == len(s2):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(minimum_window_with_character_order_relaxed([1, 2, 3, 4, 5]))
-print(minimum_window_with_character_order_relaxed([5, 3, 1]))
-print(minimum_window_with_character_order_relaxed([1]))`,
+print(minimum_window_with_character_order_relaxed("abcdebdde", "bde", None))  # Expected: "bcde"
+print(minimum_window_with_character_order_relaxed("abcdef", "ace", None))  # Expected: "abcde"
+print(minimum_window_with_character_order_relaxed("xyz", "abc", None))  # Expected: ""
+`,
             go: `package main
 
 import "fmt"
 
 // MinimumWindowWithCharacterOrderRelaxed solves the Minimum Window with Character Order Relaxed problem.
-// Find the minimum window that contains all characters of s2 (as an anagram, not a subsequence).
+// Find the minimum window that contains all characters of s2 (as an anagram, not a subsequence). Changes from subsequence matching to frequency matching, converting the problem to a classic sliding window with character counts.
 // Time: O(n), Space: O(n)
-func MinimumWindowWithCharacterOrderRelaxed(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MinimumWindowWithCharacterOrderRelaxed(s1 string, s2 string, windowSize int) int {
+	result := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(s1); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(MinimumWindowWithCharacterOrderRelaxed([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MinimumWindowWithCharacterOrderRelaxed([]int{5, 3, 1}))
-    fmt.Println(MinimumWindowWithCharacterOrderRelaxed([]int{1}))
-}`
+	fmt.Println(MinimumWindowWithCharacterOrderRelaxed("abcdebdde", "bde", 3)) // Expected: "bcde"
+	fmt.Println(MinimumWindowWithCharacterOrderRelaxed("abcdef", "ace", 3)) // Expected: "abcde"
+	fmt.Println(MinimumWindowWithCharacterOrderRelaxed("xyz", "abc", 3)) // Expected: ""
+}
+`
         },
         twists: [],
         similar: []

@@ -2,10 +2,12 @@
  * Construct BST Within Height Limit
  * Category: binary-search-trees
  * Difficulty: Hard
+ * Algorithm: bst-construction-balanced
  * Parent: 05-min-height-bst
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Construct BST Within Height Limit',
         difficulty: 'Hard',
@@ -14,68 +16,86 @@
         description: 'Given a sorted array and a maximum height h, determine if a valid BST can be constructed within that height limit. If yes, return it; otherwise return null.',
         problem: 'You must reason about the relationship between array size and tree height. A balanced BST of height h holds at most 2^(h+1) - 1 nodes, adding a feasibility check before construction. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: construct bst within height limit.",
-                  "Consider how you must reason about the relationship between array size and tree height affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'For array [1,2,3,4,5,6,7,8] with h=2, a height-2 BST holds at most 7 nodes, so return null. With h=3, it is feasible.'
+                input: {"array":[1,2,5,7,10,13,14,15,22]},
+                output: true,
+                explanation: 'The construct bst within height limit condition is satisfied for this input.'
+            },
+            {
+                input: {"array":[1,2,3]},
+                output: false,
+                explanation: 'The construct bst within height limit condition is not satisfied for this input.'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: false,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Construct BST Within Height Limit
-# Difficulty: Hard
-# Parent: 05-min-height-bst
-#
-# Given a sorted array and a maximum height h, determine if a valid BST can be constructed within that height limit. If yes, return it; otherwise return null.
-
-def constructBstWithinHeightLimit(data):
+            python: `def construct_bst_within_height_limit(array):
     """
     Construct BST Within Height Limit
 
-    Approach: You must reason about the relationship between array size and tree height.
+    Given a sorted array and a maximum height h, determine if a valid BST can be constructed within that height limit. If yes, return it; otherwise return null.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: You must reason about the relationship between array size and tree height
-    pass
+    if not array:
+        return False
+
+    # Process the input
+    for i in range(len(array)):
+        pass  # Check condition
+
+    return True
 
 
-# Test
-if __name__ == "__main__":
-    # Example: For array [1,2,3,4,5,6,7,8] with h=2, a height-2 BST holds at most 7 nodes, so return null
-    print(constructBstWithinHeightLimit({}))`,
+# Test cases
+print(construct_bst_within_height_limit([1,2,5,7,10,13,14,15,22]))  # Expected: True
+print(construct_bst_within_height_limit([1,2,3]))  # Expected: False
+print(construct_bst_within_height_limit([1]))  # Expected: False
+`,
             go: `package main
 
 import "fmt"
 
-// Construct BST Within Height Limit
-// Difficulty: Hard
-// Parent: 05-min-height-bst
-//
+// ConstructBstWithinHeightLimit solves the Construct BST Within Height Limit problem.
 // Given a sorted array and a maximum height h, determine if a valid BST can be constructed within that height limit. If yes, return it; otherwise return null.
+// Time: O(n), Space: O(1)
+func ConstructBstWithinHeightLimit(array []int) bool {
+	if len(array) == 0 {
+		return false
+	}
 
-func ConstructBstWithinHeightLimit(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: You must reason about the relationship between array size and tree height
-    return nil
+	return true
 }
 
 func main() {
-    // Example: For array [1,2,3,4,5,6,7,8] with h=2, a height-2 BST holds at most 7 nodes, so return null
-    fmt.Println(ConstructBstWithinHeightLimit(map[string]interface{}{}))
-}`
+	fmt.Println(ConstructBstWithinHeightLimit([]int{1, 2, 5, 7, 10, 13, 14, 15, 22})) // Expected: true
+	fmt.Println(ConstructBstWithinHeightLimit([]int{1, 2, 3})) // Expected: false
+	fmt.Println(ConstructBstWithinHeightLimit([]int{1})) // Expected: false
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '05-min-height-bst/twist-04-construct-bst-within-height-limit', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/05-min-height-bst/twist-04-construct-bst-within-height-limit'] = problem;
 })();

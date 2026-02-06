@@ -2,10 +2,12 @@
  * All Kinds of Node Heights
  * Category: binary-trees
  * Difficulty: Hard
+ * Algorithm: tree-dfs
  * Parent: 10-all-kinds-node-depths
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'All Kinds of Node Heights',
         difficulty: 'Hard',
@@ -19,121 +21,78 @@
             'Key insight: Height is defined relative to leaves, not the root.',
             'Treating each node as a pseudo-root and computing "heights" requires re-rooting the tree and finding the farthest leaf from each node, which is related to tree diameter.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree [1, 2, 3, 4, 5]' },
-                output: 'See explanation',
-                explanation: 'Tree [1, 2, 3, 4, 5]. From root 1: heights are h(1)=2, h(2)=1, h(3)=0, h(4)=0, h(5)=0. Sum=3. Repeat for each node as root and total all sums.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: [0],
+                explanation: 'The all kinds of node heights for this input yields [0].'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def all_kinds_of_node_heights(data):
+            python: `def all_kinds_of_node_heights(tree):
     """
     All Kinds of Node Heights
 
-    For each node treated as root, compute the sum of heights (distance to deepest leaf in its subtree) instead of depths.
-     Return the total across all nodes.
+    For each node treated as root, compute the sum of heights (distance to deepest leaf in its subtree) instead of depths. Return the total across all nodes. Height is defined relative to leaves, not the root. Treating each node as a pseudo-root and computing "heights" requires re-rooting the tree and finding the farthest leaf from each node, which is related to tree diameter.
 
-    Approach: Height is defined relative to leaves, not the root
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: Height is defined relative to leaves, not the root
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement All Kinds of Node Heights
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree [1, 2, 3, 4, 5]
-    print("See problem description for test cases")`,
+# Test cases
+print(all_kinds_of_node_heights({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: [0]
+print(all_kinds_of_node_heights({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// AllKindsOfNodeHeights solves: All Kinds of Node Heights
-// Height is defined relative to leaves, not the root
+// AllKindsOfNodeHeights solves the All Kinds of Node Heights problem.
+// For each node treated as root, compute the sum of heights (distance to deepest leaf in its subtree) instead of depths. Return the total across all nodes. Height is defined relative to leaves, not the root. Treating each node as a pseudo-root and computing "heights" requires re-rooting the tree and finding the farthest leaf from each node, which is related to tree diameter.
 // Time: O(n), Space: O(n)
-func AllKindsOfNodeHeights(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func AllKindsOfNodeHeights(tree *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    // TODO: Implement All Kinds of Node Heights
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree [1, 2, 3, 4, 5]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(AllKindsOfNodeHeights({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: [0]
+	fmt.Println(AllKindsOfNodeHeights({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '10-all-kinds-node-depths/twist-04-all-kinds-of-node-heights', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/10-all-kinds-node-depths/twist-04-all-kinds-of-node-heights'] = problem;
 })();

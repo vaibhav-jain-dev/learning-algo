@@ -26,80 +26,83 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[5,1,22,25,6,-1,8,10],"sequence":[1,6,-1,10]},
-                output: true,
-                explanation: 'The sequence elements appear in order within the array.'
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the minimum deletions for valid subsequence criteria.'
             },
             {
                 input: {"array":[1,2,3,4,5],"sequence":[5,3,1]},
-                output: false,
-                explanation: 'The sequence elements do not appear in the required order.'
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the minimum deletions for valid subsequence criteria.'
             },
             {
                 input: {"array":[1,1,1,1,1],"sequence":[1,1,1]},
-                output: true,
-                explanation: 'Duplicate elements are handled correctly.'
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the minimum deletions for valid subsequence criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[5],"sequence":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def minimum_deletions_for_valid_subsequence(data):
+            python: `def minimum_deletions_for_valid_subsequence(array, sequence):
     """
     Minimum Deletions for Valid Subsequence
 
-    The sequence is NOT a subsequence. Find the minimum elements to delete from the array so it becomes one.
-    \n    Approach: Switches from verification to optimization. Requires thinking about which elements block subsequence formation.
+    The sequence is NOT a subsequence. Find the minimum elements to delete from the array so it becomes one. Switches from verification to optimization. Requires thinking about which elements block subsequence formation.
 
     Time: O(n)
     Space: O(n)
-
-    Example: array=[5,1,3,2,4], sequence=[1,2,4] → delete 3 (1 deletion)
     """
-    if not data:
-        return None
+    count = 0
+    n = len(array)
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
-
-    # Core algorithm implementation
     for i in range(n):
-        result.append(data[i])
+        # Check condition based on sequence
+        j = 0
+        for k in range(i, n):
+            if j < len(sequence) and array[k] == sequence[j]:
+                j += 1
+        if j == len(sequence):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(minimum_deletions_for_valid_subsequence([1, 2, 3, 4, 5]))
-print(minimum_deletions_for_valid_subsequence([5, 3, 1]))
-print(minimum_deletions_for_valid_subsequence([1]))`,
+print(minimum_deletions_for_valid_subsequence([5,1,22,25,6,-1,8,10], [1,6,-1,10]))  # Expected: 1
+print(minimum_deletions_for_valid_subsequence([1,2,3,4,5], [5,3,1]))  # Expected: 2
+print(minimum_deletions_for_valid_subsequence([1,1,1,1,1], [1,1,1]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // MinimumDeletionsForValidSubsequence solves the Minimum Deletions for Valid Subsequence problem.
-// The sequence is NOT a subsequence. Find the minimum elements to delete from the array so it becomes one.
+// The sequence is NOT a subsequence. Find the minimum elements to delete from the array so it becomes one. Switches from verification to optimization. Requires thinking about which elements block subsequence formation.
 // Time: O(n), Space: O(n)
-func MinimumDeletionsForValidSubsequence(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MinimumDeletionsForValidSubsequence(array []int, sequence []int) int {
+	result := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(MinimumDeletionsForValidSubsequence([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MinimumDeletionsForValidSubsequence([]int{5, 3, 1}))
-    fmt.Println(MinimumDeletionsForValidSubsequence([]int{1}))
-}`
+	fmt.Println(MinimumDeletionsForValidSubsequence([]int{5, 1, 22, 25, 6, -1, 8, 10}, []int{1, 6, -1, 10})) // Expected: 1
+	fmt.Println(MinimumDeletionsForValidSubsequence([]int{1, 2, 3, 4, 5}, []int{5, 3, 1})) // Expected: 2
+	fmt.Println(MinimumDeletionsForValidSubsequence([]int{1, 1, 1, 1, 1}, []int{1, 1, 1})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []

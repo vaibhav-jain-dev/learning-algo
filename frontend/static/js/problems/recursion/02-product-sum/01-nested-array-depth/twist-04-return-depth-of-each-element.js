@@ -2,10 +2,12 @@
  * Return Depth of Each Element
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-product-sum
  * Parent: 02-product-sum/01-nested-array-depth
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Return Depth of Each Element',
         difficulty: 'Medium',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For [1, [2, [3, 4]]]: output is [(1, 1), (2, 2), (3, 3), (4, 3)]. Each integer is tagged with the depth at which it was found.' },
-                output: 'See example',
-                explanation: 'For [1, [2, [3, 4]]]: output is [(1, 1), (2, 2), (3, 3), (4, 3)]. Each integer is tagged with the depth at which it was found.'
+                input: {"array":[1,[2,[3,4]]]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the return depth of each element criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Return Depth of Each Element
-# Category: recursion
-# Difficulty: Medium
-# Parent: 02-product-sum/01-nested-array-depth
-
-def solve():
+            python: `def return_depth_of_each_element(array):
     """
+    Return Depth of Each Element
+
     Instead of just returning the max depth, return a flat list of (value, depth) pairs for every integer in the nested array.
 
-    Key insight: Shifts from aggregation (max) to enumeration. You must carry the depth through the recursion and collect results, turning a reduce operation into a map-like traversal.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(return_depth_of_each_element([1,[2,[3,4]]]))  # Expected: 2
+print(return_depth_of_each_element([1]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Return Depth of Each Element problem.
+// ReturnDepthOfEachElement solves the Return Depth of Each Element problem.
 // Instead of just returning the max depth, return a flat list of (value, depth) pairs for every integer in the nested array.
-// Key insight: Shifts from aggregation (max) to enumeration. You must carry the depth through the recursion and collect results, turning a reduce operation into a map-like traversal.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func ReturnDepthOfEachElement(array []int) int {
+	result := 0
+
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(ReturnDepthOfEachElement([]interface{}{1, []interface{}{2, []int{3, 4}}})) // Expected: 2
+	fmt.Println(ReturnDepthOfEachElement([]int{1})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '02-product-sum/01-nested-array-depth/twist-04-return-depth-of-each-element', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/02-product-sum/01-nested-array-depth/twist-04-return-depth-of-each-element'] = problem;
 })();

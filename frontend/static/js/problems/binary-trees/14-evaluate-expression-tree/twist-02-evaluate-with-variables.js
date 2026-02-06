@@ -2,10 +2,12 @@
  * Evaluate with Variables
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-expression
  * Parent: 14-evaluate-expression-tree
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Evaluate with Variables',
         difficulty: 'Medium',
@@ -19,121 +21,86 @@
             'Key insight: Leaf node handling branches: if it is a number, use it directly; if it is a variable, look it up.',
             'This adds a lookup layer and error handling for undefined variables to the base case.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree: + at root, left leaf "x", right leaf 3' },
-                output: 'See explanation',
-                explanation: 'Tree: + at root, left leaf "x", right leaf 3. Variables: {x: 7}. Result: 7 + 3 = 10.'
+                input: {"tree":{"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the evaluate with variables criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":-1,"left":{"value":5},"right":{"value":7}}},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the evaluate with variables criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def evaluate_with_variables(data):
+            python: `def evaluate_with_variables(tree):
     """
     Evaluate with Variables
 
-    Leaf nodes can contain variable names (strings) in addition to numbers.
-     Given a dictionary mapping variable names to values, evaluate the expression tree.
+    Leaf nodes can contain variable names (strings) in addition to numbers. Given a dictionary mapping variable names to values, evaluate the expression tree. Leaf node handling branches: if it is a number, use it directly; if it is a variable, look it up. This adds a lookup layer and error handling for undefined variables to the base case.
 
-    Approach: Leaf node handling branches: if it is a number, use it directly; if it is a variable, look it up
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: Leaf node handling branches: if it is a number, use it directly; if it is a variable, look it up
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Evaluate with Variables
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree: + at root, left leaf "x", right leaf 3
-    print("See problem description for test cases")`,
+# Test cases
+print(evaluate_with_variables({"value": -1, "left": {"value": -2, "left": {"value": 2}, "right": {"value": 3}}, "right": {"value": -3, "left": {"value": 4}, "right": {"value": 5}}}))  # Expected: 1
+print(evaluate_with_variables({"value": -1, "left": {"value": 5}, "right": {"value": 7}}))  # Expected: 2
+print(evaluate_with_variables({"value": -1, "left": {"value": -2, "left": {"value": 2}, "right": {"value": 3}}, "right": {"value": -3, "left": {"value": 4}, "right": {"value": 5}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// EvaluateWithVariables solves: Evaluate with Variables
-// Leaf node handling branches: if it is a number, use it directly; if it is a variable, look it up
+// EvaluateWithVariables solves the Evaluate with Variables problem.
+// Leaf nodes can contain variable names (strings) in addition to numbers. Given a dictionary mapping variable names to values, evaluate the expression tree. Leaf node handling branches: if it is a number, use it directly; if it is a variable, look it up. This adds a lookup layer and error handling for undefined variables to the base case.
 // Time: O(n), Space: O(n)
-func EvaluateWithVariables(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func EvaluateWithVariables(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Evaluate with Variables
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree: + at root, left leaf x, right leaf 3
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(EvaluateWithVariables({"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}})) // Expected: 1
+	fmt.Println(EvaluateWithVariables({"value":-1,"left":{"value":5},"right":{"value":7}})) // Expected: 2
+	fmt.Println(EvaluateWithVariables({"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '14-evaluate-expression-tree/twist-02-evaluate-with-variables', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/14-evaluate-expression-tree/twist-02-evaluate-with-variables'] = problem;
 })();

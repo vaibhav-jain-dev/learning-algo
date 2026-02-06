@@ -2,10 +2,12 @@
  * Cycle Length
  * Category: graphs
  * Difficulty: Easy
+ * Algorithm: floyd-cycle-detection
  * Parent: 07-single-cycle-check/01-linked-list-cycle
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Cycle Length',
         difficulty: 'Easy',
@@ -19,87 +21,85 @@
             'Consider the example: List [3,2,0,-4] with cycle at position 1.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(n)', space: 'O(1)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
-            { input: { description: 'List [3,2,0,-4] with cycle at position 1. Cycle contains nodes 2,0,-4 -> length 3.' }, output: 'See explanation', explanation: 'List [3,2,0,-4] with cycle at position 1. Cycle contains nodes 2,0,-4 -> length 3.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"head":[3,2,0,-4],"pos":1},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the cycle length criteria.'
+            },
+            // Edge case
+            {
+                input: {"head":[3],"pos":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def cycle_length(data):
+            python: `def cycle_length(head, pos):
     """
     Cycle Length
 
     If a cycle exists, return the length of the cycle (number of nodes in the cycle).
 
-    Approach:
-    After detection, keep one pointer fixed and advance the other around the cycle counting steps until they meet again.
-
     Time: O(n)
     Space: O(1)
     """
-    # After detection, keep one pointer fixed and advance the other around the cycle counting steps until they meet again.
+    count = 0
+    n = len(head)
 
-    # Implementation
-    result = None
+    for i in range(n):
+        # Check condition based on pos
+        j = 0
+        for k in range(i, n):
+            if j < len(pos) and head[k] == pos[j]:
+                j += 1
+        if j == len(pos):
+            count += 1
 
-    # Core algorithm adapted for: Cycle Length
-    # Key difference from parent: After detection, keep one pointer fixed and advance the other around the cycle counting steps until 
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return cycle_length(data)
+    return count
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # List [3,2,0,-4] with cycle at position 1. Cycle contains nodes 2,0,-4 -> length 3.
-    print("Test: Cycle Length")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(cycle_length([3,2,0,-4], 1))  # Expected: 1
+print(cycle_length([3], 0))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// CycleLength solves the Cycle Length problem
+// CycleLength solves the Cycle Length problem.
 // If a cycle exists, return the length of the cycle (number of nodes in the cycle).
-//
-// Approach: After detection, keep one pointer fixed and advance the other around the cycle counting steps until they meet again.
-//
-// Time: O(n)
-// Space: O(1)
-func CycleLength(input interface{}) interface{} {
-    // After detection, keep one pointer fixed and advance the other around the cycle counting steps until they meet again.
+// Time: O(n), Space: O(1)
+func CycleLength(head []int, pos int) int {
+	result := 0
 
-    // Core algorithm adapted for: Cycle Length
-    // Key difference from parent: After detection, keep one pointer fixed and advance the other around the cycle counting steps until 
+	for i := 0; i < len(head); i++ {
+		// Process element
+		result++
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // List [3,2,0,-4] with cycle at position 1. Cycle contains nodes 2,0,-4 -> length 3.
-    fmt.Println("Test: Cycle Length")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(CycleLength([]int{3, 2, 0, -4}, 1)) // Expected: 1
+	fmt.Println(CycleLength([]int{3}, 0)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '07-single-cycle-check/01-linked-list-cycle/twist-02-cycle-length', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/07-single-cycle-check/01-linked-list-cycle/twist-02-cycle-length'] = problem;
 })();

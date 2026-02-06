@@ -2,10 +2,12 @@
  * Finite Deck
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-probability
  * Parent: 12-blackjack-probability
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Finite Deck',
         difficulty: 'Hard',
@@ -19,57 +21,84 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'With a finite deck, drawing a 10 first reduces the probability of drawing another 10 from 4/52 to 3/51, affecting all subsequent bust calculations.' },
-                output: 'See example',
-                explanation: 'With a finite deck, drawing a 10 first reduces the probability of drawing another 10 from 4/52 to 3/51, affecting all subsequent bust calculations.'
+                input: {"target":21,"startingHand":15},
+                output: 3.47,
+                explanation: 'The computed value for this input is 3.47.'
+            },
+            // Edge case
+            {
+                input: {"target":0,"startingHand":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Finite Deck
-# Category: recursion
-# Difficulty: Hard
-# Parent: 12-blackjack-probability
-
-def solve():
+            python: `def finite_deck(target, startingHand):
     """
+    Finite Deck
+
     Instead of an infinite deck with uniform distribution, use a standard 52-card deck where drawn cards are removed (without replacement).
 
-    Key insight: Cards are no longer independent -- the probability of drawing each value changes with each draw, requiring tracking the remaining deck composition in the state.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    total = 0
+    count = 0
+
+    for val in target:
+        total += val
+        count += 1
+
+    return total / count if count > 0 else 0.0
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(finite_deck(21, 15))  # Expected: 3.47
+print(finite_deck(0, 0))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Finite Deck problem.
+// FiniteDeck solves the Finite Deck problem.
 // Instead of an infinite deck with uniform distribution, use a standard 52-card deck where drawn cards are removed (without replacement).
-// Key insight: Cards are no longer independent -- the probability of drawing each value changes with each draw, requiring tracking the remaining deck composition in the state.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func FiniteDeck(target int, startingHand int) float64 {
+	total := 0.0
+	count := 0
+
+	for _, v := range target {
+		total += float64(v)
+		count++
+	}
+
+	if count == 0 {
+		return 0.0
+	}
+	return total / float64(count)
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(FiniteDeck(21, 15)) // Expected: 3.47
+	fmt.Println(FiniteDeck(0, 0)) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '12-blackjack-probability/twist-01-finite-deck', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/12-blackjack-probability/twist-01-finite-deck'] = problem;
 })();

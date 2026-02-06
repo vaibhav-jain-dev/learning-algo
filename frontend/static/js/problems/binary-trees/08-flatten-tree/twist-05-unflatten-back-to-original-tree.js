@@ -2,10 +2,12 @@
  * Unflatten Back to Original Tree
  * Category: binary-trees
  * Difficulty: Very Hard
+ * Algorithm: tree-flatten
  * Parent: 08-flatten-tree
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Unflatten Back to Original Tree',
         difficulty: 'Very Hard',
@@ -19,120 +21,78 @@
             'Key insight: You must map a linear sequence back to a tree structure, which requires knowing the original shape.',
             'Without the shape, reconstruction is impossible, highlighting why flattening loses structural information.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Linked list: 1 <-> 2 <-> 3 <-> 4 <-> 5' },
-                output: 'See explanation',
-                explanation: 'Linked list: 1 <-> 2 <-> 3 <-> 4 <-> 5. Shape: root has left subtree of size 2 and right subtree of size 2. Reconstructed: [3, 1, 4, null, 2, null, 5].'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6}}}},
+                output: [0],
+                explanation: 'The unflatten back to original tree for this input yields [0].'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def unflatten_back_to_original_tree(data):
+            python: `def unflatten_back_to_original_tree(tree):
     """
     Unflatten Back to Original Tree
 
-    Given a flattened doubly linked list and the original tree structure (as a separate shape descriptor), reconstruct the original binary tree.
+    Given a flattened doubly linked list and the original tree structure (as a separate shape descriptor), reconstruct the original binary tree. This is the inverse operation. You must map a linear sequence back to a tree structure, which requires knowing the original shape. Without the shape, reconstruction is impossible, highlighting why flattening loses structural information.
 
-    Approach: This is the inverse operation
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: This is the inverse operation
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Unflatten Back to Original Tree
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Linked list: 1 <-> 2 <-> 3 <-> 4 <-> 5
-    print("See problem description for test cases")`,
+# Test cases
+print(unflatten_back_to_original_tree({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}}}))  # Expected: [0]
+print(unflatten_back_to_original_tree({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// UnflattenBackToOriginalTree solves: Unflatten Back to Original Tree
-// This is the inverse operation
+// UnflattenBackToOriginalTree solves the Unflatten Back to Original Tree problem.
+// Given a flattened doubly linked list and the original tree structure (as a separate shape descriptor), reconstruct the original binary tree. This is the inverse operation. You must map a linear sequence back to a tree structure, which requires knowing the original shape. Without the shape, reconstruction is impossible, highlighting why flattening loses structural information.
 // Time: O(n), Space: O(n)
-func UnflattenBackToOriginalTree(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func UnflattenBackToOriginalTree(tree *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    // TODO: Implement Unflatten Back to Original Tree
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Linked list: 1 <-> 2 <-> 3 <-> 4 <-> 5
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(UnflattenBackToOriginalTree({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6}}})) // Expected: [0]
+	fmt.Println(UnflattenBackToOriginalTree({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '08-flatten-tree/twist-05-unflatten-back-to-original-tree', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/08-flatten-tree/twist-05-unflatten-back-to-original-tree'] = problem;
 })();

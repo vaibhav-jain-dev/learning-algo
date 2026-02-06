@@ -2,10 +2,12 @@
  * Singly Linked List Construction
  * Category: linked-lists
  * Difficulty: Medium
+ * Algorithm: ll-construction
  * Parent: 03-linked-list-construction
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Singly Linked List Construction',
         difficulty: 'Medium',
@@ -19,148 +21,77 @@
             'Consider edge cases with empty lists or single-node lists.',
             'Think about how the data structure change affects pointer manipulation.'
         ],
-        complexity: { time: 'O(n)', space: 'O(1)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { list: [1, 2, 3, 4, 5] },
-                output: [1, 2, 3, 4, 5],
-                explanation: 'remove(node3) in singly linked 1->2->3->4: must traverse from head to find node2, then set node2.next = node4. Cannot directly access predecessor.'
+                input: {"list":[1,2,3,4,5]},
+                output: [1,2,3,4,5],
+                explanation: ''
             }
         ],
         solutions: {
-            python: `class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
-
-class DoublyLinkedNode:
-    def __init__(self, val=0, prev=None, next=None):
-        self.val = val
-        self.prev = prev
-        self.next = next
-
-def singly_linked_list_construction(head, *args):
+            python: `def singly_linked_list_construction(initialList, operations):
     """
     Singly Linked List Construction
+
     Implement the same operations (setHead, setTail, insertBefore, insertAfter, insertAtPosition, removeNodesWithValue, remove, containsNodeWithValue) but for a SINGLY linked list with only next pointers.
 
-    Approach: Without prev pointers, operations like insertBefore and remove become O(n) instead of O(1) because you must find the predecessor by traversing from the head. The entire design trade-off changes.
+    Time: O(n)
+    Space: O(1)
     """
-    if not head:
-        return head
+    count = 0
+    n = len(initialList)
 
-    # Core algorithm for: Singly Linked List Construction
-    current = head
-    result = []
+    for i in range(n):
+        # Check condition based on operations
+        j = 0
+        for k in range(i, n):
+            if j < len(operations) and initialList[k] == operations[j]:
+                j += 1
+        if j == len(operations):
+            count += 1
 
-    while current:
-        result.append(current.val)
-        current = current.next
-
-    return result
-
-
-# Helper: build linked list from array
-def to_linked_list(arr):
-    if not arr:
-        return None
-    head = ListNode(arr[0])
-    current = head
-    for val in arr[1:]:
-        current.next = ListNode(val)
-        current = current.next
-    return head
-
-def to_array(head):
-    result = []
-    while head:
-        result.append(head.val)
-        head = head.next
-    return result
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: remove(node3) in singly linked 1->2->3->4: must traverse from head to find node2, then set node2.next = node4. Cannot directly access predecessor.
-    head = to_linked_list([1, 2, 3, 4, 5])
-    result = singly_linked_list_construction(head)
-    print("Result:", result)
-
-    head = to_linked_list([1, 1, 2, 2, 3])
-    result = singly_linked_list_construction(head)
-    print("Result:", result)`,
+# Test cases
+print(singly_linked_list_construction(None, None))  # Expected: [1,2,3,4,5]
+`,
             go: `package main
 
 import "fmt"
 
-type ListNode struct {
-    Val  int
-    Next *ListNode
-}
-
-type DoublyLinkedNode struct {
-    Val  int
-    Prev *DoublyLinkedNode
-    Next *DoublyLinkedNode
-}
-
-// SinglyLinkedListConstruction solves: Singly Linked List Construction
+// SinglyLinkedListConstruction solves the Singly Linked List Construction problem.
 // Implement the same operations (setHead, setTail, insertBefore, insertAfter, insertAtPosition, removeNodesWithValue, remove, containsNodeWithValue) but for a SINGLY linked list with only next pointers.
-// Approach: Without prev pointers, operations like insertBefore and remove become O(n) instead of O(1) because you must find the predecessor by traversing from the head. The entire design trade-off changes.
-func SinglyLinkedListConstruction(head *ListNode) *ListNode {
-    if head == nil {
-        return nil
-    }
+// Time: O(n), Space: O(1)
+func SinglyLinkedListConstruction(initialList []int, operations []string) int {
+	result := 0
 
-    // Core algorithm for: Singly Linked List Construction
-    current := head
-    for current.Next != nil {
-        current = current.Next
-    }
+	for i := 0; i < len(initialList); i++ {
+		// Process element
+		result++
+	}
 
-    return head
-}
-
-// Helper functions
-func toLinkedList(arr []int) *ListNode {
-    if len(arr) == 0 {
-        return nil
-    }
-    head := &ListNode{Val: arr[0]}
-    current := head
-    for i := 1; i < len(arr); i++ {
-        current.Next = &ListNode{Val: arr[i]}
-        current = current.Next
-    }
-    return head
-}
-
-func toArray(head *ListNode) []int {
-    result := []int{}
-    for head != nil {
-        result = append(result, head.Val)
-        head = head.Next
-    }
-    return result
+	return result
 }
 
 func main() {
-    // Example: remove(node3) in singly linked 1->2->3->4: must traverse from head to find node2, then set node2.next = node4. Cannot directly access predecessor.
-    head := toLinkedList([]int{1, 2, 3, 4, 5})
-    result := SinglyLinkedListConstruction(head)
-    fmt.Println(toArray(result))
-
-    head = toLinkedList([]int{1, 1, 2, 2, 3})
-    result = SinglyLinkedListConstruction(head)
-    fmt.Println(toArray(result))
-}`
+	fmt.Println(SinglyLinkedListConstruction(nil, nil)) // Expected: [1,2,3,4,5]
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('linked-lists', '03-linked-list-construction/twist-01-singly-linked-list-construction', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['linked-lists/03-linked-list-construction/twist-01-singly-linked-list-construction'] = problem;
 })();

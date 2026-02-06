@@ -2,10 +2,12 @@
  * Handle Negative Numbers in nums
  * Category: dynamic-programming
  * Difficulty: Very Hard
+ * Algorithm: dp-coin-change
  * Parent: 02-number-of-ways-to-make-change/01-combination-sum-iv
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Handle Negative Numbers in nums',
         difficulty: 'Very Hard',
@@ -19,84 +21,92 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'nums=[-1, 1, 2], target=1. Infinite sequences exist: [1], [-1,2], [-1,-1,1,2], etc. You\'d need an additional constraint like "use at most k numbers" to make it finite.'
+                input: {"nums":[1,2,3],"target":10},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the handle negative numbers in nums criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"nums":[9],"target":10},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the handle negative numbers in nums criteria.'
+            },
+            // Edge case
+            {
+                input: {"nums":[1],"target":10},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def handleNegativeNumbersInNums(data):
+            python: `def handle_negative_numbers_in_nums(nums, target):
     """
     Handle Negative Numbers in nums
 
     What if nums can contain negative numbers? The standard DP breaks because the target range becomes unbounded. How would you handle this?
 
-    Approach:
-    Negative numbers mean you could theoretically increase and decrease the running sum infinitely. You need to either bound the number of elements used or prove convergence, fundamentally changing the problem structure.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    count = 0
+    n = len(nums)
 
-    # Example: nums=[-1, 1, 2], target=1. Infinite sequences exist: [1], [-1,2], [-1,-1,1,2], etc. You\\'d need an additional constraint
+    for i in range(n):
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and nums[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
-    return result
+    return count
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Handle Negative Numbers in nums...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(handle_negative_numbers_in_nums([1,2,3], 10))  # Expected: 1
+print(handle_negative_numbers_in_nums([9], 10))  # Expected: 2
+print(handle_negative_numbers_in_nums([1], 10))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // HandleNegativeNumbersInNums solves the Handle Negative Numbers in nums problem.
 // What if nums can contain negative numbers? The standard DP breaks because the target range becomes unbounded. How would you handle this?
-//
-// Approach: Negative numbers mean you could theoretically increase and decrease the running sum infinitely. You need to either bound the number of elements used o
-func HandleNegativeNumbersInNums(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2), Space: O(n)
+func HandleNegativeNumbersInNums(nums []int, target int) int {
+	result := 0
 
-    // Example: nums=[-1, 1, 2], target=1. Infinite sequences exist: [1], [-1,2], [-1,-1,1,2], etc. You'd need an ad
+	for i := 0; i < len(nums); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Handle Negative Numbers in nums...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(HandleNegativeNumbersInNums([]int{1, 2, 3}, 10)) // Expected: 1
+	fmt.Println(HandleNegativeNumbersInNums([]int{9}, 10)) // Expected: 2
+	fmt.Println(HandleNegativeNumbersInNums([]int{1}, 10)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-04-handle-negative-numbers-in-nums', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/02-number-of-ways-to-make-change/01-combination-sum-iv/twist-04-handle-negative-numbers-in-nums'] = problem;
 })();

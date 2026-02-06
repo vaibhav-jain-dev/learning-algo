@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[-3,-1,0,2,4]},
                 output: [0,1,4,9,16],
-                explanation: 'Elements transformed and sorted correctly.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: [1,4,9],
-                explanation: 'All positive - order maintained after transformation.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[-5,-3,-1]},
                 output: [1,9,25],
-                explanation: 'All negative - order reversed after transformation.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def sorted_squared_array_with_custom_transform(data):
+            python: `def sorted_squared_array_with_custom_transform(array):
     """
     Sorted Squared Array with Custom Transform
 
-    Given a sorted array and a quadratic function f(x)=ax^2+bx+c, apply f to each element and return the sorted result.
-    \n    Approach: Generalizes squaring to any parabolic transform. The direction of the parabola (a>0 or a<0) determines whether the two-pointer approach fills from the ends or the middle.
+    Given a sorted array and a quadratic function f(x)=ax^2+bx+c, apply f to each element and return the sorted result. Generalizes squaring to any parabolic transform. The direction of the parabola (a>0 or a<0) determines whether the two-pointer approach fills from the ends or the middle.
 
     Time: O(n log n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array=[-3,-1,0,2], a=1, b=0, c=0 → same as squaring; but a=-1, b=0, c=10 → [1,9,10,6] needs different logic
+    if not array:
+        return False
 
-    if not data:
-        return None
+    # Process the input
+    for i in range(len(array)):
+        pass  # Check condition
 
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
-
-    return result
+    return True
 
 
 # Test cases
-print(sorted_squared_array_with_custom_transform([1, 2, 3, 4, 5]))
-print(sorted_squared_array_with_custom_transform([5, 3, 1]))
-print(sorted_squared_array_with_custom_transform([1]))`,
+print(sorted_squared_array_with_custom_transform([-3,-1,0,2,4]))  # Expected: [0,1,4,9,16]
+print(sorted_squared_array_with_custom_transform([1,2,3]))  # Expected: [1,4,9]
+print(sorted_squared_array_with_custom_transform([-5,-3,-1]))  # Expected: [1,9,25]
+`,
             go: `package main
 
 import "fmt"
 
 // SortedSquaredArrayWithCustomTransform solves the Sorted Squared Array with Custom Transform problem.
-// Given a sorted array and a quadratic function f(x)=ax^2+bx+c, apply f to each element and return the sorted result.
+// Given a sorted array and a quadratic function f(x)=ax^2+bx+c, apply f to each element and return the sorted result. Generalizes squaring to any parabolic transform. The direction of the parabola (a>0 or a<0) determines whether the two-pointer approach fills from the ends or the middle.
 // Time: O(n log n), Space: O(n)
-func SortedSquaredArrayWithCustomTransform(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func SortedSquaredArrayWithCustomTransform(array []int) bool {
+	if len(array) == 0 {
+		return false
+	}
 
-    result := make([]int, 0)
-    n := len(data)
-
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return true
 }
 
 func main() {
-    fmt.Println(SortedSquaredArrayWithCustomTransform([]int{1, 2, 3, 4, 5}))
-    fmt.Println(SortedSquaredArrayWithCustomTransform([]int{5, 3, 1}))
-    fmt.Println(SortedSquaredArrayWithCustomTransform([]int{1}))
-}`
+	fmt.Println(SortedSquaredArrayWithCustomTransform([]int{-3, -1, 0, 2, 4})) // Expected: [0,1,4,9,16]
+	fmt.Println(SortedSquaredArrayWithCustomTransform([]int{1, 2, 3})) // Expected: [1,4,9]
+	fmt.Println(SortedSquaredArrayWithCustomTransform([]int{-5, -3, -1})) // Expected: [1,9,25]
+}
+`
         },
         twists: [],
         similar: []

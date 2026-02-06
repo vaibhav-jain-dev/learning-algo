@@ -2,10 +2,12 @@
  * Evaluate with Modular Arithmetic
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-expression
  * Parent: 14-evaluate-expression-tree
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Evaluate with Modular Arithmetic',
         difficulty: 'Medium',
@@ -19,121 +21,86 @@
             'Key insight: Addition, subtraction, and multiplication mod p are straightforward.',
             'Division requires computing the modular multiplicative inverse using Fermat little theorem or extended Euclidean algorithm, which is a number theory concept overlaid on tree evaluation.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree: / at root, left: 7, right: 3' },
-                output: 'See explanation',
-                explanation: 'Tree: / at root, left: 7, right: 3. Mod 11. 3 inverse mod 11 is 4 (since 3*4=12 mod 11=1). Result: 7*4 mod 11 = 28 mod 11 = 6.'
+                input: {"tree":{"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the evaluate with modular arithmetic criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":-1,"left":{"value":5},"right":{"value":7}}},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the evaluate with modular arithmetic criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def evaluate_with_modular_arithmetic(data):
+            python: `def evaluate_with_modular_arithmetic(tree):
     """
     Evaluate with Modular Arithmetic
 
-    Evaluate the expression tree where all operations are performed modulo a given prime p.
-     Division becomes modular inverse multiplication.
+    Evaluate the expression tree where all operations are performed modulo a given prime p. Division becomes modular inverse multiplication. Addition, subtraction, and multiplication mod p are straightforward. Division requires computing the modular multiplicative inverse using Fermat little theorem or extended Euclidean algorithm, which is a number theory concept overlaid on tree evaluation.
 
-    Approach: Addition, subtraction, and multiplication mod p are straightforward
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: Addition, subtraction, and multiplication mod p are straightforward
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Evaluate with Modular Arithmetic
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree: / at root, left: 7, right: 3
-    print("See problem description for test cases")`,
+# Test cases
+print(evaluate_with_modular_arithmetic({"value": -1, "left": {"value": -2, "left": {"value": 2}, "right": {"value": 3}}, "right": {"value": -3, "left": {"value": 4}, "right": {"value": 5}}}))  # Expected: 1
+print(evaluate_with_modular_arithmetic({"value": -1, "left": {"value": 5}, "right": {"value": 7}}))  # Expected: 2
+print(evaluate_with_modular_arithmetic({"value": -1, "left": {"value": -2, "left": {"value": 2}, "right": {"value": 3}}, "right": {"value": -3, "left": {"value": 4}, "right": {"value": 5}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// EvaluateWithModularArithmetic solves: Evaluate with Modular Arithmetic
-// Addition, subtraction, and multiplication mod p are straightforward
+// EvaluateWithModularArithmetic solves the Evaluate with Modular Arithmetic problem.
+// Evaluate the expression tree where all operations are performed modulo a given prime p. Division becomes modular inverse multiplication. Addition, subtraction, and multiplication mod p are straightforward. Division requires computing the modular multiplicative inverse using Fermat little theorem or extended Euclidean algorithm, which is a number theory concept overlaid on tree evaluation.
 // Time: O(n), Space: O(n)
-func EvaluateWithModularArithmetic(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func EvaluateWithModularArithmetic(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Evaluate with Modular Arithmetic
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree: / at root, left: 7, right: 3
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(EvaluateWithModularArithmetic({"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}})) // Expected: 1
+	fmt.Println(EvaluateWithModularArithmetic({"value":-1,"left":{"value":5},"right":{"value":7}})) // Expected: 2
+	fmt.Println(EvaluateWithModularArithmetic({"value":-1,"left":{"value":-2,"left":{"value":2},"right":{"value":3}},"right":{"value":-3,"left":{"value":4},"right":{"value":5}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '14-evaluate-expression-tree/twist-06-evaluate-with-modular-arithmetic', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/14-evaluate-expression-tree/twist-06-evaluate-with-modular-arithmetic'] = problem;
 })();

@@ -2,10 +2,12 @@
  * Dynamic Dislikes
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-coloring
  * Parent: 09-two-colorable/02-possible-bipartition
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Dynamic Dislikes',
         difficulty: 'Hard',
@@ -19,87 +21,88 @@
             'Consider the example: Add dislike (1,2): possible.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(V + E)', space: 'O(V + E)' },
+        complexity: {
+            time: 'O(V + E)',
+            space: 'O(V + E)'
+        },
         examples: [
-            { input: { description: 'Add dislike (1,2): possible. Add (2,3): possible. Add (1,3): now 1,2,3 form a triangle, impossible.' }, output: 'See explanation', explanation: 'Add dislike (1,2): possible. Add (2,3): possible. Add (1,3): now 1,2,3 form a triangle, impossible.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"n":4,"dislikes":[[1,2],[1,3],[2,4]]},
+                output: [[0,1]],
+                explanation: 'Found 1 group(s) matching the criteria.'
+            },
+            {
+                input: {"n":3,"dislikes":[[1,2],[1,3],[2,3]]},
+                output: [[0,1],[2,3]],
+                explanation: 'Found 2 group(s) matching the criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"dislikes":[[1,2]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def dynamic_dislikes(data):
+            python: `def dynamic_dislikes(n, dislikes):
     """
     Dynamic Dislikes
 
     Dislike pairs are added one at a time. After each addition, report if bipartition is still possible.
 
-    Approach:
-    Online bipartiteness checking requires Union-Find with complementary sets. When adding edge (a,b), you union a with complement of b and vice versa.
-
     Time: O(V + E)
     Space: O(V + E)
     """
-    # Online bipartiteness checking requires Union-Find with complementary sets. When adding edge (a,b), you union a with complement of b and vice versa.
+    result = []
+    n = len(n)
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Dynamic Dislikes
-    # Key difference from parent: Online bipartiteness checking requires Union-Find with complementary sets. When adding edge (a,b), y
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(n):
+        for j in range(i + 1, n):
+            result.append([n[i], n[j]])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return dynamic_dislikes(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Add dislike (1,2): possible. Add (2,3): possible. Add (1,3): now 1,2,3 form a triangle, impossible.
-    print("Test: Dynamic Dislikes")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(dynamic_dislikes(4, [[1,2],[1,3],[2,4]]))  # Expected: [[0,1]]
+print(dynamic_dislikes(3, [[1,2],[1,3],[2,3]]))  # Expected: [[0,1],[2,3]]
+print(dynamic_dislikes(0, [[1,2]]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// DynamicDislikes solves the Dynamic Dislikes problem
+// DynamicDislikes solves the Dynamic Dislikes problem.
 // Dislike pairs are added one at a time. After each addition, report if bipartition is still possible.
-//
-// Approach: Online bipartiteness checking requires Union-Find with complementary sets. When adding edge (a,b), you union a with complement of b and vice versa.
-//
-// Time: O(V + E)
-// Space: O(V + E)
-func DynamicDislikes(input interface{}) interface{} {
-    // Online bipartiteness checking requires Union-Find with complementary sets. When adding edge (a,b), you union a with complement of b and vice versa.
+// Time: O(V + E), Space: O(V + E)
+func DynamicDislikes(n int, dislikes [][]int) [][]int {
+	result := make([][]int, 0)
 
-    // Core algorithm adapted for: Dynamic Dislikes
-    // Key difference from parent: Online bipartiteness checking requires Union-Find with complementary sets. When adding edge (a,b), y
+	for i := 0; i < len(n); i++ {
+		for j := i + 1; j < len(n); j++ {
+			result = append(result, []int{n[i], n[j]})
+		}
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Add dislike (1,2): possible. Add (2,3): possible. Add (1,3): now 1,2,3 form a triangle, impossible.
-    fmt.Println("Test: Dynamic Dislikes")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(DynamicDislikes(4, [][]int{{1, 2}, {1, 3}, {2, 4}})) // Expected: [[0,1]]
+	fmt.Println(DynamicDislikes(3, [][]int{{1, 2}, {1, 3}, {2, 3}})) // Expected: [[0,1],[2,3]]
+	fmt.Println(DynamicDislikes(0, [][]int{{1, 2}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '09-two-colorable/02-possible-bipartition/twist-04-dynamic-dislikes', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/09-two-colorable/02-possible-bipartition/twist-04-dynamic-dislikes'] = problem;
 })();

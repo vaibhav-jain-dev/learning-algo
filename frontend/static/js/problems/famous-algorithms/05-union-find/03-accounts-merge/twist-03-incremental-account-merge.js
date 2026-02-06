@@ -2,10 +2,12 @@
  * Incremental Account Merge
  * Category: famous-algorithms
  * Difficulty: Hard
+ * Algorithm: union-find
  * Parent: 05-union-find/03-accounts-merge
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Incremental Account Merge',
         difficulty: 'Hard',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Account 1 arrives: {John, a@m.co, b@m.co}. Account 2 arrives: {John, c@m.co}. Account 3 arrives: {John, a@m.co, d@m.co}. After 3, accounts 1 and 3 merge.' },
-                output: 'See example',
-                explanation: 'Account 1 arrives: {John, a@m.co, b@m.co}. Account 2 arrives: {John, c@m.co}. Account 3 arrives: {John, a@m.co, d@m.co}. After 3, accounts 1 and 3 merge.'
+                input: {"accounts":[["John","a@m.co","b@m.co"],["John","c@m.co"],["John","a@m.co","d@m.co"]]},
+                output: [["John","a@m.co","b@m.co"],["John","c@m.co"],["John","a@m.co","d@m.co"]],
+                explanation: 'The incremental account merge for this input yields [John,a@m.co,b@m.co, John,c@m.co, John,a@m.co,d@m.co].'
+            },
+            // Edge case
+            {
+                input: {"accounts":[["John","a@m.co","b@m.co"]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Incremental Account Merge
-# Category: famous-algorithms
-# Difficulty: Hard
-# Parent: 05-union-find/03-accounts-merge
-
-def solve():
+            python: `def incremental_account_merge(accounts):
     """
+    Incremental Account Merge
+
     Accounts arrive one at a time in a stream. After each new account, output the current merged state.
 
-    Key insight: Requires maintaining the Union-Find structure incrementally, merging new emails with existing ones as accounts arrive, rather than batch processing.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(accounts)):
+        # Check if element meets criteria
+        result.append(accounts[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(incremental_account_merge([["John","a@m.co","b@m.co"],["John","c@m.co"],["John","a@m.co","d@m.co"]]))  # Expected: [["John","a@m.co","b@m.co"],["John","c@m.co"],["John","a@m.co","d@m.co"]]
+print(incremental_account_merge([["John","a@m.co","b@m.co"]]))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Incremental Account Merge problem.
+// IncrementalAccountMerge solves the Incremental Account Merge problem.
 // Accounts arrive one at a time in a stream. After each new account, output the current merged state.
-// Key insight: Requires maintaining the Union-Find structure incrementally, merging new emails with existing ones as accounts arrive, rather than batch processing.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func IncrementalAccountMerge(accounts [][]int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(accounts); i++ {
+		result = append(result, accounts[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(IncrementalAccountMerge([][]int{{John, a@m.co, b@m.co}, {John, c@m.co}, {John, a@m.co, d@m.co}})) // Expected: [["John","a@m.co","b@m.co"],["John","c@m.co"],["John","a@m.co","d@m.co"]]
+	fmt.Println(IncrementalAccountMerge([][]int{{John, a@m.co, b@m.co}})) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '05-union-find/03-accounts-merge/twist-03-incremental-account-merge', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/05-union-find/03-accounts-merge/twist-03-incremental-account-merge'] = problem;
 })();

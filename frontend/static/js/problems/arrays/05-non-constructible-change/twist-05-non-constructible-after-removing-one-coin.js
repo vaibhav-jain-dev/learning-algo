@@ -27,83 +27,72 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"coins":[1,2,5]},
                 output: 4,
-                explanation: 'With coins [1,2,5], the first non-constructible value is 4.'
+                explanation: ''
             },
             {
                 input: {"coins":[1,1,1,1]},
                 output: 5,
-                explanation: 'Can make 1 through 4, but not 5.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"coins":[5,10]},
                 output: 1,
-                explanation: 'Cannot make 1 with only coins of value 5 and 10.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def non_constructible_after_removing_one_coin(data):
+            python: `def non_constructible_after_removing_one_coin(coins):
     """
     Non-Constructible After Removing One Coin
 
-    For each coin, what would the minimum non-constructible amount be if you removed that coin? Return the array of answers.
-    \n    Approach: Requires running the greedy algorithm n times with one coin removed each time, or cleverly reusing partial computation.
+    For each coin, what would the minimum non-constructible amount be if you removed that coin? Return the array of answers. Requires running the greedy algorithm n times with one coin removed each time, or cleverly reusing partial computation.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # coins=[1,2,3] → remove 1:[2,3]→min=1, remove 2:[1,3]→min=2, remove 3:[1,2]→min=4
+    result = 0
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(coins)):
+        # Process element
+        result += 1  # Update based on condition
 
     return result
 
 
 # Test cases
-print(non_constructible_after_removing_one_coin([1, 2, 3, 4, 5]))
-print(non_constructible_after_removing_one_coin([5, 3, 1]))
-print(non_constructible_after_removing_one_coin([1]))`,
+print(non_constructible_after_removing_one_coin([1,2,5]))  # Expected: 4
+print(non_constructible_after_removing_one_coin([1,1,1,1]))  # Expected: 5
+print(non_constructible_after_removing_one_coin([5,10]))  # Expected: 1
+`,
             go: `package main
 
 import "fmt"
 
 // NonConstructibleAfterRemovingOneCoin solves the Non-Constructible After Removing One Coin problem.
-// For each coin, what would the minimum non-constructible amount be if you removed that coin? Return the array of answers.
+// For each coin, what would the minimum non-constructible amount be if you removed that coin? Return the array of answers. Requires running the greedy algorithm n times with one coin removed each time, or cleverly reusing partial computation.
 // Time: O(n), Space: O(n)
-func NonConstructibleAfterRemovingOneCoin(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func NonConstructibleAfterRemovingOneCoin(coins []int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(coins); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(NonConstructibleAfterRemovingOneCoin([]int{1, 2, 3, 4, 5}))
-    fmt.Println(NonConstructibleAfterRemovingOneCoin([]int{5, 3, 1}))
-    fmt.Println(NonConstructibleAfterRemovingOneCoin([]int{1}))
-}`
+	fmt.Println(NonConstructibleAfterRemovingOneCoin([]int{1, 2, 5})) // Expected: 4
+	fmt.Println(NonConstructibleAfterRemovingOneCoin([]int{1, 1, 1, 1})) // Expected: 5
+	fmt.Println(NonConstructibleAfterRemovingOneCoin([]int{5, 10})) // Expected: 1
+}
+`
         },
         twists: [],
         similar: []

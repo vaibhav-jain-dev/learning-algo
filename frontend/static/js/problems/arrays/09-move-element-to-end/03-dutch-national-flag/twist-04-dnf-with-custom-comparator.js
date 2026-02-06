@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5]},
                 output: true,
-                explanation: 'Standard case satisfying the problem conditions.'
+                explanation: ''
             },
             {
                 input: {"array":[5,3,1]},
                 output: false,
-                explanation: 'Case where the condition is not met.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1]},
                 output: true,
-                explanation: 'Edge case with single element.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def dnf_with_custom_comparator(data):
+            python: `def dnf_with_custom_comparator(array, pivot):
     """
     DNF with Custom Comparator
 
-    Instead of comparing to a single pivot value, partition using a custom three-way comparator function that classifies each element.
-    \n    Approach: The classification is decoupled from simple numeric comparison, requiring the algorithm to work with arbitrary predicates.
+    Instead of comparing to a single pivot value, partition using a custom three-way comparator function that classifies each element. The classification is decoupled from simple numeric comparison, requiring the algorithm to work with arbitrary predicates.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [\"cat\", \"ant\", \"bat\", \"dog\"], classify by first letter groups. Three groups defined by custom function.
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in array:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(dnf_with_custom_comparator([1, 2, 3, 4, 5]))
-print(dnf_with_custom_comparator([5, 3, 1]))
-print(dnf_with_custom_comparator([1]))`,
+print(dnf_with_custom_comparator([1,2,3,4,5], None))  # Expected: True
+print(dnf_with_custom_comparator([5,3,1], None))  # Expected: False
+print(dnf_with_custom_comparator([1], None))  # Expected: True
+`,
             go: `package main
 
 import "fmt"
 
-// DNFWithCustomComparator solves the DNF with Custom Comparator problem.
-// Instead of comparing to a single pivot value, partition using a custom three-way comparator function that classifies each element.
+// DnfWithCustomComparator solves the DNF with Custom Comparator problem.
+// Instead of comparing to a single pivot value, partition using a custom three-way comparator function that classifies each element. The classification is decoupled from simple numeric comparison, requiring the algorithm to work with arbitrary predicates.
 // Time: O(n), Space: O(n)
-func DNFWithCustomComparator(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func DnfWithCustomComparator(array []int, pivot int) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range array {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(DNFWithCustomComparator([]int{1, 2, 3, 4, 5}))
-    fmt.Println(DNFWithCustomComparator([]int{5, 3, 1}))
-    fmt.Println(DNFWithCustomComparator([]int{1}))
-}`
+	fmt.Println(DnfWithCustomComparator([]int{1, 2, 3, 4, 5}, nil)) // Expected: true
+	fmt.Println(DnfWithCustomComparator([]int{5, 3, 1}, nil)) // Expected: false
+	fmt.Println(DnfWithCustomComparator([]int{1}, nil)) // Expected: true
+}
+`
         },
         twists: [],
         similar: []

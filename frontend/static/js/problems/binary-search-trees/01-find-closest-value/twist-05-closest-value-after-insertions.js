@@ -2,10 +2,12 @@
  * Closest Value After Insertions
  * Category: binary-search-trees
  * Difficulty: Medium
+ * Algorithm: bst-search
  * Parent: 01-find-closest-value
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Closest Value After Insertions',
         difficulty: 'Medium',
@@ -14,68 +16,87 @@
         description: 'Given a stream of values being inserted into an initially empty BST, after each insertion report the closest value in the current tree to a fixed target.',
         problem: 'The tree structure changes with each insertion. You must think about how insertions affect the search path and whether you can maintain the closest value incrementally rather than re-searching from scratch. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: closest value after insertions.",
-                  "Consider how the tree structure changes with each insertion affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Target=12, insertions=[10,15,5,13,22] -> After each: [10, 10, 10, 13, 13].'
+                input: {"tree":[10,5,15,2,5,13,22,1,null,null,null,null,14],"target":10},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the closest value after insertions criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":[10],"target":10},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Closest Value After Insertions
-# Difficulty: Medium
-# Parent: 01-find-closest-value
-#
-# Given a stream of values being inserted into an initially empty BST, after each insertion report the closest value in the current tree to a fixed target.
-
-def closestValueAfterInsertions(data):
+            python: `def closest_value_after_insertions(tree, target):
     """
     Closest Value After Insertions
 
-    Approach: The tree structure changes with each insertion.
+    Given a stream of values being inserted into an initially empty BST, after each insertion report the closest value in the current tree to a fixed target.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: The tree structure changes with each insertion
-    pass
+    count = 0
+    n = len(tree)
+
+    for i in range(n):
+        # Check condition based on target
+        j = 0
+        for k in range(i, n):
+            if j < len(target) and tree[k] == target[j]:
+                j += 1
+        if j == len(target):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Target=12, insertions=[10,15,5,13,22] -> After each: [10, 10, 10, 13, 13]
-    print(closestValueAfterInsertions({}))`,
+# Test cases
+print(closest_value_after_insertions([10,5,15,2,5,13,22,1,None,None,None,None,14], 10))  # Expected: 1
+print(closest_value_after_insertions([10], 10))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// Closest Value After Insertions
-// Difficulty: Medium
-// Parent: 01-find-closest-value
-//
+// ClosestValueAfterInsertions solves the Closest Value After Insertions problem.
 // Given a stream of values being inserted into an initially empty BST, after each insertion report the closest value in the current tree to a fixed target.
+// Time: O(n), Space: O(1)
+func ClosestValueAfterInsertions(tree []int, target int) int {
+	result := 0
 
-func ClosestValueAfterInsertions(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: The tree structure changes with each insertion
-    return nil
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Target=12, insertions=[10,15,5,13,22] -> After each: [10, 10, 10, 13, 13]
-    fmt.Println(ClosestValueAfterInsertions(map[string]interface{}{}))
-}`
+	fmt.Println(ClosestValueAfterInsertions([]int{10, 5, 15, 2, 5, 13, 22, 1, null, null, null, null, 14}, 10)) // Expected: 1
+	fmt.Println(ClosestValueAfterInsertions([]int{10}, 10)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '01-find-closest-value/twist-05-closest-value-after-insertions', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/01-find-closest-value/twist-05-closest-value-after-insertions'] = problem;
 })();

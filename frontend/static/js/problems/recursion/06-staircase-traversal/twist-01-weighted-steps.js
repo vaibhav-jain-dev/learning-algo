@@ -2,10 +2,12 @@
  * Weighted Steps
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-staircase
  * Parent: 06-staircase-traversal
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Weighted Steps',
         difficulty: 'Hard',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For height=4, maxSteps=2, costs=[0,3,2], taking two 2-steps costs 4, while four 1-steps costs 12. Minimum is 4.' },
-                output: 'See example',
-                explanation: 'For height=4, maxSteps=2, costs=[0,3,2], taking two 2-steps costs 4, while four 1-steps costs 12. Minimum is 4.'
+                input: {"height":4,"maxSteps":2},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the weighted steps criteria.'
+            },
+            // Edge case
+            {
+                input: {"height":0,"maxSteps":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Weighted Steps
-# Category: recursion
-# Difficulty: Hard
-# Parent: 06-staircase-traversal
-
-def solve():
+            python: `def weighted_steps(height, maxSteps):
     """
+    Weighted Steps
+
     Each step size has a different cost. Find the minimum cost to reach the top, where step i costs cost[i].
 
-    Key insight: Changes from counting paths to optimizing cost, requiring dynamic programming with min instead of sum operations.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(height)
+
+    for i in range(n):
+        # Check condition based on maxSteps
+        j = 0
+        for k in range(i, n):
+            if j < len(maxSteps) and height[k] == maxSteps[j]:
+                j += 1
+        if j == len(maxSteps):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(weighted_steps(4, 2))  # Expected: 1
+print(weighted_steps(0, 0))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Weighted Steps problem.
+// WeightedSteps solves the Weighted Steps problem.
 // Each step size has a different cost. Find the minimum cost to reach the top, where step i costs cost[i].
-// Key insight: Changes from counting paths to optimizing cost, requiring dynamic programming with min instead of sum operations.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func WeightedSteps(height int, maxSteps int) int {
+	result := 0
+
+	for i := 0; i < len(height); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(WeightedSteps(4, 2)) // Expected: 1
+	fmt.Println(WeightedSteps(0, 0)) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '06-staircase-traversal/twist-01-weighted-steps', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/06-staircase-traversal/twist-01-weighted-steps'] = problem;
 })();

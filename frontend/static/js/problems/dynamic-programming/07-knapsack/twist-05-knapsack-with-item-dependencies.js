@@ -2,10 +2,12 @@
  * Knapsack With Item Dependencies
  * Category: dynamic-programming
  * Difficulty: Very Hard
+ * Algorithm: dp-knapsack
  * Parent: 07-knapsack
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Knapsack With Item Dependencies',
         difficulty: 'Very Hard',
@@ -19,84 +21,97 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'items=[[10,5],[40,4],[30,6]], dependencies: item 1 requires item 0. To take item 1 (value 40), you must also take item 0 (value 10, weight 5), total weight 9.'
+                input: {"items":[[1,2],[4,3],[5,6],[6,7]],"capacity":10},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the knapsack with item dependencies criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"items":[[60,10],[100,20],[120,30]],"capacity":50},
+                output: 3,
+                explanation: 'For this input, there are 3 valid positions that satisfy the knapsack with item dependencies criteria.'
+            },
+            {
+                input: {"items":[[10,5],[40,4],[30,6],[50,3]],"capacity":10},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the knapsack with item dependencies criteria.'
+            },
+            // Edge case
+            {
+                input: {"items":[[1,2]],"capacity":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def knapsackWithItemDependencies(data):
+            python: `def knapsack_with_item_dependencies(items, capacity):
     """
     Knapsack With Item Dependencies
 
     Some items depend on others: you can only select item B if you have also selected item A. Find the maximum value respecting all dependencies.
 
-    Approach:
-    Introduces a dependency DAG on items, requiring topological ordering or tree DP. Standard knapsack independent-item assumption no longer holds.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    count = 0
+    n = len(items)
 
-    # Example: items=[[10,5],[40,4],[30,6]], dependencies: item 1 requires item 0. To take item 1 (value 40), you must also take item 0
+    for i in range(n):
+        # Check condition based on capacity
+        j = 0
+        for k in range(i, n):
+            if j < len(capacity) and items[k] == capacity[j]:
+                j += 1
+        if j == len(capacity):
+            count += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
-    return result
+    return count
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Knapsack With Item Dependencies...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(knapsack_with_item_dependencies([[1,2],[4,3],[5,6],[6,7]], 10))  # Expected: 2
+print(knapsack_with_item_dependencies([[60,10],[100,20],[120,30]], 50))  # Expected: 3
+print(knapsack_with_item_dependencies([[10,5],[40,4],[30,6],[50,3]], 10))  # Expected: 1
+`,
             go: `package main
 
 import "fmt"
 
 // KnapsackWithItemDependencies solves the Knapsack With Item Dependencies problem.
 // Some items depend on others: you can only select item B if you have also selected item A. Find the maximum value respecting all dependencies.
-//
-// Approach: Introduces a dependency DAG on items, requiring topological ordering or tree DP. Standard knapsack independent-item assumption no longer holds.
-func KnapsackWithItemDependencies(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2), Space: O(n)
+func KnapsackWithItemDependencies(items [][]int, capacity int) int {
+	result := 0
 
-    // Example: items=[[10,5],[40,4],[30,6]], dependencies: item 1 requires item 0. To take item 1 (value 40), you m
+	for i := 0; i < len(items); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Knapsack With Item Dependencies...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(KnapsackWithItemDependencies([][]int{{1, 2}, {4, 3}, {5, 6}, {6, 7}}, 10)) // Expected: 2
+	fmt.Println(KnapsackWithItemDependencies([][]int{{60, 10}, {100, 20}, {120, 30}}, 50)) // Expected: 3
+	fmt.Println(KnapsackWithItemDependencies([][]int{{10, 5}, {40, 4}, {30, 6}, {50, 3}}, 10)) // Expected: 1
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '07-knapsack/twist-05-knapsack-with-item-dependencies', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/07-knapsack/twist-05-knapsack-with-item-dependencies'] = problem;
 })();

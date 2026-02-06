@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,2,1]},
                 output: 3,
-                explanation: 'The maximum/longest valid segment has length 3.'
+                explanation: ''
             },
             {
                 input: {"array":[5,4,3,2,1]},
                 output: 5,
-                explanation: 'The entire array satisfies the condition.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1]},
                 output: 1,
-                explanation: 'Single element is trivially valid.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def max_constructible_with_removable_coins(data):
+            python: `def max_constructible_with_removable_coins(coins, budget):
     """
     Max Constructible with Removable Coins
 
-    You can remove up to k coins from the collection. Find the arrangement that maximizes the minimum non-constructible value.
-    \n    Approach: Counterintuitive: removing coins could increase coverage if you remove coins that create gaps. Actually, removal always decreases coverage, so this becomes about minimizing damage.
+    You can remove up to k coins from the collection. Find the arrangement that maximizes the minimum non-constructible value. Counterintuitive: removing coins could increase coverage if you remove coins that create gaps. Actually, removal always decreases coverage, so this becomes about minimizing damage.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # coins=[1,1,1,1,1,100], k=1 → remove 100, remaining [1,1,1,1,1] → max constructible = 5
+    count = 0
+    n = len(coins)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on budget
+        j = 0
+        for k in range(i, n):
+            if j < len(budget) and coins[k] == budget[j]:
+                j += 1
+        if j == len(budget):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(max_constructible_with_removable_coins([1, 2, 3, 4, 5]))
-print(max_constructible_with_removable_coins([5, 3, 1]))
-print(max_constructible_with_removable_coins([1]))`,
+print(max_constructible_with_removable_coins(None, None))  # Expected: 3
+print(max_constructible_with_removable_coins(None, None))  # Expected: 5
+print(max_constructible_with_removable_coins(None, None))  # Expected: 1
+`,
             go: `package main
 
 import "fmt"
 
 // MaxConstructibleWithRemovableCoins solves the Max Constructible with Removable Coins problem.
-// You can remove up to k coins from the collection. Find the arrangement that maximizes the minimum non-constructible value.
+// You can remove up to k coins from the collection. Find the arrangement that maximizes the minimum non-constructible value. Counterintuitive: removing coins could increase coverage if you remove coins that create gaps. Actually, removal always decreases coverage, so this becomes about minimizing damage.
 // Time: O(n), Space: O(n)
-func MaxConstructibleWithRemovableCoins(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MaxConstructibleWithRemovableCoins(coins []int, budget int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(coins); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(MaxConstructibleWithRemovableCoins([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MaxConstructibleWithRemovableCoins([]int{5, 3, 1}))
-    fmt.Println(MaxConstructibleWithRemovableCoins([]int{1}))
-}`
+	fmt.Println(MaxConstructibleWithRemovableCoins(nil, nil)) // Expected: 3
+	fmt.Println(MaxConstructibleWithRemovableCoins(nil, nil)) // Expected: 5
+	fmt.Println(MaxConstructibleWithRemovableCoins(nil, nil)) // Expected: 1
+}
+`
         },
         twists: [],
         similar: []

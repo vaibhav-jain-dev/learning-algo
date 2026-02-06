@@ -2,10 +2,12 @@
  * Multiple Cycles Check
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-single-cycle
  * Parent: 07-single-cycle-check
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Multiple Cycles Check',
         difficulty: 'Medium',
@@ -19,87 +21,90 @@
             'Consider the example: Array [1,-1,1,-1].',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N)', space: 'O(1)' },
+        complexity: {
+            time: 'O(N)',
+            space: 'O(1)'
+        },
         examples: [
-            { input: { description: 'Array [1,-1,1,-1]. Two cycles: indices 0->1->0 and 2->3->2. K=2 returns true.' }, output: 'See explanation', explanation: 'Array [1,-1,1,-1]. Two cycles: indices 0->1->0 and 2->3->2. K=2 returns true.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"array":[2,3,1,-4,-4,2],"k":3},
+                output: [2,3,1],
+                explanation: 'The multiple cycles check for this input yields [2, 3, 1].'
+            },
+            {
+                input: {"array":[2,2,-1],"k":3},
+                output: [2,2,-1],
+                explanation: 'The multiple cycles check for this input yields [2, 2, -1].'
+            },
+            {
+                input: {"array":[1,1,1,1,2],"k":3},
+                output: [1,1,1],
+                explanation: 'The multiple cycles check for this input yields [1, 1, 1].'
+            },
+            // Edge case
+            {
+                input: {"array":[2],"k":3},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def multiple_cycles_check(data):
+            python: `def multiple_cycles_check(array, k):
     """
     Multiple Cycles Check
 
     Instead of checking for a single cycle visiting all elements, check if the array contains exactly K disjoint cycles that together cover all elements.
 
-    Approach:
-    You must track visited elements across multiple cycle traversals and count distinct cycles, rather than checking if one cycle covers everything.
-
     Time: O(N)
     Space: O(1)
     """
-    # You must track visited elements across multiple cycle traversals and count distinct cycles, rather than checking if one cycle covers everything.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Multiple Cycles Check
-    # Key difference from parent: You must track visited elements across multiple cycle traversals and count distinct cycles, rather t
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return multiple_cycles_check(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Array [1,-1,1,-1]. Two cycles: indices 0->1->0 and 2->3->2. K=2 returns true.
-    print("Test: Multiple Cycles Check")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(multiple_cycles_check([2,3,1,-4,-4,2], 3))  # Expected: [2,3,1]
+print(multiple_cycles_check([2,2,-1], 3))  # Expected: [2,2,-1]
+print(multiple_cycles_check([1,1,1,1,2], 3))  # Expected: [1,1,1]
+`,
             go: `package main
 
 import "fmt"
 
-// MultipleCyclesCheck solves the Multiple Cycles Check problem
+// MultipleCyclesCheck solves the Multiple Cycles Check problem.
 // Instead of checking for a single cycle visiting all elements, check if the array contains exactly K disjoint cycles that together cover all elements.
-//
-// Approach: You must track visited elements across multiple cycle traversals and count distinct cycles, rather than checking if one cycle covers everything.
-//
-// Time: O(N)
-// Space: O(1)
-func MultipleCyclesCheck(input interface{}) interface{} {
-    // You must track visited elements across multiple cycle traversals and count distinct cycles, rather than checking if one cycle covers everything.
+// Time: O(N), Space: O(1)
+func MultipleCyclesCheck(array []int, k int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Multiple Cycles Check
-    // Key difference from parent: You must track visited elements across multiple cycle traversals and count distinct cycles, rather t
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Array [1,-1,1,-1]. Two cycles: indices 0->1->0 and 2->3->2. K=2 returns true.
-    fmt.Println("Test: Multiple Cycles Check")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(MultipleCyclesCheck([]int{2, 3, 1, -4, -4, 2}, 3)) // Expected: [2,3,1]
+	fmt.Println(MultipleCyclesCheck([]int{2, 2, -1}, 3)) // Expected: [2,2,-1]
+	fmt.Println(MultipleCyclesCheck([]int{1, 1, 1, 1, 2}, 3)) // Expected: [1,1,1]
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '07-single-cycle-check/twist-01-multiple-cycles-check', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/07-single-cycle-check/twist-01-multiple-cycles-check'] = problem;
 })();

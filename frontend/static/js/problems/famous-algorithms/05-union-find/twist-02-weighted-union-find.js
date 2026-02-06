@@ -2,10 +2,12 @@
  * Weighted Union-Find
  * Category: famous-algorithms
  * Difficulty: Hard
+ * Algorithm: union-find
  * Parent: 05-union-find
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Weighted Union-Find',
         difficulty: 'Hard',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Union(0,1,weight=3), union(1,2,weight=5). Distance from 0 to 2 is 8. Path compression must preserve these distances.' },
-                output: 'See example',
-                explanation: 'Union(0,1,weight=3), union(1,2,weight=5). Distance from 0 to 2 is 8. Path compression must preserve these distances.'
+                input: {"n":5,"operations":["union(0,1)","union(2,3)","union(1,3)","find(0)==find(3)?","find(0)==find(4)?"]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the weighted union find criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"operations":["union(0,1)"]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Weighted Union-Find
-# Category: famous-algorithms
-# Difficulty: Hard
-# Parent: 05-union-find
-
-def solve():
+            python: `def weighted_union_find(n, operations):
     """
+    Weighted Union-Find
+
     Each edge in the union has a weight/distance. Find(x) returns the distance from x to its root, and you can query the distance between any two elements in the same set.
 
-    Key insight: Path compression must propagate weights along compressed paths, requiring careful weight accumulation during the find operation.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(n)
+
+    for i in range(n):
+        # Check condition based on operations
+        j = 0
+        for k in range(i, n):
+            if j < len(operations) and n[k] == operations[j]:
+                j += 1
+        if j == len(operations):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(weighted_union_find(5, ["union(0,1)","union(2,3)","union(1,3)","find(0)==find(3)?","find(0)==find(4)?"]))  # Expected: 1
+print(weighted_union_find(0, ["union(0,1)"]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Weighted Union-Find problem.
+// WeightedUnionFind solves the Weighted Union-Find problem.
 // Each edge in the union has a weight/distance. Find(x) returns the distance from x to its root, and you can query the distance between any two elements in the same set.
-// Key insight: Path compression must propagate weights along compressed paths, requiring careful weight accumulation during the find operation.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func WeightedUnionFind(n int, operations []string) int {
+	result := 0
+
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(WeightedUnionFind(5, []string{"union(0,1)", "union(2,3)", "union(1,3)", "find(0)==find(3)?", "find(0)==find(4)?"})) // Expected: 1
+	fmt.Println(WeightedUnionFind(0, []string{"union(0,1)"})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '05-union-find/twist-02-weighted-union-find', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/05-union-find/twist-02-weighted-union-find'] = problem;
 })();

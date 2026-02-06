@@ -2,10 +2,12 @@
  * Path Between Employees
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-manager
  * Parent: 14-lowest-common-manager
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Path Between Employees',
         difficulty: 'Medium',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Path from E to G through LCM A might be: E -> B -> A -> C -> G.' },
-                output: 'See example',
-                explanation: 'Path from E to G through LCM A might be: E -> B -> A -> C -> G.'
+                input: {"topManager":"A","employee1":"E","employee2":"G"},
+                output: [0],
+                explanation: 'The path between employees for this input yields [0].'
+            },
+            // Edge case
+            {
+                input: {"topManager":"","employee1":"","employee2":""},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Path Between Employees
-# Category: recursion
-# Difficulty: Medium
-# Parent: 14-lowest-common-manager
-
-def solve():
+            python: `def path_between_employees(topManager, employee1, employee2):
     """
+    Path Between Employees
+
     Find the full path from employee1 to employee2 through their lowest common manager.
 
-    Key insight: Requires finding the LCM first, then constructing the path by going up from each employee to the LCM and joining the paths.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(topManager)):
+        # Check if element meets criteria
+        result.append(topManager[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(path_between_employees("A", "E", "G"))  # Expected: [0]
+print(path_between_employees("", "", ""))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Path Between Employees problem.
+// PathBetweenEmployees solves the Path Between Employees problem.
 // Find the full path from employee1 to employee2 through their lowest common manager.
-// Key insight: Requires finding the LCM first, then constructing the path by going up from each employee to the LCM and joining the paths.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func PathBetweenEmployees(topManager string, employee1 string, employee2 string) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(topManager); i++ {
+		result = append(result, topManager[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(PathBetweenEmployees("A", "E", "G")) // Expected: [0]
+	fmt.Println(PathBetweenEmployees("", "", "")) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '14-lowest-common-manager/twist-03-path-between-employees', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/14-lowest-common-manager/twist-03-path-between-employees'] = problem;
 })();

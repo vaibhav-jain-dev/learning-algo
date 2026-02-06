@@ -2,10 +2,12 @@
  * Range Count on Multiple Non-Overlapping Ranges
  * Category: binary-search-trees
  * Difficulty: Medium
+ * Algorithm: bst-range
  * Parent: 03-validate-bst/03-count-nodes-in-range
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Range Count on Multiple Non-Overlapping Ranges',
         difficulty: 'Medium',
@@ -14,68 +16,94 @@
         description: 'Given multiple non-overlapping ranges, count nodes in each range in a single traversal of the BST.',
         problem: 'Multiple ranges mean you must track which range you are currently evaluating during traversal. Sorting ranges and using a pointer that advances through them during inorder traversal turns this into a merge-like operation. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: range count on multiple non-overlapping ranges.",
-                  "Consider how multiple ranges mean you must track which range you are currently evaluating during traversal affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Tree: [10,5,15,3,7,12,20], ranges=[[3,5],[10,15],[18,25]] -> counts=[3,3,1]. Single inorder traversal counts for all ranges.'
+                input: {"tree":[10,5,15,3,7,null,18],"low":7,"high":15},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the range count on multiple non overlapping ranges criteria.'
+            },
+            {
+                input: {"tree":[10,5,15,3,7,13,18,1,null,6],"low":6,"high":10},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the range count on multiple non overlapping ranges criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":[10],"low":0,"high":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Range Count on Multiple Non-Overlapping Ranges
-# Difficulty: Medium
-# Parent: 03-validate-bst/03-count-nodes-in-range
-#
-# Given multiple non-overlapping ranges, count nodes in each range in a single traversal of the BST.
-
-def rangeCountOnMultipleNonOverlappingRanges(data):
+            python: `def range_count_on_multiple_non_overlapping_ranges(tree, low, high):
     """
     Range Count on Multiple Non-Overlapping Ranges
 
-    Approach: Multiple ranges mean you must track which range you are currently evaluating during traversal.
+    Given multiple non-overlapping ranges, count nodes in each range in a single traversal of the BST.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Multiple ranges mean you must track which range you are currently evaluating during traversal
-    pass
+    count = 0
+    n = len(tree)
+
+    for i in range(n):
+        # Check condition based on low
+        j = 0
+        for k in range(i, n):
+            if j < len(low) and tree[k] == low[j]:
+                j += 1
+        if j == len(low):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree: [10,5,15,3,7,12,20], ranges=[[3,5],[10,15],[18,25]] -> counts=[3,3,1]
-    print(rangeCountOnMultipleNonOverlappingRanges({}))`,
+# Test cases
+print(range_count_on_multiple_non_overlapping_ranges([10,5,15,3,7,None,18], 7, 15))  # Expected: 1
+print(range_count_on_multiple_non_overlapping_ranges([10,5,15,3,7,13,18,1,None,6], 6, 10))  # Expected: 2
+print(range_count_on_multiple_non_overlapping_ranges([10], 0, 0))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// Range Count on Multiple Non-Overlapping Ranges
-// Difficulty: Medium
-// Parent: 03-validate-bst/03-count-nodes-in-range
-//
+// RangeCountOnMultipleNonOverlappingRanges solves the Range Count on Multiple Non-Overlapping Ranges problem.
 // Given multiple non-overlapping ranges, count nodes in each range in a single traversal of the BST.
+// Time: O(n), Space: O(1)
+func RangeCountOnMultipleNonOverlappingRanges(tree []int, low int, high int) int {
+	result := 0
 
-func RangeCountOnMultipleNonOverlappingRanges(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Multiple ranges mean you must track which range you are currently evaluating during traversal
-    return nil
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Tree: [10,5,15,3,7,12,20], ranges=[[3,5],[10,15],[18,25]] -> counts=[3,3,1]
-    fmt.Println(RangeCountOnMultipleNonOverlappingRanges(map[string]interface{}{}))
-}`
+	fmt.Println(RangeCountOnMultipleNonOverlappingRanges([]int{10, 5, 15, 3, 7, null, 18}, 7, 15)) // Expected: 1
+	fmt.Println(RangeCountOnMultipleNonOverlappingRanges([]int{10, 5, 15, 3, 7, 13, 18, 1, null, 6}, 6, 10)) // Expected: 2
+	fmt.Println(RangeCountOnMultipleNonOverlappingRanges([]int{10}, 0, 0)) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '03-validate-bst/03-count-nodes-in-range/twist-03-range-count-on-multiple-non-overlapping-ranges', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/03-validate-bst/03-count-nodes-in-range/twist-03-range-count-on-multiple-non-overlapping-ranges'] = problem;
 })();

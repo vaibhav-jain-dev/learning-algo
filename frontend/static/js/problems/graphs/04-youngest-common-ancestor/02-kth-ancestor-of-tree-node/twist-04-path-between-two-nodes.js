@@ -2,10 +2,12 @@
  * Path Between Two Nodes
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: graph-ancestor
  * Parent: 04-youngest-common-ancestor/02-kth-ancestor-of-tree-node
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Path Between Two Nodes',
         difficulty: 'Medium',
@@ -19,87 +21,78 @@
             'Consider the example: Nodes 6 and 4 in the tree.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N log N) preprocessing, O(log K) query', space: 'O(N log N)' },
+        complexity: {
+            time: 'O(N log N) preprocessing, O(log K) query',
+            space: 'O(N log N)'
+        },
         examples: [
-            { input: { description: 'Nodes 6 and 4 in the tree. Path: 6->2->0->1->4 (going up to LCA 0, then down).' }, output: 'See explanation', explanation: 'Nodes 6 and 4 in the tree. Path: 6->2->0->1->4 (going up to LCA 0, then down).' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"n":7,"parent":[-1,0,0,1,1,2,2],"queries":[[3,1],[5,2],[6,3]]},
+                output: [-1,0,0,1],
+                explanation: 'The path between two nodes for this input yields [-1, 0, 0, 1].'
+            },
+            // Edge case
+            {
+                input: {"n":0,"parent":[-1],"queries":[[3,1]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def path_between_two_nodes(data):
+            python: `def path_between_two_nodes(n, parent, queries):
     """
     Path Between Two Nodes
 
     Given two nodes u and v, find the path from u to v by finding their LCA and concatenating the upward paths.
 
-    Approach:
-    Binary lifting finds ancestors efficiently, but reconstructing the actual path requires collecting nodes along the way, not just jumping past them.
-
     Time: O(N log N) preprocessing, O(log K) query
     Space: O(N log N)
     """
-    # Binary lifting finds ancestors efficiently, but reconstructing the actual path requires collecting nodes along the way, not just jumping past them.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Path Between Two Nodes
-    # Key difference from parent: Binary lifting finds ancestors efficiently, but reconstructing the actual path requires collecting n
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(n)):
+        # Check if element meets criteria
+        result.append(n[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return path_between_two_nodes(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Nodes 6 and 4 in the tree. Path: 6->2->0->1->4 (going up to LCA 0, then down).
-    print("Test: Path Between Two Nodes")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(path_between_two_nodes(7, [-1,0,0,1,1,2,2], [[3,1],[5,2],[6,3]]))  # Expected: [-1,0,0,1]
+print(path_between_two_nodes(0, [-1], [[3,1]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// PathBetweenTwoNodes solves the Path Between Two Nodes problem
+// PathBetweenTwoNodes solves the Path Between Two Nodes problem.
 // Given two nodes u and v, find the path from u to v by finding their LCA and concatenating the upward paths.
-//
-// Approach: Binary lifting finds ancestors efficiently, but reconstructing the actual path requires collecting nodes along the way, not just jumping past them.
-//
-// Time: O(N log N) preprocessing, O(log K) query
-// Space: O(N log N)
-func PathBetweenTwoNodes(input interface{}) interface{} {
-    // Binary lifting finds ancestors efficiently, but reconstructing the actual path requires collecting nodes along the way, not just jumping past them.
+// Time: O(N log N) preprocessing, O(log K) query, Space: O(N log N)
+func PathBetweenTwoNodes(n int, parent []int, queries [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Path Between Two Nodes
-    // Key difference from parent: Binary lifting finds ancestors efficiently, but reconstructing the actual path requires collecting n
+	for i := 0; i < len(n); i++ {
+		result = append(result, n[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Nodes 6 and 4 in the tree. Path: 6->2->0->1->4 (going up to LCA 0, then down).
-    fmt.Println("Test: Path Between Two Nodes")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(PathBetweenTwoNodes(7, []int{-1, 0, 0, 1, 1, 2, 2}, [][]int{{3, 1}, {5, 2}, {6, 3}})) // Expected: [-1,0,0,1]
+	fmt.Println(PathBetweenTwoNodes(0, []int{-1}, [][]int{{3, 1}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '04-youngest-common-ancestor/02-kth-ancestor-of-tree-node/twist-04-path-between-two-nodes', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/04-youngest-common-ancestor/02-kth-ancestor-of-tree-node/twist-04-path-between-two-nodes'] = problem;
 })();

@@ -26,80 +26,80 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"text1":"abcde","text2":"ace"},
                 output: 3,
-                explanation: 'The longest common subsequence is "ace" with length 3.'
+                explanation: ''
             },
             {
                 input: {"text1":"abc","text2":"def"},
                 output: 0,
-                explanation: 'No common characters exist between the two strings.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"text1":"abcba","text2":"abcba"},
                 output: 5,
-                explanation: 'Identical strings have LCS equal to their length.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def lcs_on_circular_strings(data):
+            python: `def lcs_on_circular_strings(text1, text2):
     """
     LCS on Circular Strings
 
-    Both strings are circular (the end wraps to the beginning). Find the LCS considering all rotations.
-    \n    Approach: You must consider all rotational alignments, turning a single DP computation into potentially O(n) DP computations or requiring a clever concatenation trick.
+    Both strings are circular (the end wraps to the beginning). Find the LCS considering all rotations. You must consider all rotational alignments, turning a single DP computation into potentially O(n) DP computations or requiring a clever concatenation trick.
 
     Time: O(n)
     Space: O(n)
-
-    Example: text1="abc" (rotations: abc, bca, cab), text2="cab" → 3 (cab rotation of text1 matches exactly)
     """
-    if not data:
-        return None
+    n = len(text1)
+    m = len(text2)
+    doubled = text1 + text1
+    j = 0
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
+    for i in range(min(2 * n, 2 * n)):
+        if j < m and doubled[i] == text2[j]:
+            j += 1
+        if j == m:
+            return True
 
-    # Core algorithm implementation
-    for i in range(n):
-        result.append(data[i])
-
-    return result
+    return False
 
 
 # Test cases
-print(lcs_on_circular_strings([1, 2, 3, 4, 5]))
-print(lcs_on_circular_strings([5, 3, 1]))
-print(lcs_on_circular_strings([1]))`,
+print(lcs_on_circular_strings("abcde", "ace"))  # Expected: 3
+print(lcs_on_circular_strings("abc", "def"))  # Expected: 0
+print(lcs_on_circular_strings("abcba", "abcba"))  # Expected: 5
+`,
             go: `package main
 
 import "fmt"
 
-// LCSOnCircularStrings solves the LCS on Circular Strings problem.
-// Both strings are circular (the end wraps to the beginning). Find the LCS considering all rotations.
+// LcsOnCircularStrings solves the LCS on Circular Strings problem.
+// Both strings are circular (the end wraps to the beginning). Find the LCS considering all rotations. You must consider all rotational alignments, turning a single DP computation into potentially O(n) DP computations or requiring a clever concatenation trick.
 // Time: O(n), Space: O(n)
-func LCSOnCircularStrings(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func LcsOnCircularStrings(text1 string, text2 string) bool {
+	n := len(text1)
+	m := len(text2)
+	j := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < 2*n && j < m; i++ {
+		if text1[i%n] == text2[j] {
+			j++
+		}
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return j == m
 }
 
 func main() {
-    fmt.Println(LCSOnCircularStrings([]int{1, 2, 3, 4, 5}))
-    fmt.Println(LCSOnCircularStrings([]int{5, 3, 1}))
-    fmt.Println(LCSOnCircularStrings([]int{1}))
-}`
+	fmt.Println(LcsOnCircularStrings("abcde", "ace")) // Expected: 3
+	fmt.Println(LcsOnCircularStrings("abc", "def")) // Expected: 0
+	fmt.Println(LcsOnCircularStrings("abcba", "abcba")) // Expected: 5
+}
+`
         },
         twists: [],
         similar: []

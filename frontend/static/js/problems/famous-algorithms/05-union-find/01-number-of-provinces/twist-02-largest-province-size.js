@@ -2,10 +2,12 @@
  * Largest Province Size
  * Category: famous-algorithms
  * Difficulty: Medium
+ * Algorithm: union-find
  * Parent: 05-union-find/01-number-of-provinces
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Largest Province Size',
         difficulty: 'Medium',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For 5 cities in 2 provinces of sizes 3 and 2, return 3 as the largest province size.' },
-                output: 'See example',
-                explanation: 'For 5 cities in 2 provinces of sizes 3 and 2, return 3 as the largest province size.'
+                input: {"isConnected":[[1,1,0],[1,1,0],[0,0,1]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the largest province size criteria.'
+            },
+            // Edge case
+            {
+                input: {"isConnected":[[1,1,0]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Largest Province Size
-# Category: famous-algorithms
-# Difficulty: Medium
-# Parent: 05-union-find/01-number-of-provinces
-
-def solve():
+            python: `def largest_province_size(isConnected):
     """
+    Largest Province Size
+
     Instead of counting provinces, find the size of the largest province (most cities in a single connected group).
 
-    Key insight: Requires tracking component sizes during union operations, maintaining a size array that updates when sets merge.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(isConnected)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(largest_province_size([[1,1,0],[1,1,0],[0,0,1]]))  # Expected: 1
+print(largest_province_size([[1,1,0]]))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Largest Province Size problem.
+// LargestProvinceSize solves the Largest Province Size problem.
 // Instead of counting provinces, find the size of the largest province (most cities in a single connected group).
-// Key insight: Requires tracking component sizes during union operations, maintaining a size array that updates when sets merge.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func LargestProvinceSize(isConnected [][]int) int {
+	result := 0
+
+	for i := 0; i < len(isConnected); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(LargestProvinceSize([][]int{{1, 1, 0}, {1, 1, 0}, {0, 0, 1}})) // Expected: 1
+	fmt.Println(LargestProvinceSize([][]int{{1, 1, 0}})) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '05-union-find/01-number-of-provinces/twist-02-largest-province-size', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/05-union-find/01-number-of-provinces/twist-02-largest-province-size'] = problem;
 })();

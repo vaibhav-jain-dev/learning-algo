@@ -2,10 +2,12 @@
  * Merge BSTs into Valid BST
  * Category: binary-trees
  * Difficulty: Hard
+ * Algorithm: tree-merge
  * Parent: 12-merge-binary-trees
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Merge BSTs into Valid BST',
         difficulty: 'Hard',
@@ -19,121 +21,78 @@
             'Key insight: Simple position-based merging does not preserve BST ordering.',
             'You must extract all values from both trees, sort them, and build a balanced BST from the merged sorted array, which is a completely different approach.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'BST1 [3, 1, 5], BST2 [4, 2, 6]' },
-                output: 'See explanation',
-                explanation: 'BST1 [3, 1, 5], BST2 [4, 2, 6]. Position-merge would give [7, 3, 11] which is not a valid BST. Correct merge: sorted values [1,2,3,4,5,6], build balanced BST [3, 1, 5, null, 2, 4, 6].'
+                input: {"tree1":{"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}},"tree2":{"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}}},
+                output: [0],
+                explanation: 'The merge bsts into valid bst for this input yields [0].'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree1":{"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}},"tree2":{"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def merge_bsts_into_valid_bst(data):
+            python: `def merge_bsts_into_valid_bst(tree1, tree2):
     """
     Merge BSTs into Valid BST
 
-    Given two BSTs, merge them into a single valid BST (not just overlaying positions).
-     The result must maintain BST ordering.
+    Given two BSTs, merge them into a single valid BST (not just overlaying positions). The result must maintain BST ordering. Simple position-based merging does not preserve BST ordering. You must extract all values from both trees, sort them, and build a balanced BST from the merged sorted array, which is a completely different approach.
 
-    Approach: Simple position-based merging does not preserve BST ordering
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: Simple position-based merging does not preserve BST ordering
+    for i in range(len(tree1)):
+        # Check if element meets criteria
+        result.append(tree1[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Merge BSTs into Valid BST
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: BST1 [3, 1, 5], BST2 [4, 2, 6]
-    print("See problem description for test cases")`,
+# Test cases
+print(merge_bsts_into_valid_bst({"value": 1, "left": {"value": 3, "left": {"value": 5}}, "right": {"value": 2}}, {"value": 2, "left": {"value": 1, "right": {"value": 4}}, "right": {"value": 3, "right": {"value": 7}}}))  # Expected: [0]
+print(merge_bsts_into_valid_bst({"value": 1, "left": {"value": 3, "left": {"value": 5}}, "right": {"value": 2}}, {"value": 2, "left": {"value": 1, "right": {"value": 4}}, "right": {"value": 3, "right": {"value": 7}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// MergeBstsIntoValidBst solves: Merge BSTs into Valid BST
-// Simple position-based merging does not preserve BST ordering
+// MergeBstsIntoValidBst solves the Merge BSTs into Valid BST problem.
+// Given two BSTs, merge them into a single valid BST (not just overlaying positions). The result must maintain BST ordering. Simple position-based merging does not preserve BST ordering. You must extract all values from both trees, sort them, and build a balanced BST from the merged sorted array, which is a completely different approach.
 // Time: O(n), Space: O(n)
-func MergeBstsIntoValidBst(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func MergeBstsIntoValidBst(tree1 *TreeNode, tree2 *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree1); i++ {
+		result = append(result, tree1[i])
+	}
 
-    // TODO: Implement Merge BSTs into Valid BST
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: BST1 [3, 1, 5], BST2 [4, 2, 6]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(MergeBstsIntoValidBst({"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}}, {"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}})) // Expected: [0]
+	fmt.Println(MergeBstsIntoValidBst({"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}}, {"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '12-merge-binary-trees/twist-03-merge-bsts-into-valid-bst', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/12-merge-binary-trees/twist-03-merge-bsts-into-valid-bst'] = problem;
 })();

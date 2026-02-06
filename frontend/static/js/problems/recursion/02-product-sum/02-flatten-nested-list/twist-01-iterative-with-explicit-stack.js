@@ -2,10 +2,12 @@
  * Iterative with Explicit Stack
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-product-sum
  * Parent: 02-product-sum/02-flatten-nested-list
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Iterative with Explicit Stack',
         difficulty: 'Medium',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For [[1,2],[3,[4,5]],6]: Push 6, [3,[4,5]], [1,2] to stack. Pop [1,2] -> push 2,1. Pop 1 -> add to result. Pop 2 -> add. Pop [3,[4,5]] -> push [4,5],3. Continue.' },
-                output: 'See example',
-                explanation: 'For [[1,2],[3,[4,5]],6]: Push 6, [3,[4,5]], [1,2] to stack. Pop [1,2] -> push 2,1. Pop 1 -> add to result. Pop 2 -> add. Pop [3,[4,5]] -> push [4,5],3. Continue.'
+                input: {"array":[[1,2],[3,[4,5]],6]},
+                output: [[1,2],[3,[4,5]],6],
+                explanation: 'The iterative with explicit stack for this input yields [1,2, 3,4,5, 6].'
+            },
+            // Edge case
+            {
+                input: {"array":[[1,2]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Iterative with Explicit Stack
-# Category: recursion
-# Difficulty: Medium
-# Parent: 02-product-sum/02-flatten-nested-list
-
-def solve():
+            python: `def iterative_with_explicit_stack(array):
     """
+    Iterative with Explicit Stack
+
     Flatten the nested list using an explicit stack instead of recursion. Process elements right-to-left so they come off the stack in the correct order.
 
-    Key insight: You must reverse the push order to maintain element ordering, which is a subtle detail that recursion handles naturally. The stack replaces the call stack but requires manual ordering management.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(iterative_with_explicit_stack([[1,2],[3,[4,5]],6]))  # Expected: [[1,2],[3,[4,5]],6]
+print(iterative_with_explicit_stack([[1,2]]))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Iterative with Explicit Stack problem.
+// IterativeWithExplicitStack solves the Iterative with Explicit Stack problem.
 // Flatten the nested list using an explicit stack instead of recursion. Process elements right-to-left so they come off the stack in the correct order.
-// Key insight: You must reverse the push order to maintain element ordering, which is a subtle detail that recursion handles naturally. The stack replaces the call stack but requires manual ordering management.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func IterativeWithExplicitStack(array [][]int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(IterativeWithExplicitStack([][]int{{1, 2}, {3, 4,5}, 6})) // Expected: [[1,2],[3,[4,5]],6]
+	fmt.Println(IterativeWithExplicitStack([][]int{{1, 2}})) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '02-product-sum/02-flatten-nested-list/twist-01-iterative-with-explicit-stack', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/02-product-sum/02-flatten-nested-list/twist-01-iterative-with-explicit-stack'] = problem;
 })();

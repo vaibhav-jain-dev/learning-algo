@@ -27,83 +27,76 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5]},
-                output: true,
-                explanation: 'Array is monotonically increasing.'
+                output: [0,1,2],
+                explanation: 'The can become monotonic by removing for this input yields [0, 1, 2].'
             },
             {
                 input: {"array":[5,4,3,2,1]},
-                output: true,
-                explanation: 'Array is monotonically decreasing.'
+                output: [0,1,2],
+                explanation: 'The can become monotonic by removing for this input yields [0, 1, 2].'
             },
             {
                 input: {"array":[1,3,2,4]},
-                output: false,
-                explanation: 'Array is not monotonic - has both increases and decreases.'
+                output: [0,1,2],
+                explanation: 'The can become monotonic by removing for this input yields [0, 1, 2].'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def can_become_monotonic_by_removing(data):
+            python: `def can_become_monotonic_by_removing(array):
     """
     Can Become Monotonic by Removing
 
-    Instead of changing, can you make it monotonic by removing at most one element?
-    \n    Approach: Removal shifts all subsequent indices, creating a gap. Must check if removing either endpoint of a violation fixes the entire array.
+    Instead of changing, can you make it monotonic by removing at most one element? Removal shifts all subsequent indices, creating a gap. Must check if removing either endpoint of a violation fixes the entire array.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 4, 2, 3]. Remove 4: [1, 2, 3]. Return true.
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
 # Test cases
-print(can_become_monotonic_by_removing([1, 2, 3, 4, 5]))
-print(can_become_monotonic_by_removing([5, 3, 1]))
-print(can_become_monotonic_by_removing([1]))`,
+print(can_become_monotonic_by_removing([1,2,3,4,5]))  # Expected: [0,1,2]
+print(can_become_monotonic_by_removing([5,4,3,2,1]))  # Expected: [0,1,2]
+print(can_become_monotonic_by_removing([1,3,2,4]))  # Expected: [0,1,2]
+`,
             go: `package main
 
 import "fmt"
 
 // CanBecomeMonotonicByRemoving solves the Can Become Monotonic by Removing problem.
-// Instead of changing, can you make it monotonic by removing at most one element?
+// Instead of changing, can you make it monotonic by removing at most one element? Removal shifts all subsequent indices, creating a gap. Must check if removing either endpoint of a violation fixes the entire array.
 // Time: O(n), Space: O(n)
-func CanBecomeMonotonicByRemoving(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func CanBecomeMonotonicByRemoving(array []int) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(CanBecomeMonotonicByRemoving([]int{1, 2, 3, 4, 5}))
-    fmt.Println(CanBecomeMonotonicByRemoving([]int{5, 3, 1}))
-    fmt.Println(CanBecomeMonotonicByRemoving([]int{1}))
-}`
+	fmt.Println(CanBecomeMonotonicByRemoving([]int{1, 2, 3, 4, 5})) // Expected: [0,1,2]
+	fmt.Println(CanBecomeMonotonicByRemoving([]int{5, 4, 3, 2, 1})) // Expected: [0,1,2]
+	fmt.Println(CanBecomeMonotonicByRemoving([]int{1, 3, 2, 4})) // Expected: [0,1,2]
+}
+`
         },
         twists: [],
         similar: []

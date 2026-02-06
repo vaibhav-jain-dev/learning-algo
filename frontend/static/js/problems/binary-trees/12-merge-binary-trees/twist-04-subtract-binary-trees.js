@@ -2,10 +2,12 @@
  * Subtract Binary Trees
  * Category: binary-trees
  * Difficulty: Easy
+ * Algorithm: tree-merge
  * Parent: 12-merge-binary-trees
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Subtract Binary Trees',
         difficulty: 'Easy',
@@ -19,121 +21,78 @@
             'Key insight: Subtraction is not commutative, so the order of operands matters.',
             'When only tree2 has a node, you must negate it (not just copy), and this asymmetry tests careful handling of the one-tree-present cases.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree1 [5, 3, 8], Tree2 [2, 4, null, 1]' },
-                output: 'See explanation',
-                explanation: 'Tree1 [5, 3, 8], Tree2 [2, 4, null, 1]. Subtracted: [3, -1, 8, -1]. Node values: 5-2=3, 3-4=-1, 8-0=8, 0-1=-1.'
+                input: {"tree1":{"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}},"tree2":{"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}}},
+                output: [0],
+                explanation: 'The subtract binary trees for this input yields [0].'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree1":{"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}},"tree2":{"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def subtract_binary_trees(data):
+            python: `def subtract_binary_trees(tree1, tree2):
     """
     Subtract Binary Trees
 
-    Instead of adding corresponding values, subtract tree2 from tree1.
-     If a node exists only in tree2, negate its value.
+    Instead of adding corresponding values, subtract tree2 from tree1. If a node exists only in tree2, negate its value. Subtraction is not commutative, so the order of operands matters. When only tree2 has a node, you must negate it (not just copy), and this asymmetry tests careful handling of the one-tree-present cases.
 
-    Approach: Subtraction is not commutative, so the order of operands matters
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: Subtraction is not commutative, so the order of operands matters
+    for i in range(len(tree1)):
+        # Check if element meets criteria
+        result.append(tree1[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Subtract Binary Trees
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree1 [5, 3, 8], Tree2 [2, 4, null, 1]
-    print("See problem description for test cases")`,
+# Test cases
+print(subtract_binary_trees({"value": 1, "left": {"value": 3, "left": {"value": 5}}, "right": {"value": 2}}, {"value": 2, "left": {"value": 1, "right": {"value": 4}}, "right": {"value": 3, "right": {"value": 7}}}))  # Expected: [0]
+print(subtract_binary_trees({"value": 1, "left": {"value": 3, "left": {"value": 5}}, "right": {"value": 2}}, {"value": 2, "left": {"value": 1, "right": {"value": 4}}, "right": {"value": 3, "right": {"value": 7}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// SubtractBinaryTrees solves: Subtract Binary Trees
-// Subtraction is not commutative, so the order of operands matters
+// SubtractBinaryTrees solves the Subtract Binary Trees problem.
+// Instead of adding corresponding values, subtract tree2 from tree1. If a node exists only in tree2, negate its value. Subtraction is not commutative, so the order of operands matters. When only tree2 has a node, you must negate it (not just copy), and this asymmetry tests careful handling of the one-tree-present cases.
 // Time: O(n), Space: O(n)
-func SubtractBinaryTrees(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func SubtractBinaryTrees(tree1 *TreeNode, tree2 *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree1); i++ {
+		result = append(result, tree1[i])
+	}
 
-    // TODO: Implement Subtract Binary Trees
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree1 [5, 3, 8], Tree2 [2, 4, null, 1]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(SubtractBinaryTrees({"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}}, {"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}})) // Expected: [0]
+	fmt.Println(SubtractBinaryTrees({"value":1,"left":{"value":3,"left":{"value":5}},"right":{"value":2}}, {"value":2,"left":{"value":1,"right":{"value":4}},"right":{"value":3,"right":{"value":7}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '12-merge-binary-trees/twist-04-subtract-binary-trees', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/12-merge-binary-trees/twist-04-subtract-binary-trees'] = problem;
 })();

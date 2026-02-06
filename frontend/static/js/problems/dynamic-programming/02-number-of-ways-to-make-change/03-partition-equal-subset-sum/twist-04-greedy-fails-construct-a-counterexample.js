@@ -2,10 +2,12 @@
  * Greedy Fails: Construct a Counterexample
  * Category: dynamic-programming
  * Difficulty: Medium
+ * Algorithm: dp-coin-change
  * Parent: 02-number-of-ways-to-make-change/03-partition-equal-subset-sum
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Greedy Fails: Construct a Counterexample',
         difficulty: 'Medium',
@@ -19,84 +21,88 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n log n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n log n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'nums=[3,3,3,3,3,3,3,21]. Sum=42, target=21. Greedy sorted: assign 21 to A, then 3,3,3,3,3,3 alternating: A=21+3+3+3=30, B=3+3+3=9. Fails! But valid partition exists: {21} and {3,3,3,3,3,3,3}.'
+                input: {"nums":[1,5,11,5]},
+                output: [[0,1]],
+                explanation: 'Found 1 group(s) matching the criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"nums":[1,2,3,5]},
+                output: [[0,1],[2,3]],
+                explanation: 'Found 2 group(s) matching the criteria.'
+            },
+            // Edge case
+            {
+                input: {"nums":[1]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def greedyFailsConstructACounterexample(data):
+            python: `def greedy_fails_construct_a_counterexample(nums):
     """
     Greedy Fails: Construct a Counterexample
 
     A greedy approach might sort the array and alternately assign elements to two groups. Show an input where greedy fails to find a valid partition that exists.
 
-    Approach:
-    Understanding greedy failure motivates the DP approach. The partition problem is NP-complete in general, so no polynomial greedy can always work.
+    Time: O(n log n)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    result = []
+    n = len(nums)
 
-    # Example: nums=[3,3,3,3,3,3,3,21]. Sum=42, target=21. Greedy sorted: assign 21 to A, then 3,3,3,3,3,3 alternating: A=21+3+3+3=30, 
+    for i in range(n):
+        for j in range(i + 1, n):
+            result.append([nums[i], nums[j]])
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
     return result
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Greedy Fails: Construct a Counterexample...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(greedy_fails_construct_a_counterexample([1,5,11,5]))  # Expected: [[0,1]]
+print(greedy_fails_construct_a_counterexample([1,2,3,5]))  # Expected: [[0,1],[2,3]]
+print(greedy_fails_construct_a_counterexample([1]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // GreedyFailsConstructACounterexample solves the Greedy Fails: Construct a Counterexample problem.
-// A greedy approach might sort the array and alternately assign elements to two groups. Show an input where greedy fails to find a valid partition that 
-//
-// Approach: Understanding greedy failure motivates the DP approach. The partition problem is NP-complete in general, so no polynomial greedy can always work.
-func GreedyFailsConstructACounterexample(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// A greedy approach might sort the array and alternately assign elements to two groups. Show an input where greedy fails to find a valid partition that exists.
+// Time: O(n log n), Space: O(n)
+func GreedyFailsConstructACounterexample(nums []int) [][]int {
+	result := make([][]int, 0)
 
-    // Example: nums=[3,3,3,3,3,3,3,21]. Sum=42, target=21. Greedy sorted: assign 21 to A, then 3,3,3,3,3,3 alternat
+	for i := 0; i < len(nums); i++ {
+		for j := i + 1; j < len(nums); j++ {
+			result = append(result, []int{nums[i], nums[j]})
+		}
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Greedy Fails: Construct a Counterexample...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(GreedyFailsConstructACounterexample([]int{1, 5, 11, 5})) // Expected: [[0,1]]
+	fmt.Println(GreedyFailsConstructACounterexample([]int{1, 2, 3, 5})) // Expected: [[0,1],[2,3]]
+	fmt.Println(GreedyFailsConstructACounterexample([]int{1})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-04-greedy-fails-construct-a-counterexample', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-04-greedy-fails-construct-a-counterexample'] = problem;
 })();

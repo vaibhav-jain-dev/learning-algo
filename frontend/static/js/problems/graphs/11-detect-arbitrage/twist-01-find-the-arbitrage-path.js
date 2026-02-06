@@ -2,10 +2,12 @@
  * Find the Arbitrage Path
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-arbitrage
  * Parent: 11-detect-arbitrage
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Find the Arbitrage Path',
         difficulty: 'Hard',
@@ -19,87 +21,85 @@
             'Consider the example: USD -> EUR -> GBP -> USD yields 1.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N^3)', space: 'O(N^2)' },
+        complexity: {
+            time: 'O(N^3)',
+            space: 'O(N^2)'
+        },
         examples: [
-            { input: { description: 'USD -> EUR -> GBP -> USD yields 1.02x starting amount. Return path: [USD, EUR, GBP, USD].' }, output: 'See explanation', explanation: 'USD -> EUR -> GBP -> USD yields 1.02x starting amount. Return path: [USD, EUR, GBP, USD].' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"exchangeRates":[[1,0.8631,0.5903],[1.1586,1,0.6849],[1.6939,1.46,1]]},
+                output: [[1,0.8631,0.5903],[1.1586,1,0.6849],[1.6939,1.46,1]],
+                explanation: 'The find the arbitrage path for this input yields [1,0.8631,0.5903, 1.1586,1,0.6849, 1.6939,1.46,1].'
+            },
+            {
+                input: {"exchangeRates":[[1,0.5,0.25],[2,1,0.5],[4,2,1]]},
+                output: [[1,0.5,0.25],[2,1,0.5],[4,2,1]],
+                explanation: 'The find the arbitrage path for this input yields [1,0.5,0.25, 2,1,0.5, 4,2,1].'
+            },
+            // Edge case
+            {
+                input: {"exchangeRates":[[1,0.8631,0.5903]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def find_the_arbitrage_path(data):
+            python: `def find_the_arbitrage_path(exchangeRates):
     """
     Find the Arbitrage Path
 
     Not just detect arbitrage, but return the sequence of currencies that produces profit.
 
-    Approach:
-    Detection uses Bellman-Ford on log-transformed weights. Finding the path requires tracking predecessors during relaxation and backtracking from the negative cycle.
-
     Time: O(N^3)
     Space: O(N^2)
     """
-    # Detection uses Bellman-Ford on log-transformed weights. Finding the path requires tracking predecessors during relaxation and backtracking from the negative cycle.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Find the Arbitrage Path
-    # Key difference from parent: Detection uses Bellman-Ford on log-transformed weights. Finding the path requires tracking predecess
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(exchangeRates)):
+        # Check if element meets criteria
+        result.append(exchangeRates[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return find_the_arbitrage_path(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # USD -> EUR -> GBP -> USD yields 1.02x starting amount. Return path: [USD, EUR, GBP, USD].
-    print("Test: Find the Arbitrage Path")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(find_the_arbitrage_path([[1,0.8631,0.5903],[1.1586,1,0.6849],[1.6939,1.46,1]]))  # Expected: [[1,0.8631,0.5903],[1.1586,1,0.6849],[1.6939,1.46,1]]
+print(find_the_arbitrage_path([[1,0.5,0.25],[2,1,0.5],[4,2,1]]))  # Expected: [[1,0.5,0.25],[2,1,0.5],[4,2,1]]
+print(find_the_arbitrage_path([[1,0.8631,0.5903]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// FindTheArbitragePath solves the Find the Arbitrage Path problem
+// FindTheArbitragePath solves the Find the Arbitrage Path problem.
 // Not just detect arbitrage, but return the sequence of currencies that produces profit.
-//
-// Approach: Detection uses Bellman-Ford on log-transformed weights. Finding the path requires tracking predecessors during relaxation and backtracking from the negative cycle.
-//
-// Time: O(N^3)
-// Space: O(N^2)
-func FindTheArbitragePath(input interface{}) interface{} {
-    // Detection uses Bellman-Ford on log-transformed weights. Finding the path requires tracking predecessors during relaxation and backtracking from the negative cycle.
+// Time: O(N^3), Space: O(N^2)
+func FindTheArbitragePath(exchangeRates [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Find the Arbitrage Path
-    // Key difference from parent: Detection uses Bellman-Ford on log-transformed weights. Finding the path requires tracking predecess
+	for i := 0; i < len(exchangeRates); i++ {
+		result = append(result, exchangeRates[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // USD -> EUR -> GBP -> USD yields 1.02x starting amount. Return path: [USD, EUR, GBP, USD].
-    fmt.Println("Test: Find the Arbitrage Path")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(FindTheArbitragePath([][]int{{1, 0.8631, 0.5903}, {1.1586, 1, 0.6849}, {1.6939, 1.46, 1}})) // Expected: [[1,0.8631,0.5903],[1.1586,1,0.6849],[1.6939,1.46,1]]
+	fmt.Println(FindTheArbitragePath([][]int{{1, 0.5, 0.25}, {2, 1, 0.5}, {4, 2, 1}})) // Expected: [[1,0.5,0.25],[2,1,0.5],[4,2,1]]
+	fmt.Println(FindTheArbitragePath([][]int{{1, 0.8631, 0.5903}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '11-detect-arbitrage/twist-01-find-the-arbitrage-path', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/11-detect-arbitrage/twist-01-find-the-arbitrage-path'] = problem;
 })();

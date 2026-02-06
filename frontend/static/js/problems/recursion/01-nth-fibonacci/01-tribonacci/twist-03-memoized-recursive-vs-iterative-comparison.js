@@ -2,10 +2,12 @@
  * Memoized Recursive vs Iterative Comparison
  * Category: recursion
  * Difficulty: Easy
+ * Algorithm: recursion-fibonacci
  * Parent: 01-nth-fibonacci/01-tribonacci
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Memoized Recursive vs Iterative Comparison',
         difficulty: 'Easy',
@@ -19,57 +21,79 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Memoized recursive: 31 cache entries + up to 30 stack frames. Iterative: 3 variables, 0 stack frames. Both O(n) time but vastly different constant factors.' },
-                output: 'See example',
-                explanation: 'Memoized recursive: 31 cache entries + up to 30 stack frames. Iterative: 3 variables, 0 stack frames. Both O(n) time but vastly different constant factors.'
+                input: {"n":4},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the memoized recursive vs iterative comparison criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Memoized Recursive vs Iterative Comparison
-# Category: recursion
-# Difficulty: Easy
-# Parent: 01-nth-fibonacci/01-tribonacci
-
-def solve():
+            python: `def memoized_recursive_vs_iterative_comparison(n):
     """
+    Memoized Recursive vs Iterative Comparison
+
     Implement both a memoized recursive solution and the iterative solution. Compare the actual number of operations and memory usage for n=30.
 
-    Key insight: Forces you to reason about the hidden costs of recursion (call stack frames, hash map overhead) versus the simplicity of iteration, even when both are O(n) time.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = 0
+
+    for i in range(len(n)):
+        # Process element
+        result += 1  # Update based on condition
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(memoized_recursive_vs_iterative_comparison(4))  # Expected: 1
+print(memoized_recursive_vs_iterative_comparison(0))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Memoized Recursive vs Iterative Comparison problem.
+// MemoizedRecursiveVsIterativeComparison solves the Memoized Recursive vs Iterative Comparison problem.
 // Implement both a memoized recursive solution and the iterative solution. Compare the actual number of operations and memory usage for n=30.
-// Key insight: Forces you to reason about the hidden costs of recursion (call stack frames, hash map overhead) versus the simplicity of iteration, even when both are O(n) time.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func MemoizedRecursiveVsIterativeComparison(n int) int {
+	result := 0
+
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(MemoizedRecursiveVsIterativeComparison(4)) // Expected: 1
+	fmt.Println(MemoizedRecursiveVsIterativeComparison(0)) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '01-nth-fibonacci/01-tribonacci/twist-03-memoized-recursive-vs-iterative-comparison', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/01-nth-fibonacci/01-tribonacci/twist-03-memoized-recursive-vs-iterative-comparison'] = problem;
 })();

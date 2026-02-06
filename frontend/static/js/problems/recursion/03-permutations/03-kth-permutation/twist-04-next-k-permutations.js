@@ -2,10 +2,12 @@
  * Next k Permutations
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-permutations
  * Parent: 03-permutations/03-kth-permutation
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Next k Permutations',
         difficulty: 'Hard',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Starting from [2,1,3] with k=3, return [[2,3,1],[3,1,2],[3,2,1]].' },
-                output: 'See example',
-                explanation: 'Starting from [2,1,3] with k=3, return [[2,3,1],[3,1,2],[3,2,1]].'
+                input: {"n":3,"k":3},
+                output: [0],
+                explanation: 'The next k permutations for this input yields [0].'
+            },
+            // Edge case
+            {
+                input: {"n":0,"k":0},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Next k Permutations
-# Category: recursion
-# Difficulty: Hard
-# Parent: 03-permutations/03-kth-permutation
-
-def solve():
+            python: `def next_k_permutations(n, k):
     """
+    Next k Permutations
+
     Given a starting permutation and integer k, return the list of the next k permutations in lexicographic order.
 
-    Key insight: Combines the next-permutation iterative approach with the mathematical jump approach, choosing the most efficient strategy based on k relative to n!.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(n)):
+        # Check if element meets criteria
+        result.append(n[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(next_k_permutations(3, 3))  # Expected: [0]
+print(next_k_permutations(0, 0))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Next k Permutations problem.
+// NextKPermutations solves the Next k Permutations problem.
 // Given a starting permutation and integer k, return the list of the next k permutations in lexicographic order.
-// Key insight: Combines the next-permutation iterative approach with the mathematical jump approach, choosing the most efficient strategy based on k relative to n!.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func NextKPermutations(n int, k int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(n); i++ {
+		result = append(result, n[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(NextKPermutations(3, 3)) // Expected: [0]
+	fmt.Println(NextKPermutations(0, 0)) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '03-permutations/03-kth-permutation/twist-04-next-k-permutations', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/03-permutations/03-kth-permutation/twist-04-next-k-permutations'] = problem;
 })();

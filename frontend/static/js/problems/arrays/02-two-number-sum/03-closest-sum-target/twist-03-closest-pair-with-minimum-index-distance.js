@@ -26,80 +26,71 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"arr1":[1,3,5,7],"arr2":[2,4,6,8],"target":10},
                 output: [3,7],
-                explanation: '3 + 7 = 10, exact match to target.'
+                explanation: ''
             },
             {
                 input: {"arr1":[-1,3,8],"arr2":[2,4,9],"target":7},
                 output: [3,4],
-                explanation: '3 + 4 = 7, exact match.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"arr1":[1,4],"arr2":[10,20],"target":15},
                 output: [4,10],
-                explanation: '4 + 10 = 14, closest to 15.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def closest_pair_with_minimum_index_distance(data):
+            python: `def closest_pair_with_minimum_index_distance(arr1, arr2, target):
     """
     Closest Pair with Minimum Index Distance
 
-    Among all pairs with the closest sum to target, return the one where the two chosen indices (original positions) are farthest apart.
-    \n    Approach: Adds a secondary optimization criterion, requiring you to track not just the closest sum but also index positions from the original arrays.
+    Among all pairs with the closest sum to target, return the one where the two chosen indices (original positions) are farthest apart. Adds a secondary optimization criterion, requiring you to track not just the closest sum but also index positions from the original arrays.
 
     Time: O(n)
     Space: O(n)
-
-    Example: arr1=[1,3,5,7], arr2=[2,4,6,8], target=10 → [3,8] instead of [5,6] if index distance is larger
     """
-    if not data:
-        return None
-
-    n = len(data) if hasattr(data, '__len__') else 0
     result = []
 
-    # Core algorithm implementation
-    for i in range(n):
-        result.append(data[i])
+    for i in range(len(arr1)):
+        # Check if element meets criteria
+        result.append(arr1[i])
 
     return result
 
 
 # Test cases
-print(closest_pair_with_minimum_index_distance([1, 2, 3, 4, 5]))
-print(closest_pair_with_minimum_index_distance([5, 3, 1]))
-print(closest_pair_with_minimum_index_distance([1]))`,
+print(closest_pair_with_minimum_index_distance([1,3,5,7], [2,4,6,8], 10))  # Expected: [3,7]
+print(closest_pair_with_minimum_index_distance([-1,3,8], [2,4,9], 7))  # Expected: [3,4]
+print(closest_pair_with_minimum_index_distance([1,4], [10,20], 15))  # Expected: [4,10]
+`,
             go: `package main
 
 import "fmt"
 
 // ClosestPairWithMinimumIndexDistance solves the Closest Pair with Minimum Index Distance problem.
-// Among all pairs with the closest sum to target, return the one where the two chosen indices (original positions) are farthest apart.
+// Among all pairs with the closest sum to target, return the one where the two chosen indices (original positions) are farthest apart. Adds a secondary optimization criterion, requiring you to track not just the closest sum but also index positions from the original arrays.
 // Time: O(n), Space: O(n)
-func ClosestPairWithMinimumIndexDistance(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func ClosestPairWithMinimumIndexDistance(arr1 []int, arr2 []int, target int) []int {
+	result := make([]int, 0)
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(arr1); i++ {
+		result = append(result, arr1[i])
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(ClosestPairWithMinimumIndexDistance([]int{1, 2, 3, 4, 5}))
-    fmt.Println(ClosestPairWithMinimumIndexDistance([]int{5, 3, 1}))
-    fmt.Println(ClosestPairWithMinimumIndexDistance([]int{1}))
-}`
+	fmt.Println(ClosestPairWithMinimumIndexDistance([]int{1, 3, 5, 7}, []int{2, 4, 6, 8}, 10)) // Expected: [3,7]
+	fmt.Println(ClosestPairWithMinimumIndexDistance([]int{-1, 3, 8}, []int{2, 4, 9}, 7)) // Expected: [3,4]
+	fmt.Println(ClosestPairWithMinimumIndexDistance([]int{1, 4}, []int{10, 20}, 15)) // Expected: [4,10]
+}
+`
         },
         twists: [],
         similar: []

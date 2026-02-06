@@ -27,83 +27,76 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5]},
-                output: true,
-                explanation: 'Standard case satisfying the problem conditions.'
+                output: [1,2,3],
+                explanation: 'The predict all possible champions for this input yields [1, 2, 3].'
             },
             {
                 input: {"array":[5,3,1]},
-                output: false,
-                explanation: 'Case where the condition is not met.'
+                output: [5,3,1],
+                explanation: 'The predict all possible champions for this input yields [5, 3, 1].'
             },
             {
                 input: {"array":[1]},
-                output: true,
-                explanation: 'Edge case with single element.'
+                output: [1],
+                explanation: 'The predict all possible champions for this input yields [1].'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def predict_all_possible_champions(data):
+            python: `def predict_all_possible_champions(raw):
     """
     Predict All Possible Champions
 
-    Given the bracket but no results, determine all teams that could potentially be the champion.
-    \n    Approach: Changes from simulation to possibility analysis, requiring you to enumerate valid result combinations or prove structural constraints.
+    Given the bracket but no results, determine all teams that could potentially be the champion. Changes from simulation to possibility analysis, requiring you to enumerate valid result combinations or prove structural constraints.
 
     Time: O(n^2)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # bracket=[["A","B"],["C","D"]] → all 4 teams could potentially win the final
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(raw)):
+        # Check if element meets criteria
+        result.append(raw[i])
 
     return result
 
 
 # Test cases
-print(predict_all_possible_champions([1, 2, 3, 4, 5]))
-print(predict_all_possible_champions([5, 3, 1]))
-print(predict_all_possible_champions([1]))`,
+print(predict_all_possible_champions(None))  # Expected: [1,2,3]
+print(predict_all_possible_champions(None))  # Expected: [5,3,1]
+print(predict_all_possible_champions(None))  # Expected: [1]
+`,
             go: `package main
 
 import "fmt"
 
 // PredictAllPossibleChampions solves the Predict All Possible Champions problem.
-// Given the bracket but no results, determine all teams that could potentially be the champion.
+// Given the bracket but no results, determine all teams that could potentially be the champion. Changes from simulation to possibility analysis, requiring you to enumerate valid result combinations or prove structural constraints.
 // Time: O(n^2), Space: O(n)
-func PredictAllPossibleChampions(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func PredictAllPossibleChampions(raw string) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(raw); i++ {
+		result = append(result, raw[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(PredictAllPossibleChampions([]int{1, 2, 3, 4, 5}))
-    fmt.Println(PredictAllPossibleChampions([]int{5, 3, 1}))
-    fmt.Println(PredictAllPossibleChampions([]int{1}))
-}`
+	fmt.Println(PredictAllPossibleChampions(nil)) // Expected: [1,2,3]
+	fmt.Println(PredictAllPossibleChampions(nil)) // Expected: [5,3,1]
+	fmt.Println(PredictAllPossibleChampions(nil)) // Expected: [1]
+}
+`
         },
         twists: [],
         similar: []

@@ -2,10 +2,12 @@
  * Iterative Symmetry Check
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-symmetry
  * Parent: 13-symmetrical-tree
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Iterative Symmetry Check',
         difficulty: 'Medium',
@@ -19,120 +21,88 @@
             'Think about how the base case differs from the original problem.',
             'Review the example: Tree [1, 2, 2, 3, 4, 4, 3].'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree [1, 2, 2, 3, 4, 4, 3]' },
-                output: 'See explanation',
-                explanation: 'Tree [1, 2, 2, 3, 4, 4, 3]. Queue starts with [(2,2)]. Process: compare 2==2, enqueue [(3,4), (4,3)]. Compare 3==3, compare 4==4. All match, return true.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":3},"right":{"value":4}},"right":{"value":2,"left":{"value":4},"right":{"value":3}}}},
+                output: [[0,1]],
+                explanation: 'Found 1 group(s) matching the criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"right":{"value":3}},"right":{"value":2,"right":{"value":3}}}},
+                output: [[0,1],[2,3]],
+                explanation: 'Found 2 group(s) matching the criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":3},"right":{"value":4}},"right":{"value":2,"left":{"value":4},"right":{"value":3}}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def iterative_symmetry_check(data):
+            python: `def iterative_symmetry_check(tree):
     """
     Iterative Symmetry Check
 
-    Check if the tree is symmetric using an iterative approach with a queue or stack, without any recursion.
+    Check if the tree is symmetric using an iterative approach with a queue or stack, without any recursion. The recursive solution naturally mirrors the two-pointer comparison. Iteratively, you must enqueue pairs of nodes in the correct mirror order, which requires careful bookkeeping of which nodes to compare.
 
-    Approach: The recursive solution naturally mirrors the two-pointer comparison
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
+    n = len(tree)
 
-    # Key insight: The recursive solution naturally mirrors the two-pointer comparison
+    for i in range(n):
+        for j in range(i + 1, n):
+            result.append([tree[i], tree[j]])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Iterative Symmetry Check
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree [1, 2, 2, 3, 4, 4, 3]
-    print("See problem description for test cases")`,
+# Test cases
+print(iterative_symmetry_check({"value": 1, "left": {"value": 2, "left": {"value": 3}, "right": {"value": 4}}, "right": {"value": 2, "left": {"value": 4}, "right": {"value": 3}}}))  # Expected: [[0,1]]
+print(iterative_symmetry_check({"value": 1, "left": {"value": 2, "right": {"value": 3}}, "right": {"value": 2, "right": {"value": 3}}}))  # Expected: [[0,1],[2,3]]
+print(iterative_symmetry_check({"value": 1, "left": {"value": 2, "left": {"value": 3}, "right": {"value": 4}}, "right": {"value": 2, "left": {"value": 4}, "right": {"value": 3}}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// IterativeSymmetryCheck solves: Iterative Symmetry Check
-// The recursive solution naturally mirrors the two-pointer comparison
+// IterativeSymmetryCheck solves the Iterative Symmetry Check problem.
+// Check if the tree is symmetric using an iterative approach with a queue or stack, without any recursion. The recursive solution naturally mirrors the two-pointer comparison. Iteratively, you must enqueue pairs of nodes in the correct mirror order, which requires careful bookkeeping of which nodes to compare.
 // Time: O(n), Space: O(n)
-func IterativeSymmetryCheck(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func IterativeSymmetryCheck(tree *TreeNode) [][]int {
+	result := make([][]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		for j := i + 1; j < len(tree); j++ {
+			result = append(result, []int{tree[i], tree[j]})
+		}
+	}
 
-    // TODO: Implement Iterative Symmetry Check
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree [1, 2, 2, 3, 4, 4, 3]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(IterativeSymmetryCheck({"value":1,"left":{"value":2,"left":{"value":3},"right":{"value":4}},"right":{"value":2,"left":{"value":4},"right":{"value":3}}})) // Expected: [[0,1]]
+	fmt.Println(IterativeSymmetryCheck({"value":1,"left":{"value":2,"right":{"value":3}},"right":{"value":2,"right":{"value":3}}})) // Expected: [[0,1],[2,3]]
+	fmt.Println(IterativeSymmetryCheck({"value":1,"left":{"value":2,"left":{"value":3},"right":{"value":4}},"right":{"value":2,"left":{"value":4},"right":{"value":3}}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '13-symmetrical-tree/twist-04-iterative-symmetry-check', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/13-symmetrical-tree/twist-04-iterative-symmetry-check'] = problem;
 })();

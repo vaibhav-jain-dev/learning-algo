@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5]},
                 output: true,
-                explanation: 'Standard case satisfying the problem conditions.'
+                explanation: ''
             },
             {
                 input: {"array":[5,3,1]},
                 output: false,
-                explanation: 'Case where the condition is not met.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1]},
                 output: true,
-                explanation: 'Edge case with single element.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def retroactive_tiebreaker_after_disqualification(data):
+            python: `def retroactive_tiebreaker_after_disqualification(raw):
     """
     Retroactive Tiebreaker After Disqualification
 
-    A team is disqualified mid-tournament. Recompute all standings and tiebreakers as if that team never participated.
-    \n    Approach: Requires removing all matches involving the disqualified team and recomputing everything, testing incremental update capabilities.
+    A team is disqualified mid-tournament. Recompute all standings and tiebreakers as if that team never participated. Requires removing all matches involving the disqualified team and recomputing everything, testing incremental update capabilities.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # Team C disqualified → remove all C matches → recompute points and head-to-head for remaining teams
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in raw:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(retroactive_tiebreaker_after_disqualification([1, 2, 3, 4, 5]))
-print(retroactive_tiebreaker_after_disqualification([5, 3, 1]))
-print(retroactive_tiebreaker_after_disqualification([1]))`,
+print(retroactive_tiebreaker_after_disqualification(None))  # Expected: True
+print(retroactive_tiebreaker_after_disqualification(None))  # Expected: False
+print(retroactive_tiebreaker_after_disqualification(None))  # Expected: True
+`,
             go: `package main
 
 import "fmt"
 
 // RetroactiveTiebreakerAfterDisqualification solves the Retroactive Tiebreaker After Disqualification problem.
-// A team is disqualified mid-tournament. Recompute all standings and tiebreakers as if that team never participated.
+// A team is disqualified mid-tournament. Recompute all standings and tiebreakers as if that team never participated. Requires removing all matches involving the disqualified team and recomputing everything, testing incremental update capabilities.
 // Time: O(n), Space: O(n)
-func RetroactiveTiebreakerAfterDisqualification(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func RetroactiveTiebreakerAfterDisqualification(raw string) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range raw {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(RetroactiveTiebreakerAfterDisqualification([]int{1, 2, 3, 4, 5}))
-    fmt.Println(RetroactiveTiebreakerAfterDisqualification([]int{5, 3, 1}))
-    fmt.Println(RetroactiveTiebreakerAfterDisqualification([]int{1}))
-}`
+	fmt.Println(RetroactiveTiebreakerAfterDisqualification(nil)) // Expected: true
+	fmt.Println(RetroactiveTiebreakerAfterDisqualification(nil)) // Expected: false
+	fmt.Println(RetroactiveTiebreakerAfterDisqualification(nil)) // Expected: true
+}
+`
         },
         twists: [],
         similar: []

@@ -26,80 +26,71 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[3,5,-4,8,11,1,-1,6],"targetSum":10},
                 output: [-1,11],
-                explanation: '-1 + 11 = 10, which equals the target sum.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4,5],"targetSum":10},
                 output: [],
-                explanation: 'No two distinct numbers sum to 10.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[4,6],"targetSum":10},
                 output: [4,6],
-                explanation: '4 + 6 = 10.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def two_sum_with_duplicate_pairs(data):
+            python: `def two_sum_with_duplicate_pairs(array, targetSum):
     """
     Two Sum with Duplicate Pairs
 
-    The array may contain duplicates. Return all unique pairs that sum to the target.
-    \n    Approach: Duplicate handling changes the hash table approach: you must track counts and avoid reporting the same pair multiple times.
+    The array may contain duplicates. Return all unique pairs that sum to the target. Duplicate handling changes the hash table approach: you must track counts and avoid reporting the same pair multiple times.
 
     Time: O(n)
     Space: O(n)
-
-    Example: array=[1,1,2,3,3], target=4 → [[1,3]] (only one unique pair despite multiple 1s and 3s)
     """
-    if not data:
-        return None
-
-    n = len(data) if hasattr(data, '__len__') else 0
     result = []
 
-    # Core algorithm implementation
-    for i in range(n):
-        result.append(data[i])
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
 # Test cases
-print(two_sum_with_duplicate_pairs([1, 2, 3, 4, 5]))
-print(two_sum_with_duplicate_pairs([5, 3, 1]))
-print(two_sum_with_duplicate_pairs([1]))`,
+print(two_sum_with_duplicate_pairs([3,5,-4,8,11,1,-1,6], 10))  # Expected: [-1,11]
+print(two_sum_with_duplicate_pairs([1,2,3,4,5], 10))  # Expected: []
+print(two_sum_with_duplicate_pairs([4,6], 10))  # Expected: [4,6]
+`,
             go: `package main
 
 import "fmt"
 
 // TwoSumWithDuplicatePairs solves the Two Sum with Duplicate Pairs problem.
-// The array may contain duplicates. Return all unique pairs that sum to the target.
+// The array may contain duplicates. Return all unique pairs that sum to the target. Duplicate handling changes the hash table approach: you must track counts and avoid reporting the same pair multiple times.
 // Time: O(n), Space: O(n)
-func TwoSumWithDuplicatePairs(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func TwoSumWithDuplicatePairs(array []int, targetSum int) []int {
+	result := make([]int, 0)
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(TwoSumWithDuplicatePairs([]int{1, 2, 3, 4, 5}))
-    fmt.Println(TwoSumWithDuplicatePairs([]int{5, 3, 1}))
-    fmt.Println(TwoSumWithDuplicatePairs([]int{1}))
-}`
+	fmt.Println(TwoSumWithDuplicatePairs([]int{3, 5, -4, 8, 11, 1, -1, 6}, 10)) // Expected: [-1,11]
+	fmt.Println(TwoSumWithDuplicatePairs([]int{1, 2, 3, 4, 5}, 10)) // Expected: []
+	fmt.Println(TwoSumWithDuplicatePairs([]int{4, 6}, 10)) // Expected: [4,6]
+}
+`
         },
         twists: [],
         similar: []

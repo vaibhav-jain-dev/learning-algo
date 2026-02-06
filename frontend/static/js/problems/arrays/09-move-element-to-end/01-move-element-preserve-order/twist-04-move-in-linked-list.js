@@ -27,83 +27,71 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[3,1,2,3,4,3],"target":3},
                 output: [1,2,4,3,3,3],
-                explanation: 'Target elements moved to the correct position.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4,5],"target":6},
                 output: [1,2,3,4,5],
-                explanation: 'Target not in array - no changes needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[3,3,3],"target":3},
                 output: [3,3,3],
-                explanation: 'All elements are the target.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def move_in_linked_list(data):
+            python: `def move_in_linked_list(array, toMove, target):
     """
     Move in Linked List
 
-    Solve the same problem but on a singly linked list instead of an array. Move nodes with target value to the end.
-    \n    Approach: No random access means you must re-link nodes, requiring careful pointer manipulation to avoid breaking the list.
+    Solve the same problem but on a singly linked list instead of an array. Move nodes with target value to the end. No random access means you must re-link nodes, requiring careful pointer manipulation to avoid breaking the list.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # 1->2->3->2->4, toMove = 2. Result: 1->3->4->2->2.
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
 # Test cases
-print(move_in_linked_list([1, 2, 3, 4, 5]))
-print(move_in_linked_list([5, 3, 1]))
-print(move_in_linked_list([1]))`,
+print(move_in_linked_list([3,1,2,3,4,3], None, 3))  # Expected: [1,2,4,3,3,3]
+print(move_in_linked_list([1,2,3,4,5], None, 6))  # Expected: [1,2,3,4,5]
+print(move_in_linked_list([3,3,3], None, 3))  # Expected: [3,3,3]
+`,
             go: `package main
 
 import "fmt"
 
 // MoveInLinkedList solves the Move in Linked List problem.
-// Solve the same problem but on a singly linked list instead of an array. Move nodes with target value to the end.
+// Solve the same problem but on a singly linked list instead of an array. Move nodes with target value to the end. No random access means you must re-link nodes, requiring careful pointer manipulation to avoid breaking the list.
 // Time: O(n), Space: O(n)
-func MoveInLinkedList(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MoveInLinkedList(array []int, toMove int, target int) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(MoveInLinkedList([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MoveInLinkedList([]int{5, 3, 1}))
-    fmt.Println(MoveInLinkedList([]int{1}))
-}`
+	fmt.Println(MoveInLinkedList([]int{3, 1, 2, 3, 4, 3}, nil, 3)) // Expected: [1,2,4,3,3,3]
+	fmt.Println(MoveInLinkedList([]int{1, 2, 3, 4, 5}, nil, 6)) // Expected: [1,2,3,4,5]
+	fmt.Println(MoveInLinkedList([]int{3, 3, 3}, nil, 3)) // Expected: [3,3,3]
+}
+`
         },
         twists: [],
         similar: []

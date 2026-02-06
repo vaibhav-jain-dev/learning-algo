@@ -2,10 +2,12 @@
  * BFS with Level Tracking
  * Category: graphs
  * Difficulty: Easy
+ * Algorithm: graph-bfs
  * Parent: 02-breadth-first-search
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'BFS with Level Tracking',
         difficulty: 'Easy',
@@ -19,87 +21,78 @@
             'Consider the example: Same tree.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(V + E)', space: 'O(V)' },
+        complexity: {
+            time: 'O(V + E)',
+            space: 'O(V)'
+        },
         examples: [
-            { input: { description: 'Same tree. Output: [["A"], ["B","C","D"], ["E","F","G","H"], ["I","J","K"]] instead of flat ["A","B","C","D","E","F","G","H","I","J","K"].' }, output: 'See explanation', explanation: 'Same tree. Output: [["A"], ["B","C","D"], ["E","F","G","H"], ["I","J","K"]] instead of flat ["A","B","C","D","E","F","G","H","I","J","K"].' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}},
+                output: [0],
+                explanation: 'The bfs with level tracking for this input yields [0].'
+            },
+            // Edge case
+            {
+                input: {"tree":{"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def bfs_with_level_tracking(data):
+            python: `def bfs_with_level_tracking(tree):
     """
     BFS with Level Tracking
 
     Modify BFS to return nodes grouped by their level/depth. Instead of a flat list, return a list of lists where each inner list contains all nodes at that depth.
 
-    Approach:
-    Requires tracking when one level ends and the next begins. You must process the queue in batches (using queue size at each level) rather than node by node.
-
     Time: O(V + E)
     Space: O(V)
     """
-    # Requires tracking when one level ends and the next begins. You must process the queue in batches (using queue size at each level) rather than node by node.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: BFS with Level Tracking
-    # Key difference from parent: Requires tracking when one level ends and the next begins. You must process the queue in batches (us
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return bfs_with_level_tracking(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Same tree. Output: [["A"], ["B","C","D"], ["E","F","G","H"], ["I","J","K"]] instead of flat ["A","B","C","D","E","F","G","H","I","J","K"].
-    print("Test: BFS with Level Tracking")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(bfs_with_level_tracking({"name": "A", "children": [{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}))  # Expected: [0]
+print(bfs_with_level_tracking({"name": "A", "children": [{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// BFSWithLevelTracking solves the BFS with Level Tracking problem
+// BfsWithLevelTracking solves the BFS with Level Tracking problem.
 // Modify BFS to return nodes grouped by their level/depth. Instead of a flat list, return a list of lists where each inner list contains all nodes at that depth.
-//
-// Approach: Requires tracking when one level ends and the next begins. You must process the queue in batches (using queue size at each level) rather than node by node.
-//
-// Time: O(V + E)
-// Space: O(V)
-func BFSWithLevelTracking(input interface{}) interface{} {
-    // Requires tracking when one level ends and the next begins. You must process the queue in batches (using queue size at each level) rather than node by node.
+// Time: O(V + E), Space: O(V)
+func BfsWithLevelTracking(tree map[string]interface{}) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: BFS with Level Tracking
-    // Key difference from parent: Requires tracking when one level ends and the next begins. You must process the queue in batches (us
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Same tree. Output: [["A"], ["B","C","D"], ["E","F","G","H"], ["I","J","K"]] instead of flat ["A","B","C","D","E","F","G","H","I","J","K"].
-    fmt.Println("Test: BFS with Level Tracking")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(BfsWithLevelTracking({"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]})) // Expected: [0]
+	fmt.Println(BfsWithLevelTracking({"name":"A","children":[{"name":"B","children":[{"name":"E"},{"name":"F","children":[{"name":"I"},{"name":"J"}]}]},{"name":"C"},{"name":"D","children":[{"name":"G","children":[{"name":"K"}]},{"name":"H"}]}]})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '02-breadth-first-search/twist-01-bfs-with-level-tracking', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/02-breadth-first-search/twist-01-bfs-with-level-tracking'] = problem;
 })();

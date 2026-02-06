@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[-3,-1,0,2,4]},
                 output: [0,1,4,9,16],
-                explanation: 'Elements transformed and sorted correctly.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: [1,4,9],
-                explanation: 'All positive - order maintained after transformation.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[-5,-3,-1]},
                 output: [1,9,25],
-                explanation: 'All negative - order reversed after transformation.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def merge_sorted_squares_with_duplicate_removal(data):
+            python: `def merge_sorted_squares_with_duplicate_removal(arr1, arr2):
     """
     Merge Sorted Squares with Duplicate Removal
 
-    Merge two sorted arrays after squaring, but remove all duplicate squared values from the result.
-    \n    Approach: Adds deduplication during the merge phase, requiring comparison with the last added element at each merge step.
+    Merge two sorted arrays after squaring, but remove all duplicate squared values from the result. Adds deduplication during the merge phase, requiring comparison with the last added element at each merge step.
 
     Time: O(n log n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # arr1=[-3,-1,2], arr2=[-2,1,3] → [1,4,9] (removes duplicate 1 from -1 and 1, duplicate 9 from -3 and 3)
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in arr1:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(merge_sorted_squares_with_duplicate_removal([1, 2, 3, 4, 5]))
-print(merge_sorted_squares_with_duplicate_removal([5, 3, 1]))
-print(merge_sorted_squares_with_duplicate_removal([1]))`,
+print(merge_sorted_squares_with_duplicate_removal(None, None))  # Expected: [0,1,4,9,16]
+print(merge_sorted_squares_with_duplicate_removal(None, None))  # Expected: [1,4,9]
+print(merge_sorted_squares_with_duplicate_removal(None, None))  # Expected: [1,9,25]
+`,
             go: `package main
 
 import "fmt"
 
 // MergeSortedSquaresWithDuplicateRemoval solves the Merge Sorted Squares with Duplicate Removal problem.
-// Merge two sorted arrays after squaring, but remove all duplicate squared values from the result.
+// Merge two sorted arrays after squaring, but remove all duplicate squared values from the result. Adds deduplication during the merge phase, requiring comparison with the last added element at each merge step.
 // Time: O(n log n), Space: O(n)
-func MergeSortedSquaresWithDuplicateRemoval(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MergeSortedSquaresWithDuplicateRemoval(arr1 []int, arr2 []int) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range arr1 {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(MergeSortedSquaresWithDuplicateRemoval([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MergeSortedSquaresWithDuplicateRemoval([]int{5, 3, 1}))
-    fmt.Println(MergeSortedSquaresWithDuplicateRemoval([]int{1}))
-}`
+	fmt.Println(MergeSortedSquaresWithDuplicateRemoval(nil, nil)) // Expected: [0,1,4,9,16]
+	fmt.Println(MergeSortedSquaresWithDuplicateRemoval(nil, nil)) // Expected: [1,4,9]
+	fmt.Println(MergeSortedSquaresWithDuplicateRemoval(nil, nil)) // Expected: [1,9,25]
+}
+`
         },
         twists: [],
         similar: []

@@ -2,10 +2,12 @@
  * Streaming Deserialization
  * Category: binary-search-trees
  * Difficulty: Hard
+ * Algorithm: bst-construction
  * Parent: 02-bst-construction/03-serialize-deserialize-bst
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Streaming Deserialization',
         difficulty: 'Hard',
@@ -14,68 +16,86 @@
         description: 'Deserialize the BST from a stream where you receive one value at a time. Build the tree incrementally as values arrive, without buffering all values first.',
         problem: 'Standard deserialization reads all data upfront. Streaming requires maintaining partial tree state and deciding where each new value belongs as it arrives, using the BST bounds tracking in an online fashion. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: streaming deserialization.",
-                  "Consider how standard deserialization reads all data upfront affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Stream: 5, 3, 2, 4, 7, 6, 8. After receiving "5,3,2": partial tree [5,3,null,2]. After "4": [5,3,null,2,4].'
+                input: {"tree":[5,3,7,2,4,6,8]},
+                output: "result",
+                explanation: 'The resulting string is "result".'
+            },
+            {
+                input: {"tree":[2,1,3]},
+                output: "output",
+                explanation: 'The resulting string is "output".'
+            },
+            // Edge case
+            {
+                input: {"tree":[5]},
+                output: "",
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Streaming Deserialization
-# Difficulty: Hard
-# Parent: 02-bst-construction/03-serialize-deserialize-bst
-#
-# Deserialize the BST from a stream where you receive one value at a time. Build the tree incrementally as values arrive, without buffering all values first.
-
-def streamingDeserialization(data):
+            python: `def streaming_deserialization(tree):
     """
     Streaming Deserialization
 
-    Approach: Standard deserialization reads all data upfront.
+    Deserialize the BST from a stream where you receive one value at a time. Build the tree incrementally as values arrive, without buffering all values first.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Standard deserialization reads all data upfront
-    pass
+    result = []
+
+    for item in tree:
+        result.append(str(item))
+
+    return ''.join(result)
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Stream: 5, 3, 2, 4, 7, 6, 8
-    print(streamingDeserialization({}))`,
+# Test cases
+print(streaming_deserialization([5,3,7,2,4,6,8]))  # Expected: "result"
+print(streaming_deserialization([2,1,3]))  # Expected: "output"
+print(streaming_deserialization([5]))  # Expected: ""
+`,
             go: `package main
 
 import "fmt"
 
-// Streaming Deserialization
-// Difficulty: Hard
-// Parent: 02-bst-construction/03-serialize-deserialize-bst
-//
+// StreamingDeserialization solves the Streaming Deserialization problem.
 // Deserialize the BST from a stream where you receive one value at a time. Build the tree incrementally as values arrive, without buffering all values first.
+// Time: O(n), Space: O(1)
+func StreamingDeserialization(tree []int) string {
+	result := ""
 
-func StreamingDeserialization(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Standard deserialization reads all data upfront
-    return nil
+	for _, v := range tree {
+		result += fmt.Sprintf("%v", v)
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Stream: 5, 3, 2, 4, 7, 6, 8
-    fmt.Println(StreamingDeserialization(map[string]interface{}{}))
-}`
+	fmt.Println(StreamingDeserialization([]int{5, 3, 7, 2, 4, 6, 8})) // Expected: "result"
+	fmt.Println(StreamingDeserialization([]int{2, 1, 3})) // Expected: "output"
+	fmt.Println(StreamingDeserialization([]int{5})) // Expected: ""
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '02-bst-construction/03-serialize-deserialize-bst/twist-03-streaming-deserialization', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/02-bst-construction/03-serialize-deserialize-bst/twist-03-streaming-deserialization'] = problem;
 })();

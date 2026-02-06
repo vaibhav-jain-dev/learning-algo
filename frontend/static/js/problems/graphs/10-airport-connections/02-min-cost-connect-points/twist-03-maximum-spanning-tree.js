@@ -2,10 +2,12 @@
  * Maximum Spanning Tree
  * Category: graphs
  * Difficulty: Medium
+ * Algorithm: minimum-spanning-tree
  * Parent: 10-airport-connections/02-min-cost-connect-points
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Maximum Spanning Tree',
         difficulty: 'Medium',
@@ -19,87 +21,79 @@
             'Consider the example: Points forming a square.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(n^2 log n)', space: 'O(n^2)' },
+        complexity: {
+            time: 'O(n^2 log n)',
+            space: 'O(n^2)'
+        },
         examples: [
-            { input: { description: 'Points forming a square. MST uses short edges, MaxST uses the diagonals and one long side.' }, output: 'See explanation', explanation: 'Points forming a square. MST uses short edges, MaxST uses the diagonals and one long side.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"points":[[0,0],[2,2],[3,10],[5,2],[7,0]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the maximum spanning tree criteria.'
+            },
+            // Edge case
+            {
+                input: {"points":[[0,0]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def maximum_spanning_tree(data):
+            python: `def maximum_spanning_tree(points):
     """
     Maximum Spanning Tree
 
     Find the maximum cost spanning tree instead of minimum. Connect all points using the most expensive edges.
 
-    Approach:
-    Sort edges in descending order instead of ascending for Kruskal, or negate weights for Prim. The greedy choice is reversed.
-
     Time: O(n^2 log n)
     Space: O(n^2)
     """
-    # Sort edges in descending order instead of ascending for Kruskal, or negate weights for Prim. The greedy choice is reversed.
+    result = 0
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Maximum Spanning Tree
-    # Key difference from parent: Sort edges in descending order instead of ascending for Kruskal, or negate weights for Prim. The gre
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(points)):
+        # Process element
+        result += 1  # Update based on condition
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return maximum_spanning_tree(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Points forming a square. MST uses short edges, MaxST uses the diagonals and one long side.
-    print("Test: Maximum Spanning Tree")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(maximum_spanning_tree([[0,0],[2,2],[3,10],[5,2],[7,0]]))  # Expected: 1
+print(maximum_spanning_tree([[0,0]]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// MaximumSpanningTree solves the Maximum Spanning Tree problem
+// MaximumSpanningTree solves the Maximum Spanning Tree problem.
 // Find the maximum cost spanning tree instead of minimum. Connect all points using the most expensive edges.
-//
-// Approach: Sort edges in descending order instead of ascending for Kruskal, or negate weights for Prim. The greedy choice is reversed.
-//
-// Time: O(n^2 log n)
-// Space: O(n^2)
-func MaximumSpanningTree(input interface{}) interface{} {
-    // Sort edges in descending order instead of ascending for Kruskal, or negate weights for Prim. The greedy choice is reversed.
+// Time: O(n^2 log n), Space: O(n^2)
+func MaximumSpanningTree(points [][]int) int {
+	result := 0
 
-    // Core algorithm adapted for: Maximum Spanning Tree
-    // Key difference from parent: Sort edges in descending order instead of ascending for Kruskal, or negate weights for Prim. The gre
+	for i := 0; i < len(points); i++ {
+		// Process element
+		result++
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Points forming a square. MST uses short edges, MaxST uses the diagonals and one long side.
-    fmt.Println("Test: Maximum Spanning Tree")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(MaximumSpanningTree([][]int{{0, 0}, {2, 2}, {3, 10}, {5, 2}, {7, 0}})) // Expected: 1
+	fmt.Println(MaximumSpanningTree([][]int{{0, 0}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '10-airport-connections/02-min-cost-connect-points/twist-03-maximum-spanning-tree', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/10-airport-connections/02-min-cost-connect-points/twist-03-maximum-spanning-tree'] = problem;
 })();

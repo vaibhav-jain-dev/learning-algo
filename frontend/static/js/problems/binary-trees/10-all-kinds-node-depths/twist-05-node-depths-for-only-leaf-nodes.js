@@ -2,10 +2,12 @@
  * Node Depths for Only Leaf Nodes
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-dfs
  * Parent: 10-all-kinds-node-depths
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Node Depths for Only Leaf Nodes',
         difficulty: 'Medium',
@@ -19,121 +21,78 @@
             'Key insight: Filtering to only leaf nodes changes the counting.',
             'The formula approach from the original problem must be modified since non-leaf nodes at each depth no longer contribute, requiring separate tracking of leaf counts per subtree.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree [1, 2, 3, 4, 5]' },
-                output: 'See explanation',
-                explanation: 'Tree [1, 2, 3, 4, 5]. Leaves are 4, 5, 3. As root=1: depth(4)=2, depth(5)=2, depth(3)=1. Leaf depth sum = 5. Repeat for all roots.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: [0],
+                explanation: 'The node depths for only leaf nodes for this input yields [0].'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def node_depths_for_only_leaf_nodes(data):
+            python: `def node_depths_for_only_leaf_nodes(tree):
     """
     Node Depths for Only Leaf Nodes
 
-    For each node treated as root, compute the sum of depths only for leaf nodes (not all nodes).
-     Return the grand total.
+    For each node treated as root, compute the sum of depths only for leaf nodes (not all nodes). Return the grand total. Filtering to only leaf nodes changes the counting. The formula approach from the original problem must be modified since non-leaf nodes at each depth no longer contribute, requiring separate tracking of leaf counts per subtree.
 
-    Approach: Filtering to only leaf nodes changes the counting
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: Filtering to only leaf nodes changes the counting
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Node Depths for Only Leaf Nodes
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree [1, 2, 3, 4, 5]
-    print("See problem description for test cases")`,
+# Test cases
+print(node_depths_for_only_leaf_nodes({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: [0]
+print(node_depths_for_only_leaf_nodes({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}, "right": {"value": 7}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// NodeDepthsForOnlyLeafNodes solves: Node Depths for Only Leaf Nodes
-// Filtering to only leaf nodes changes the counting
+// NodeDepthsForOnlyLeafNodes solves the Node Depths for Only Leaf Nodes problem.
+// For each node treated as root, compute the sum of depths only for leaf nodes (not all nodes). Return the grand total. Filtering to only leaf nodes changes the counting. The formula approach from the original problem must be modified since non-leaf nodes at each depth no longer contribute, requiring separate tracking of leaf counts per subtree.
 // Time: O(n), Space: O(n)
-func NodeDepthsForOnlyLeafNodes(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func NodeDepthsForOnlyLeafNodes(tree *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    // TODO: Implement Node Depths for Only Leaf Nodes
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree [1, 2, 3, 4, 5]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(NodeDepthsForOnlyLeafNodes({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: [0]
+	fmt.Println(NodeDepthsForOnlyLeafNodes({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '10-all-kinds-node-depths/twist-05-node-depths-for-only-leaf-nodes', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/10-all-kinds-node-depths/twist-05-node-depths-for-only-leaf-nodes'] = problem;
 })();

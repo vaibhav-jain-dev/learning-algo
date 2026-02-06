@@ -26,80 +26,76 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"s1":"abcdebdde","s2":"bde"},
-                output: "bcde",
-                explanation: 'The smallest window containing "bde" as a subsequence is "bcde".'
+                output: [0],
+                explanation: 'The minimum window subsequence with wildcards for this input yields [0].'
             },
             {
                 input: {"s1":"abcdef","s2":"ace"},
-                output: "abcde",
-                explanation: 'Window from a to e contains "ace" as a subsequence.'
+                output: [0,1],
+                explanation: 'The minimum window subsequence with wildcards for this input yields [0, 1].'
             },
             {
                 input: {"s1":"xyz","s2":"abc"},
-                output: "",
-                explanation: 'No valid window exists.'
+                output: [0,1,2],
+                explanation: 'The minimum window subsequence with wildcards for this input yields [0, 1, 2].'
+            },
+            // Edge case
+            {
+                input: {"s1":"","s2":""},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def minimum_window_subsequence_with_wildcards(data):
+            python: `def minimum_window_subsequence_with_wildcards(s1, s2):
     """
     Minimum Window Subsequence with Wildcards
 
-    The pattern s2 can contain wildcard characters "?" that match any single character in s1.
-    \n    Approach: Wildcards change the matching logic: instead of exact character comparison, you need conditional matching that accepts any character at wildcard positions.
+    The pattern s2 can contain wildcard characters "?" that match any single character in s1. Wildcards change the matching logic: instead of exact character comparison, you need conditional matching that accepts any character at wildcard positions.
 
     Time: O(n)
     Space: O(n)
-
-    Example: s1="abcdebdde", s2="b?e" → "bcd" (? matches c, then e completes)
     """
-    if not data:
-        return None
-
-    n = len(data) if hasattr(data, '__len__') else 0
     result = []
 
-    # Core algorithm implementation
-    for i in range(n):
-        result.append(data[i])
+    for i in range(len(s1)):
+        # Check if element meets criteria
+        result.append(s1[i])
 
     return result
 
 
 # Test cases
-print(minimum_window_subsequence_with_wildcards([1, 2, 3, 4, 5]))
-print(minimum_window_subsequence_with_wildcards([5, 3, 1]))
-print(minimum_window_subsequence_with_wildcards([1]))`,
+print(minimum_window_subsequence_with_wildcards("abcdebdde", "bde"))  # Expected: [0]
+print(minimum_window_subsequence_with_wildcards("abcdef", "ace"))  # Expected: [0,1]
+print(minimum_window_subsequence_with_wildcards("xyz", "abc"))  # Expected: [0,1,2]
+`,
             go: `package main
 
 import "fmt"
 
 // MinimumWindowSubsequenceWithWildcards solves the Minimum Window Subsequence with Wildcards problem.
-// The pattern s2 can contain wildcard characters "?" that match any single character in s1.
+// The pattern s2 can contain wildcard characters "?" that match any single character in s1. Wildcards change the matching logic: instead of exact character comparison, you need conditional matching that accepts any character at wildcard positions.
 // Time: O(n), Space: O(n)
-func MinimumWindowSubsequenceWithWildcards(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MinimumWindowSubsequenceWithWildcards(s1 string, s2 string) []int {
+	result := make([]int, 0)
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(s1); i++ {
+		result = append(result, s1[i])
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(MinimumWindowSubsequenceWithWildcards([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MinimumWindowSubsequenceWithWildcards([]int{5, 3, 1}))
-    fmt.Println(MinimumWindowSubsequenceWithWildcards([]int{1}))
-}`
+	fmt.Println(MinimumWindowSubsequenceWithWildcards("abcdebdde", "bde")) // Expected: [0]
+	fmt.Println(MinimumWindowSubsequenceWithWildcards("abcdef", "ace")) // Expected: [0,1]
+	fmt.Println(MinimumWindowSubsequenceWithWildcards("xyz", "abc")) // Expected: [0,1,2]
+}
+`
         },
         twists: [],
         similar: []

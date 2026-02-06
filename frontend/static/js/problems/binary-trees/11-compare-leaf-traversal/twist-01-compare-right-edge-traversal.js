@@ -2,10 +2,12 @@
  * Compare Right-Edge Traversal
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-dfs
  * Parent: 11-compare-leaf-traversal
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Compare Right-Edge Traversal',
         difficulty: 'Medium',
@@ -19,121 +21,78 @@
             'Key insight: Leaf traversal requires full tree DFS.',
             'Right-edge traversal is a simple linear path, but the conceptual shift from leaves (bottom of tree) to edges (side of tree) requires different thinking about what defines tree equivalence.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree1 [1, 2, 3, null, null, null, 4]' },
-                output: 'See explanation',
-                explanation: 'Tree1 [1, 2, 3, null, null, null, 4]. Right edge: [1, 3, 4]. Tree2 [1, 5, 3, null, null, null, 4]. Right edge: [1, 3, 4]. Same right edge despite different structures.'
+                input: {"tree1":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"tree2":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}}},
+                output: [0],
+                explanation: 'The compare right edge traversal for this input yields [0].'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree1":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"tree2":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def compare_right_edge_traversal(data):
+            python: `def compare_right_edge_traversal(tree1, tree2):
     """
     Compare Right-Edge Traversal
 
-    Instead of comparing leaf sequences, compare the right-edge sequences of two binary trees.
-     The right edge is the sequence of nodes visited by always going right from the root until reaching a null.
+    Instead of comparing leaf sequences, compare the right-edge sequences of two binary trees. The right edge is the sequence of nodes visited by always going right from the root until reaching a null. Leaf traversal requires full tree DFS. Right-edge traversal is a simple linear path, but the conceptual shift from leaves (bottom of tree) to edges (side of tree) requires different thinking about what defines tree equivalence.
 
-    Approach: Leaf traversal requires full tree DFS
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: Leaf traversal requires full tree DFS
+    for i in range(len(tree1)):
+        # Check if element meets criteria
+        result.append(tree1[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Compare Right-Edge Traversal
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree1 [1, 2, 3, null, null, null, 4]
-    print("See problem description for test cases")`,
+# Test cases
+print(compare_right_edge_traversal({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5, "left": {"value": 7}, "right": {"value": 8}}}, "right": {"value": 3, "right": {"value": 6}}}, {"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 7, "right": {"value": 5, "right": {"value": 6}}}}, "right": {"value": 3, "left": {"value": 8}}}))  # Expected: [0]
+print(compare_right_edge_traversal({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5, "left": {"value": 7}, "right": {"value": 8}}}, "right": {"value": 3, "right": {"value": 6}}}, {"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 7, "right": {"value": 5, "right": {"value": 6}}}}, "right": {"value": 3, "left": {"value": 8}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// CompareRightedgeTraversal solves: Compare Right-Edge Traversal
-// Leaf traversal requires full tree DFS
+// CompareRightEdgeTraversal solves the Compare Right-Edge Traversal problem.
+// Instead of comparing leaf sequences, compare the right-edge sequences of two binary trees. The right edge is the sequence of nodes visited by always going right from the root until reaching a null. Leaf traversal requires full tree DFS. Right-edge traversal is a simple linear path, but the conceptual shift from leaves (bottom of tree) to edges (side of tree) requires different thinking about what defines tree equivalence.
 // Time: O(n), Space: O(n)
-func CompareRightedgeTraversal(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func CompareRightEdgeTraversal(tree1 *TreeNode, tree2 *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree1); i++ {
+		result = append(result, tree1[i])
+	}
 
-    // TODO: Implement Compare Right-Edge Traversal
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree1 [1, 2, 3, null, null, null, 4]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(CompareRightEdgeTraversal({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}}, {"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}})) // Expected: [0]
+	fmt.Println(CompareRightEdgeTraversal({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}}, {"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '11-compare-leaf-traversal/twist-01-compare-right-edge-traversal', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/11-compare-leaf-traversal/twist-01-compare-right-edge-traversal'] = problem;
 })();

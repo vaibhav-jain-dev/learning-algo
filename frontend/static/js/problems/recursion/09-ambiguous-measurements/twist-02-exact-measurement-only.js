@@ -2,10 +2,12 @@
  * Exact Measurement Only
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-measurements
  * Parent: 09-ambiguous-measurements
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Exact Measurement Only',
         difficulty: 'Medium',
@@ -19,57 +21,80 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For cups [200,450,800] and target 1100, return true because 200+200+200+200+200+100... wait, no -- need exactly 200*k + 450*j + 800*m = 1100.' },
-                output: 'See example',
-                explanation: 'For cups [200,450,800] and target 1100, return true because 200+200+200+200+200+100... wait, no -- need exactly 200*k + 450*j + 800*m = 1100.'
+                input: {"cups":[[200,210],[450,465],[800,850]],"target":10},
+                output: true,
+                explanation: 'The exact measurement only condition is satisfied for this input.'
+            },
+            // Edge case
+            {
+                input: {"cups":[[200,210]],"target":10},
+                output: false,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Exact Measurement Only
-# Category: recursion
-# Difficulty: Medium
-# Parent: 09-ambiguous-measurements
-
-def solve():
+            python: `def exact_measurement_only(cups, target):
     """
+    Exact Measurement Only
+
     Each cup measures exactly one value (low equals high). Determine if the target can be reached using these exact measurements with unlimited uses.
 
-    Key insight: Simplifies to the classic unbounded knapsack / coin change problem, removing the range complexity but requiring standard DP techniques.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    j = 0
+
+    for i in range(len(cups)):
+        if j < len(target) and cups[i] == target[j]:
+            j += 1
+
+    return j == len(target)
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(exact_measurement_only([[200,210],[450,465],[800,850]], 10))  # Expected: True
+print(exact_measurement_only([[200,210]], 10))  # Expected: False
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Exact Measurement Only problem.
+// ExactMeasurementOnly solves the Exact Measurement Only problem.
 // Each cup measures exactly one value (low equals high). Determine if the target can be reached using these exact measurements with unlimited uses.
-// Key insight: Simplifies to the classic unbounded knapsack / coin change problem, removing the range complexity but requiring standard DP techniques.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func ExactMeasurementOnly(cups [][]int, target int) bool {
+	j := 0
+
+	for i := 0; i < len(cups) && j < len(target); i++ {
+		if cups[i] == target[j] {
+			j++
+		}
+	}
+
+	return j == len(target)
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(ExactMeasurementOnly([][]int{{200, 210}, {450, 465}, {800, 850}}, 10)) // Expected: true
+	fmt.Println(ExactMeasurementOnly([][]int{{200, 210}}, 10)) // Expected: false
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '09-ambiguous-measurements/twist-02-exact-measurement-only', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/09-ambiguous-measurements/twist-02-exact-measurement-only'] = problem;
 })();

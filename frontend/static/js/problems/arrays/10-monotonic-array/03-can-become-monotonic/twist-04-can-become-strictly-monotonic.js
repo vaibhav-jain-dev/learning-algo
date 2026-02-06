@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5]},
                 output: true,
-                explanation: 'Array is monotonically increasing.'
+                explanation: ''
             },
             {
                 input: {"array":[5,4,3,2,1]},
                 output: true,
-                explanation: 'Array is monotonically decreasing.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1,3,2,4]},
                 output: false,
-                explanation: 'Array is not monotonic - has both increases and decreases.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def can_become_strictly_monotonic(data):
+            python: `def can_become_strictly_monotonic(array):
     """
     Can Become Strictly Monotonic
 
-    Determine if the array can become strictly monotonic (no equal neighbors) by changing at most one element.
-    \n    Approach: Stricter constraint eliminates solutions where the changed value equals a neighbor, adding boundary conditions.
+    Determine if the array can become strictly monotonic (no equal neighbors) by changing at most one element. Stricter constraint eliminates solutions where the changed value equals a neighbor, adding boundary conditions.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 3, 3, 4]. Change second 3 to 2 or first 3 to 2: [1, 2, 3, 4]. Return true.
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in array:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(can_become_strictly_monotonic([1, 2, 3, 4, 5]))
-print(can_become_strictly_monotonic([5, 3, 1]))
-print(can_become_strictly_monotonic([1]))`,
+print(can_become_strictly_monotonic([1,2,3,4,5]))  # Expected: True
+print(can_become_strictly_monotonic([5,4,3,2,1]))  # Expected: True
+print(can_become_strictly_monotonic([1,3,2,4]))  # Expected: False
+`,
             go: `package main
 
 import "fmt"
 
 // CanBecomeStrictlyMonotonic solves the Can Become Strictly Monotonic problem.
-// Determine if the array can become strictly monotonic (no equal neighbors) by changing at most one element.
+// Determine if the array can become strictly monotonic (no equal neighbors) by changing at most one element. Stricter constraint eliminates solutions where the changed value equals a neighbor, adding boundary conditions.
 // Time: O(n), Space: O(n)
-func CanBecomeStrictlyMonotonic(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func CanBecomeStrictlyMonotonic(array []int) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range array {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(CanBecomeStrictlyMonotonic([]int{1, 2, 3, 4, 5}))
-    fmt.Println(CanBecomeStrictlyMonotonic([]int{5, 3, 1}))
-    fmt.Println(CanBecomeStrictlyMonotonic([]int{1}))
-}`
+	fmt.Println(CanBecomeStrictlyMonotonic([]int{1, 2, 3, 4, 5})) // Expected: true
+	fmt.Println(CanBecomeStrictlyMonotonic([]int{5, 4, 3, 2, 1})) // Expected: true
+	fmt.Println(CanBecomeStrictlyMonotonic([]int{1, 3, 2, 4})) // Expected: false
+}
+`
         },
         twists: [],
         similar: []

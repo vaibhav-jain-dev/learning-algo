@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,2,1]},
                 output: 3,
-                explanation: 'The maximum/longest valid segment has length 3.'
+                explanation: ''
             },
             {
                 input: {"array":[5,4,3,2,1]},
                 output: 5,
-                explanation: 'The entire array satisfies the condition.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1]},
                 output: 1,
-                explanation: 'Single element is trivially valid.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def max_constructible_range_starting_from_k(data):
+            python: `def max_constructible_range_starting_from_k(coins, budget):
     """
     Max Constructible Range Starting from K
 
-    Find the maximum consecutive range [K, K+M] that can be constructed, starting from a given value K.
-    \n    Approach: The starting point is not 1, so you must first determine if K is constructible, then extend upward from there.
+    Find the maximum consecutive range [K, K+M] that can be constructed, starting from a given value K. The starting point is not 1, so you must first determine if K is constructible, then extend upward from there.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # coins=[3,5,7], K=8 → can make 8(3+5), 10(3+7), 12(5+7), 15(3+5+7) but not 9 → range [8,8]
+    count = 0
+    n = len(coins)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on budget
+        j = 0
+        for k in range(i, n):
+            if j < len(budget) and coins[k] == budget[j]:
+                j += 1
+        if j == len(budget):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(max_constructible_range_starting_from_k([1, 2, 3, 4, 5]))
-print(max_constructible_range_starting_from_k([5, 3, 1]))
-print(max_constructible_range_starting_from_k([1]))`,
+print(max_constructible_range_starting_from_k(None, None))  # Expected: 3
+print(max_constructible_range_starting_from_k(None, None))  # Expected: 5
+print(max_constructible_range_starting_from_k(None, None))  # Expected: 1
+`,
             go: `package main
 
 import "fmt"
 
 // MaxConstructibleRangeStartingFromK solves the Max Constructible Range Starting from K problem.
-// Find the maximum consecutive range [K, K+M] that can be constructed, starting from a given value K.
+// Find the maximum consecutive range [K, K+M] that can be constructed, starting from a given value K. The starting point is not 1, so you must first determine if K is constructible, then extend upward from there.
 // Time: O(n), Space: O(n)
-func MaxConstructibleRangeStartingFromK(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func MaxConstructibleRangeStartingFromK(coins []int, budget int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(coins); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(MaxConstructibleRangeStartingFromK([]int{1, 2, 3, 4, 5}))
-    fmt.Println(MaxConstructibleRangeStartingFromK([]int{5, 3, 1}))
-    fmt.Println(MaxConstructibleRangeStartingFromK([]int{1}))
-}`
+	fmt.Println(MaxConstructibleRangeStartingFromK(nil, nil)) // Expected: 3
+	fmt.Println(MaxConstructibleRangeStartingFromK(nil, nil)) // Expected: 5
+	fmt.Println(MaxConstructibleRangeStartingFromK(nil, nil)) // Expected: 1
+}
+`
         },
         twists: [],
         similar: []

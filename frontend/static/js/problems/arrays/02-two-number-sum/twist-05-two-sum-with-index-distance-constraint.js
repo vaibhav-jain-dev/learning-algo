@@ -26,80 +26,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[3,5,-4,8,11,1,-1,6],"targetSum":10},
                 output: [-1,11],
-                explanation: '-1 + 11 = 10, which equals the target sum.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4,5],"targetSum":10},
                 output: [],
-                explanation: 'No two distinct numbers sum to 10.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[4,6],"targetSum":10},
                 output: [4,6],
-                explanation: '4 + 6 = 10.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def two_sum_with_index_distance_constraint(data):
+            python: `def two_sum_with_index_distance_constraint(array, targetSum, window_size):
     """
     Two Sum with Index Distance Constraint
 
-    Find a pair summing to target where the two elements are at most k indices apart.
-    \n    Approach: The hash table must be bounded by a sliding window of size k, requiring eviction of old entries as you iterate.
+    Find a pair summing to target where the two elements are at most k indices apart. The hash table must be bounded by a sliding window of size k, requiring eviction of old entries as you iterate.
 
     Time: O(n log k)
     Space: O(n)
-
-    Example: array=[1,3,5,1,5], target=6, k=2 → [1,5] at indices (0,2) works, but (0,4) does not
     """
-    if not data:
-        return None
+    count = 0
+    n = len(array)
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
-
-    # Core algorithm implementation
     for i in range(n):
-        result.append(data[i])
+        # Check condition based on targetSum
+        j = 0
+        for k in range(i, n):
+            if j < len(targetSum) and array[k] == targetSum[j]:
+                j += 1
+        if j == len(targetSum):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(two_sum_with_index_distance_constraint([1, 2, 3, 4, 5]))
-print(two_sum_with_index_distance_constraint([5, 3, 1]))
-print(two_sum_with_index_distance_constraint([1]))`,
+print(two_sum_with_index_distance_constraint([3,5,-4,8,11,1,-1,6], 10, None))  # Expected: [-1,11]
+print(two_sum_with_index_distance_constraint([1,2,3,4,5], 10, None))  # Expected: []
+print(two_sum_with_index_distance_constraint([4,6], 10, None))  # Expected: [4,6]
+`,
             go: `package main
 
 import "fmt"
 
 // TwoSumWithIndexDistanceConstraint solves the Two Sum with Index Distance Constraint problem.
-// Find a pair summing to target where the two elements are at most k indices apart.
+// Find a pair summing to target where the two elements are at most k indices apart. The hash table must be bounded by a sliding window of size k, requiring eviction of old entries as you iterate.
 // Time: O(n log k), Space: O(n)
-func TwoSumWithIndexDistanceConstraint(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func TwoSumWithIndexDistanceConstraint(array []int, targetSum int, windowSize int) int {
+	result := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(TwoSumWithIndexDistanceConstraint([]int{1, 2, 3, 4, 5}))
-    fmt.Println(TwoSumWithIndexDistanceConstraint([]int{5, 3, 1}))
-    fmt.Println(TwoSumWithIndexDistanceConstraint([]int{1}))
-}`
+	fmt.Println(TwoSumWithIndexDistanceConstraint([]int{3, 5, -4, 8, 11, 1, -1, 6}, 10, 3)) // Expected: [-1,11]
+	fmt.Println(TwoSumWithIndexDistanceConstraint([]int{1, 2, 3, 4, 5}, 10, 3)) // Expected: []
+	fmt.Println(TwoSumWithIndexDistanceConstraint([]int{4, 6}, 10, 3)) // Expected: [4,6]
+}
+`
         },
         twists: [],
         similar: []

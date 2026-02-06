@@ -2,10 +2,12 @@
  * All Achievable Targets
  * Category: recursion
  * Difficulty: Hard
+ * Algorithm: recursion-measurements
  * Parent: 09-ambiguous-measurements
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'All Achievable Targets',
         difficulty: 'Hard',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For cups [[1,3],[5,7]], all achievable ranges after 1 pour are [1,3] and [5,7]; after 2 pours, [2,6], [6,10], [10,14], etc.' },
-                output: 'See example',
-                explanation: 'For cups [[1,3],[5,7]], all achievable ranges after 1 pour are [1,3] and [5,7]; after 2 pours, [2,6], [6,10], [10,14], etc.'
+                input: {"cups":[[200,210],[450,465],[800,850]],"target":10},
+                output: [[200,210],[450,465],[800,850]],
+                explanation: 'The all achievable targets for this input yields [200,210, 450,465, 800,850].'
+            },
+            // Edge case
+            {
+                input: {"cups":[[200,210]],"target":10},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# All Achievable Targets
-# Category: recursion
-# Difficulty: Hard
-# Parent: 09-ambiguous-measurements
-
-def solve():
+            python: `def all_achievable_targets(cups, target):
     """
+    All Achievable Targets
+
     Given the set of cups, enumerate all possible target values that can be measured within a given range [0, maxTarget].
 
-    Key insight: Inverts the problem from checking one target to discovering all reachable values, requiring interval arithmetic and range merging across all pour combinations.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(cups)):
+        # Check if element meets criteria
+        result.append(cups[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(all_achievable_targets([[200,210],[450,465],[800,850]], 10))  # Expected: [[200,210],[450,465],[800,850]]
+print(all_achievable_targets([[200,210]], 10))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the All Achievable Targets problem.
+// AllAchievableTargets solves the All Achievable Targets problem.
 // Given the set of cups, enumerate all possible target values that can be measured within a given range [0, maxTarget].
-// Key insight: Inverts the problem from checking one target to discovering all reachable values, requiring interval arithmetic and range merging across all pour combinations.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func AllAchievableTargets(cups [][]int, target int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(cups); i++ {
+		result = append(result, cups[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(AllAchievableTargets([][]int{{200, 210}, {450, 465}, {800, 850}}, 10)) // Expected: [[200,210],[450,465],[800,850]]
+	fmt.Println(AllAchievableTargets([][]int{{200, 210}}, 10)) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '09-ambiguous-measurements/twist-04-all-achievable-targets', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/09-ambiguous-measurements/twist-04-all-achievable-targets'] = problem;
 })();

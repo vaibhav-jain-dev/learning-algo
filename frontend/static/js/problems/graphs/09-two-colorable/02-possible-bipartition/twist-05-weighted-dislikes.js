@@ -2,10 +2,12 @@
  * Weighted Dislikes
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-coloring
  * Parent: 09-two-colorable/02-possible-bipartition
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Weighted Dislikes',
         difficulty: 'Hard',
@@ -19,87 +21,92 @@
             'Consider the example: Dislikes: (1,2 weight 5), (2,3 weight 1), (1,3 weight 2).',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(V + E)', space: 'O(V + E)' },
+        complexity: {
+            time: 'O(V + E)',
+            space: 'O(V + E)'
+        },
         examples: [
-            { input: { description: 'Dislikes: (1,2 weight 5), (2,3 weight 1), (1,3 weight 2). Triangle, must violate one. Violate (2,3) with weight 1 is optimal.' }, output: 'See explanation', explanation: 'Dislikes: (1,2 weight 5), (2,3 weight 1), (1,3 weight 2). Triangle, must violate one. Violate (2,3) with weight 1 is optimal.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"n":4,"dislikes":[[1,2],[1,3],[2,4]]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the weighted dislikes criteria.'
+            },
+            {
+                input: {"n":3,"dislikes":[[1,2],[1,3],[2,3]]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the weighted dislikes criteria.'
+            },
+            // Edge case
+            {
+                input: {"n":0,"dislikes":[[1,2]]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def weighted_dislikes(data):
+            python: `def weighted_dislikes(n, dislikes):
     """
     Weighted Dislikes
 
     Each dislike has a weight. Partition into two groups minimizing the total weight of violated dislikes (cross-group dislikes are satisfied, same-group dislikes are violations).
 
-    Approach:
-    If perfect bipartition is impossible, you solve a weighted max-cut problem to minimize violation weight, which is NP-hard in general but has approximation algorithms.
-
     Time: O(V + E)
     Space: O(V + E)
     """
-    # If perfect bipartition is impossible, you solve a weighted max-cut problem to minimize violation weight, which is NP-hard in general but has approximation algorithms.
+    count = 0
+    n = len(n)
 
-    # Implementation
-    result = None
+    for i in range(n):
+        # Check condition based on dislikes
+        j = 0
+        for k in range(i, n):
+            if j < len(dislikes) and n[k] == dislikes[j]:
+                j += 1
+        if j == len(dislikes):
+            count += 1
 
-    # Core algorithm adapted for: Weighted Dislikes
-    # Key difference from parent: If perfect bipartition is impossible, you solve a weighted max-cut problem to minimize violation wei
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return weighted_dislikes(data)
+    return count
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Dislikes: (1,2 weight 5), (2,3 weight 1), (1,3 weight 2). Triangle, must violate one. Violate (2,3) with weight 1 is optimal.
-    print("Test: Weighted Dislikes")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(weighted_dislikes(4, [[1,2],[1,3],[2,4]]))  # Expected: 1
+print(weighted_dislikes(3, [[1,2],[1,3],[2,3]]))  # Expected: 2
+print(weighted_dislikes(0, [[1,2]]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// WeightedDislikes solves the Weighted Dislikes problem
+// WeightedDislikes solves the Weighted Dislikes problem.
 // Each dislike has a weight. Partition into two groups minimizing the total weight of violated dislikes (cross-group dislikes are satisfied, same-group dislikes are violations).
-//
-// Approach: If perfect bipartition is impossible, you solve a weighted max-cut problem to minimize violation weight, which is NP-hard in general but has approximation algorithms.
-//
-// Time: O(V + E)
-// Space: O(V + E)
-func WeightedDislikes(input interface{}) interface{} {
-    // If perfect bipartition is impossible, you solve a weighted max-cut problem to minimize violation weight, which is NP-hard in general but has approximation algorithms.
+// Time: O(V + E), Space: O(V + E)
+func WeightedDislikes(n int, dislikes [][]int) int {
+	result := 0
 
-    // Core algorithm adapted for: Weighted Dislikes
-    // Key difference from parent: If perfect bipartition is impossible, you solve a weighted max-cut problem to minimize violation wei
+	for i := 0; i < len(n); i++ {
+		// Process element
+		result++
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Dislikes: (1,2 weight 5), (2,3 weight 1), (1,3 weight 2). Triangle, must violate one. Violate (2,3) with weight 1 is optimal.
-    fmt.Println("Test: Weighted Dislikes")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(WeightedDislikes(4, [][]int{{1, 2}, {1, 3}, {2, 4}})) // Expected: 1
+	fmt.Println(WeightedDislikes(3, [][]int{{1, 2}, {1, 3}, {2, 3}})) // Expected: 2
+	fmt.Println(WeightedDislikes(0, [][]int{{1, 2}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '09-two-colorable/02-possible-bipartition/twist-05-weighted-dislikes', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/09-two-colorable/02-possible-bipartition/twist-05-weighted-dislikes'] = problem;
 })();

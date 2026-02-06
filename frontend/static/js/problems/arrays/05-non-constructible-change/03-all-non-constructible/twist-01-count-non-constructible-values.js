@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,1,2,3]},
                 output: 2,
-                explanation: 'Two valid configurations found in the input.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3]},
                 output: 1,
-                explanation: 'Only one valid configuration exists.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1,1,1]},
                 output: 3,
-                explanation: 'Multiple identical elements create multiple valid configurations.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def count_non_constructible_values(data):
+            python: `def count_non_constructible_values(coins, limit):
     """
     Count Non-Constructible Values
 
-    Instead of listing all non-constructible values, just return their count up to the limit.
-    \n    Approach: Can potentially be more efficient: count = limit - (number of constructible values). Changes from enumeration to arithmetic.
+    Instead of listing all non-constructible values, just return their count up to the limit. Can potentially be more efficient: count = limit - (number of constructible values). Changes from enumeration to arithmetic.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # coins=[1,5,10], limit=20 → count of non-constructible values up to 20
+    count = 0
+    n = len(coins)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on limit
+        j = 0
+        for k in range(i, n):
+            if j < len(limit) and coins[k] == limit[j]:
+                j += 1
+        if j == len(limit):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(count_non_constructible_values([1, 2, 3, 4, 5]))
-print(count_non_constructible_values([5, 3, 1]))
-print(count_non_constructible_values([1]))`,
+print(count_non_constructible_values(None, None))  # Expected: 2
+print(count_non_constructible_values(None, None))  # Expected: 1
+print(count_non_constructible_values(None, None))  # Expected: 3
+`,
             go: `package main
 
 import "fmt"
 
 // CountNonConstructibleValues solves the Count Non-Constructible Values problem.
-// Instead of listing all non-constructible values, just return their count up to the limit.
+// Instead of listing all non-constructible values, just return their count up to the limit. Can potentially be more efficient: count = limit - (number of constructible values). Changes from enumeration to arithmetic.
 // Time: O(n), Space: O(n)
-func CountNonConstructibleValues(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func CountNonConstructibleValues(coins []int, limit int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(coins); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(CountNonConstructibleValues([]int{1, 2, 3, 4, 5}))
-    fmt.Println(CountNonConstructibleValues([]int{5, 3, 1}))
-    fmt.Println(CountNonConstructibleValues([]int{1}))
-}`
+	fmt.Println(CountNonConstructibleValues(nil, nil)) // Expected: 2
+	fmt.Println(CountNonConstructibleValues(nil, nil)) // Expected: 1
+	fmt.Println(CountNonConstructibleValues(nil, nil)) // Expected: 3
+}
+`
         },
         twists: [],
         similar: []

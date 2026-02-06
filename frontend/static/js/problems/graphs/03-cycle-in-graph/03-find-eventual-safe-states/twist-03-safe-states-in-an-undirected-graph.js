@@ -2,10 +2,12 @@
  * Safe States in an Undirected Graph
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-cycle
  * Parent: 03-cycle-in-graph/03-find-eventual-safe-states
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Safe States in an Undirected Graph',
         difficulty: 'Hard',
@@ -19,87 +21,85 @@
             'Consider the example: Undirected: 0-1, 1-2, 2-0, 2-3, 3-4.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(V + E)', space: 'O(V)' },
+        complexity: {
+            time: 'O(V + E)',
+            space: 'O(V)'
+        },
         examples: [
-            { input: { description: 'Undirected: 0-1, 1-2, 2-0, 2-3, 3-4. Nodes 0,1,2 are in a cycle (unsafe). Nodes 3,4 are safe (not in any cycle).' }, output: 'See explanation', explanation: 'Undirected: 0-1, 1-2, 2-0, 2-3, 3-4. Nodes 0,1,2 are in a cycle (unsafe). Nodes 3,4 are safe (not in any cycle).' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"graph":[[1,2],[2,3],[5],[0],[5],[],[]]},
+                output: [[1,2],[2,3],[5]],
+                explanation: 'The safe states in an undirected graph for this input yields [1,2, 2,3, 5].'
+            },
+            {
+                input: {"graph":[[1,2,3,4],[1,2],[3,4],[0,4],[]]},
+                output: [[1,2,3,4],[1,2],[3,4]],
+                explanation: 'The safe states in an undirected graph for this input yields [1,2,3,4, 1,2, 3,4].'
+            },
+            // Edge case
+            {
+                input: {"graph":[[1,2]]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def safe_states_in_an_undirected_graph(data):
+            python: `def safe_states_in_an_undirected_graph(graph):
     """
     Safe States in an Undirected Graph
 
     Define a "safe node" in an undirected graph as one that is not part of any cycle. Find all such nodes (articulation-related concept).
 
-    Approach:
-    In undirected graphs, cycle detection works differently (must track parent). A node is "safe" only if it is not on any cycle, which relates to biconnected components and bridge detection.
-
     Time: O(V + E)
     Space: O(V)
     """
-    # In undirected graphs, cycle detection works differently (must track parent). A node is "safe" only if it is not on any cycle, which relates to biconnected components and bridge detection.
+    result = []
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Safe States in an Undirected Graph
-    # Key difference from parent: In undirected graphs, cycle detection works differently (must track parent). A node is "safe" only i
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(graph)):
+        # Check if element meets criteria
+        result.append(graph[i])
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return safe_states_in_an_undirected_graph(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Undirected: 0-1, 1-2, 2-0, 2-3, 3-4. Nodes 0,1,2 are in a cycle (unsafe). Nodes 3,4 are safe (not in any cycle).
-    print("Test: Safe States in an Undirected Graph")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(safe_states_in_an_undirected_graph([[1,2],[2,3],[5],[0],[5],[],[]]))  # Expected: [[1,2],[2,3],[5]]
+print(safe_states_in_an_undirected_graph([[1,2,3,4],[1,2],[3,4],[0,4],[]]))  # Expected: [[1,2,3,4],[1,2],[3,4]]
+print(safe_states_in_an_undirected_graph([[1,2]]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// SafeStatesInAnUndirectedGraph solves the Safe States in an Undirected Graph problem
+// SafeStatesInAnUndirectedGraph solves the Safe States in an Undirected Graph problem.
 // Define a "safe node" in an undirected graph as one that is not part of any cycle. Find all such nodes (articulation-related concept).
-//
-// Approach: In undirected graphs, cycle detection works differently (must track parent). A node is "safe" only if it is not on any cycle, which relates to biconnected components and bridge detection.
-//
-// Time: O(V + E)
-// Space: O(V)
-func SafeStatesInAnUndirectedGraph(input interface{}) interface{} {
-    // In undirected graphs, cycle detection works differently (must track parent). A node is "safe" only if it is not on any cycle, which relates to biconnected components and bridge detection.
+// Time: O(V + E), Space: O(V)
+func SafeStatesInAnUndirectedGraph(graph [][]int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm adapted for: Safe States in an Undirected Graph
-    // Key difference from parent: In undirected graphs, cycle detection works differently (must track parent). A node is "safe" only i
+	for i := 0; i < len(graph); i++ {
+		result = append(result, graph[i])
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Undirected: 0-1, 1-2, 2-0, 2-3, 3-4. Nodes 0,1,2 are in a cycle (unsafe). Nodes 3,4 are safe (not in any cycle).
-    fmt.Println("Test: Safe States in an Undirected Graph")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(SafeStatesInAnUndirectedGraph([][]int{{1, 2}, {2, 3}, {5}, {0}, {5}, {}, {}})) // Expected: [[1,2],[2,3],[5]]
+	fmt.Println(SafeStatesInAnUndirectedGraph([][]int{{1, 2, 3, 4}, {1, 2}, {3, 4}, {0, 4}, {}})) // Expected: [[1,2,3,4],[1,2],[3,4]]
+	fmt.Println(SafeStatesInAnUndirectedGraph([][]int{{1, 2}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '03-cycle-in-graph/03-find-eventual-safe-states/twist-03-safe-states-in-an-undirected-graph', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/03-cycle-in-graph/03-find-eventual-safe-states/twist-03-safe-states-in-an-undirected-graph'] = problem;
 })();

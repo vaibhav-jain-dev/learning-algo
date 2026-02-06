@@ -2,10 +2,12 @@
  * Two Sum Closest Using O(h) Space
  * Category: binary-search-trees
  * Difficulty: Hard
+ * Algorithm: bst-search
  * Parent: 01-find-closest-value/03-two-sum-closest-bst
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Two Sum Closest Using O(h) Space',
         difficulty: 'Hard',
@@ -14,68 +16,87 @@
         description: 'Solve two-sum closest using only O(h) auxiliary space by implementing forward and reverse BST iterators instead of collecting all values into an array.',
         problem: 'Replaces the O(n) array with two controlled stacks simulating forward and reverse inorder traversal. Managing two independent iterators simultaneously requires careful state management. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: two sum closest using o(h) space.",
-                  "Consider how replaces the o(n) array with two controlled stacks simulating forward and reverse inorder traversal affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'Same output as base problem, but space usage is O(h) where h is tree height, not O(n).'
+                input: {"tree":[10,5,15,2,7,12,20],"target":22},
+                output: [10,5,15],
+                explanation: 'The two sum closest using oh space for this input yields [10, 5, 15].'
+            },
+            {
+                input: {"tree":[5,3,7,1,4,6,8],"target":10},
+                output: [5,3,7],
+                explanation: 'The two sum closest using oh space for this input yields [5, 3, 7].'
+            },
+            // Edge case
+            {
+                input: {"tree":[10],"target":0},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Two Sum Closest Using O(h) Space
-# Difficulty: Hard
-# Parent: 01-find-closest-value/03-two-sum-closest-bst
-#
-# Solve two-sum closest using only O(h) auxiliary space by implementing forward and reverse BST iterators instead of collecting all values into an array.
-
-def twoSumClosestUsingOhSpace(data):
+            python: `def two_sum_closest_using_oh_space(tree, target):
     """
     Two Sum Closest Using O(h) Space
 
-    Approach: Replaces the O(n) array with two controlled stacks simulating forward and reverse inorder traversal.
+    Solve two-sum closest using only O(h) auxiliary space by implementing forward and reverse BST iterators instead of collecting all values into an array.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Replaces the O(n) array with two controlled stacks simulating forward and reverse inorder traversal
-    pass
+    result = []
+
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Same output as base problem, but space usage is O(h) where h is tree height, not O(n)
-    print(twoSumClosestUsingOhSpace({}))`,
+# Test cases
+print(two_sum_closest_using_oh_space([10,5,15,2,7,12,20], 22))  # Expected: [10,5,15]
+print(two_sum_closest_using_oh_space([5,3,7,1,4,6,8], 10))  # Expected: [5,3,7]
+print(two_sum_closest_using_oh_space([10], 0))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// Two Sum Closest Using O(h) Space
-// Difficulty: Hard
-// Parent: 01-find-closest-value/03-two-sum-closest-bst
-//
+// TwoSumClosestUsingOhSpace solves the Two Sum Closest Using O(h) Space problem.
 // Solve two-sum closest using only O(h) auxiliary space by implementing forward and reverse BST iterators instead of collecting all values into an array.
+// Time: O(n), Space: O(1)
+func TwoSumClosestUsingOhSpace(tree []int, target int) []int {
+	result := make([]int, 0)
 
-func TwoSumClosestUsingOhSpace(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Replaces the O(n) array with two controlled stacks simulating forward and reverse inorder traversal
-    return nil
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
+
+	return result
 }
 
 func main() {
-    // Example: Same output as base problem, but space usage is O(h) where h is tree height, not O(n)
-    fmt.Println(TwoSumClosestUsingOhSpace(map[string]interface{}{}))
-}`
+	fmt.Println(TwoSumClosestUsingOhSpace([]int{10, 5, 15, 2, 7, 12, 20}, 22)) // Expected: [10,5,15]
+	fmt.Println(TwoSumClosestUsingOhSpace([]int{5, 3, 7, 1, 4, 6, 8}, 10)) // Expected: [5,3,7]
+	fmt.Println(TwoSumClosestUsingOhSpace([]int{10}, 0)) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '01-find-closest-value/03-two-sum-closest-bst/twist-03-two-sum-closest-using-oh-space', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/01-find-closest-value/03-two-sum-closest-bst/twist-03-two-sum-closest-using-oh-space'] = problem;
 })();

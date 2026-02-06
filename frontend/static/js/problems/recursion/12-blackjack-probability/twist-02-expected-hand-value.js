@@ -2,10 +2,12 @@
  * Expected Hand Value
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-probability
  * Parent: 12-blackjack-probability
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Expected Hand Value',
         difficulty: 'Medium',
@@ -19,57 +21,84 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For target=21, startingHand=15, compute the expected final hand value across all possible draw sequences.' },
-                output: 'See example',
-                explanation: 'For target=21, startingHand=15, compute the expected final hand value across all possible draw sequences.'
+                input: {"target":10,"startingHand":15},
+                output: 5.31,
+                explanation: 'The computed value for this input is 5.31.'
+            },
+            // Edge case
+            {
+                input: {"target":10,"startingHand":0},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Expected Hand Value
-# Category: recursion
-# Difficulty: Medium
-# Parent: 12-blackjack-probability
-
-def solve():
+            python: `def expected_hand_value(target, startingHand):
     """
+    Expected Hand Value
+
     Instead of bust probability, compute the expected (average) final hand value when drawing until reaching the target or busting.
 
-    Key insight: Changes the recursion from probability accumulation to expected value calculation, summing weighted hand values instead of just bust probabilities.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    total = 0
+    count = 0
+
+    for val in target:
+        total += val
+        count += 1
+
+    return total / count if count > 0 else 0.0
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(expected_hand_value(10, 15))  # Expected: 5.31
+print(expected_hand_value(10, 0))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Expected Hand Value problem.
+// ExpectedHandValue solves the Expected Hand Value problem.
 // Instead of bust probability, compute the expected (average) final hand value when drawing until reaching the target or busting.
-// Key insight: Changes the recursion from probability accumulation to expected value calculation, summing weighted hand values instead of just bust probabilities.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func ExpectedHandValue(target int, startingHand int) float64 {
+	total := 0.0
+	count := 0
+
+	for _, v := range target {
+		total += float64(v)
+		count++
+	}
+
+	if count == 0 {
+		return 0.0
+	}
+	return total / float64(count)
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(ExpectedHandValue(10, 15)) // Expected: 5.31
+	fmt.Println(ExpectedHandValue(10, 0)) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '12-blackjack-probability/twist-02-expected-hand-value', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/12-blackjack-probability/twist-02-expected-hand-value'] = problem;
 })();

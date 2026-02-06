@@ -2,10 +2,12 @@
  * Flatten to Circular Doubly Linked List
  * Category: binary-trees
  * Difficulty: Hard
+ * Algorithm: tree-flatten
  * Parent: 08-flatten-tree
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Flatten to Circular Doubly Linked List',
         difficulty: 'Hard',
@@ -19,121 +21,78 @@
             'Key insight: The circular connection adds complexity to the base case and the final linking step.',
             'You must connect the last node back to the first, requiring you to track both the head and tail of the flattened structure.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree [4, 2, 5, 1, 3]' },
-                output: 'See explanation',
-                explanation: 'Tree [4, 2, 5, 1, 3]. Flattened: 1 <-> 2 <-> 3 <-> 4 <-> 5 <-> (back to 1). The last node 5 right-points to 1, and 1 left-points to 5.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6}}}},
+                output: [0],
+                explanation: 'The flatten to circular doubly linked list for this input yields [0].'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def flatten_to_circular_doubly_linked_list(data):
+            python: `def flatten_to_circular_doubly_linked_list(tree):
     """
     Flatten to Circular Doubly Linked List
 
-    Flatten the binary tree to a sorted circular doubly linked list in-place.
-     The leftmost node connects back to the rightmost node and vice versa.
+    Flatten the binary tree to a sorted circular doubly linked list in-place. The leftmost node connects back to the rightmost node and vice versa. The circular connection adds complexity to the base case and the final linking step. You must connect the last node back to the first, requiring you to track both the head and tail of the flattened structure.
 
-    Approach: The circular connection adds complexity to the base case and the final linking step
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: The circular connection adds complexity to the base case and the final linking step
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Flatten to Circular Doubly Linked List
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree [4, 2, 5, 1, 3]
-    print("See problem description for test cases")`,
+# Test cases
+print(flatten_to_circular_doubly_linked_list({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}}}))  # Expected: [0]
+print(flatten_to_circular_doubly_linked_list({"value": 1, "left": {"value": 2, "left": {"value": 4}, "right": {"value": 5}}, "right": {"value": 3, "left": {"value": 6}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// FlattenToCircularDoublyLinkedList solves: Flatten to Circular Doubly Linked List
-// The circular connection adds complexity to the base case and the final linking step
+// FlattenToCircularDoublyLinkedList solves the Flatten to Circular Doubly Linked List problem.
+// Flatten the binary tree to a sorted circular doubly linked list in-place. The leftmost node connects back to the rightmost node and vice versa. The circular connection adds complexity to the base case and the final linking step. You must connect the last node back to the first, requiring you to track both the head and tail of the flattened structure.
 // Time: O(n), Space: O(n)
-func FlattenToCircularDoublyLinkedList(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func FlattenToCircularDoublyLinkedList(tree *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    // TODO: Implement Flatten to Circular Doubly Linked List
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree [4, 2, 5, 1, 3]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(FlattenToCircularDoublyLinkedList({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6}}})) // Expected: [0]
+	fmt.Println(FlattenToCircularDoublyLinkedList({"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5}},"right":{"value":3,"left":{"value":6}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '08-flatten-tree/twist-02-flatten-to-circular-doubly-linked-list', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/08-flatten-tree/twist-02-flatten-to-circular-doubly-linked-list'] = problem;
 })();

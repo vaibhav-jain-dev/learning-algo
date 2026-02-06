@@ -26,80 +26,73 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[5,1,22,25,6,-1,8,10],"sequence":[1,6,-1,10]},
                 output: true,
-                explanation: 'The sequence elements appear in order within the array.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4,5],"sequence":[5,3,1]},
                 output: false,
-                explanation: 'The sequence elements do not appear in the required order.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1,1,1,1,1],"sequence":[1,1,1]},
                 output: true,
-                explanation: 'Duplicate elements are handled correctly.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def bidirectional_subsequence_check(data):
+            python: `def bidirectional_subsequence_check(array, sequence):
     """
     Bidirectional Subsequence Check
 
-    The sequence is valid if it can be found going left-to-right OR right-to-left in the array.
-    \n    Approach: You must consider two traversal directions, potentially doubling the search space but also the solution space.
+    The sequence is valid if it can be found going left-to-right OR right-to-left in the array. You must consider two traversal directions, potentially doubling the search space but also the solution space.
 
     Time: O(n)
     Space: O(n)
-
-    Example: array=[1,2,3,4,5], sequence=[5,3,1] → true (valid right-to-left)
     """
-    if not data:
-        return None
+    j = 0
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
+    for i in range(len(array)):
+        if j < len(sequence) and array[i] == sequence[j]:
+            j += 1
 
-    # Core algorithm implementation
-    for i in range(n):
-        result.append(data[i])
-
-    return result
+    return j == len(sequence)
 
 
 # Test cases
-print(bidirectional_subsequence_check([1, 2, 3, 4, 5]))
-print(bidirectional_subsequence_check([5, 3, 1]))
-print(bidirectional_subsequence_check([1]))`,
+print(bidirectional_subsequence_check([5,1,22,25,6,-1,8,10], [1,6,-1,10]))  # Expected: True
+print(bidirectional_subsequence_check([1,2,3,4,5], [5,3,1]))  # Expected: False
+print(bidirectional_subsequence_check([1,1,1,1,1], [1,1,1]))  # Expected: True
+`,
             go: `package main
 
 import "fmt"
 
 // BidirectionalSubsequenceCheck solves the Bidirectional Subsequence Check problem.
-// The sequence is valid if it can be found going left-to-right OR right-to-left in the array.
+// The sequence is valid if it can be found going left-to-right OR right-to-left in the array. You must consider two traversal directions, potentially doubling the search space but also the solution space.
 // Time: O(n), Space: O(n)
-func BidirectionalSubsequenceCheck(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func BidirectionalSubsequenceCheck(array []int, sequence []int) bool {
+	j := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(array) && j < len(sequence); i++ {
+		if array[i] == sequence[j] {
+			j++
+		}
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return j == len(sequence)
 }
 
 func main() {
-    fmt.Println(BidirectionalSubsequenceCheck([]int{1, 2, 3, 4, 5}))
-    fmt.Println(BidirectionalSubsequenceCheck([]int{5, 3, 1}))
-    fmt.Println(BidirectionalSubsequenceCheck([]int{1}))
-}`
+	fmt.Println(BidirectionalSubsequenceCheck([]int{5, 1, 22, 25, 6, -1, 8, 10}, []int{1, 6, -1, 10})) // Expected: true
+	fmt.Println(BidirectionalSubsequenceCheck([]int{1, 2, 3, 4, 5}, []int{5, 3, 1})) // Expected: false
+	fmt.Println(BidirectionalSubsequenceCheck([]int{1, 1, 1, 1, 1}, []int{1, 1, 1})) // Expected: true
+}
+`
         },
         twists: [],
         similar: []

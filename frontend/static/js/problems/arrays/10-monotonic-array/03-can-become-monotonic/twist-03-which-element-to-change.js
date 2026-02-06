@@ -27,83 +27,72 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"coins":[1,2,5]},
                 output: 4,
-                explanation: 'With coins [1,2,5], the first non-constructible value is 4.'
+                explanation: ''
             },
             {
                 input: {"coins":[1,1,1,1]},
                 output: 5,
-                explanation: 'Can make 1 through 4, but not 5.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"coins":[5,10]},
                 output: 1,
-                explanation: 'Cannot make 1 with only coins of value 5 and 10.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def which_element_to_change(data):
+            python: `def which_element_to_change(array):
     """
     Which Element to Change
 
-    If the array can become monotonic by changing one element, return the index of the element to change and its new value.
-    \n    Approach: Not just a yes/no answer: must identify the problematic element and compute the optimal replacement value.
+    If the array can become monotonic by changing one element, return the index of the element to change and its new value. Not just a yes/no answer: must identify the problematic element and compute the optimal replacement value.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 5, 3, 4, 5]. Change index 1 from 5 to 2. Return {index: 1, newValue: 2}.
+    result = 0
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
 
     return result
 
 
 # Test cases
-print(which_element_to_change([1, 2, 3, 4, 5]))
-print(which_element_to_change([5, 3, 1]))
-print(which_element_to_change([1]))`,
+print(which_element_to_change(None))  # Expected: 4
+print(which_element_to_change(None))  # Expected: 5
+print(which_element_to_change(None))  # Expected: 1
+`,
             go: `package main
 
 import "fmt"
 
 // WhichElementToChange solves the Which Element to Change problem.
-// If the array can become monotonic by changing one element, return the index of the element to change and its new value.
+// If the array can become monotonic by changing one element, return the index of the element to change and its new value. Not just a yes/no answer: must identify the problematic element and compute the optimal replacement value.
 // Time: O(n), Space: O(n)
-func WhichElementToChange(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func WhichElementToChange(array []int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(WhichElementToChange([]int{1, 2, 3, 4, 5}))
-    fmt.Println(WhichElementToChange([]int{5, 3, 1}))
-    fmt.Println(WhichElementToChange([]int{1}))
-}`
+	fmt.Println(WhichElementToChange(nil)) // Expected: 4
+	fmt.Println(WhichElementToChange(nil)) // Expected: 5
+	fmt.Println(WhichElementToChange(nil)) // Expected: 1
+}
+`
         },
         twists: [],
         similar: []

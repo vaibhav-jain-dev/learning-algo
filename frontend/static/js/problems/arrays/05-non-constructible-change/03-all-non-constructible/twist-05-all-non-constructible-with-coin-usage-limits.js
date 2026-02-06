@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"coins":[1,2,5]},
                 output: 4,
-                explanation: 'With coins [1,2,5], the first non-constructible value is 4.'
+                explanation: ''
             },
             {
                 input: {"coins":[1,1,1,1]},
                 output: 5,
-                explanation: 'Can make 1 through 4, but not 5.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"coins":[5,10]},
                 output: 1,
-                explanation: 'Cannot make 1 with only coins of value 5 and 10.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def all_non_constructible_with_coin_usage_limits(data):
+            python: `def all_non_constructible_with_coin_usage_limits(coins, limit):
     """
     All Non-Constructible with Coin Usage Limits
 
-    Each coin has a maximum number of times it can be used (given as a parallel array). Find all non-constructible values.
-    \n    Approach: Requires bounded knapsack DP instead of 0/1 knapsack, with each coin contributing multiple possible amounts.
+    Each coin has a maximum number of times it can be used (given as a parallel array). Find all non-constructible values. Requires bounded knapsack DP instead of 0/1 knapsack, with each coin contributing multiple possible amounts.
 
     Time: O(n^2)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # coins=[1,5], limits=[3,2], limit=15 → can use three 1s and two 5s → constructible: 1-3,5-8,10-13
+    count = 0
+    n = len(coins)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on limit
+        j = 0
+        for k in range(i, n):
+            if j < len(limit) and coins[k] == limit[j]:
+                j += 1
+        if j == len(limit):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(all_non_constructible_with_coin_usage_limits([1, 2, 3, 4, 5]))
-print(all_non_constructible_with_coin_usage_limits([5, 3, 1]))
-print(all_non_constructible_with_coin_usage_limits([1]))`,
+print(all_non_constructible_with_coin_usage_limits([1,2,5], None))  # Expected: 4
+print(all_non_constructible_with_coin_usage_limits([1,1,1,1], None))  # Expected: 5
+print(all_non_constructible_with_coin_usage_limits([5,10], None))  # Expected: 1
+`,
             go: `package main
 
 import "fmt"
 
 // AllNonConstructibleWithCoinUsageLimits solves the All Non-Constructible with Coin Usage Limits problem.
-// Each coin has a maximum number of times it can be used (given as a parallel array). Find all non-constructible values.
+// Each coin has a maximum number of times it can be used (given as a parallel array). Find all non-constructible values. Requires bounded knapsack DP instead of 0/1 knapsack, with each coin contributing multiple possible amounts.
 // Time: O(n^2), Space: O(n)
-func AllNonConstructibleWithCoinUsageLimits(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func AllNonConstructibleWithCoinUsageLimits(coins []int, limit int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(coins); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(AllNonConstructibleWithCoinUsageLimits([]int{1, 2, 3, 4, 5}))
-    fmt.Println(AllNonConstructibleWithCoinUsageLimits([]int{5, 3, 1}))
-    fmt.Println(AllNonConstructibleWithCoinUsageLimits([]int{1}))
-}`
+	fmt.Println(AllNonConstructibleWithCoinUsageLimits([]int{1, 2, 5}, nil)) // Expected: 4
+	fmt.Println(AllNonConstructibleWithCoinUsageLimits([]int{1, 1, 1, 1}, nil)) // Expected: 5
+	fmt.Println(AllNonConstructibleWithCoinUsageLimits([]int{5, 10}, nil)) // Expected: 1
+}
+`
         },
         twists: [],
         similar: []

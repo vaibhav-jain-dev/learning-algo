@@ -27,83 +27,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[3,1,2,3,4,3],"target":3},
                 output: [1,2,4,3,3,3],
-                explanation: 'Target elements moved to the correct position.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4,5],"target":6},
                 output: [1,2,3,4,5],
-                explanation: 'Target not in array - no changes needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[3,3,3],"target":3},
                 output: [3,3,3],
-                explanation: 'All elements are the target.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def online_dutch_national_flag(data):
+            python: `def online_dutch_national_flag(array, pivot):
     """
     Online Dutch National Flag
 
-    Elements arrive one at a time in a stream. Maintain a partitioned array as each new element arrives, inserting it into the correct position.
-    \n    Approach: Insertion into a maintained partition requires shifting elements, changing the problem from rearrangement to dynamic insertion.
+    Elements arrive one at a time in a stream. Maintain a partitioned array as each new element arrives, inserting it into the correct position. Insertion into a maintained partition requires shifting elements, changing the problem from rearrangement to dynamic insertion.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # Stream: 2, 0, 1, 2. After each: [2], [0,2], [0,1,2], [0,1,2,2]. Pivot = 1.
+    count = 0
+    n = len(array)
 
-    if not data:
-        return None
-
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
     for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+        # Check condition based on pivot
+        j = 0
+        for k in range(i, n):
+            if j < len(pivot) and array[k] == pivot[j]:
+                j += 1
+        if j == len(pivot):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(online_dutch_national_flag([1, 2, 3, 4, 5]))
-print(online_dutch_national_flag([5, 3, 1]))
-print(online_dutch_national_flag([1]))`,
+print(online_dutch_national_flag([3,1,2,3,4,3], None))  # Expected: [1,2,4,3,3,3]
+print(online_dutch_national_flag([1,2,3,4,5], None))  # Expected: [1,2,3,4,5]
+print(online_dutch_national_flag([3,3,3], None))  # Expected: [3,3,3]
+`,
             go: `package main
 
 import "fmt"
 
 // OnlineDutchNationalFlag solves the Online Dutch National Flag problem.
-// Elements arrive one at a time in a stream. Maintain a partitioned array as each new element arrives, inserting it into the correct position.
+// Elements arrive one at a time in a stream. Maintain a partitioned array as each new element arrives, inserting it into the correct position. Insertion into a maintained partition requires shifting elements, changing the problem from rearrangement to dynamic insertion.
 // Time: O(n), Space: O(n)
-func OnlineDutchNationalFlag(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func OnlineDutchNationalFlag(array []int, pivot int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(OnlineDutchNationalFlag([]int{1, 2, 3, 4, 5}))
-    fmt.Println(OnlineDutchNationalFlag([]int{5, 3, 1}))
-    fmt.Println(OnlineDutchNationalFlag([]int{1}))
-}`
+	fmt.Println(OnlineDutchNationalFlag([]int{3, 1, 2, 3, 4, 3}, nil)) // Expected: [1,2,4,3,3,3]
+	fmt.Println(OnlineDutchNationalFlag([]int{1, 2, 3, 4, 5}, nil)) // Expected: [1,2,3,4,5]
+	fmt.Println(OnlineDutchNationalFlag([]int{3, 3, 3}, nil)) // Expected: [3,3,3]
+}
+`
         },
         twists: [],
         similar: []

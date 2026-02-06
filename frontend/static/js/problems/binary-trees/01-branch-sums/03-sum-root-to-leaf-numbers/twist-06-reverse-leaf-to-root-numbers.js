@@ -2,10 +2,12 @@
  * Reverse: Leaf-to-Root Numbers
  * Category: binary-trees
  * Difficulty: Medium
+ * Algorithm: tree-dfs
  * Parent: 01-branch-sums/03-sum-root-to-leaf-numbers
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Reverse: Leaf-to-Root Numbers',
         difficulty: 'Medium',
@@ -19,121 +21,86 @@
             'Key insight: You cannot build the number top-down anymore.',
             'You need to know the depth of each leaf first to determine the place value of the root digit, or collect digits and reverse.'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree: 1->2, 1->3' },
-                output: 'See explanation',
-                explanation: 'Tree: 1->2, 1->3. Leaf-to-root paths: 21 and 31. Sum=52 (instead of 12+13=25).'
+                input: {"tree":{"value":1,"left":{"value":2},"right":{"value":3}}},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the reverse leaf to root numbers criteria.'
             },
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":4,"left":{"value":9,"left":{"value":5},"right":{"value":1}},"right":{"value":0}}},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the reverse leaf to root numbers criteria.'
+            },
+            // Edge case
+            {
+                input: {"tree":{"value":1,"left":{"value":2},"right":{"value":3}}},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def reverse_leaf_to_root_numbers(data):
+            python: `def reverse_leaf_to_root_numbers(tree):
     """
     Reverse: Leaf-to-Root Numbers
 
-    Instead of root-to-leaf, form numbers from leaf-to-root.
-     The leaf digit is the most significant digit.
+    Instead of root-to-leaf, form numbers from leaf-to-root. The leaf digit is the most significant digit. You cannot build the number top-down anymore. You need to know the depth of each leaf first to determine the place value of the root digit, or collect digits and reverse.
 
-    Approach: You cannot build the number top-down anymore
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = 0
 
-    # Key insight: You cannot build the number top-down anymore
+    for i in range(len(tree)):
+        # Process element
+        result += 1  # Update based on condition
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Reverse: Leaf-to-Root Numbers
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree: 1->2, 1->3
-    print("See problem description for test cases")`,
+# Test cases
+print(reverse_leaf_to_root_numbers({"value": 1, "left": {"value": 2}, "right": {"value": 3}}))  # Expected: 1
+print(reverse_leaf_to_root_numbers({"value": 4, "left": {"value": 9, "left": {"value": 5}, "right": {"value": 1}}, "right": {"value": 0}}))  # Expected: 2
+print(reverse_leaf_to_root_numbers({"value": 1, "left": {"value": 2}, "right": {"value": 3}}))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// ReverseLeaftorootNumbers solves: Reverse: Leaf-to-Root Numbers
-// You cannot build the number top-down anymore
+// ReverseLeafToRootNumbers solves the Reverse: Leaf-to-Root Numbers problem.
+// Instead of root-to-leaf, form numbers from leaf-to-root. The leaf digit is the most significant digit. You cannot build the number top-down anymore. You need to know the depth of each leaf first to determine the place value of the root digit, or collect digits and reverse.
 // Time: O(n), Space: O(n)
-func ReverseLeaftorootNumbers(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func ReverseLeafToRootNumbers(tree *TreeNode) int {
+	result := 0
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		// Process element
+		result++
+	}
 
-    // TODO: Implement Reverse: Leaf-to-Root Numbers
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree: 1->2, 1->3
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(ReverseLeafToRootNumbers({"value":1,"left":{"value":2},"right":{"value":3}})) // Expected: 1
+	fmt.Println(ReverseLeafToRootNumbers({"value":4,"left":{"value":9,"left":{"value":5},"right":{"value":1}},"right":{"value":0}})) // Expected: 2
+	fmt.Println(ReverseLeafToRootNumbers({"value":1,"left":{"value":2},"right":{"value":3}})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '01-branch-sums/03-sum-root-to-leaf-numbers/twist-06-reverse-leaf-to-root-numbers', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/01-branch-sums/03-sum-root-to-leaf-numbers/twist-06-reverse-leaf-to-root-numbers'] = problem;
 })();

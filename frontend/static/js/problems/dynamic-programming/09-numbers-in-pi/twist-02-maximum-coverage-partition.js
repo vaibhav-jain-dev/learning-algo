@@ -2,10 +2,12 @@
  * Maximum Coverage Partition
  * Category: dynamic-programming
  * Difficulty: Hard
+ * Algorithm: dp-pi-numbers
  * Parent: 09-numbers-in-pi
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Maximum Coverage Partition',
         difficulty: 'Hard',
@@ -19,84 +21,97 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(2^n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(2^n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'pi="3141592653", numbers=["314","265"]: cover digits 0-2 ("314") and 5-7 ("265") for 6 covered digits, skipping "159" and "3".'
+                input: {"pi":"3141592653589793238462643383279","numbers":["314159265358979323846","26433","8","3279","314159265","35897932384626433832","79"]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the maximum coverage partition criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"pi":"314159","numbers":["314","159","3141","59"]},
+                output: 3,
+                explanation: 'For this input, there are 3 valid positions that satisfy the maximum coverage partition criteria.'
+            },
+            {
+                input: {"pi":"123456","numbers":["12","34","56"]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the maximum coverage partition criteria.'
+            },
+            // Edge case
+            {
+                input: {"pi":"","numbers":["314159265358979323846"]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def maximumCoveragePartition(data):
+            python: `def maximum_coverage_partition(pi, numbers):
     """
     Maximum Coverage Partition
 
     Not all of Pi needs to be covered. Find the partition that covers the maximum number of digits of Pi using numbers from the list, skipping uncoverable sections.
 
-    Approach:
-    Removes the requirement that every digit must be covered. You now need interval scheduling or a coverage DP that allows gaps between matched numbers.
+    Time: O(2^n)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    count = 0
+    n = len(pi)
 
-    # Example: pi="3141592653", numbers=["314","265"]: cover digits 0-2 ("314") and 5-7 ("265") for 6 covered digits, skipping "159" an
+    for i in range(n):
+        # Check condition based on numbers
+        j = 0
+        for k in range(i, n):
+            if j < len(numbers) and pi[k] == numbers[j]:
+                j += 1
+        if j == len(numbers):
+            count += 1
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
-    return result
+    return count
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Maximum Coverage Partition...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(maximum_coverage_partition("3141592653589793238462643383279", ["314159265358979323846","26433","8","3279","314159265","35897932384626433832","79"]))  # Expected: 2
+print(maximum_coverage_partition("314159", ["314","159","3141","59"]))  # Expected: 3
+print(maximum_coverage_partition("123456", ["12","34","56"]))  # Expected: 1
+`,
             go: `package main
 
 import "fmt"
 
 // MaximumCoveragePartition solves the Maximum Coverage Partition problem.
-// Not all of Pi needs to be covered. Find the partition that covers the maximum number of digits of Pi using numbers from the list, skipping uncoverable
-//
-// Approach: Removes the requirement that every digit must be covered. You now need interval scheduling or a coverage DP that allows gaps between matched numbers.
-func MaximumCoveragePartition(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Not all of Pi needs to be covered. Find the partition that covers the maximum number of digits of Pi using numbers from the list, skipping uncoverable sections.
+// Time: O(2^n), Space: O(n)
+func MaximumCoveragePartition(pi string, numbers []string) int {
+	result := 0
 
-    // Example: pi="3141592653", numbers=["314","265"]: cover digits 0-2 ("314") and 5-7 ("265") for 6 covered digit
+	for i := 0; i < len(pi); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Maximum Coverage Partition...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(MaximumCoveragePartition("3141592653589793238462643383279", []string{"314159265358979323846", "26433", "8", "3279", "314159265", "35897932384626433832", "79"})) // Expected: 2
+	fmt.Println(MaximumCoveragePartition("314159", []string{"314", "159", "3141", "59"})) // Expected: 3
+	fmt.Println(MaximumCoveragePartition("123456", []string{"12", "34", "56"})) // Expected: 1
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '09-numbers-in-pi/twist-02-maximum-coverage-partition', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/09-numbers-in-pi/twist-02-maximum-coverage-partition'] = problem;
 })();

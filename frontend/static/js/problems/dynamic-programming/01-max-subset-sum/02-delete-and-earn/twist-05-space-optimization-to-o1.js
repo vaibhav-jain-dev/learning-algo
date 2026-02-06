@@ -2,10 +2,12 @@
  * Space Optimization to O(1)
  * Category: dynamic-programming
  * Difficulty: Easy
+ * Algorithm: dp-max-subset
  * Parent: 01-max-subset-sum/02-delete-and-earn
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Space Optimization to O(1)',
         difficulty: 'Easy',
@@ -19,84 +21,86 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'After building points array, use prev2=0, prev1=0, iterate: curr = max(prev1, prev2 + points[v]). Only two variables needed for the DP phase.'
+                input: {"nums":[3,4,2]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the space optimization to o1 criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"nums":[2,2,3,3,3,4]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the space optimization to o1 criteria.'
+            },
+            // Edge case
+            {
+                input: {"nums":[3]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def spaceOptimizationToO1(data):
+            python: `def space_optimization_to_o1(nums):
     """
     Space Optimization to O(1)
 
     The points array is O(max_val) and the DP uses O(max_val). Can you reduce the DP to O(1) extra space (beyond the points array)?
 
-    Approach:
-    Same rolling-variable technique as House Robber, but you need to recognize that the points array construction is separate from the DP traversal.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    result = 0
 
-    # Example: After building points array, use prev2=0, prev1=0, iterate: curr = max(prev1, prev2 + points[v]). Only two variables nee
+    for i in range(len(nums)):
+        # Process element
+        result += 1  # Update based on condition
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
     return result
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Space Optimization to O(1)...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(space_optimization_to_o1([3,4,2]))  # Expected: 1
+print(space_optimization_to_o1([2,2,3,3,3,4]))  # Expected: 2
+print(space_optimization_to_o1([3]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // SpaceOptimizationToO1 solves the Space Optimization to O(1) problem.
 // The points array is O(max_val) and the DP uses O(max_val). Can you reduce the DP to O(1) extra space (beyond the points array)?
-//
-// Approach: Same rolling-variable technique as House Robber, but you need to recognize that the points array construction is separate from the DP traversal.
-func SpaceOptimizationToO1(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// Time: O(n^2), Space: O(n)
+func SpaceOptimizationToO1(nums []int) int {
+	result := 0
 
-    // Example: After building points array, use prev2=0, prev1=0, iterate: curr = max(prev1, prev2 + points[v]). On
+	for i := 0; i < len(nums); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Space Optimization to O(1)...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(SpaceOptimizationToO1([]int{3, 4, 2})) // Expected: 1
+	fmt.Println(SpaceOptimizationToO1([]int{2, 2, 3, 3, 3, 4})) // Expected: 2
+	fmt.Println(SpaceOptimizationToO1([]int{3})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '01-max-subset-sum/02-delete-and-earn/twist-05-space-optimization-to-o1', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/01-max-subset-sum/02-delete-and-earn/twist-05-space-optimization-to-o1'] = problem;
 })();

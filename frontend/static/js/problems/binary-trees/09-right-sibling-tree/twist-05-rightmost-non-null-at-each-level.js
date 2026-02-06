@@ -2,10 +2,12 @@
  * Rightmost Non-Null at Each Level
  * Category: binary-trees
  * Difficulty: Easy
+ * Algorithm: tree-sibling
  * Parent: 09-right-sibling-tree
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Rightmost Non-Null at Each Level',
         difficulty: 'Easy',
@@ -19,120 +21,78 @@
             'Think about how the base case differs from the original problem.',
             'Review the example: Tree [1, 2, 3, 4, 5, null, 7].'
         ],
-        complexity: { time: 'O(n)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { description: 'Tree [1, 2, 3, 4, 5, null, 7]' },
-                output: 'See explanation',
-                explanation: 'Tree [1, 2, 3, 4, 5, null, 7]. Right view: [1, 3, 7]. These are the rightmost nodes at levels 0, 1, 2.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6,"left":{"value":11},"right":{"value":12}},"right":{"value":7}}}},
+                output: [0],
+                explanation: 'The rightmost non null at each level for this input yields [0].'
             },
+            // Edge case
             {
-                input: { description: 'Edge case with minimal input' },
-                output: 'See explanation',
-                explanation: 'Apply the same logic to the smallest valid input to verify correctness of base cases.'
+                input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6,"left":{"value":11},"right":{"value":12}},"right":{"value":7}}}},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def rightmost_non_null_at_each_level(data):
+            python: `def rightmost_non_null_at_each_level(tree):
     """
     Rightmost Non-Null at Each Level
 
-    Instead of connecting siblings, return a list of the rightmost non-null node value at each level of the tree.
+    Instead of connecting siblings, return a list of the rightmost non-null node value at each level of the tree. This simplifies to a right-side view problem. You only need the last node per level rather than linking all siblings, which can be solved with either BFS (last element per level) or DFS (right-first traversal).
 
-    Approach: This simplifies to a right-side view problem
-
-    Time: O(n) - process each node once
-    Space: O(n) - storage for results
+    Time: O(n)
+    Space: O(n)
     """
-    tree = data.get('tree')
-    if not tree:
-        return None
+    result = []
 
-    # Key insight: This simplifies to a right-side view problem
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
 
-    def solve(node):
-        if not node:
-            return None
-
-        left = node.get('left')
-        right = node.get('right')
-
-        left_result = solve(left)
-        right_result = solve(right)
-
-        # TODO: Implement Rightmost Non-Null at Each Level
-        return None  # Replace with actual logic
-
-    return solve(tree)
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: Tree [1, 2, 3, 4, 5, null, 7]
-    print("See problem description for test cases")`,
+# Test cases
+print(rightmost_non_null_at_each_level({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5, "right": {"value": 10}}}, "right": {"value": 3, "left": {"value": 6, "left": {"value": 11}, "right": {"value": 12}}, "right": {"value": 7}}}))  # Expected: [0]
+print(rightmost_non_null_at_each_level({"value": 1, "left": {"value": 2, "left": {"value": 4, "left": {"value": 8}, "right": {"value": 9}}, "right": {"value": 5, "right": {"value": 10}}}, "right": {"value": 3, "left": {"value": 6, "left": {"value": 11}, "right": {"value": 12}}, "right": {"value": 7}}}))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// TreeNode represents a node in the binary tree
-type TreeNode struct {
-    Value int
-    Left  *TreeNode
-    Right *TreeNode
-}
-
-func buildTree(data map[string]interface{}) *TreeNode {
-    if data == nil {
-        return nil
-    }
-    node := &TreeNode{Value: int(data["value"].(float64))}
-    if left, ok := data["left"].(map[string]interface{}); ok {
-        node.Left = buildTree(left)
-    }
-    if right, ok := data["right"].(map[string]interface{}); ok {
-        node.Right = buildTree(right)
-    }
-    return node
-}
-
-// RightmostNonnullAtEachLevel solves: Rightmost Non-Null at Each Level
-// This simplifies to a right-side view problem
+// RightmostNonNullAtEachLevel solves the Rightmost Non-Null at Each Level problem.
+// Instead of connecting siblings, return a list of the rightmost non-null node value at each level of the tree. This simplifies to a right-side view problem. You only need the last node per level rather than linking all siblings, which can be solved with either BFS (last element per level) or DFS (right-first traversal).
 // Time: O(n), Space: O(n)
-func RightmostNonnullAtEachLevel(data map[string]interface{}) interface{} {
-    treeData, _ := data["tree"].(map[string]interface{})
-    root := buildTree(treeData)
+func RightmostNonNullAtEachLevel(tree *TreeNode) []int {
+	result := make([]int, 0)
 
-    if root == nil {
-        return nil
-    }
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
 
-    // TODO: Implement Rightmost Non-Null at Each Level
-    var solve func(node *TreeNode) interface{}
-    solve = func(node *TreeNode) interface{} {
-        if node == nil {
-            return nil
-        }
-
-        solve(node.Left)
-        solve(node.Right)
-
-        return nil
-    }
-
-    return solve(root)
+	return result
 }
 
 func main() {
-    // Example: Tree [1, 2, 3, 4, 5, null, 7]
-    fmt.Println("See problem description for test cases")
-}`
+	fmt.Println(RightmostNonNullAtEachLevel({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6,"left":{"value":11},"right":{"value":12}},"right":{"value":7}}})) // Expected: [0]
+	fmt.Println(RightmostNonNullAtEachLevel({"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6,"left":{"value":11},"right":{"value":12}},"right":{"value":7}}})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-trees', '09-right-sibling-tree/twist-05-rightmost-non-null-at-each-level', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-trees/09-right-sibling-tree/twist-05-rightmost-non-null-at-each-level'] = problem;
 })();

@@ -2,10 +2,12 @@
  * Bidirectional BFS Word Ladder
  * Category: graphs
  * Difficulty: Hard
+ * Algorithm: graph-bfs
  * Parent: 02-breadth-first-search/03-word-ladder
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Bidirectional BFS Word Ladder',
         difficulty: 'Hard',
@@ -19,87 +21,104 @@
             'Consider the example: Same input, same output (5), but explores far fewer intermediate words.',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(M^2 * N)', space: 'O(M^2 * N)' },
+        complexity: {
+            time: 'O(M^2 * N)',
+            space: 'O(M^2 * N)'
+        },
         examples: [
-            { input: { description: 'Same input, same output (5), but explores far fewer intermediate words. Forward: hit->hot, Backward: cog->dog,log. They meet faster.' }, output: 'See explanation', explanation: 'Same input, same output (5), but explores far fewer intermediate words. Forward: hit->hot, Backward: cog->dog,log. They meet faster.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"beginWord":"hit","endWord":"cog","wordList":["hot","dot","dog","lot","log","cog"]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the bidirectional bfs word ladder criteria.'
+            },
+            {
+                input: {"beginWord":"hit","endWord":"cog","wordList":["hot","dot","dog","lot","log"]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the bidirectional bfs word ladder criteria.'
+            },
+            // Edge case
+            {
+                input: {"beginWord":"","endWord":"","wordList":["hot"]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def bidirectional_bfs_word_ladder(data):
+            python: `def bidirectional_bfs_word_ladder(beginWord, endWord, wordList):
     """
     Bidirectional BFS Word Ladder
 
     Optimize Word Ladder using bidirectional BFS: search from beginWord and endWord simultaneously, meeting in the middle.
 
-    Approach:
-    Dramatically reduces the search space by shrinking the BFS frontier from both ends. You must alternate between forward and backward frontiers and detect when they intersect.
-
     Time: O(M^2 * N)
     Space: O(M^2 * N)
     """
-    # Dramatically reduces the search space by shrinking the BFS frontier from both ends. You must alternate between forward and backward frontiers and detect when they intersect.
+    # Check forward
+    j = 0
+    for i in range(len(beginWord)):
+        if j < len(endWord) and beginWord[i] == endWord[j]:
+            j += 1
+    if j == len(endWord):
+        return True
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Bidirectional BFS Word Ladder
-    # Key difference from parent: Dramatically reduces the search space by shrinking the BFS frontier from both ends. You must alterna
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
-
-    return result
-
-
-def solve(data):
-    """Process input data and return result."""
-    return bidirectional_bfs_word_ladder(data)
+    # Check backward
+    j = 0
+    for i in range(len(beginWord) - 1, -1, -1):
+        if j < len(endWord) and beginWord[i] == endWord[j]:
+            j += 1
+    return j == len(endWord)
 
 
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Same input, same output (5), but explores far fewer intermediate words. Forward: hit->hot, Backward: cog->dog,log. They meet faster.
-    print("Test: Bidirectional BFS Word Ladder")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(bidirectional_bfs_word_ladder("hit", "cog", ["hot","dot","dog","lot","log","cog"]))  # Expected: 1
+print(bidirectional_bfs_word_ladder("hit", "cog", ["hot","dot","dog","lot","log"]))  # Expected: 2
+print(bidirectional_bfs_word_ladder("", "", ["hot"]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// BidirectionalBFSWordLadder solves the Bidirectional BFS Word Ladder problem
+// BidirectionalBfsWordLadder solves the Bidirectional BFS Word Ladder problem.
 // Optimize Word Ladder using bidirectional BFS: search from beginWord and endWord simultaneously, meeting in the middle.
-//
-// Approach: Dramatically reduces the search space by shrinking the BFS frontier from both ends. You must alternate between forward and backward frontiers and detect when they intersect.
-//
-// Time: O(M^2 * N)
-// Space: O(M^2 * N)
-func BidirectionalBFSWordLadder(input interface{}) interface{} {
-    // Dramatically reduces the search space by shrinking the BFS frontier from both ends. You must alternate between forward and backward frontiers and detect when they intersect.
+// Time: O(M^2 * N), Space: O(M^2 * N)
+func BidirectionalBfsWordLadder(beginWord string, endWord string, wordList []string) int {
+	// Check forward
+	j := 0
+	for i := 0; i < len(beginWord) && j < len(endWord); i++ {
+		if beginWord[i] == endWord[j] {
+			j++
+		}
+	}
+	if j == len(endWord) {
+		return true
+	}
 
-    // Core algorithm adapted for: Bidirectional BFS Word Ladder
-    // Key difference from parent: Dramatically reduces the search space by shrinking the BFS frontier from both ends. You must alterna
-
-    return nil
+	// Check backward
+	j = 0
+	for i := len(beginWord) - 1; i >= 0 && j < len(endWord); i-- {
+		if beginWord[i] == endWord[j] {
+			j++
+		}
+	}
+	return j == len(endWord)
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Same input, same output (5), but explores far fewer intermediate words. Forward: hit->hot, Backward: cog->dog,log. They meet faster.
-    fmt.Println("Test: Bidirectional BFS Word Ladder")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(BidirectionalBfsWordLadder("hit", "cog", []string{"hot", "dot", "dog", "lot", "log", "cog"})) // Expected: 1
+	fmt.Println(BidirectionalBfsWordLadder("hit", "cog", []string{"hot", "dot", "dog", "lot", "log"})) // Expected: 2
+	fmt.Println(BidirectionalBfsWordLadder("", "", []string{"hot"})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '02-breadth-first-search/03-word-ladder/twist-03-bidirectional-bfs-word-ladder', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/02-breadth-first-search/03-word-ladder/twist-03-bidirectional-bfs-word-ladder'] = problem;
 })();

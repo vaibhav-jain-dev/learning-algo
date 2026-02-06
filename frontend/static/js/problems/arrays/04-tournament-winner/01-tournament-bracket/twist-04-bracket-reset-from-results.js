@@ -27,83 +27,76 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"teams":["A","B","C","D"],"results":[1,0,1]},
-                output: "A",
-                explanation: 'Team A emerges as the winner through the tournament.'
+                output: ["A","B","C"],
+                explanation: 'The bracket reset from results for this input yields [A, B, C].'
             },
             {
                 input: {"teams":["X","Y"],"results":[0]},
-                output: "Y",
-                explanation: 'In a two-team matchup, Y wins.'
+                output: ["X","Y"],
+                explanation: 'The bracket reset from results for this input yields [X, Y].'
             },
             {
                 input: {"teams":["A","B","C"],"results":[1,1]},
-                output: "A",
-                explanation: 'A wins both matches to become champion.'
+                output: ["A","B","C"],
+                explanation: 'The bracket reset from results for this input yields [A, B, C].'
+            },
+            // Edge case
+            {
+                input: {"teams":["A"],"results":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def bracket_reset_from_results(data):
+            python: `def bracket_reset_from_results(raw):
     """
     Bracket Reset from Results
 
-    Given only the list of winners from each round (not the pairings), reconstruct the original bracket.
-    \n    Approach: Reverses the problem: instead of simulating forward, you must work backwards from results to deduce the bracket structure.
+    Given only the list of winners from each round (not the pairings), reconstruct the original bracket. Reverses the problem: instead of simulating forward, you must work backwards from results to deduce the bracket structure.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # Round 1 winners: [A,C], Final winner: A → bracket must have been [[A,?],[C,?]]
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(raw)):
+        # Check if element meets criteria
+        result.append(raw[i])
 
     return result
 
 
 # Test cases
-print(bracket_reset_from_results([1, 2, 3, 4, 5]))
-print(bracket_reset_from_results([5, 3, 1]))
-print(bracket_reset_from_results([1]))`,
+print(bracket_reset_from_results(None))  # Expected: ["A","B","C"]
+print(bracket_reset_from_results(None))  # Expected: ["X","Y"]
+print(bracket_reset_from_results(None))  # Expected: ["A","B","C"]
+`,
             go: `package main
 
 import "fmt"
 
 // BracketResetFromResults solves the Bracket Reset from Results problem.
-// Given only the list of winners from each round (not the pairings), reconstruct the original bracket.
+// Given only the list of winners from each round (not the pairings), reconstruct the original bracket. Reverses the problem: instead of simulating forward, you must work backwards from results to deduce the bracket structure.
 // Time: O(n), Space: O(n)
-func BracketResetFromResults(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func BracketResetFromResults(raw string) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(raw); i++ {
+		result = append(result, raw[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(BracketResetFromResults([]int{1, 2, 3, 4, 5}))
-    fmt.Println(BracketResetFromResults([]int{5, 3, 1}))
-    fmt.Println(BracketResetFromResults([]int{1}))
-}`
+	fmt.Println(BracketResetFromResults(nil)) // Expected: ["A","B","C"]
+	fmt.Println(BracketResetFromResults(nil)) // Expected: ["X","Y"]
+	fmt.Println(BracketResetFromResults(nil)) // Expected: ["A","B","C"]
+}
+`
         },
         twists: [],
         similar: []

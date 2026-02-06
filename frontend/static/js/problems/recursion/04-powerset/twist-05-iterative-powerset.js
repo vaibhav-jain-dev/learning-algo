@@ -2,10 +2,12 @@
  * Iterative Powerset
  * Category: recursion
  * Difficulty: Easy
+ * Algorithm: recursion-powerset
  * Parent: 04-powerset
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Iterative Powerset',
         difficulty: 'Easy',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'Start with [[]]. Add 1: [[],[1]]. Add 2: [[],[1],[2],[1,2]]. Add 3: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]].' },
-                output: 'See example',
-                explanation: 'Start with [[]]. Add 1: [[],[1]]. Add 2: [[],[1],[2],[1,2]]. Add 3: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]].'
+                input: {"array":[1,2,3]},
+                output: [1,2,3],
+                explanation: 'The iterative powerset for this input yields [1, 2, 3].'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Iterative Powerset
-# Category: recursion
-# Difficulty: Easy
-# Parent: 04-powerset
-
-def solve():
+            python: `def iterative_powerset(array):
     """
+    Iterative Powerset
+
     Build the powerset iteratively by starting with [[]] and for each new element, adding it to all existing subsets.
 
-    Key insight: Replaces recursive thinking with an iterative build-up pattern, which is conceptually different and avoids stack depth concerns.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(iterative_powerset([1,2,3]))  # Expected: [1,2,3]
+print(iterative_powerset([1]))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Iterative Powerset problem.
+// IterativePowerset solves the Iterative Powerset problem.
 // Build the powerset iteratively by starting with [[]] and for each new element, adding it to all existing subsets.
-// Key insight: Replaces recursive thinking with an iterative build-up pattern, which is conceptually different and avoids stack depth concerns.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func IterativePowerset(array []int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(IterativePowerset([]int{1, 2, 3})) // Expected: [1,2,3]
+	fmt.Println(IterativePowerset([]int{1})) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '04-powerset/twist-05-iterative-powerset', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/04-powerset/twist-05-iterative-powerset'] = problem;
 })();

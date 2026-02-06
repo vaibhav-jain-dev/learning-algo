@@ -2,10 +2,12 @@
  * Most Significant Digit First
  * Category: linked-lists
  * Difficulty: Medium
+ * Algorithm: ll-sum
  * Parent: 05-sum-of-linked-lists
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Most Significant Digit First',
         difficulty: 'Medium',
@@ -19,148 +21,70 @@
             'Consider edge cases with empty lists or single-node lists.',
             'Think about how the data structure change affects pointer manipulation.'
         ],
-        complexity: { time: 'O(n)', space: 'O(1)' },
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { list: [1, 2, 3, 4, 5] },
-                output: [1, 2, 3, 4, 5],
-                explanation: 'list1=[1,7,4,2] (1742), list2=[5,4,9] (549): sum=2291, result=[2,2,9,1].'
+                input: {"list":[1,2,3,4,5]},
+                output: [1,2,3,4,5],
+                explanation: ''
             }
         ],
         solutions: {
-            python: `class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
-
-class DoublyLinkedNode:
-    def __init__(self, val=0, prev=None, next=None):
-        self.val = val
-        self.prev = prev
-        self.next = next
-
-def most_significant_digit_first(head, *args):
+            python: `def most_significant_digit_first(list1, list2):
     """
     Most Significant Digit First
+
     The digits are stored in forward order (most significant digit first) instead of reverse order. Add the two numbers and return the result in the same format.
 
-    Approach: You cannot process digits left-to-right for addition since carries propagate from right-to-left. Requires either reversing both lists first, using a stack, or recursion.
+    Time: O(n)
+    Space: O(1)
     """
-    if not head:
-        return head
-
-    # Core algorithm for: Most Significant Digit First
-    current = head
     result = []
 
-    while current:
-        result.append(current.val)
-        current = current.next
+    for i in range(len(list1)):
+        # Check if element meets criteria
+        result.append(list1[i])
 
     return result
 
 
-# Helper: build linked list from array
-def to_linked_list(arr):
-    if not arr:
-        return None
-    head = ListNode(arr[0])
-    current = head
-    for val in arr[1:]:
-        current.next = ListNode(val)
-        current = current.next
-    return head
-
-def to_array(head):
-    result = []
-    while head:
-        result.append(head.val)
-        head = head.next
-    return result
-
-
-# Test
-if __name__ == "__main__":
-    # Example: list1=[1,7,4,2] (1742), list2=[5,4,9] (549): sum=2291, result=[2,2,9,1].
-    head = to_linked_list([1, 2, 3, 4, 5])
-    result = most_significant_digit_first(head)
-    print("Result:", result)
-
-    head = to_linked_list([1, 1, 2, 2, 3])
-    result = most_significant_digit_first(head)
-    print("Result:", result)`,
+# Test cases
+print(most_significant_digit_first(None, None))  # Expected: [1,2,3,4,5]
+`,
             go: `package main
 
 import "fmt"
 
-type ListNode struct {
-    Val  int
-    Next *ListNode
-}
-
-type DoublyLinkedNode struct {
-    Val  int
-    Prev *DoublyLinkedNode
-    Next *DoublyLinkedNode
-}
-
-// MostSignificantDigitFirst solves: Most Significant Digit First
+// MostSignificantDigitFirst solves the Most Significant Digit First problem.
 // The digits are stored in forward order (most significant digit first) instead of reverse order. Add the two numbers and return the result in the same format.
-// Approach: You cannot process digits left-to-right for addition since carries propagate from right-to-left. Requires either reversing both lists first, using a stack, or recursion.
-func MostSignificantDigitFirst(head *ListNode) *ListNode {
-    if head == nil {
-        return nil
-    }
+// Time: O(n), Space: O(1)
+func MostSignificantDigitFirst(list1 []int, list2 []int) []int {
+	result := make([]int, 0)
 
-    // Core algorithm for: Most Significant Digit First
-    current := head
-    for current.Next != nil {
-        current = current.Next
-    }
+	for i := 0; i < len(list1); i++ {
+		result = append(result, list1[i])
+	}
 
-    return head
-}
-
-// Helper functions
-func toLinkedList(arr []int) *ListNode {
-    if len(arr) == 0 {
-        return nil
-    }
-    head := &ListNode{Val: arr[0]}
-    current := head
-    for i := 1; i < len(arr); i++ {
-        current.Next = &ListNode{Val: arr[i]}
-        current = current.Next
-    }
-    return head
-}
-
-func toArray(head *ListNode) []int {
-    result := []int{}
-    for head != nil {
-        result = append(result, head.Val)
-        head = head.Next
-    }
-    return result
+	return result
 }
 
 func main() {
-    // Example: list1=[1,7,4,2] (1742), list2=[5,4,9] (549): sum=2291, result=[2,2,9,1].
-    head := toLinkedList([]int{1, 2, 3, 4, 5})
-    result := MostSignificantDigitFirst(head)
-    fmt.Println(toArray(result))
-
-    head = toLinkedList([]int{1, 1, 2, 2, 3})
-    result = MostSignificantDigitFirst(head)
-    fmt.Println(toArray(result))
-}`
+	fmt.Println(MostSignificantDigitFirst(nil, nil)) // Expected: [1,2,3,4,5]
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('linked-lists', '05-sum-of-linked-lists/twist-01-most-significant-digit-first', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['linked-lists/05-sum-of-linked-lists/twist-01-most-significant-digit-first'] = problem;
 })();

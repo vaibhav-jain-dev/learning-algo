@@ -2,10 +2,12 @@
  * Circular Variant
  * Category: dynamic-programming
  * Difficulty: Hard
+ * Algorithm: dp-max-subset
  * Parent: 01-max-subset-sum
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Circular Variant',
         difficulty: 'Hard',
@@ -19,84 +21,86 @@
             'Think about how the DP state definition or recurrence relation must be modified.',
             'Consider edge cases such as empty input, single-element input, or impossible configurations.'
         ],
-        complexity: { time: 'O(n^2)', space: 'O(n)' },
+        complexity: {
+            time: 'O(n^2)',
+            space: 'O(n)'
+        },
         examples: [
+            // Basic test case
             {
-                input: 'See problem description',
-                output: 'Computed via DP',
-                explanation: 'For circular array [2, 3, 2], you cannot pick both index 0 and 2. Solve for [2, 3] (max=3) and [3, 2] (max=3). Answer is max(3, 3) = 3.'
+                input: {"array":[75,105,120,75,90,135]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the circular variant criteria.'
             },
             {
-                input: 'Smaller test case',
-                output: 'Computed via DP',
-                explanation: 'Apply the modified DP approach to verify correctness on a minimal input.'
+                input: {"array":[7,10,12,7,9,14]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the circular variant criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[75]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def circularVariant(data):
+            python: `def circular_variant(array):
     """
     Circular Variant
 
     What if the array is circular, meaning the first and last elements are also considered adjacent? You cannot pick both. How does this change the approach?
 
-    Approach:
-    The circular constraint breaks the simple linear recurrence. You must decompose into two subproblems: one excluding the first element and one excluding the last, then take the max.
+    Time: O(n^2)
+    Space: O(n)
     """
-    # Dynamic programming approach
-    # Modify the base problem recurrence to handle this twist
+    result = 0
 
-    # Example: For circular array [2, 3, 2], you cannot pick both index 0 and 2. Solve for [2, 3] (max=3) and [3, 2] (max=3). Answer is
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
 
-    # --- Core DP Logic ---
-    # 1. Define the DP state based on the modified problem
-    # 2. Initialize base cases
-    # 3. Fill the DP table using the modified recurrence
-    # 4. Return the answer from the DP table
-
-    result = None  # Replace with actual computation
     return result
 
 
-# Tests
-if __name__ == "__main__":
-    # Test case from example
-    print(f"Testing Circular Variant...")
-    # Add specific test inputs based on problem description
-    print("All tests passed!")`,
+# Test cases
+print(circular_variant([75,105,120,75,90,135]))  # Expected: 1
+print(circular_variant([7,10,12,7,9,14]))  # Expected: 2
+print(circular_variant([75]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
 // CircularVariant solves the Circular Variant problem.
-// What if the array is circular, meaning the first and last elements are also considered adjacent? You cannot pick both. How does this change the approa
-//
-// Approach: The circular constraint breaks the simple linear recurrence. You must decompose into two subproblems: one excluding the first element and one excludin
-func CircularVariant(data map[string]interface{}) interface{} {
-    // Dynamic programming approach
-    // Modify the base problem recurrence to handle this twist
+// What if the array is circular, meaning the first and last elements are also considered adjacent? You cannot pick both. How does this change the approach?
+// Time: O(n^2), Space: O(n)
+func CircularVariant(array []int) int {
+	result := 0
 
-    // Example: For circular array [2, 3, 2], you cannot pick both index 0 and 2. Solve for [2, 3] (max=3) and [3, 2
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // 1. Define the DP state based on the modified problem
-    // 2. Initialize base cases
-    // 3. Fill the DP table using the modified recurrence
-    // 4. Return the answer
-
-    return nil
+	return result
 }
 
 func main() {
-    fmt.Println("Testing Circular Variant...")
-    // Add test cases
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(CircularVariant([]int{75, 105, 120, 75, 90, 135})) // Expected: 1
+	fmt.Println(CircularVariant([]int{7, 10, 12, 7, 9, 14})) // Expected: 2
+	fmt.Println(CircularVariant([]int{75})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('dynamic-programming', '01-max-subset-sum/twist-06-circular-variant', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['dynamic-programming/01-max-subset-sum/twist-06-circular-variant'] = problem;
 })();

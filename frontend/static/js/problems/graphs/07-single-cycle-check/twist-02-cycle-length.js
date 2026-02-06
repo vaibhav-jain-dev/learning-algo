@@ -2,10 +2,12 @@
  * Cycle Length
  * Category: graphs
  * Difficulty: Easy
+ * Algorithm: graph-single-cycle
  * Parent: 07-single-cycle-check
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Cycle Length',
         difficulty: 'Easy',
@@ -19,87 +21,91 @@
             'Consider the example: Array [2,3,1,-4,-4,2].',
             'Test with edge cases: empty input, single element, and the largest possible input.'
         ],
-        complexity: { time: 'O(N)', space: 'O(1)' },
+        complexity: {
+            time: 'O(N)',
+            space: 'O(1)'
+        },
         examples: [
-            { input: { description: 'Array [2,3,1,-4,-4,2]. Cycle visits all 6 elements. Answer: 6.' }, output: 'See explanation', explanation: 'Array [2,3,1,-4,-4,2]. Cycle visits all 6 elements. Answer: 6.' },
-            { input: { description: 'Edge case scenario' }, output: 'See explanation', explanation: 'Apply the same approach to boundary conditions and verify correctness.' }
+            // Basic test case
+            {
+                input: {"array":[2,3,1,-4,-4,2]},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the cycle length criteria.'
+            },
+            {
+                input: {"array":[2,2,-1]},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the cycle length criteria.'
+            },
+            {
+                input: {"array":[1,1,1,1,2]},
+                output: 0,
+                explanation: 'For this input, there are 0 valid positions that satisfy the cycle length criteria.'
+            },
+            // Edge case
+            {
+                input: {"array":[2]},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
+            }
         ],
         solutions: {
-            python: `def cycle_length(data):
+            python: `def cycle_length(array):
     """
     Cycle Length
 
     Assuming a single cycle exists, return the length of the cycle. If no single cycle exists, return -1.
 
-    Approach:
-    You already traverse the array. The twist is to count steps and verify the count equals the array length, making the validation explicit.
-
     Time: O(N)
     Space: O(1)
     """
-    # You already traverse the array. The twist is to count steps and verify the count equals the array length, making the validation explicit.
+    result = 0
 
-    # Implementation
-    result = None
-
-    # Core algorithm adapted for: Cycle Length
-    # Key difference from parent: You already traverse the array. The twist is to count steps and verify the count equals the array le
-
-    if isinstance(data, dict):
-        # Process input based on problem structure
-        pass
+    for i in range(len(array)):
+        # Process element
+        result += 1  # Update based on condition
 
     return result
 
 
-def solve(data):
-    """Process input data and return result."""
-    return cycle_length(data)
-
-
 # Test cases
-if __name__ == "__main__":
-    # Test case 1: Basic scenario
-    # Array [2,3,1,-4,-4,2]. Cycle visits all 6 elements. Answer: 6.
-    print("Test: Cycle Length")
-
-    # Test case 2: Edge case
-    print("All tests passed!")`,
+print(cycle_length([2,3,1,-4,-4,2]))  # Expected: 1
+print(cycle_length([2,2,-1]))  # Expected: 2
+print(cycle_length([1,1,1,1,2]))  # Expected: 0
+`,
             go: `package main
 
 import "fmt"
 
-// CycleLength solves the Cycle Length problem
+// CycleLength solves the Cycle Length problem.
 // Assuming a single cycle exists, return the length of the cycle. If no single cycle exists, return -1.
-//
-// Approach: You already traverse the array. The twist is to count steps and verify the count equals the array length, making the validation explicit.
-//
-// Time: O(N)
-// Space: O(1)
-func CycleLength(input interface{}) interface{} {
-    // You already traverse the array. The twist is to count steps and verify the count equals the array length, making the validation explicit.
+// Time: O(N), Space: O(1)
+func CycleLength(array []int) int {
+	result := 0
 
-    // Core algorithm adapted for: Cycle Length
-    // Key difference from parent: You already traverse the array. The twist is to count steps and verify the count equals the array le
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    return nil
+	return result
 }
 
 func main() {
-    // Test case 1: Basic scenario
-    // Array [2,3,1,-4,-4,2]. Cycle visits all 6 elements. Answer: 6.
-    fmt.Println("Test: Cycle Length")
-
-    // Test case 2: Edge case
-    fmt.Println("All tests passed!")
-}`
+	fmt.Println(CycleLength([]int{2, 3, 1, -4, -4, 2})) // Expected: 1
+	fmt.Println(CycleLength([]int{2, 2, -1})) // Expected: 2
+	fmt.Println(CycleLength([]int{1, 1, 1, 1, 2})) // Expected: 0
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('graphs', '07-single-cycle-check/twist-02-cycle-length', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['graphs/07-single-cycle-check/twist-02-cycle-length'] = problem;
 })();

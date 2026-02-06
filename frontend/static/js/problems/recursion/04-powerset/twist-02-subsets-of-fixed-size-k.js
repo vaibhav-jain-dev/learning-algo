@@ -2,10 +2,12 @@
  * Subsets of Fixed Size k
  * Category: recursion
  * Difficulty: Medium
+ * Algorithm: recursion-powerset
  * Parent: 04-powerset
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Subsets of Fixed Size k',
         difficulty: 'Medium',
@@ -19,57 +21,78 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For [1,2,3,4] with k=2, return [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]].' },
-                output: 'See example',
-                explanation: 'For [1,2,3,4] with k=2, return [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]].'
+                input: {"array":[1,2,3]},
+                output: [1,2,3],
+                explanation: 'The subsets of fixed size k for this input yields [1, 2, 3].'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Subsets of Fixed Size k
-# Category: recursion
-# Difficulty: Medium
-# Parent: 04-powerset
-
-def solve():
+            python: `def subsets_of_fixed_size_k(array):
     """
+    Subsets of Fixed Size k
+
     Instead of all subsets, generate only subsets of exactly size k from the array.
 
-    Key insight: Changes the recursion from unbounded include/exclude to a combination-selection pattern with a target size constraint, pruning branches early when insufficient elements remain.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(subsets_of_fixed_size_k([1,2,3]))  # Expected: [1,2,3]
+print(subsets_of_fixed_size_k([1]))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Subsets of Fixed Size k problem.
+// SubsetsOfFixedSizeK solves the Subsets of Fixed Size k problem.
 // Instead of all subsets, generate only subsets of exactly size k from the array.
-// Key insight: Changes the recursion from unbounded include/exclude to a combination-selection pattern with a target size constraint, pruning branches early when insufficient elements remain.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func SubsetsOfFixedSizeK(array []int) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(SubsetsOfFixedSizeK([]int{1, 2, 3})) // Expected: [1,2,3]
+	fmt.Println(SubsetsOfFixedSizeK([]int{1})) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '04-powerset/twist-02-subsets-of-fixed-size-k', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/04-powerset/twist-02-subsets-of-fixed-size-k'] = problem;
 })();

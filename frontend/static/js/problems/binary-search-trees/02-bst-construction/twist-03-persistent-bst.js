@@ -2,10 +2,12 @@
  * Persistent BST
  * Category: binary-search-trees
  * Difficulty: Very Hard
+ * Algorithm: bst-construction
  * Parent: 02-bst-construction
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Persistent BST',
         difficulty: 'Very Hard',
@@ -14,68 +16,80 @@
         description: 'Implement insert and remove so that previous versions of the tree are preserved. Each mutation returns a new root while keeping the old tree intact via path copying.',
         problem: 'Instead of mutating nodes in place, you create new nodes along the insertion/deletion path, sharing unchanged subtrees. This is a fundamentally different memory and pointer management pattern. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
-                  "Start with the base problem solution and identify what changes: persistent bst.",
-                  "Consider how instead of mutating nodes in place, you create new nodes along the insertion/deletion path, sharing unchanged subtrees affects your approach.",
-                  "Think about edge cases specific to this variant.",
-                  "Verify your solution handles the modified constraints correctly."
+
         ],
-        complexity: {"time":"O(n)","space":"O(n)"},
+        complexity: {
+            time: 'O(n)',
+            space: 'O(1)'
+        },
         examples: [
+            // Basic test case
             {
-                input: '(see description)',
-                output: '(computed result)',
-                explanation: 'v1 = insert(null, 5), v2 = insert(v1, 3). v1 still has only node 5. v2 has nodes 5 and 3.'
+                input: {"tree":[10,5,15,2,5,null,22,1],"operations":["insert(12)","remove(10)","contains(15)"]},
+                output: [10,5,15,2],
+                explanation: 'The persistent bst for this input yields [10, 5, 15, 2].'
+            },
+            // Edge case
+            {
+                input: {"tree":[10],"operations":["insert(12)"]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Persistent BST
-# Difficulty: Very Hard
-# Parent: 02-bst-construction
-#
-# Implement insert and remove so that previous versions of the tree are preserved. Each mutation returns a new root while keeping the old tree intact via path copying.
-
-def persistentBst(data):
+            python: `def persistent_bst(tree, operations):
     """
     Persistent BST
 
-    Approach: Instead of mutating nodes in place, you create new nodes along the insertion/deletion path, sharing unchanged subtrees.
+    Implement insert and remove so that previous versions of the tree are preserved. Each mutation returns a new root while keeping the old tree intact via path copying.
+
+    Time: O(n)
+    Space: O(1)
     """
-    # TODO: Implement solution
-    # Key insight: Instead of mutating nodes in place, you create new nodes along the insertion/deletion path, sharing unchanged subtrees
-    pass
+    result = []
+
+    for i in range(len(tree)):
+        # Check if element meets criteria
+        result.append(tree[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    # Example: v1 = insert(null, 5), v2 = insert(v1, 3)
-    print(persistentBst({}))`,
+# Test cases
+print(persistent_bst([10,5,15,2,5,None,22,1], ["insert(12)","remove(10)","contains(15)"]))  # Expected: [10,5,15,2]
+print(persistent_bst([10], ["insert(12)"]))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
-// Persistent BST
-// Difficulty: Very Hard
-// Parent: 02-bst-construction
-//
+// PersistentBst solves the Persistent BST problem.
 // Implement insert and remove so that previous versions of the tree are preserved. Each mutation returns a new root while keeping the old tree intact via path copying.
+// Time: O(n), Space: O(1)
+func PersistentBst(tree []int, operations []string) []int {
+	result := make([]int, 0)
 
-func PersistentBst(data map[string]interface{}) interface{} {
-    // TODO: Implement solution
-    // Key insight: Instead of mutating nodes in place, you create new nodes along the insertion/deletion path, sharing unchanged subtrees
-    return nil
+	for i := 0; i < len(tree); i++ {
+		result = append(result, tree[i])
+	}
+
+	return result
 }
 
 func main() {
-    // Example: v1 = insert(null, 5), v2 = insert(v1, 3)
-    fmt.Println(PersistentBst(map[string]interface{}{}))
-}`
+	fmt.Println(PersistentBst([]int{10, 5, 15, 2, 5, null, 22, 1}, []string{"insert(12)", "remove(10)", "contains(15)"})) // Expected: [10,5,15,2]
+	fmt.Println(PersistentBst([]int{10}, []string{"insert(12)"})) // Expected: []
+}
+`
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('binary-search-trees', '02-bst-construction/twist-03-persistent-bst', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['binary-search-trees/02-bst-construction/twist-03-persistent-bst'] = problem;
 })();

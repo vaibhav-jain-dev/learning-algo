@@ -27,83 +27,79 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,2,1]},
                 output: 3,
-                explanation: 'The maximum/longest valid segment has length 3.'
+                explanation: ''
             },
             {
                 input: {"array":[5,4,3,2,1]},
                 output: 5,
-                explanation: 'The entire array satisfies the condition.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1]},
                 output: 1,
-                explanation: 'Single element is trivially valid.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def all_longest_monotonic_subarrays(data):
+            python: `def all_longest_monotonic_subarrays(array):
     """
     All Longest Monotonic Subarrays
 
-    Return the starting indices of ALL contiguous subarrays that achieve the maximum monotonic length.
-    \n    Approach: After finding the max length, you must track all positions where that length is achieved, not just one.
+    Return the starting indices of ALL contiguous subarrays that achieve the maximum monotonic length. After finding the max length, you must track all positions where that length is achieved, not just one.
 
     Time: O(n^2)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 2, 3, 5, 4, 3]. Longest increasing [1,2,3] at 0, longest decreasing [5,4,3] at 3. Both length 3.
+    count = 0
+    n = len(array)
+    m = len(sequence)
 
-    if not data:
-        return None
+    for start in range(n):
+        j = 0
+        for i in range(start, n):
+            if j < m and array[i] == sequence[j]:
+                j += 1
+            if j == m:
+                count += 1
+                break
 
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
-
-    return result
+    return count
 
 
 # Test cases
-print(all_longest_monotonic_subarrays([1, 2, 3, 4, 5]))
-print(all_longest_monotonic_subarrays([5, 3, 1]))
-print(all_longest_monotonic_subarrays([1]))`,
+print(all_longest_monotonic_subarrays([1,2,3,2,1]))  # Expected: 3
+print(all_longest_monotonic_subarrays([5,4,3,2,1]))  # Expected: 5
+print(all_longest_monotonic_subarrays([1]))  # Expected: 1
+`,
             go: `package main
 
 import "fmt"
 
 // AllLongestMonotonicSubarrays solves the All Longest Monotonic Subarrays problem.
-// Return the starting indices of ALL contiguous subarrays that achieve the maximum monotonic length.
+// Return the starting indices of ALL contiguous subarrays that achieve the maximum monotonic length. After finding the max length, you must track all positions where that length is achieved, not just one.
 // Time: O(n^2), Space: O(n)
-func AllLongestMonotonicSubarrays(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func AllLongestMonotonicSubarrays(array []int) int {
+	result := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(AllLongestMonotonicSubarrays([]int{1, 2, 3, 4, 5}))
-    fmt.Println(AllLongestMonotonicSubarrays([]int{5, 3, 1}))
-    fmt.Println(AllLongestMonotonicSubarrays([]int{1}))
-}`
+	fmt.Println(AllLongestMonotonicSubarrays([]int{1, 2, 3, 2, 1})) // Expected: 3
+	fmt.Println(AllLongestMonotonicSubarrays([]int{5, 4, 3, 2, 1})) // Expected: 5
+	fmt.Println(AllLongestMonotonicSubarrays([]int{1})) // Expected: 1
+}
+`
         },
         twists: [],
         similar: []

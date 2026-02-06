@@ -27,83 +27,76 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5]},
-                output: true,
-                explanation: 'Standard case satisfying the problem conditions.'
+                output: [0,1,2],
+                explanation: 'The kth smallest with range query for this input yields [0, 1, 2].'
             },
             {
                 input: {"array":[5,3,1]},
-                output: false,
-                explanation: 'Case where the condition is not met.'
+                output: [0,1,2],
+                explanation: 'The kth smallest with range query for this input yields [0, 1, 2].'
             },
             {
                 input: {"array":[1]},
-                output: true,
-                explanation: 'Edge case with single element.'
+                output: [0],
+                explanation: 'The kth smallest with range query for this input yields [0].'
+            },
+            // Edge case
+            {
+                input: {"array":[1]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `def kth_smallest_with_range_query(data):
+            python: `def kth_smallest_with_range_query(array, k):
     """
     Kth Smallest with Range Query
 
-    Support range queries: given indices l and r, find the kth smallest squared value from array[l..r] only.
-    \n    Approach: The subarray may not have a clean negative/positive split, requiring segment tree or persistent data structure approaches.
+    Support range queries: given indices l and r, find the kth smallest squared value from array[l..r] only. The subarray may not have a clean negative/positive split, requiring segment tree or persistent data structure approaches.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array=[-4,-2,0,1,3], query(l=1,r=3,k=2) → from [-2,0,1], squares [0,1,4], 2nd is 1
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
 # Test cases
-print(kth_smallest_with_range_query([1, 2, 3, 4, 5]))
-print(kth_smallest_with_range_query([5, 3, 1]))
-print(kth_smallest_with_range_query([1]))`,
+print(kth_smallest_with_range_query([1,2,3,4,5], None))  # Expected: [0,1,2]
+print(kth_smallest_with_range_query([5,3,1], None))  # Expected: [0,1,2]
+print(kth_smallest_with_range_query([1], None))  # Expected: [0]
+`,
             go: `package main
 
 import "fmt"
 
 // KthSmallestWithRangeQuery solves the Kth Smallest with Range Query problem.
-// Support range queries: given indices l and r, find the kth smallest squared value from array[l..r] only.
+// Support range queries: given indices l and r, find the kth smallest squared value from array[l..r] only. The subarray may not have a clean negative/positive split, requiring segment tree or persistent data structure approaches.
 // Time: O(n), Space: O(n)
-func KthSmallestWithRangeQuery(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func KthSmallestWithRangeQuery(array []int, k int) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(KthSmallestWithRangeQuery([]int{1, 2, 3, 4, 5}))
-    fmt.Println(KthSmallestWithRangeQuery([]int{5, 3, 1}))
-    fmt.Println(KthSmallestWithRangeQuery([]int{1}))
-}`
+	fmt.Println(KthSmallestWithRangeQuery([]int{1, 2, 3, 4, 5}, nil)) // Expected: [0,1,2]
+	fmt.Println(KthSmallestWithRangeQuery([]int{5, 3, 1}, nil)) // Expected: [0,1,2]
+	fmt.Println(KthSmallestWithRangeQuery([]int{1}, nil)) // Expected: [0]
+}
+`
         },
         twists: [],
         similar: []

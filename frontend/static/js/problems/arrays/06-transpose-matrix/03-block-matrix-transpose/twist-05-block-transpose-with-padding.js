@@ -27,83 +27,73 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,3,5,7],"k":2},
                 output: [1,3],
-                explanation: 'The k=2 smallest/closest values found.'
+                explanation: ''
             },
             {
                 input: {"array":[10,20,30],"k":1},
                 output: [10],
-                explanation: 'With k=1, return the single best result.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[5,5,5,5],"k":3},
                 output: [5,5,5],
-                explanation: 'Duplicate values handled correctly with k=3.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def block_transpose_with_padding(data):
+            python: `def block_transpose_with_padding(array, k):
     """
     Block Transpose with Padding
 
-    Matrix dimensions are not divisible by k. Pad with zeros to make dimensions divisible, then perform block transpose.
-    \n    Approach: Padding changes the matrix dimensions and adds zeros that must be tracked or removed from the final output.
+    Matrix dimensions are not divisible by k. Pad with zeros to make dimensions divisible, then perform block transpose. Padding changes the matrix dimensions and adds zeros that must be tracked or removed from the final output.
 
     Time: O(n log k)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # matrix 3x5, k=2. Pad to 4x6, transpose blocks, then optionally trim. Result dimensions change.
+    j = 0
 
-    if not data:
-        return None
+    for i in range(len(array)):
+        if j < len(k) and array[i] == k[j]:
+            j += 1
 
-    result = []
-    n = len(data) if hasattr(data, '__len__') else 0
-
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
-
-    return result
+    return j == len(k)
 
 
 # Test cases
-print(block_transpose_with_padding([1, 2, 3, 4, 5]))
-print(block_transpose_with_padding([5, 3, 1]))
-print(block_transpose_with_padding([1]))`,
+print(block_transpose_with_padding([1,3,5,7], 2))  # Expected: [1,3]
+print(block_transpose_with_padding([10,20,30], 1))  # Expected: [10]
+print(block_transpose_with_padding([5,5,5,5], 3))  # Expected: [5,5,5]
+`,
             go: `package main
 
 import "fmt"
 
 // BlockTransposeWithPadding solves the Block Transpose with Padding problem.
-// Matrix dimensions are not divisible by k. Pad with zeros to make dimensions divisible, then perform block transpose.
+// Matrix dimensions are not divisible by k. Pad with zeros to make dimensions divisible, then perform block transpose. Padding changes the matrix dimensions and adds zeros that must be tracked or removed from the final output.
 // Time: O(n log k), Space: O(n)
-func BlockTransposeWithPadding(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func BlockTransposeWithPadding(array []int, k int) bool {
+	j := 0
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array) && j < len(k); i++ {
+		if array[i] == k[j] {
+			j++
+		}
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return j == len(k)
 }
 
 func main() {
-    fmt.Println(BlockTransposeWithPadding([]int{1, 2, 3, 4, 5}))
-    fmt.Println(BlockTransposeWithPadding([]int{5, 3, 1}))
-    fmt.Println(BlockTransposeWithPadding([]int{1}))
-}`
+	fmt.Println(BlockTransposeWithPadding([]int{1, 3, 5, 7}, 2)) // Expected: [1,3]
+	fmt.Println(BlockTransposeWithPadding([]int{10, 20, 30}, 1)) // Expected: [10]
+	fmt.Println(BlockTransposeWithPadding([]int{5, 5, 5, 5}, 3)) // Expected: [5,5,5]
+}
+`
         },
         twists: [],
         similar: []

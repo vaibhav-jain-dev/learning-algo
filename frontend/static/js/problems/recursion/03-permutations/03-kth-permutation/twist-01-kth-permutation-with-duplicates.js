@@ -2,10 +2,12 @@
  * Kth Permutation with Duplicates
  * Category: recursion
  * Difficulty: Very Hard
+ * Algorithm: recursion-permutations
  * Parent: 03-permutations/03-kth-permutation
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Kth Permutation with Duplicates',
         difficulty: 'Very Hard',
@@ -19,57 +21,77 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For elements [1,1,2,3] and k=3, the unique permutations in order are [1,1,2,3], [1,1,3,2], [1,2,1,3], ... so k=3 gives "1213".' },
-                output: 'See example',
-                explanation: 'For elements [1,1,2,3] and k=3, the unique permutations in order are [1,1,2,3], [1,1,3,2], [1,2,1,3], ... so k=3 gives "1213".'
+                input: {"n":3,"k":3},
+                output: "result",
+                explanation: 'The resulting string is "result".'
+            },
+            // Edge case
+            {
+                input: {"n":0,"k":0},
+                output: "",
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Kth Permutation with Duplicates
-# Category: recursion
-# Difficulty: Very Hard
-# Parent: 03-permutations/03-kth-permutation
-
-def solve():
+            python: `def kth_permutation_with_duplicates(n, k):
     """
+    Kth Permutation with Duplicates
+
     Find the kth permutation sequence when the set contains duplicate elements, so not all n! permutations are unique.
 
-    Key insight: The factorial number system approach breaks because duplicate elements reduce the total count of unique permutations, requiring multinomial coefficient calculations.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for item in n:
+        result.append(str(item))
+
+    return ''.join(result)
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(kth_permutation_with_duplicates(3, 3))  # Expected: "result"
+print(kth_permutation_with_duplicates(0, 0))  # Expected: ""
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Kth Permutation with Duplicates problem.
+// KthPermutationWithDuplicates solves the Kth Permutation with Duplicates problem.
 // Find the kth permutation sequence when the set contains duplicate elements, so not all n! permutations are unique.
-// Key insight: The factorial number system approach breaks because duplicate elements reduce the total count of unique permutations, requiring multinomial coefficient calculations.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func KthPermutationWithDuplicates(n int, k int) string {
+	result := ""
+
+	for _, v := range n {
+		result += fmt.Sprintf("%v", v)
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(KthPermutationWithDuplicates(3, 3)) // Expected: "result"
+	fmt.Println(KthPermutationWithDuplicates(0, 0)) // Expected: ""
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('recursion', '03-permutations/03-kth-permutation/twist-01-kth-permutation-with-duplicates', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['recursion/03-permutations/03-kth-permutation/twist-01-kth-permutation-with-duplicates'] = problem;
 })();

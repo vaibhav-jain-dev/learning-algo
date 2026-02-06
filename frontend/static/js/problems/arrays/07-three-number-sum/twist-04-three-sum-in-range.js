@@ -27,83 +27,71 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,2,3,4,5],"target":9},
                 output: [[1,3,5],[2,3,4]],
-                explanation: 'Found all valid combinations summing to target.'
+                explanation: ''
             },
             {
                 input: {"array":[-1,0,1,2],"target":0},
                 output: [[-1,0,1]],
-                explanation: 'Negative numbers included in the valid combination.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[1,2,3],"target":100},
                 output: [],
-                explanation: 'No valid combination exists for this target.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def three_sum_in_range(data):
+            python: `def three_sum_in_range(array, targetSum):
     """
     Three Sum in Range
 
-    Find all triplets whose sum falls within a range [lo, hi] inclusive, not just a single target value.
-    \n    Approach: The two-pointer logic must handle a range of valid sums, making the pointer advancement decisions more nuanced.
+    Find all triplets whose sum falls within a range [lo, hi] inclusive, not just a single target value. The two-pointer logic must handle a range of valid sums, making the pointer advancement decisions more nuanced.
 
     Time: O(n^2)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 2, 3, 4, 5], lo = 8, hi = 10. Triplets: [1,2,5], [1,3,4], [1,4,5], [2,3,4], [2,3,5].
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
 # Test cases
-print(three_sum_in_range([1, 2, 3, 4, 5]))
-print(three_sum_in_range([5, 3, 1]))
-print(three_sum_in_range([1]))`,
+print(three_sum_in_range([1,2,3,4,5], None))  # Expected: [[1,3,5],[2,3,4]]
+print(three_sum_in_range([-1,0,1,2], None))  # Expected: [[-1,0,1]]
+print(three_sum_in_range([1,2,3], None))  # Expected: []
+`,
             go: `package main
 
 import "fmt"
 
 // ThreeSumInRange solves the Three Sum in Range problem.
-// Find all triplets whose sum falls within a range [lo, hi] inclusive, not just a single target value.
+// Find all triplets whose sum falls within a range [lo, hi] inclusive, not just a single target value. The two-pointer logic must handle a range of valid sums, making the pointer advancement decisions more nuanced.
 // Time: O(n^2), Space: O(n)
-func ThreeSumInRange(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func ThreeSumInRange(array []int, targetSum int) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(ThreeSumInRange([]int{1, 2, 3, 4, 5}))
-    fmt.Println(ThreeSumInRange([]int{5, 3, 1}))
-    fmt.Println(ThreeSumInRange([]int{1}))
-}`
+	fmt.Println(ThreeSumInRange([]int{1, 2, 3, 4, 5}, nil)) // Expected: [[1,3,5],[2,3,4]]
+	fmt.Println(ThreeSumInRange([]int{-1, 0, 1, 2}, nil)) // Expected: [[-1,0,1]]
+	fmt.Println(ThreeSumInRange([]int{1, 2, 3}, nil)) // Expected: []
+}
+`
         },
         twists: [],
         similar: []

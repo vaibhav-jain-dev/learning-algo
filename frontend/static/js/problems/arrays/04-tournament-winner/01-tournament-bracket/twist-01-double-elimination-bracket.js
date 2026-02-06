@@ -27,83 +27,70 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[1,3,5,2,4]},
                 output: 1,
-                explanation: 'Only one operation needed to achieve the goal.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4]},
                 output: 0,
-                explanation: 'Already satisfies the condition, no operations needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[5,3,1,4,2]},
                 output: 2,
-                explanation: 'Two operations needed to satisfy the condition.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def double_elimination_bracket(data):
+            python: `def double_elimination_bracket(raw):
     """
     Double Elimination Bracket
 
-    Simulate a double-elimination tournament where a team must lose twice to be eliminated.
-    \n    Approach: Requires tracking a winners bracket and losers bracket simultaneously, with teams moving between them based on match results.
+    Simulate a double-elimination tournament where a team must lose twice to be eliminated. Requires tracking a winners bracket and losers bracket simultaneously, with teams moving between them based on match results.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # Teams [A,B,C,D]: A beats B, C beats D, A beats C (winners final), B beats D (losers), B beats C (losers final), then grand final
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for item in raw:
+        result.append(str(item))
 
-    return result
+    return ''.join(result)
 
 
 # Test cases
-print(double_elimination_bracket([1, 2, 3, 4, 5]))
-print(double_elimination_bracket([5, 3, 1]))
-print(double_elimination_bracket([1]))`,
+print(double_elimination_bracket(None))  # Expected: 1
+print(double_elimination_bracket(None))  # Expected: 0
+print(double_elimination_bracket(None))  # Expected: 2
+`,
             go: `package main
 
 import "fmt"
 
 // DoubleEliminationBracket solves the Double Elimination Bracket problem.
-// Simulate a double-elimination tournament where a team must lose twice to be eliminated.
+// Simulate a double-elimination tournament where a team must lose twice to be eliminated. Requires tracking a winners bracket and losers bracket simultaneously, with teams moving between them based on match results.
 // Time: O(n), Space: O(n)
-func DoubleEliminationBracket(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func DoubleEliminationBracket(raw string) string {
+	result := ""
 
-    result := make([]int, 0)
-    n := len(data)
+	for _, v := range raw {
+		result += fmt.Sprintf("%v", v)
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(DoubleEliminationBracket([]int{1, 2, 3, 4, 5}))
-    fmt.Println(DoubleEliminationBracket([]int{5, 3, 1}))
-    fmt.Println(DoubleEliminationBracket([]int{1}))
-}`
+	fmt.Println(DoubleEliminationBracket(nil)) // Expected: 1
+	fmt.Println(DoubleEliminationBracket(nil)) // Expected: 0
+	fmt.Println(DoubleEliminationBracket(nil)) // Expected: 2
+}
+`
         },
         twists: [],
         similar: []

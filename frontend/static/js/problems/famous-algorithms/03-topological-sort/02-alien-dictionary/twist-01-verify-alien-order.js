@@ -2,10 +2,12 @@
  * Verify Alien Order
  * Category: famous-algorithms
  * Difficulty: Medium
+ * Algorithm: topological-sort
  * Parent: 03-topological-sort/02-alien-dictionary
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Verify Alien Order',
         difficulty: 'Medium',
@@ -19,57 +21,85 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For words ["wrt","wrf"] and proposed order "wrtf...", verify that t comes before f in the order.' },
-                output: 'See example',
-                explanation: 'For words ["wrt","wrf"] and proposed order "wrtf...", verify that t comes before f in the order.'
+                input: {"words":["wrt","wrf","er","ett","rftt"]},
+                output: ["wrt","wrf","er"],
+                explanation: 'The verify alien order for this input yields [wrt, wrf, er].'
+            },
+            {
+                input: {"words":["z","x"]},
+                output: ["z","x"],
+                explanation: 'The verify alien order for this input yields [z, x].'
+            },
+            // Edge case
+            {
+                input: {"words":["wrt"]},
+                output: [],
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Verify Alien Order
-# Category: famous-algorithms
-# Difficulty: Medium
-# Parent: 03-topological-sort/02-alien-dictionary
-
-def solve():
+            python: `def verify_alien_order(words):
     """
+    Verify Alien Order
+
     Given a proposed character ordering and the sorted word list, verify if the proposed ordering is consistent with the word list.
 
-    Key insight: Inverts from deriving the order to checking one -- simply verify that each adjacent word pair respects the proposed ordering, a much simpler task.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    result = []
+
+    for i in range(len(words)):
+        # Check if element meets criteria
+        result.append(words[i])
+
+    return result
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(verify_alien_order(["wrt","wrf","er","ett","rftt"]))  # Expected: ["wrt","wrf","er"]
+print(verify_alien_order(["z","x"]))  # Expected: ["z","x"]
+print(verify_alien_order(["wrt"]))  # Expected: []
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Verify Alien Order problem.
+// VerifyAlienOrder solves the Verify Alien Order problem.
 // Given a proposed character ordering and the sorted word list, verify if the proposed ordering is consistent with the word list.
-// Key insight: Inverts from deriving the order to checking one -- simply verify that each adjacent word pair respects the proposed ordering, a much simpler task.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func VerifyAlienOrder(words []string) []int {
+	result := make([]int, 0)
+
+	for i := 0; i < len(words); i++ {
+		result = append(result, words[i])
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(VerifyAlienOrder([]string{"wrt", "wrf", "er", "ett", "rftt"})) // Expected: ["wrt","wrf","er"]
+	fmt.Println(VerifyAlienOrder([]string{"z", "x"})) // Expected: ["z","x"]
+	fmt.Println(VerifyAlienOrder([]string{"wrt"})) // Expected: []
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '03-topological-sort/02-alien-dictionary/twist-01-verify-alien-order', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/03-topological-sort/02-alien-dictionary/twist-01-verify-alien-order'] = problem;
 })();

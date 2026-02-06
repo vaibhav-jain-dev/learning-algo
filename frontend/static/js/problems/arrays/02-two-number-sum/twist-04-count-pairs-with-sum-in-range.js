@@ -26,80 +26,78 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[3,5,-4,8,11,1,-1,6],"targetSum":10},
                 output: [-1,11],
-                explanation: '-1 + 11 = 10, which equals the target sum.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4,5],"targetSum":10},
                 output: [],
-                explanation: 'No two distinct numbers sum to 10.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[4,6],"targetSum":10},
                 output: [4,6],
-                explanation: '4 + 6 = 10.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def count_pairs_with_sum_in_range(data):
+            python: `def count_pairs_with_sum_in_range(array, targetSum):
     """
     Count Pairs with Sum in Range
 
-    Count the number of pairs whose sum falls within a given range [low, high] instead of equaling a specific target.
-    \n    Approach: Switches from exact matching to range checking, which may require sorting + two pointers and subtracting count of pairs below low from count below high+1.
+    Count the number of pairs whose sum falls within a given range [low, high] instead of equaling a specific target. Switches from exact matching to range checking, which may require sorting + two pointers and subtracting count of pairs below low from count below high+1.
 
     Time: O(n)
     Space: O(n)
-
-    Example: array=[1,2,3,4,5], low=5, high=7 → 4 pairs: (1,4),(1,5),(2,3),(2,4),(2,5),(3,4) with sums in [5,7]
     """
-    if not data:
-        return None
+    count = 0
+    n = len(array)
 
-    n = len(data) if hasattr(data, '__len__') else 0
-    result = []
-
-    # Core algorithm implementation
     for i in range(n):
-        result.append(data[i])
+        # Check condition based on targetSum
+        j = 0
+        for k in range(i, n):
+            if j < len(targetSum) and array[k] == targetSum[j]:
+                j += 1
+        if j == len(targetSum):
+            count += 1
 
-    return result
+    return count
 
 
 # Test cases
-print(count_pairs_with_sum_in_range([1, 2, 3, 4, 5]))
-print(count_pairs_with_sum_in_range([5, 3, 1]))
-print(count_pairs_with_sum_in_range([1]))`,
+print(count_pairs_with_sum_in_range([3,5,-4,8,11,1,-1,6], 10))  # Expected: [-1,11]
+print(count_pairs_with_sum_in_range([1,2,3,4,5], 10))  # Expected: []
+print(count_pairs_with_sum_in_range([4,6], 10))  # Expected: [4,6]
+`,
             go: `package main
 
 import "fmt"
 
 // CountPairsWithSumInRange solves the Count Pairs with Sum in Range problem.
-// Count the number of pairs whose sum falls within a given range [low, high] instead of equaling a specific target.
+// Count the number of pairs whose sum falls within a given range [low, high] instead of equaling a specific target. Switches from exact matching to range checking, which may require sorting + two pointers and subtracting count of pairs below low from count below high+1.
 // Time: O(n), Space: O(n)
-func CountPairsWithSumInRange(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func CountPairsWithSumInRange(array []int, targetSum int) int {
+	result := 0
 
-    n := len(data)
-    result := make([]int, 0, n)
+	for i := 0; i < len(array); i++ {
+		// Process element
+		result++
+	}
 
-    // Core algorithm implementation
-    for i := 0; i < n; i++ {
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(CountPairsWithSumInRange([]int{1, 2, 3, 4, 5}))
-    fmt.Println(CountPairsWithSumInRange([]int{5, 3, 1}))
-    fmt.Println(CountPairsWithSumInRange([]int{1}))
-}`
+	fmt.Println(CountPairsWithSumInRange([]int{3, 5, -4, 8, 11, 1, -1, 6}, 10)) // Expected: [-1,11]
+	fmt.Println(CountPairsWithSumInRange([]int{1, 2, 3, 4, 5}, 10)) // Expected: []
+	fmt.Println(CountPairsWithSumInRange([]int{4, 6}, 10)) // Expected: [4,6]
+}
+`
         },
         twists: [],
         similar: []

@@ -27,83 +27,71 @@
             space: 'O(n)'
         },
         examples: [
+            // Basic test case
             {
                 input: {"array":[3,1,2,3,4,3],"target":3},
                 output: [1,2,4,3,3,3],
-                explanation: 'Target elements moved to the correct position.'
+                explanation: ''
             },
             {
                 input: {"array":[1,2,3,4,5],"target":6},
                 output: [1,2,3,4,5],
-                explanation: 'Target not in array - no changes needed.'
+                explanation: ''
             },
+            // Edge case
             {
                 input: {"array":[3,3,3],"target":3},
                 output: [3,3,3],
-                explanation: 'All elements are the target.'
+                explanation: ''
             }
         ],
         solutions: {
-            python: `def stable_partition(data):
+            python: `def stable_partition(array):
     """
     Stable Partition
 
-    Partition the array by predicate while preserving the relative order of elements within each partition.
-    \n    Approach: Simple swapping destroys order. You need a different approach like collecting and merging, or an in-place stable partition algorithm.
+    Partition the array by predicate while preserving the relative order of elements within each partition. Simple swapping destroys order. You need a different approach like collecting and merging, or an in-place stable partition algorithm.
 
     Time: O(n)
     Space: O(n)
     """
-    # Implementation based on the twist description
-    # array = [1, 4, 2, 5, 3, 6], pred = isEven. Result: [4, 2, 6, 1, 5, 3] (order preserved in each group).
-
-    if not data:
-        return None
-
     result = []
-    n = len(data) if hasattr(data, '__len__') else 0
 
-    # Core algorithm logic
-    for i in range(n):
-        # Process each element according to problem rules
-        result.append(data[i])
+    for i in range(len(array)):
+        # Check if element meets criteria
+        result.append(array[i])
 
     return result
 
 
 # Test cases
-print(stable_partition([1, 2, 3, 4, 5]))
-print(stable_partition([5, 3, 1]))
-print(stable_partition([1]))`,
+print(stable_partition([3,1,2,3,4,3]))  # Expected: [1,2,4,3,3,3]
+print(stable_partition([1,2,3,4,5]))  # Expected: [1,2,3,4,5]
+print(stable_partition([3,3,3]))  # Expected: [3,3,3]
+`,
             go: `package main
 
 import "fmt"
 
 // StablePartition solves the Stable Partition problem.
-// Partition the array by predicate while preserving the relative order of elements within each partition.
+// Partition the array by predicate while preserving the relative order of elements within each partition. Simple swapping destroys order. You need a different approach like collecting and merging, or an in-place stable partition algorithm.
 // Time: O(n), Space: O(n)
-func StablePartition(data []int) []int {
-    if len(data) == 0 {
-        return nil
-    }
+func StablePartition(array []int) []int {
+	result := make([]int, 0)
 
-    result := make([]int, 0)
-    n := len(data)
+	for i := 0; i < len(array); i++ {
+		result = append(result, array[i])
+	}
 
-    // Core algorithm logic
-    for i := 0; i < n; i++ {
-        // Process each element according to problem rules
-        result = append(result, data[i])
-    }
-
-    return result
+	return result
 }
 
 func main() {
-    fmt.Println(StablePartition([]int{1, 2, 3, 4, 5}))
-    fmt.Println(StablePartition([]int{5, 3, 1}))
-    fmt.Println(StablePartition([]int{1}))
-}`
+	fmt.Println(StablePartition([]int{3, 1, 2, 3, 4, 3})) // Expected: [1,2,4,3,3,3]
+	fmt.Println(StablePartition([]int{1, 2, 3, 4, 5})) // Expected: [1,2,3,4,5]
+	fmt.Println(StablePartition([]int{3, 3, 3})) // Expected: [3,3,3]
+}
+`
         },
         twists: [],
         similar: []

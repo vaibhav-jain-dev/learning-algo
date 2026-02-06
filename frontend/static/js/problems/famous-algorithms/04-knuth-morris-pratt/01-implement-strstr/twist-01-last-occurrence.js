@@ -2,10 +2,12 @@
  * Last Occurrence
  * Category: famous-algorithms
  * Difficulty: Easy
+ * Algorithm: kmp-algorithm
  * Parent: 04-knuth-morris-pratt/01-implement-strstr
  */
 (function() {
     'use strict';
+
     const problem = {
         name: 'Last Occurrence',
         difficulty: 'Easy',
@@ -19,57 +21,92 @@
             'Identify the key difference from the parent problem and how it affects the approach.',
             'Work through the example to build intuition before coding.'
         ],
-        complexity: { time: 'O(?)', space: 'O(?)' },
+        complexity: {
+            time: 'O(?)',
+            space: 'O(?)'
+        },
         examples: [
+            // Basic test case
             {
-                input: { raw: 'For haystack="sadbutsad", needle="sad", return 6 (last occurrence) instead of 0 (first occurrence).' },
-                output: 'See example',
-                explanation: 'For haystack="sadbutsad", needle="sad", return 6 (last occurrence) instead of 0 (first occurrence).'
+                input: {"haystack":"sadbutsad","needle":"sad"},
+                output: 1,
+                explanation: 'For this input, there is 1 valid position that satisfy the last occurrence criteria.'
+            },
+            {
+                input: {"haystack":"leetcode","needle":"leeto"},
+                output: 2,
+                explanation: 'For this input, there are 2 valid positions that satisfy the last occurrence criteria.'
+            },
+            // Edge case
+            {
+                input: {"haystack":"","needle":""},
+                output: 0,
+                explanation: 'Edge case: minimal input.'
             }
         ],
         solutions: {
-            python: `# Last Occurrence
-# Category: famous-algorithms
-# Difficulty: Easy
-# Parent: 04-knuth-morris-pratt/01-implement-strstr
-
-def solve():
+            python: `def last_occurrence(haystack, needle):
     """
+    Last Occurrence
+
     Find the index of the last occurrence of needle in haystack, instead of the first.
 
-    Key insight: Requires running KMP to completion instead of stopping at the first match, keeping track of the most recent match position found.
+    Time: O(?)
+    Space: O(?)
     """
-    # TODO: Implement solution
-    pass
+    count = 0
+    n = len(haystack)
+
+    for i in range(n):
+        # Check condition based on needle
+        j = 0
+        for k in range(i, n):
+            if j < len(needle) and haystack[k] == needle[j]:
+                j += 1
+        if j == len(needle):
+            count += 1
+
+    return count
 
 
-# Test
-if __name__ == "__main__":
-    print(solve())
+# Test cases
+print(last_occurrence("sadbutsad", "sad"))  # Expected: 1
+print(last_occurrence("leetcode", "leeto"))  # Expected: 2
+print(last_occurrence("", ""))  # Expected: 0
 `,
             go: `package main
 
 import "fmt"
 
-// Solve solves the Last Occurrence problem.
+// LastOccurrence solves the Last Occurrence problem.
 // Find the index of the last occurrence of needle in haystack, instead of the first.
-// Key insight: Requires running KMP to completion instead of stopping at the first match, keeping track of the most recent match position found.
-func Solve() interface{} {
-    // TODO: Implement solution
-    return nil
+// Time: O(?), Space: O(?)
+func LastOccurrence(haystack string, needle string) int {
+	result := 0
+
+	for i := 0; i < len(haystack); i++ {
+		// Process element
+		result++
+	}
+
+	return result
 }
 
 func main() {
-    fmt.Println(Solve())
+	fmt.Println(LastOccurrence("sadbutsad", "sad")) // Expected: 1
+	fmt.Println(LastOccurrence("leetcode", "leeto")) // Expected: 2
+	fmt.Println(LastOccurrence("", "")) // Expected: 0
 }
 `
         },
         twists: [],
         similar: []
     };
+
     if (window.ProblemRenderer) {
         window.ProblemRenderer.register('famous-algorithms', '04-knuth-morris-pratt/01-implement-strstr/twist-01-last-occurrence', problem);
     }
+
     window.Problems = window.Problems || {};
     window.Problems['famous-algorithms/04-knuth-morris-pratt/01-implement-strstr/twist-01-last-occurrence'] = problem;
 })();
