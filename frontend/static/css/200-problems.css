@@ -1162,11 +1162,83 @@
     opacity: 1;
 }
 
+/* Monaco editor CSS custom properties - force light theme for suggest widget */
+.monaco-editor,
+.code-editor-container .monaco-editor {
+    --vscode-editorSuggestWidget-background: #f3f3f3;
+    --vscode-editorSuggestWidget-border: #c8c8c8;
+    --vscode-editorSuggestWidget-foreground: #1e1e1e;
+    --vscode-editorSuggestWidget-selectedForeground: #1e1e1e;
+    --vscode-editorSuggestWidget-selectedBackground: #d6ebff;
+    --vscode-editorSuggestWidget-highlightForeground: #0066bf;
+    --vscode-editorSuggestWidget-focusHighlightForeground: #0066bf;
+    --vscode-editorSuggestWidget-selectedIconForeground: #1e1e1e;
+    --vscode-list-hoverBackground: #e8e8e8;
+    --vscode-list-hoverForeground: #1e1e1e;
+    --vscode-list-focusBackground: #d6ebff;
+    --vscode-list-focusForeground: #1e1e1e;
+    --vscode-list-focusOutline: #0066bf;
+    --vscode-list-highlightForeground: #0066bf;
+    --vscode-editorHoverWidget-background: #f3f3f3;
+    --vscode-editorHoverWidget-foreground: #1e1e1e;
+    --vscode-editorHoverWidget-border: #c8c8c8;
+}
+
 /* Monaco suggest widget styling */
-.code-editor-container .monaco-editor .suggest-widget {
+.code-editor-container .monaco-editor .suggest-widget,
+.monaco-editor .suggest-widget {
     border-radius: 6px !important;
-    border: 1px solid var(--color-border, #e2e8f0) !important;
+    border: 1px solid #c8c8c8 !important;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+    background-color: #f3f3f3 !important;
+    color: #1e1e1e !important;
+}
+
+/* Suggest widget list rows - ensure text is visible */
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row {
+    color: #1e1e1e !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .contents .main .left .label-name,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .contents .main .left .label-name .highlight,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .contents .main .left .signature-label,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .contents .main .right .details-label,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .contents .main .left .qualifier-label {
+    color: #1e1e1e !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .contents .main .left .label-name .highlight {
+    color: #0066bf !important;
+    font-weight: 600;
+}
+
+/* Focused/selected row in suggest widget */
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row.focused,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row.selected {
+    background-color: #d6ebff !important;
+    color: #1e1e1e !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row.focused .contents .main .left .label-name,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row.focused .contents .main .left .label-name .highlight {
+    color: #1e1e1e !important;
+}
+
+/* Suggest widget status bar */
+.monaco-editor .suggest-widget .suggest-status-bar {
+    background-color: #f3f3f3 !important;
+    border-top: 1px solid #c8c8c8 !important;
+    color: #1e1e1e !important;
+}
+
+/* Suggest details pane */
+.monaco-editor .suggest-widget .details .monaco-scrollable-element .body {
+    color: #1e1e1e !important;
+}
+
+/* Suggest widget icons */
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .suggest-icon {
+    color: #1e1e1e !important;
 }
 
 /* Monaco scrollbar styling */
@@ -1378,11 +1450,34 @@
 /* Monaco Editor IntelliSense & Widget Styling */
 .monaco-editor .suggest-details {
     border-radius: 6px !important;
+    background-color: #f3f3f3 !important;
+    color: #1e1e1e !important;
+    border: 1px solid #c8c8c8 !important;
+}
+
+.monaco-editor .suggest-details .monaco-scrollable-element .body {
+    color: #1e1e1e !important;
+}
+
+.monaco-editor .suggest-details .monaco-scrollable-element .body p,
+.monaco-editor .suggest-details .monaco-scrollable-element .body code {
+    color: #1e1e1e !important;
 }
 
 .monaco-editor .parameter-hints-widget {
     border-radius: 6px !important;
-    border: 1px solid var(--color-border, #e2e8f0) !important;
+    border: 1px solid #c8c8c8 !important;
+    background-color: #f3f3f3 !important;
+    color: #1e1e1e !important;
+}
+
+.monaco-editor .parameter-hints-widget .signature {
+    color: #1e1e1e !important;
+}
+
+.monaco-editor .parameter-hints-widget .active {
+    color: #0066bf !important;
+    font-weight: 600;
 }
 
 /* Monaco scrollbar custom styling */

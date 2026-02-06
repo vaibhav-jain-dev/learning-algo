@@ -5036,6 +5036,28 @@
             'collections', 'itertools', 'functools', 'math', 'sys', 'os'
         ];
 
+        var pythonKeywords = [
+            'and', 'as', 'assert', 'async', 'await', 'break', 'class', 'continue',
+            'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 'from',
+            'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not',
+            'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
+            'True', 'False', 'None'
+        ];
+
+        var pythonMethods = [
+            'append', 'extend', 'insert', 'remove', 'pop', 'clear', 'index', 'count', 'sort', 'reverse', 'copy',
+            'keys', 'values', 'items', 'get', 'update', 'setdefault',
+            'add', 'discard', 'union', 'intersection', 'difference', 'issubset',
+            'split', 'join', 'strip', 'lstrip', 'rstrip', 'replace', 'find', 'startswith', 'endswith', 'upper', 'lower', 'format',
+            'encode', 'decode', 'isdigit', 'isalpha', 'isalnum'
+        ];
+
+        // Known Python modules for dot-access context
+        var pythonModuleNames = new Set([
+            'os', 'sys', 'math', 'json', 're', 'collections', 'itertools', 'functools',
+            'heapq', 'bisect', 'random', 'string', 'datetime', 'typing'
+        ]);
+
         monaco.languages.registerCompletionItemProvider('python', {
             triggerCharacters: ['.', '(', ',', ' '],
             provideCompletionItems: function(model, position) {
@@ -5049,21 +5071,14 @@
 
                 // Check if user typed a dot (member access)
                 var lineContent = model.getLineContent(position.lineNumber);
-                var charBefore = lineContent.charAt(position.column - 2);
+                var textBeforeCursor = lineContent.substring(0, position.column - 1);
+                var dotMatch = textBeforeCursor.match(/(\w+)\.\s*$/);
 
                 var suggestions = [];
 
-                if (charBefore === '.') {
+                if (dotMatch) {
                     // After dot: suggest common methods
-                    var objWord = model.getWordAtPosition({ lineNumber: position.lineNumber, column: position.column - 2 });
-                    var methods = [
-                        'append', 'extend', 'insert', 'remove', 'pop', 'clear', 'index', 'count', 'sort', 'reverse', 'copy',
-                        'keys', 'values', 'items', 'get', 'update', 'setdefault', 'pop',
-                        'add', 'discard', 'union', 'intersection', 'difference', 'issubset',
-                        'split', 'join', 'strip', 'lstrip', 'rstrip', 'replace', 'find', 'startswith', 'endswith', 'upper', 'lower', 'format',
-                        'encode', 'decode', 'isdigit', 'isalpha', 'isalnum'
-                    ];
-                    methods.forEach(function(m) {
+                    pythonMethods.forEach(function(m) {
                         suggestions.push({
                             label: m,
                             kind: monaco.languages.CompletionItemKind.Method,
@@ -5077,15 +5092,6 @@
                     suggestions = pythonSnippets.map(function(s) {
                         return Object.assign({}, s, { range: range });
                     });
-
-                    // Python keywords for syntax highlighting reinforcement
-                    var pythonKeywords = [
-                        'and', 'as', 'assert', 'async', 'await', 'break', 'class', 'continue',
-                        'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 'from',
-                        'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not',
-                        'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
-                        'True', 'False', 'None'
-                    ];
 
                     pythonKeywords.forEach(function(kw) {
                         suggestions.push({
@@ -5141,6 +5147,17 @@
             'append', 'copy', 'delete', 'len', 'cap', 'close', 'make', 'new', 'panic', 'recover'
         ];
 
+        var goKeywords = [
+            'break', 'case', 'chan', 'const', 'continue', 'default', 'defer',
+            'else', 'fallthrough', 'for', 'func', 'go', 'goto', 'if', 'import',
+            'interface', 'map', 'package', 'range', 'return', 'select', 'struct',
+            'switch', 'type', 'var', 'true', 'false', 'nil',
+            'int', 'int8', 'int16', 'int32', 'int64',
+            'uint', 'uint8', 'uint16', 'uint32', 'uint64',
+            'float32', 'float64', 'complex64', 'complex128',
+            'string', 'bool', 'byte', 'rune', 'error'
+        ];
+
         monaco.languages.registerCompletionItemProvider('go', {
             triggerCharacters: ['.', '(', ','],
             provideCompletionItems: function(model, position) {
@@ -5156,12 +5173,23 @@
                     return Object.assign({}, s, { range: range });
                 });
 
+                goKeywords.forEach(function(kw) {
+                    suggestions.push({
+                        label: kw,
+                        kind: monaco.languages.CompletionItemKind.Keyword,
+                        insertText: kw,
+                        range: range,
+                        sortText: '1' + kw
+                    });
+                });
+
                 goBuiltins.forEach(function(b) {
                     suggestions.push({
                         label: b,
                         kind: monaco.languages.CompletionItemKind.Function,
                         insertText: b,
-                        range: range
+                        range: range,
+                        sortText: '2' + b
                     });
                 });
 
