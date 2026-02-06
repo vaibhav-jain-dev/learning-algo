@@ -253,6 +253,13 @@ func main() {
     fmt.Println(CountSubIslandsWithCopy(grid1, grid2)) // Expected: 3
 }`
         },
+        twists: [
+            { title: 'Exact Island Match', difficulty: 'Hard', description: 'An island in grid2 counts only if it has the exact same shape and position as an island in grid1 (not just contained within).', whyDifferent: 'Containment is not enough. You must ensure no extra cells exist in grid1 island beyond those in grid2 island, requiring bidirectional shape comparison.', example: 'Grid1 island covers cells {(0,0),(0,1),(1,0)}. Grid2 island covers {(0,0),(0,1)}. Not an exact match even though it is a sub-island.' },
+            { title: 'Count Super Islands', difficulty: 'Medium', description: 'Instead of sub-islands, count islands in grid1 that contain at least one complete island from grid2.', whyDifferent: 'You reverse the containment check. For each grid1 island, you check if any grid2 island is fully inside it, requiring you to map grid2 islands to grid1 islands.', example: 'Grid1 has one large island. Grid2 has 3 small islands, 2 inside the large one. Answer: 1 super island.' },
+            { title: 'Sub-Island with Tolerance', difficulty: 'Hard', description: 'An island in grid2 is a sub-island if at most K of its cells are water in grid1.', whyDifferent: 'The boolean check becomes a counting problem. You track the number of mismatched cells during DFS and compare against threshold K.', example: 'Grid2 island has 10 cells, 2 are water in grid1. With K=2, it counts as a sub-island. With K=1, it does not.' },
+            { title: 'Three Grid Sub-Islands', difficulty: 'Very Hard', description: 'Given three grids, count islands in grid3 that are sub-islands of both grid1 AND grid2 simultaneously.', whyDifferent: 'You must check containment against two reference grids simultaneously during a single DFS traversal, requiring AND logic across three matrices.', example: 'Grid3 island cells must all be 1 in both grid1 and grid2. Check both conditions per cell.' },
+            { title: 'Return Sub-Island Cells', difficulty: 'Medium', description: 'Instead of counting sub-islands, return the list of all cells that belong to any sub-island in grid2.', whyDifferent: 'You must collect cell coordinates during DFS and only include them in the result if the island qualifies as a sub-island, requiring deferred output.', example: 'Sub-island at cells [(0,0),(0,1),(1,0)]. Return these coordinates as a list.' }
+        ],
         similar: [
 
         ]

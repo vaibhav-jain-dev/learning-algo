@@ -246,6 +246,13 @@ func main() {
     fmt.Println(ClosedIslandWithCopy(grid2)) // Expected: 1
 }`
         },
+        twists: [
+            { title: 'Closed Island Areas', difficulty: 'Medium', description: 'Return the total area (cell count) of all closed islands combined, not just the count of closed islands.', whyDifferent: 'You must accumulate cell counts during the second-pass DFS rather than just incrementing a counter per island.', example: 'Two closed islands with areas 4 and 3. Answer: 7 total cells.' },
+            { title: 'Reversed Cell Meanings', difficulty: 'Easy', description: 'In this variant, 1 represents land and 0 represents water (the usual convention). Count closed islands of 1s surrounded by 0s.', whyDifferent: 'The problem uses inverted conventions (0=land, 1=water). Switching back to standard convention tests whether you adapt your boundary conditions correctly.', example: 'Grid [[0,0,0],[0,1,0],[0,0,0]]. The single 1 is a closed island. Answer: 1.' },
+            { title: 'Semi-Closed Islands', difficulty: 'Hard', description: 'An island is semi-closed if it touches exactly one edge of the grid. Count semi-closed islands.', whyDifferent: 'You must track which specific borders each island touches and filter by count. This requires storing border-touch metadata per component.', example: 'An island touching only the top border is semi-closed. An island touching top and left is not.' },
+            { title: 'Nested Closed Islands', difficulty: 'Hard', description: 'A closed island can contain water that itself contains another closed island. Count islands at each nesting level.', whyDifferent: 'You need to reason about nesting depth. After removing boundary-connected land, the remaining closed islands may themselves surround water regions with sub-islands.', example: 'A ring of land surrounds water, which surrounds another land island. Outer ring is level 1, inner island is level 2.' },
+            { title: 'Minimum Water to Close', difficulty: 'Very Hard', description: 'Given an open island (touching the boundary), find the minimum number of land cells to convert to water to make it a closed island.', whyDifferent: 'This is a min-cut problem between the island and the boundary. You need to find the narrowest connection between the island and the grid edges.', example: 'An island connects to the top border through a 1-cell-wide neck. Converting that cell to water closes the island. Answer: 1.' }
+        ],
         similar: [
 
         ]

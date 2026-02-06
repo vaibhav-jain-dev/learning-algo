@@ -219,6 +219,13 @@ func main() {
     fmt.Println(maxAreaOfIsland(grid2)) // 4
 }`
         },
+        twists: [
+            { title: 'Count All Islands', difficulty: 'Easy', description: 'Instead of finding the maximum area, count the total number of distinct islands.', whyDifferent: 'You no longer track area per island, just increment a counter each time you start a new DFS from an unvisited land cell. The traversal simplifies.', example: 'Grid [[1,1,0],[0,0,1],[1,0,1]]. Three distinct islands, answer is 3.' },
+            { title: 'Top K Island Areas', difficulty: 'Medium', description: 'Return the areas of the K largest islands in descending order.', whyDifferent: 'You need to collect all island areas and then either sort or use a heap, adding a selection step on top of the flood fill.', example: 'Islands with areas [5, 2, 8, 1, 3], K=3. Return [8, 5, 3].' },
+            { title: 'Island Shapes as Signatures', difficulty: 'Hard', description: 'Two islands are considered the same shape if one can be translated to match the other. Count distinct island shapes.', whyDifferent: 'You must normalize island coordinates relative to their top-left corner and store shape signatures in a set. The flood fill is just the first step.', example: 'Grid has three L-shaped islands and two single cells. Distinct shapes: 2 (L-shape and dot).' },
+            { title: 'Max Area with Diagonal Connections', difficulty: 'Medium', description: 'Land cells are connected in 8 directions (including diagonals). Find the maximum island area.', whyDifferent: 'Expanding from 4 to 8 neighbors merges previously separate islands. The DFS direction array doubles in size and component boundaries change fundamentally.', example: 'Grid [[1,0],[0,1]]. With 4-dir: max area 1. With 8-dir: max area 2 (diagonal connection).' },
+            { title: 'Iterative DFS Only', difficulty: 'Medium', description: 'Solve the problem using an explicit stack instead of recursion. The grid can be up to 1000x1000.', whyDifferent: 'Large grids cause stack overflow with recursive DFS. You must convert to iterative DFS with an explicit stack, changing the code structure significantly.', example: 'A 1000x1000 grid filled with 1s. Recursive DFS fails with stack overflow, but iterative handles it.' }
+        ],
         similar: []
     };
 
