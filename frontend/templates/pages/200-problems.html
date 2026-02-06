@@ -10,6 +10,7 @@
 <script src="/static/js/viz/dp_viz.js"></script>
 <script src="/static/js/viz/famous_viz.js"></script>
 <script src="/static/js/viz/viz-index.js"></script>
+<script src="/static/js/editor-linter.js"></script>
 <script src="/static/js/200-problems.js"></script>
 
 <div class="must-solve-page">
@@ -408,66 +409,62 @@
 
             <!-- Right: Code Editor -->
             <div class="code-panel">
-                <div class="code-header">
-                    <div class="language-selector">
-                        <button class="lang-btn active" data-lang="python" onclick="window.setLanguage('python')">
-                            <span class="lang-icon">🐍</span> Python
+                <!-- IDE Tab Bar (VS Code style file tabs) -->
+                <div class="ide-tab-bar">
+                    <div class="ide-tabs">
+                        <button class="ide-tab active" data-lang="python" onclick="window.setLanguage('python')">
+                            <svg class="ide-tab-icon" viewBox="0 0 16 16" width="14" height="14"><path d="M8 1C4.7 1 2.4 2.3 2.4 4.3v2.1c0 2 2.3 3.3 5.6 3.3V8.4c-2 0-3.6-.6-3.6-1.5V5.5c0-.9 1.6-1.5 3.6-1.5s3.6.6 3.6 1.5v1.4c0 .9-1.6 1.5-3.6 1.5v1.3c3.3 0 5.6-1.3 5.6-3.3V4.3C13.6 2.3 11.3 1 8 1z" fill="#3572A5"/><path d="M8 15c3.3 0 5.6-1.3 5.6-3.3V9.6c0-2-2.3-3.3-5.6-3.3v1.3c2 0 3.6.6 3.6 1.5v1.4c0 .9-1.6 1.5-3.6 1.5s-3.6-.6-3.6-1.5V9.1c0-.9 1.6-1.5 3.6-1.5V6.3C4.7 6.3 2.4 7.6 2.4 9.6v2.1C2.4 13.7 4.7 15 8 15z" fill="#FFD43B"/></svg>
+                            <span class="ide-tab-name">solution.py</span>
+                            <span class="ide-tab-modified" id="tab-modified-py" style="display:none;" title="Modified">&#9679;</span>
                         </button>
-                        <button class="lang-btn" data-lang="go" onclick="window.setLanguage('go')">
-                            <span class="lang-icon">🔵</span> Go
+                        <button class="ide-tab" data-lang="go" onclick="window.setLanguage('go')">
+                            <svg class="ide-tab-icon" viewBox="0 0 16 16" width="14" height="14"><rect x="1" y="4" width="14" height="8" rx="2" fill="#00ADD8" opacity="0.85"/><text x="8" y="11" text-anchor="middle" font-size="7" fill="white" font-weight="bold" font-family="monospace">GO</text></svg>
+                            <span class="ide-tab-name">solution.go</span>
+                            <span class="ide-tab-modified" id="tab-modified-go" style="display:none;" title="Modified">&#9679;</span>
                         </button>
                     </div>
-                    <div class="code-actions">
-                        <button class="action-btn" onclick="window.formatCode()" title="Format">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 7h16M4 12h10M4 17h6"/>
-                            </svg>
-                        </button>
-                        <button class="action-btn" onclick="window.resetCode()" title="Reset">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/>
-                                <path d="M21 3v5h-5"/>
-                                <path d="M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/>
-                                <path d="M8 16H3v5"/>
-                            </svg>
-                        </button>
-                        <button class="action-btn save-btn" onclick="window.CodeSaver && window.CodeSaver.save()" title="Save (Ctrl+S)">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
-                                <polyline points="17 21 17 13 7 13 7 21"/>
-                                <polyline points="7 3 7 8 15 8"/>
-                            </svg>
-                        </button>
-                        <button class="action-btn saves-btn" onclick="window.CodeSaver && window.CodeSaver.togglePanel()" title="Saved Versions">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/>
-                                <polyline points="13 2 13 9 20 9"/>
-                            </svg>
+                    <div class="ide-tab-actions">
+                        <button class="ide-tab-action" onclick="window.CodeSaver && window.CodeSaver.togglePanel()" title="Saved Versions">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
                             <span class="saves-count" id="saves-count" style="display:none;">0</span>
                         </button>
-                        <button class="action-btn new-btn" onclick="window.CodeSaver && window.CodeSaver.newVersion()" title="New (save current & reset)">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                <line x1="5" y1="12" x2="19" y2="12"/>
-                            </svg>
+                    </div>
+                </div>
+
+                <!-- IDE Toolbar (action buttons) -->
+                <div class="ide-toolbar">
+                    <div class="ide-toolbar-group">
+                        <button class="ide-tool-btn ide-tool-run" onclick="window.runCode()" id="run-btn" title="Run Code (Ctrl+Enter)">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            <span>Run</span>
                         </button>
-                        <button class="run-btn" id="run-btn" onclick="window.runCode()">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                                <path d="M8 5v14l11-7z"/>
-                            </svg>
-                            Run Code
+                        <button class="ide-tool-btn ide-tool-test" onclick="window.runTests()" id="run-tests-btn" title="Run Tests (Ctrl+Shift+Enter)">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                            <span>Test</span>
                         </button>
-                        <button class="run-tests-btn" id="run-tests-btn" onclick="window.runTests()">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M9 11l3 3L22 4"/>
-                                <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                            </svg>
-                            Run Tests
+                    </div>
+                    <div class="ide-toolbar-divider"></div>
+                    <div class="ide-toolbar-group">
+                        <button class="ide-tool-btn" onclick="window.CodeSaver && window.CodeSaver.save()" title="Save (Ctrl+S)">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                         </button>
-                        <div class="editor-font-controls">
-                            <button class="font-btn" onclick="window.changeFontSize('editor', -1)" title="Decrease font size">A-</button>
-                            <button class="font-btn" onclick="window.changeFontSize('editor', 1)" title="Increase font size">A+</button>
-                        </div>
+                        <button class="ide-tool-btn" onclick="window.CodeSaver && window.CodeSaver.newVersion()" title="Save & New">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        </button>
+                    </div>
+                    <div class="ide-toolbar-divider"></div>
+                    <div class="ide-toolbar-group">
+                        <button class="ide-tool-btn" onclick="window.formatCode()" title="Format Code (Ctrl+Shift+F)">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h10M4 17h6"/></svg>
+                        </button>
+                        <button class="ide-tool-btn" onclick="window.resetCode()" title="Reset to Template">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                        </button>
+                    </div>
+                    <div class="ide-toolbar-spacer"></div>
+                    <div class="ide-toolbar-group">
+                        <button class="ide-tool-btn font-ctrl" onclick="window.changeFontSize('editor', -1)" title="Decrease font">A-</button>
+                        <button class="ide-tool-btn font-ctrl" onclick="window.changeFontSize('editor', 1)" title="Increase font">A+</button>
                     </div>
                 </div>
                 <!-- Saved Versions Panel (hidden by default) -->
@@ -488,6 +485,26 @@
                 <div class="code-editor-container">
                     <textarea id="code-editor-fallback" style="display:none;"></textarea>
                     <div id="code-editor-wrapper"></div>
+                </div>
+                <div class="editor-statusbar" id="editor-statusbar">
+                    <div class="statusbar-left">
+                        <span class="statusbar-item statusbar-errors" id="statusbar-errors" title="Errors">
+                            <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><circle cx="8" cy="8" r="6"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="#1e1e1e" stroke-width="1.5"/></svg>
+                            <span id="statusbar-error-count">0</span>
+                        </span>
+                        <span class="statusbar-item statusbar-warnings" id="statusbar-warnings" title="Warnings">
+                            <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M8 1l7 13H1z"/><text x="8" y="12" text-anchor="middle" font-size="9" fill="#1e1e1e" font-weight="bold">!</text></svg>
+                            <span id="statusbar-warning-count">0</span>
+                        </span>
+                    </div>
+                    <div class="statusbar-center">
+                        <span class="statusbar-item" id="statusbar-position">Ln 1, Col 1</span>
+                    </div>
+                    <div class="statusbar-right">
+                        <span class="statusbar-item" id="statusbar-language">Python</span>
+                        <span class="statusbar-item" id="statusbar-encoding">UTF-8</span>
+                        <span class="statusbar-item" id="statusbar-indent">Spaces: 4</span>
+                    </div>
                 </div>
                 <div class="output-panel" id="output-panel">
                     <div class="output-resize-handle" id="output-resize-handle"></div>

@@ -471,13 +471,7 @@
     background: var(--color-bg-secondary, #f8fafc);
 }
 
-.code-header {
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid #333;
-    background: #252526;
-}
-
+/* Description panel tabs (left side) */
 .desc-tab {
     padding: var(--space-2, 0.5rem) var(--space-4, 1rem);
     background: none;
@@ -491,29 +485,10 @@
     font-family: var(--font-sans);
 }
 
-.lang-btn {
-    padding: var(--space-2, 0.5rem) var(--space-4, 1rem);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-weight: var(--font-semibold, 600);
-    color: #858585;
-    border-bottom: 2px solid transparent;
-    transition: all var(--transition-fast, 150ms ease);
-    font-size: var(--text-sm, 0.875rem);
-    font-family: var(--font-sans);
-}
-
 .desc-tab.active {
     color: var(--color-brand-primary, #3b82f6);
     border-bottom-color: var(--color-brand-primary, #3b82f6);
     background: var(--color-info-bg, rgba(59, 130, 246, 0.05));
-}
-
-.lang-btn.active {
-    color: #e0e0e0;
-    border-bottom-color: #569cd6;
-    background: rgba(86, 156, 214, 0.1);
 }
 
 .desc-tab:hover {
@@ -521,9 +496,181 @@
     color: var(--color-text-primary, #0f172a);
 }
 
-.lang-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
+/* ============================================
+   IDE TAB BAR (VS Code style file tabs)
+   ============================================ */
+.ide-tab-bar {
+    display: flex;
+    align-items: stretch;
+    background: #252526;
+    border-bottom: 1px solid #1e1e1e;
+    height: 35px;
+    min-height: 35px;
+    user-select: none;
+}
+
+.ide-tabs {
+    display: flex;
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.ide-tabs::-webkit-scrollbar {
+    height: 0;
+}
+
+.ide-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 14px;
+    background: #2d2d2d;
+    border: none;
+    border-right: 1px solid #252526;
+    border-top: 2px solid transparent;
+    cursor: pointer;
+    color: #969696;
+    font-size: 13px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    white-space: nowrap;
+    transition: background 0.1s, color 0.1s;
+    min-width: 0;
+}
+
+.ide-tab:hover {
+    background: #2a2d2e;
     color: #cccccc;
+}
+
+.ide-tab.active {
+    background: #1e1e1e;
+    color: #ffffff;
+    border-top-color: #569cd6;
+}
+
+.ide-tab-icon {
+    flex-shrink: 0;
+}
+
+.ide-tab-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ide-tab-modified {
+    color: #e0e0e0;
+    font-size: 18px;
+    line-height: 1;
+    margin-left: 2px;
+}
+
+.ide-tab-actions {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    gap: 4px;
+}
+
+.ide-tab-action {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 6px;
+    background: none;
+    border: none;
+    color: #858585;
+    cursor: pointer;
+    border-radius: 3px;
+    position: relative;
+}
+
+.ide-tab-action:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #e0e0e0;
+}
+
+/* ============================================
+   IDE TOOLBAR (action buttons bar)
+   ============================================ */
+.ide-toolbar {
+    display: flex;
+    align-items: center;
+    padding: 2px 8px;
+    background: #333333;
+    border-bottom: 1px solid #252526;
+    height: 30px;
+    min-height: 30px;
+    gap: 2px;
+}
+
+.ide-toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.ide-toolbar-divider {
+    width: 1px;
+    height: 16px;
+    background: #555;
+    margin: 0 6px;
+}
+
+.ide-toolbar-spacer {
+    flex: 1;
+}
+
+.ide-tool-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    background: none;
+    border: none;
+    border-radius: 3px;
+    color: #cccccc;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    transition: background 0.1s;
+    white-space: nowrap;
+}
+
+.ide-tool-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.ide-tool-btn:active {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.ide-tool-btn.ide-tool-run {
+    color: #4ec9b0;
+}
+
+.ide-tool-btn.ide-tool-run:hover {
+    background: rgba(78, 201, 176, 0.15);
+}
+
+.ide-tool-btn.ide-tool-test {
+    color: #dcdcaa;
+}
+
+.ide-tool-btn.ide-tool-test:hover {
+    background: rgba(220, 220, 170, 0.15);
+}
+
+.ide-tool-btn.font-ctrl {
+    font-weight: 600;
+    min-width: 26px;
+    justify-content: center;
+    padding: 3px 4px;
+}
+
+.ide-tool-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .description-content {
@@ -1123,6 +1270,100 @@
     font-style: italic;
 }
 
+/* ============================================
+   EDITOR STATUS BAR (VS Code style)
+   ============================================ */
+.editor-statusbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 22px;
+    min-height: 22px;
+    max-height: 22px;
+    background: #007acc;
+    color: #ffffff;
+    font-size: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    padding: 0 8px;
+    line-height: 22px;
+    flex-shrink: 0;
+    overflow: hidden;
+    user-select: none;
+}
+
+.statusbar-left,
+.statusbar-center,
+.statusbar-right {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 100%;
+}
+
+.statusbar-left {
+    justify-content: flex-start;
+}
+
+.statusbar-center {
+    justify-content: center;
+}
+
+.statusbar-right {
+    justify-content: flex-end;
+}
+
+.statusbar-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 6px;
+    height: 100%;
+    white-space: nowrap;
+    cursor: default;
+    transition: background 0.15s ease;
+    border-radius: 0;
+}
+
+.statusbar-item:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.statusbar-item svg {
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+
+/* Errors indicator */
+.statusbar-errors {
+    color: #ff6e6e;
+}
+
+.statusbar-errors:hover {
+    background: rgba(255, 110, 110, 0.2);
+}
+
+/* Warnings indicator */
+.statusbar-warnings {
+    color: #ffd740;
+}
+
+.statusbar-warnings:hover {
+    background: rgba(255, 215, 64, 0.2);
+}
+
+/* Active issues - pulse/glow effect */
+.statusbar-errors.has-issues {
+    color: #ff4444;
+    background: rgba(255, 68, 68, 0.15);
+    font-weight: 600;
+}
+
+.statusbar-warnings.has-issues {
+    color: #ffb300;
+    background: rgba(255, 179, 0, 0.15);
+    font-weight: 600;
+}
+
 /* Monaco Editor IntelliSense & Widget Styling */
 .monaco-editor .suggest-details {
     border-radius: 6px !important;
@@ -1628,6 +1869,74 @@
         font-size: 0.625rem;
     }
 
+    /* IDE Tab Bar mobile */
+    .ide-tab-bar {
+        height: 30px;
+        min-height: 30px;
+    }
+
+    .ide-tab {
+        padding: 0 10px;
+        font-size: 11px;
+        gap: 4px;
+    }
+
+    .ide-tab-icon {
+        width: 12px;
+        height: 12px;
+    }
+
+    .ide-tab-actions {
+        padding: 0 4px;
+    }
+
+    /* IDE Toolbar mobile */
+    .ide-toolbar {
+        height: 28px;
+        min-height: 28px;
+        padding: 1px 4px;
+        gap: 1px;
+    }
+
+    .ide-tool-btn {
+        padding: 2px 6px;
+        font-size: 11px;
+        gap: 3px;
+    }
+
+    .ide-tool-btn svg {
+        width: 12px;
+        height: 12px;
+    }
+
+    .ide-toolbar-divider {
+        height: 14px;
+        margin: 0 4px;
+    }
+
+    /* Status bar mobile */
+    .editor-statusbar {
+        height: 20px;
+        min-height: 20px;
+        font-size: 10px;
+        padding: 0 8px;
+    }
+
+    .editor-statusbar svg {
+        width: 10px;
+        height: 10px;
+    }
+
+    .statusbar-item {
+        gap: 2px;
+        padding: 0 4px;
+    }
+
+    /* Saved versions mobile */
+    .saved-versions-panel {
+        max-height: 180px;
+    }
+
     /* Panel content mobile */
     .panel-header {
         padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
@@ -1715,6 +2024,55 @@
     /* Monaco editor mobile font */
     .code-editor-container .monaco-editor {
         font-size: 12px !important;
+    }
+
+    /* IDE elements - extra small */
+    .ide-tab-bar {
+        height: 28px;
+        min-height: 28px;
+    }
+
+    .ide-tab {
+        padding: 0 8px;
+        font-size: 10px;
+    }
+
+    .ide-tab-name {
+        max-width: 70px;
+    }
+
+    .ide-toolbar {
+        height: 26px;
+        min-height: 26px;
+    }
+
+    .ide-tool-btn {
+        padding: 2px 4px;
+        font-size: 10px;
+    }
+
+    .ide-tool-btn span {
+        display: none;
+    }
+
+    .ide-tool-btn svg {
+        width: 12px;
+        height: 12px;
+    }
+
+    .ide-toolbar-divider {
+        margin: 0 2px;
+    }
+
+    .editor-statusbar {
+        height: 18px;
+        min-height: 18px;
+        font-size: 9px;
+    }
+
+    .statusbar-center,
+    .statusbar-right #statusbar-encoding {
+        display: none;
     }
 }
 
@@ -1845,7 +2203,10 @@
 .run-btn:focus-visible,
 .run-tests-btn:focus-visible,
 .desc-tab:focus-visible,
-.lang-btn:focus-visible {
+.lang-btn:focus-visible,
+.ide-tab:focus-visible,
+.ide-tool-btn:focus-visible,
+.ide-tab-action:focus-visible {
     outline: 2px solid var(--color-brand-primary, #3b82f6);
     outline-offset: 2px;
 }
