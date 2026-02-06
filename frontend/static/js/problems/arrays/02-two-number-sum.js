@@ -117,41 +117,11 @@
             }
         ],
         twists: [
-            {
-                title: 'Two Sum with Duplicate Pairs',
-                difficulty: 'Medium',
-                description: 'The array may contain duplicates. Return all unique pairs that sum to the target.',
-                whyDifferent: 'Duplicate handling changes the hash table approach: you must track counts and avoid reporting the same pair multiple times.',
-                example: 'array=[1,1,2,3,3], target=4 → [[1,3]] (only one unique pair despite multiple 1s and 3s)'
-            },
-            {
-                title: 'Two Sum Closest to Target',
-                difficulty: 'Medium',
-                description: 'Instead of an exact match, find the pair whose sum is closest to the target.',
-                whyDifferent: 'The hash table approach no longer works directly. Requires sorting + two pointers to efficiently search for the closest sum.',
-                example: 'array=[1,3,5,7], target=10 → [3,7] (sum=10, exact match) or [5,7] if target=11'
-            },
-            {
-                title: 'Two Sum in a Circular Array',
-                difficulty: 'Medium',
-                description: 'The array is circular, and you can only use elements that are within a window of size k in the circular arrangement.',
-                whyDifferent: 'Introduces a spatial constraint on which pairs are valid, combining sliding window with two-sum logic.',
-                example: 'array=[1,4,2,3,5], target=6, k=3 → [1,5] is valid (circular neighbors), [4,2] is valid'
-            },
-            {
-                title: 'Count Pairs with Sum in Range',
-                difficulty: 'Hard',
-                description: 'Count the number of pairs whose sum falls within a given range [low, high] instead of equaling a specific target.',
-                whyDifferent: 'Switches from exact matching to range checking, which may require sorting + two pointers and subtracting count of pairs below low from count below high+1.',
-                example: 'array=[1,2,3,4,5], low=5, high=7 → 4 pairs: (1,4),(1,5),(2,3),(2,4),(2,5),(3,4) with sums in [5,7]'
-            },
-            {
-                title: 'Two Sum with Index Distance Constraint',
-                difficulty: 'Medium',
-                description: 'Find a pair summing to target where the two elements are at most k indices apart.',
-                whyDifferent: 'The hash table must be bounded by a sliding window of size k, requiring eviction of old entries as you iterate.',
-                example: 'array=[1,3,5,1,5], target=6, k=2 → [1,5] at indices (0,2) works, but (0,4) does not'
-            }
+            { id: '02-two-number-sum/twist-01-two-sum-with-duplicate-pairs', name: 'Two Sum with Duplicate Pairs', difficulty: 'Medium' },
+            { id: '02-two-number-sum/twist-02-two-sum-closest-to-target', name: 'Two Sum Closest to Target', difficulty: 'Medium' },
+            { id: '02-two-number-sum/twist-03-two-sum-in-a-circular-array', name: 'Two Sum in a Circular Array', difficulty: 'Medium' },
+            { id: '02-two-number-sum/twist-04-count-pairs-with-sum-in-range', name: 'Count Pairs with Sum in Range', difficulty: 'Hard' },
+            { id: '02-two-number-sum/twist-05-two-sum-with-index-distance-constraint', name: 'Two Sum with Index Distance Constraint', difficulty: 'Medium' }
         ],
         similar: [
             { id: '02-two-number-sum/01-three-sum-closest', name: 'Three Sum Closest', difficulty: 'Medium' },

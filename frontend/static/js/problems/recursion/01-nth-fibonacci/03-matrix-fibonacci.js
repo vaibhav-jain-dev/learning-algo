@@ -150,41 +150,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Extend to Tribonacci Matrix',
-                difficulty: 'Hard',
-                description: 'Apply matrix exponentiation to compute the n-th Tribonacci number in O(log n) time. Construct the appropriate 3x3 transition matrix.',
-                whyDifferent: 'Going from 2x2 to 3x3 matrices is not just a size change. You must understand how to generalize the transition matrix, and the 3x3 multiplication has 27 multiply-add operations instead of 8.',
-                example: 'Matrix [[1,1,1],[1,0,0],[0,1,0]]^n. For n=10: T(10)=149. The 3x3 power uses the same binary exponentiation but each multiplication step is more complex.'
-            },
-            {
-                title: 'Iterative vs Recursive Matrix Power',
-                difficulty: 'Medium',
-                description: 'Implement matrix exponentiation using both iterative binary exponentiation and recursive divide-and-conquer. Compare stack usage for n=10^18.',
-                whyDifferent: 'The recursive version uses O(log n) stack frames while the iterative version uses O(1) extra space. For n=10^18, log2(n)~60 frames, which is fine, but understanding the trade-off matters.',
-                example: 'Recursive: matPow(M, n) = matPow(M, n/2) * matPow(M, n/2). Iterative: bit-by-bit processing of n, squaring M at each step. Both O(log n) time.'
-            },
-            {
-                title: 'Modular Arithmetic Pitfalls',
-                difficulty: 'Medium',
-                description: 'When computing Fibonacci mod 10^9+7 for very large n, identify and fix subtle overflow bugs. What happens if you multiply two numbers each close to 10^9+7 in a 64-bit integer?',
-                whyDifferent: 'This is a conceptual trap about numerical overflow. (10^9+7)^2 exceeds 2^63, causing overflow in languages with fixed-width integers. You must apply mod after each multiplication, not just at the end.',
-                example: '(10^9+6) * (10^9+6) = ~10^18, which fits in int64. But if intermediate sums of products exceed 2^63 ~= 9.2*10^18, overflow occurs. Solution: mod after each multiply-add.'
-            },
-            {
-                title: 'Pisano Period Discovery',
-                difficulty: 'Very Hard',
-                description: 'Instead of matrix exponentiation, discover that Fibonacci mod m is periodic (Pisano period). Find the period for a given m and use it to reduce fib(n) mod m to fib(n mod period) mod m.',
-                whyDifferent: 'A completely different mathematical approach to the same problem. Instead of fast exponentiation, you exploit periodicity. Requires understanding number theory rather than linear algebra.',
-                example: 'Pisano period for m=10 is 60. So fib(1000000) mod 10 = fib(1000000 mod 60) mod 10 = fib(40) mod 10 = 0.'
-            },
-            {
-                title: 'Eigenvalue Decomposition Approach',
-                difficulty: 'Very Hard',
-                description: 'Derive the closed-form Binet formula F(n) = (phi^n - psi^n) / sqrt(5) from the matrix eigenvalues. Explain why this formula has floating-point precision issues for large n.',
-                whyDifferent: 'Connects linear algebra (eigenvalues/eigenvectors of the Fibonacci matrix) to the closed-form solution. Reveals why the matrix approach is numerically superior to the analytical formula for computation.',
-                example: 'phi=(1+sqrt(5))/2, psi=(1-sqrt(5))/2. F(10) = (phi^10 - psi^10)/sqrt(5) = 55. But for n>70, floating-point errors make this inaccurate without arbitrary precision.'
-            }
+            { id: '01-nth-fibonacci/03-matrix-fibonacci/twist-01-extend-to-tribonacci-matrix', name: 'Extend to Tribonacci Matrix', difficulty: 'Hard' },
+            { id: '01-nth-fibonacci/03-matrix-fibonacci/twist-02-iterative-vs-recursive-matrix-power', name: 'Iterative vs Recursive Matrix Power', difficulty: 'Medium' },
+            { id: '01-nth-fibonacci/03-matrix-fibonacci/twist-03-modular-arithmetic-pitfalls', name: 'Modular Arithmetic Pitfalls', difficulty: 'Medium' },
+            { id: '01-nth-fibonacci/03-matrix-fibonacci/twist-04-pisano-period-discovery', name: 'Pisano Period Discovery', difficulty: 'Very Hard' },
+            { id: '01-nth-fibonacci/03-matrix-fibonacci/twist-05-eigenvalue-decomposition-approach', name: 'Eigenvalue Decomposition Approach', difficulty: 'Very Hard' }
         ],
         similar: [
 

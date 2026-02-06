@@ -191,48 +191,12 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Binary Root-to-Leaf Numbers',
-                difficulty: 'Medium',
-                description: 'Instead of decimal digits, each node contains a binary digit (0 or 1). Each root-to-leaf path represents a binary number. Return the sum of all binary numbers.',
-                whyDifferent: 'The formula changes from num*10+digit to num*2+digit. Conceptually similar but tests whether you understand the generalization to any base, not just base 10.',
-                example: 'Tree: 1->0, 1->1. Paths: 10 (binary=2), 11 (binary=3). Sum=5.'
-            },
-            {
-                title: 'N-ary Tree Concatenated Numbers',
-                difficulty: 'Medium',
-                description: 'Extend to an N-ary tree where each node has 0-9 digit values and can have any number of children. Sum all root-to-leaf numbers.',
-                whyDifferent: 'Leaf detection changes and the branching factor is variable. You must iterate over children arrays rather than checking left/right, and manage the multiplication across all branches.',
-                example: 'Node(4, children=[Node(9, children=[Node(5), Node(1)]), Node(0)]). Same result as base but different tree structure.'
-            },
-            {
-                title: 'Iterative with Level-Order',
-                difficulty: 'Medium',
-                description: 'Solve using BFS (level-order traversal) instead of DFS. Track the running number for each node in the queue.',
-                whyDifferent: 'BFS processes nodes level by level, so you must store the accumulated number with each node in the queue. Leaf detection happens when dequeuing, not when recursing.',
-                example: 'Queue: [(root,0)] -> process 4, enqueue (9,49), (0,40) -> etc.'
-            },
-            {
-                title: 'Multi-Digit Node Values',
-                difficulty: 'Hard',
-                description: 'Nodes can contain multi-digit numbers (e.g., 12, 345). The path concatenation uses the full number, not just a single digit.',
-                whyDifferent: 'The formula changes from num*10+digit to num*(10^numDigits)+value. You need to compute the number of digits in each node value to shift correctly.',
-                example: 'Tree: 12->34. Path represents number 1234, not 12*10+34=154. Must shift by number of digits.'
-            },
-            {
-                title: 'Space-Constrained Threaded Approach',
-                difficulty: 'Hard',
-                description: 'Solve the problem using Morris traversal (O(1) space, excluding output). You cannot use recursion or an explicit stack.',
-                whyDifferent: 'Morris traversal modifies tree pointers temporarily. The challenge is maintaining the running number correctly when following threaded links back up, since you revisit nodes.',
-                example: 'Same input/output but achieved without recursion stack. Must undo thread links and adjust the running number when backtracking.'
-            },
-            {
-                title: 'Reverse: Leaf-to-Root Numbers',
-                difficulty: 'Medium',
-                description: 'Instead of root-to-leaf, form numbers from leaf-to-root. The leaf digit is the most significant digit.',
-                whyDifferent: 'You cannot build the number top-down anymore. You need to know the depth of each leaf first to determine the place value of the root digit, or collect digits and reverse.',
-                example: 'Tree: 1->2, 1->3. Leaf-to-root paths: 21 and 31. Sum=52 (instead of 12+13=25).'
-            }
+            { id: '01-branch-sums/03-sum-root-to-leaf-numbers/twist-01-binary-root-to-leaf-numbers', name: 'Binary Root-to-Leaf Numbers', difficulty: 'Medium' },
+            { id: '01-branch-sums/03-sum-root-to-leaf-numbers/twist-02-n-ary-tree-concatenated-numbers', name: 'N-ary Tree Concatenated Numbers', difficulty: 'Medium' },
+            { id: '01-branch-sums/03-sum-root-to-leaf-numbers/twist-03-iterative-with-level-order', name: 'Iterative with Level-Order', difficulty: 'Medium' },
+            { id: '01-branch-sums/03-sum-root-to-leaf-numbers/twist-04-multi-digit-node-values', name: 'Multi-Digit Node Values', difficulty: 'Hard' },
+            { id: '01-branch-sums/03-sum-root-to-leaf-numbers/twist-05-space-constrained-threaded-approach', name: 'Space-Constrained Threaded Approach', difficulty: 'Hard' },
+            { id: '01-branch-sums/03-sum-root-to-leaf-numbers/twist-06-reverse-leaf-to-root-numbers', name: 'Reverse: Leaf-to-Root Numbers', difficulty: 'Medium' }
         ],
         similar: [
 

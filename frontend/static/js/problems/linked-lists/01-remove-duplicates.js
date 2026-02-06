@@ -40,41 +40,11 @@
     }
         ],
         twists: [
-            {
-                title: 'Doubly Linked List Variant',
-                difficulty: 'Easy',
-                description: 'The sorted list is now a doubly linked list with prev and next pointers. Remove duplicates while maintaining valid prev pointers throughout.',
-                whyDifferent: 'You must update both prev and next pointers when removing nodes. Forgetting to fix the prev pointer of the node after a removed node is a common bug.',
-                example: 'Input: null<->1<->1<->3<->4<->4 => Output: null<->1<->3<->4 with all prev/next pointers valid.'
-            },
-            {
-                title: 'Circular Sorted Linked List',
-                difficulty: 'Medium',
-                description: 'The sorted linked list is circular (tail points back to head). Remove duplicates while keeping the list circular. The list is sorted, but the "start" could be at any point in the cycle.',
-                whyDifferent: 'There is no null terminator to signal the end of traversal. You need a way to detect when you have completed one full cycle without breaking the circular structure.',
-                example: 'Input: ...->1->1->3->4->4->... (circular) => Output: ...->1->3->4->... (circular, 3 nodes).'
-            },
-            {
-                title: 'Recursive Without Extra Space',
-                difficulty: 'Medium',
-                description: 'Solve the remove-duplicates problem using pure recursion with no loops. The function should return the head of the deduplicated list.',
-                whyDifferent: 'Forces you to think about the problem in terms of subproblems: "deduplicate the rest of the list, then decide whether to include the current node." The call stack replaces your iterative pointer.',
-                example: 'removeDups(1->1->3->4->4) => 1 + removeDups(1->3->4->4) => eventually 1->3->4.'
-            },
-            {
-                title: 'Count Duplicates Instead of Removing',
-                difficulty: 'Easy',
-                description: 'Instead of modifying the list, return a count of how many duplicate nodes would be removed without actually removing them. Do this in O(1) space.',
-                whyDifferent: 'Shifts the focus from pointer manipulation to pure counting logic. You still traverse the same way but the mental model changes from "rewiring" to "tallying."',
-                example: 'Input: 1->1->3->4->4->4->5->6->6 => Output: 4 (four nodes would be removed).'
-            },
-            {
-                title: 'In-Place with XOR Linked List',
-                difficulty: 'Very Hard',
-                description: 'The list uses XOR linking where each node stores prev XOR next instead of a simple next pointer. Remove duplicates from the sorted XOR-linked list.',
-                whyDifferent: 'XOR linked lists require you to carry the previous node address to compute the next node. Removing a node means recalculating XOR values for neighboring nodes, making deletion significantly harder.',
-                example: 'XOR list: 1(xor01)->1(xor12)->3(xor13)->4(xor34) with XOR-encoded pointers. After dedup: 1->3->4 with recalculated XOR links.'
-            }
+            { id: '01-remove-duplicates/twist-01-doubly-linked-list-variant', name: 'Doubly Linked List Variant', difficulty: 'Easy' },
+            { id: '01-remove-duplicates/twist-02-circular-sorted-linked-list', name: 'Circular Sorted Linked List', difficulty: 'Medium' },
+            { id: '01-remove-duplicates/twist-03-recursive-without-extra-space', name: 'Recursive Without Extra Space', difficulty: 'Medium' },
+            { id: '01-remove-duplicates/twist-04-count-duplicates-instead-of-removing', name: 'Count Duplicates Instead of Removing', difficulty: 'Easy' },
+            { id: '01-remove-duplicates/twist-05-in-place-with-xor-linked-list', name: 'In-Place with XOR Linked List', difficulty: 'Very Hard' }
         ],
         similar: [
     { id: '01-remove-duplicates/01-remove-duplicates-unsorted', name: 'Remove Duplicates from Unsorted Linked List', difficulty: 'Medium' },

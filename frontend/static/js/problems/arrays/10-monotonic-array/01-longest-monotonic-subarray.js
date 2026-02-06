@@ -157,13 +157,6 @@ func main() {
     // Output: 4
 }`
         },
-        twists: [
-            { title: 'Longest Strictly Monotonic Subarray', difficulty: 'Medium', description: 'Find the longest contiguous subarray that is strictly increasing or strictly decreasing (no equal adjacent elements).', whyDifferent: 'Equal elements break the monotonic run, so your tracking must reset when arr[i] == arr[i-1].', example: 'array = [1, 2, 2, 3, 4]. Longest strict: [2, 3, 4] length 3, not [1,2,2,3,4].' },
-            { title: 'Longest Alternating Subarray', difficulty: 'Medium', description: 'Find the longest contiguous subarray that alternates between increasing and decreasing (zigzag pattern).', whyDifferent: 'Instead of one direction, each consecutive pair must switch direction, a completely different scan pattern.', example: 'array = [1, 3, 2, 4, 1, 5]. Alternating: [1,3,2,4,1,5] length 6.' },
-            { title: 'All Longest Monotonic Subarrays', difficulty: 'Medium', description: 'Return the starting indices of ALL contiguous subarrays that achieve the maximum monotonic length.', whyDifferent: 'After finding the max length, you must track all positions where that length is achieved, not just one.', example: 'array = [1, 2, 3, 5, 4, 3]. Longest increasing [1,2,3] at 0, longest decreasing [5,4,3] at 3. Both length 3.' },
-            { title: 'Longest Monotonic with K Exceptions', difficulty: 'Hard', description: 'Find the longest contiguous subarray that is monotonic if you are allowed to skip at most K elements.', whyDifferent: 'Requires a sliding window approach tracking violations, fundamentally different from simple linear scan.', example: 'array = [1, 5, 2, 3, 4], K = 1. Skip 5: [1, 2, 3, 4] length 4.' },
-            { title: 'Second Longest Monotonic Subarray', difficulty: 'Hard', description: 'Find the length of the second longest monotonic subarray (not overlapping with the longest).', whyDifferent: 'Must track multiple candidates and handle overlapping runs, requiring more complex bookkeeping.', example: 'array = [5, 4, 3, 2, 1, 6, 7]. Longest: [5,4,3,2,1] len 5. Second: [1,6,7] len 3.' }
-        ],
         similar: [
 
         ]

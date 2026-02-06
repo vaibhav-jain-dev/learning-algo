@@ -126,11 +126,11 @@
     }
         ],
         twists: [
-            { title: 'Count All Solutions', difficulty: 'Hard', description: 'Instead of returning one solved board, count the total number of valid solutions for the given Sudoku puzzle.', whyDifferent: 'Requires exhaustive search instead of stopping at the first solution, changing the backtracking to continue exploring after finding each valid completion.', example: 'A puzzle with 2 valid solutions returns 2. A well-formed puzzle returns 1. An invalid puzzle returns 0.' },
-            { title: 'Minimum Clue Sudoku', difficulty: 'Very Hard', description: 'Given a solved Sudoku board, find the minimum number of clues (filled cells) needed so the puzzle has a unique solution.', whyDifferent: 'Inverts the problem entirely -- instead of filling cells, you remove cells while ensuring uniqueness, requiring solution-counting at each removal step.', example: 'A solved 9x9 board where removing any of the remaining 17 clues would create multiple solutions, proving 17 is the minimum.' },
-            { title: 'Diagonal Sudoku', difficulty: 'Hard', description: 'Solve a Sudoku variant where, in addition to rows, columns, and 3x3 boxes, both main diagonals must also contain digits 1-9.', whyDifferent: 'Adds two extra constraints to the validity check, significantly reducing the valid states and requiring diagonal-aware constraint propagation.', example: 'A 9x9 board where the main diagonal (top-left to bottom-right) and anti-diagonal both must contain all digits 1-9.' },
-            { title: 'Generate Valid Puzzle', difficulty: 'Very Hard', description: 'Generate a random valid Sudoku puzzle with exactly one solution and a specified difficulty level (number of empty cells).', whyDifferent: 'Shifts from solving to constructing -- requires generating a full valid board, then strategically removing cells while verifying uniqueness after each removal.', example: 'Generate a puzzle with 40 empty cells that has exactly one solution, suitable for a medium difficulty level.' },
-            { title: 'Constraint Propagation Only', difficulty: 'Hard', description: 'Solve the Sudoku using only constraint propagation (naked singles, hidden singles) without any backtracking/guessing.', whyDifferent: 'Eliminates brute-force backtracking entirely, relying purely on logical deduction techniques that mimic how humans solve Sudoku.', example: 'For an easy puzzle, iteratively fill cells where only one digit is possible until the board is complete, without ever guessing.' }
+            { id: '08-solve-sudoku/twist-01-count-all-solutions', name: 'Count All Solutions', difficulty: 'Hard' },
+            { id: '08-solve-sudoku/twist-02-minimum-clue-sudoku', name: 'Minimum Clue Sudoku', difficulty: 'Very Hard' },
+            { id: '08-solve-sudoku/twist-03-diagonal-sudoku', name: 'Diagonal Sudoku', difficulty: 'Hard' },
+            { id: '08-solve-sudoku/twist-04-generate-valid-puzzle', name: 'Generate Valid Puzzle', difficulty: 'Very Hard' },
+            { id: '08-solve-sudoku/twist-05-constraint-propagation-only', name: 'Constraint Propagation Only', difficulty: 'Hard' }
         ],
         similar: [
 

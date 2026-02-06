@@ -122,11 +122,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Multiple Duplicates', difficulty: 'Hard', description: 'The array can have multiple different duplicated numbers. Find all of them in O(n) time and O(1) space.', whyDifferent: 'Floyd cycle detection finds one duplicate. With multiple duplicates, you need a different approach like index-marking (negating values) to find all duplicates.', example: 'Array [4,3,2,7,8,2,3,1]. Duplicates are 2 and 3. Return [2, 3].' },
-            { title: 'Count of Duplicate', difficulty: 'Medium', description: 'Find the duplicate number and also return how many times it appears in the array.', whyDifferent: 'Floyd finds the duplicate but not its frequency. After finding it, you need a linear scan to count occurrences, combining two techniques.', example: 'Array [1,3,4,2,2]. Duplicate is 2, appears 2 times. Return (2, 2).' },
-            { title: 'Binary Search Approach', difficulty: 'Medium', description: 'Solve using binary search on the value range [1, n] instead of Floyd cycle detection.', whyDifferent: 'Binary search on the answer space counts how many numbers are <= mid. If count > mid, the duplicate is in [1, mid]. A completely different paradigm.', example: 'Array [1,3,4,2,2], n=4. Count nums <= 2 is 3 > 2, so duplicate is in [1,2]. Count nums <= 1 is 1, so duplicate is 2.' },
-            { title: 'Modify Array Allowed', difficulty: 'Easy', description: 'You are allowed to modify the array. Find the duplicate using index marking (negation technique).', whyDifferent: 'When modification is allowed, negate nums[abs(nums[i])] as you traverse. If you find a negative value, that index is the duplicate. Simpler than Floyd.', example: 'Array [1,3,4,2,2]. Visit 1: negate index 1. Visit 3: negate index 3. Visit 4: negate index 4. Visit 2: negate index 2. Visit 2: index 2 already negative -> duplicate is 2.' },
-            { title: 'Duplicate in Sorted Array', difficulty: 'Easy', description: 'The array is sorted. Find the duplicate in O(log n) time.', whyDifferent: 'Sorting changes the problem entirely. Binary search comparing nums[mid] with mid directly reveals where the duplicate must be, making Floyd unnecessary.', example: 'Sorted array [1,2,2,3,4]. nums[2]=2 and nums[3]=3, but nums[1]=2 and nums[2]=2 differ by 0 -> duplicate at value 2.' }
+            { id: '07-single-cycle-check/02-find-duplicate-number/twist-01-multiple-duplicates', name: 'Multiple Duplicates', difficulty: 'Hard' },
+            { id: '07-single-cycle-check/02-find-duplicate-number/twist-02-count-of-duplicate', name: 'Count of Duplicate', difficulty: 'Medium' },
+            { id: '07-single-cycle-check/02-find-duplicate-number/twist-03-binary-search-approach', name: 'Binary Search Approach', difficulty: 'Medium' },
+            { id: '07-single-cycle-check/02-find-duplicate-number/twist-04-modify-array-allowed', name: 'Modify Array Allowed', difficulty: 'Easy' },
+            { id: '07-single-cycle-check/02-find-duplicate-number/twist-05-duplicate-in-sorted-array', name: 'Duplicate in Sorted Array', difficulty: 'Easy' }
         ],
         similar: [
 

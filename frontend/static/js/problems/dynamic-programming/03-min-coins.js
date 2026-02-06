@@ -50,48 +50,12 @@
     }
         ],
         twists: [
-            {
-                title: 'Greedy Fails: Classic Counterexample',
-                difficulty: 'Medium',
-                description: 'The greedy approach always picks the largest coin that fits. Construct a specific input where greedy gives more coins than the DP optimal. Explain why the greedy property fails for arbitrary denominations.',
-                whyDifferent: 'Understanding when greedy fails is fundamental to recognizing coin change as a DP problem. Greedy works for specific denomination systems (like US coins) but fails in general.',
-                example: 'denoms=[1, 3, 4], n=6. Greedy: 4+1+1=3 coins. Optimal: 3+3=2 coins. Greedy picks 4 first (largest fitting) but this forces two 1s, while two 3s is better.'
-            },
-            {
-                title: 'Print the Actual Coins Used',
-                difficulty: 'Medium',
-                description: 'Return not just the minimum count but the actual list of coins used. Maintain a way to reconstruct which coin was chosen at each step.',
-                whyDifferent: 'Reconstructing the solution requires either storing the coin chosen at each amount in a separate array, or backtracking from dp[n] by checking which coin could have led there.',
-                example: 'n=7, denoms=[1,5,10]. dp[7]=3 (coins: 5,1,1). Store parent[7]=5 (coin used), parent[2]=1, parent[1]=1. Backtrack: 7->5 used coin 5, 2->1 used coin 1, 1->0 used coin 1.'
-            },
-            {
-                title: 'Top-Down Recursive with Memoization',
-                difficulty: 'Medium',
-                description: 'Rewrite the solution as a recursive function minCoins(amount) that tries each coin and memoizes results. Compare the recursion tree to the bottom-up table.',
-                whyDifferent: 'Top-down naturally prunes unreachable states (only computes amounts actually needed), while bottom-up fills the entire table. The mental model is different: "what is the min coins for this amount?" vs "build up from 0".',
-                example: 'minCoins(7) = 1 + min(minCoins(6), minCoins(2)). minCoins(2)=1+min(minCoins(1))=1+1=2. minCoins(6)=1+min(minCoins(5),minCoins(1))=1+1=2. So minCoins(7)=1+2=3.'
-            },
-            {
-                title: 'Conceptual Trap: Infinity Handling',
-                difficulty: 'Easy',
-                description: 'Why do we initialize dp[1..n] to infinity and not 0 or -1? What happens if we use 0? What happens if we forget to check for infinity when returning the answer?',
-                whyDifferent: 'The initialization is crucial for correctness. Using 0 would make min() always pick 0, giving wrong answers. Using -1 requires special-case logic in the min. Infinity naturally propagates through impossible states.',
-                example: 'If dp[3]=infinity with denoms=[2], that means amount 3 is unreachable. When computing dp[5], we get min(inf, 1+dp[3])=min(inf, 1+inf)=inf. Correctly propagates impossibility. Return -1 only at the end if dp[n]=inf.'
-            },
-            {
-                title: 'Trace the DP Table Step by Step',
-                difficulty: 'Easy',
-                description: 'For n=7, denoms=[1,5,10], fill in dp[0] through dp[7] step by step. At each amount, show which coin gives the minimum.',
-                whyDifferent: 'Manual tracing catches off-by-one errors and builds intuition for the recurrence. It helps you see how smaller solutions combine to solve larger amounts.',
-                example: 'dp[0]=0. dp[1]=1+dp[0]=1. dp[2]=1+dp[1]=2. dp[3]=3. dp[4]=4. dp[5]=min(1+dp[4], 1+dp[0])=min(5,1)=1. dp[6]=min(1+dp[5], 1+dp[1])=min(2,2)=2. dp[7]=min(1+dp[6], 1+dp[2])=min(3,3)=3.'
-            },
-            {
-                title: 'Counting vs Optimization Duality',
-                difficulty: 'Medium',
-                description: 'Compare Min Coins (minimize count) with Number of Ways to Make Change (count combinations). Both use the same state space but different operations. Write both recurrences side by side.',
-                whyDifferent: 'Seeing the structural similarity deepens understanding of DP as a framework. Same subproblems, same transitions, but += for counting vs min() for optimization.',
-                example: 'Min coins: dp[i] = min over coins of (1 + dp[i-coin]). Count ways: dp[i] += dp[i-coin] for each coin. Base: min uses dp[0]=0, rest=inf. Count uses dp[0]=1, rest=0.'
-            }
+            { id: '03-min-coins/twist-01-greedy-fails-classic-counterexample', title: 'Greedy Fails: Classic Counterexample', difficulty: 'Medium' },
+            { id: '03-min-coins/twist-02-print-the-actual-coins-used', title: 'Print the Actual Coins Used', difficulty: 'Medium' },
+            { id: '03-min-coins/twist-03-top-down-recursive-with-memoization', title: 'Top-Down Recursive with Memoization', difficulty: 'Medium' },
+            { id: '03-min-coins/twist-04-conceptual-trap-infinity-handling', title: 'Conceptual Trap: Infinity Handling', difficulty: 'Easy' },
+            { id: '03-min-coins/twist-05-trace-the-dp-table-step-by-step', title: 'Trace the DP Table Step by Step', difficulty: 'Easy' },
+            { id: '03-min-coins/twist-06-counting-vs-optimization-duality', title: 'Counting vs Optimization Duality', difficulty: 'Medium' }
         ],
         similar: [
     { id: '03-min-coins/03-min-coins/01-perfect-squares', name: 'Perfect Squares', difficulty: 'Medium' },

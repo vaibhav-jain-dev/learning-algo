@@ -197,41 +197,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Max Path Sum in N-ary Tree',
-                difficulty: 'Very Hard',
-                description: 'Find the maximum path sum in an N-ary tree where each node can have any number of children. The path can go through any two children of a node.',
-                whyDifferent: 'With binary trees you compare left vs right. With N-ary, you must find the top-2 child path sums to form the best through-path at each node, requiring sorting or a two-pass approach over children.',
-                example: 'Node(1, children=[Node(5), Node(-3), Node(4)]). Best path: 5->1->4=10. Must pick top-2 from N children.'
-            },
-            {
-                title: 'Return the Actual Path',
-                difficulty: 'Hard',
-                description: 'Instead of returning just the maximum sum, return the actual sequence of node values that form the maximum path.',
-                whyDifferent: 'Tracking the sum is O(1) state per node, but reconstructing the path requires storing path segments at each node and merging them. The postorder logic must return both sum and path.',
-                example: 'Tree: -10->9, -10->20->15, -10->20->7. Output: [15, 20, 7] with sum 42.'
-            },
-            {
-                title: 'Max Path Sum with Exactly K Nodes',
-                difficulty: 'Very Hard',
-                description: 'Find the maximum path sum where the path must contain exactly K nodes. The path still follows parent-child connections.',
-                whyDifferent: 'Adds a constraint dimension. At each node you must track the best sum for each possible path length (1..K), turning a simple DFS into a problem requiring dynamic programming on the tree.',
-                example: 'Tree: 1->2->3, 1->4. K=3. Path 3->2->1=6. Path 2->1->4=7. Answer: 7.'
-            },
-            {
-                title: 'Concurrent Tree Modification',
-                difficulty: 'Hard',
-                description: 'While computing the max path sum, node values can be updated by another thread. Design a solution that handles concurrent modifications safely.',
-                whyDifferent: 'Forces thinking about read consistency, locking strategies, or snapshot isolation. A simple DFS may read stale values partway through traversal, producing incorrect results.',
-                example: 'During traversal, node value 20 is changed to -5. Result depends on whether you read old or new value.'
-            },
-            {
-                title: 'Output Prediction Trap',
-                difficulty: 'Medium',
-                description: 'Given tree [-1, -2, -3], what is the max path sum? Many people incorrectly say 0 (empty path) or -1. The path must contain at least one node.',
-                whyDifferent: 'Tests understanding of the constraint that the path must be non-empty. When all values are negative, the answer is the single largest (least negative) value, not zero.',
-                example: 'Tree: -1->-2, -1->-3. Answer: -1 (the root alone). Not 0, not -2, not -6.'
-            }
+            { id: '01-branch-sums/02-binary-tree-max-path-sum/twist-01-max-path-sum-in-n-ary-tree', name: 'Max Path Sum in N-ary Tree', difficulty: 'Very Hard' },
+            { id: '01-branch-sums/02-binary-tree-max-path-sum/twist-02-return-the-actual-path', name: 'Return the Actual Path', difficulty: 'Hard' },
+            { id: '01-branch-sums/02-binary-tree-max-path-sum/twist-03-max-path-sum-with-exactly-k-nodes', name: 'Max Path Sum with Exactly K Nodes', difficulty: 'Very Hard' },
+            { id: '01-branch-sums/02-binary-tree-max-path-sum/twist-04-concurrent-tree-modification', name: 'Concurrent Tree Modification', difficulty: 'Hard' },
+            { id: '01-branch-sums/02-binary-tree-max-path-sum/twist-05-output-prediction-trap', name: 'Output Prediction Trap', difficulty: 'Medium' }
         ],
         similar: [
 

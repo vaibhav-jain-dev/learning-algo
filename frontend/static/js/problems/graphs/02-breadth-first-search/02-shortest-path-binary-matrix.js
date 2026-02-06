@@ -206,41 +206,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Shortest Path with Only 4 Directions',
-                difficulty: 'Easy',
-                description: 'Find the shortest path but only allow horizontal and vertical movement (4 directions) instead of 8-directional movement.',
-                whyDifferent: 'Reducing directions from 8 to 4 eliminates diagonal shortcuts. Paths that were short with diagonals become longer or impossible. The optimal path structure changes fundamentally.',
-                example: 'Grid: [[0,0],[0,0]]. With 8-dir: shortest=2 (diagonal). With 4-dir: shortest=3 (right then down, or down then right).'
-            },
-            {
-                title: 'Shortest Path with Weighted Cells',
-                difficulty: 'Hard',
-                description: 'Each cell has a cost (0 means free, higher values mean more cost). Find the path from top-left to bottom-right with minimum total cost.',
-                whyDifferent: 'Standard BFS assumes uniform cost. With varying weights, you need Dijkstra\'s algorithm (priority queue) instead of a simple queue. This fundamentally changes the data structure and processing order.',
-                example: 'Grid: [[0,1,4],[2,0,1],[0,3,0]]. BFS shortest path might not be cheapest. Dijkstra finds path with minimum total weight.'
-            },
-            {
-                title: 'Bidirectional BFS for Shortest Path',
-                difficulty: 'Hard',
-                description: 'Optimize the shortest path search by running BFS from both the top-left and bottom-right simultaneously. Detect when the two searches meet.',
-                whyDifferent: 'Bidirectional BFS explores O(b^(d/2)) nodes instead of O(b^d), dramatically reducing the search space. You must manage two frontiers and a meeting detection condition.',
-                example: 'Grid 100x100. Standard BFS might explore ~10000 cells. Bidirectional BFS explores ~200 cells (two circles of radius 50 meeting in the middle).'
-            },
-            {
-                title: 'Shortest Path with One Wall Removal',
-                difficulty: 'Hard',
-                description: 'Find the shortest path where you are allowed to convert at most one blocked cell (1) to a clear cell (0). The state now includes whether you have used your removal.',
-                whyDifferent: 'The state space doubles: each cell has two states (wall-removal-used and wall-removal-available). This requires BFS on a 3D state space (row, col, removalsLeft), a common graph modeling trick.',
-                example: 'Grid: [[0,1,0],[0,1,0],[0,0,0]]. Without removal: path goes around (length 5). With removal of (0,1): direct path (length 3).'
-            },
-            {
-                title: 'Count All Shortest Paths',
-                difficulty: 'Medium',
-                description: 'Instead of finding just one shortest path, count how many distinct shortest paths exist from top-left to bottom-right.',
-                whyDifferent: 'You need to track both the shortest distance to each cell and the number of ways to reach it at that distance. This combines BFS with dynamic counting, requiring careful handling of ties.',
-                example: 'Grid: [[0,0,0],[0,0,0],[0,0,0]]. Multiple shortest paths of length 5 exist. Count all of them.'
-            }
+            { id: '02-breadth-first-search/02-shortest-path-binary-matrix/twist-01-shortest-path-with-only-4-directions', name: 'Shortest Path with Only 4 Directions', difficulty: 'Easy' },
+            { id: '02-breadth-first-search/02-shortest-path-binary-matrix/twist-02-shortest-path-with-weighted-cells', name: 'Shortest Path with Weighted Cells', difficulty: 'Hard' },
+            { id: '02-breadth-first-search/02-shortest-path-binary-matrix/twist-03-bidirectional-bfs-for-shortest-path', name: 'Bidirectional BFS for Shortest Path', difficulty: 'Hard' },
+            { id: '02-breadth-first-search/02-shortest-path-binary-matrix/twist-04-shortest-path-with-one-wall-removal', name: 'Shortest Path with One Wall Removal', difficulty: 'Hard' },
+            { id: '02-breadth-first-search/02-shortest-path-binary-matrix/twist-05-count-all-shortest-paths', name: 'Count All Shortest Paths', difficulty: 'Medium' }
         ],
         similar: [
 

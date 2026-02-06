@@ -200,12 +200,6 @@ func main() {
     fmt.Println(KSmallestDifferences([]int{1, 7, 11}, []int{2, 4, 6}, 4))
 }`
         },
-        twists: [
-            { title: 'K Largest Differences', difficulty: 'Medium', description: 'Instead of the K smallest differences, find the K pairs with the largest absolute differences between arr1 and arr2.', whyDifferent: 'The heap or sorting strategy reverses: you maximize instead of minimize, changing which pairs to consider first.', example: 'arr1 = [1, 3, 5], arr2 = [2, 4], k = 2. Largest diffs: [1,4]=3 and [5,2]=3.' },
-            { title: 'Exactly K-th Smallest Difference', difficulty: 'Hard', description: 'Return only the K-th smallest difference value (not the pair), using binary search on the answer space.', whyDifferent: 'Instead of enumerating K pairs, you binary search on the difference value and count how many pairs fall below it.', example: 'arr1 = [1, 7, 11], arr2 = [2, 4, 6], k = 3. The 3rd smallest difference value is 1.' },
-            { title: 'K Smallest Without Heap', difficulty: 'Hard', description: 'Find K smallest difference pairs without using a heap. Use only sorting and two-pointer techniques.', whyDifferent: 'Forces a merge-based approach, iterating through sorted differences systematically without priority queue overhead.', example: 'arr1 = [1, 3, 5], arr2 = [2, 4], k = 3. Same result but achieved with pointers only.' },
-            { title: 'K Smallest With Weighted Difference', difficulty: 'Hard', description: 'Each element has a weight. The difference cost is |a - b| * (weight_a + weight_b). Find K pairs with smallest weighted difference.', whyDifferent: 'The weights distort the natural ordering of differences, so sorted arrays alone do not give a clear traversal order.', example: 'arr1 = [(1,5), (3,1)], arr2 = [(2,3)], k = 1. Weighted diffs: 1*8=8 and 1*4=4. Smallest is 4.' }
-        ],
         similar: [
 
         ]

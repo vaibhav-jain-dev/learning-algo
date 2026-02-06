@@ -152,11 +152,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Course Schedule II (Order)', difficulty: 'Medium', description: 'Return one valid order in which courses can be taken, not just whether it is possible.', whyDifferent: 'Extends from boolean feasibility to constructing a concrete ordering, requiring you to record the topological order during BFS.', example: 'For 4 courses with prereqs [[1,0],[2,0],[3,1],[3,2]], return [0,1,2,3] or [0,2,1,3].' },
-            { title: 'Course Schedule with Groups', difficulty: 'Hard', description: 'Courses are grouped into semesters with a maximum number of courses per semester. Find the minimum semesters needed.', whyDifferent: 'Adds a capacity constraint to each BFS level, requiring greedy or DP-based selection of which available courses to take each semester.', example: 'With 6 courses, max 2 per semester, and dependencies: even with all available, you can only take 2 at a time.' },
-            { title: 'DFS Cycle Detection', difficulty: 'Medium', description: 'Detect whether the course prerequisite graph has a cycle using DFS with three-color marking instead of BFS in-degree approach.', whyDifferent: 'Uses a fundamentally different cycle detection method -- white/gray/black coloring where finding a gray node during DFS indicates a back edge (cycle).', example: 'Color nodes white (unvisited), gray (in progress), black (done). If DFS visits a gray node, a cycle exists.' },
-            { title: 'Minimum Prerequisites to Remove', difficulty: 'Hard', description: 'If a cycle exists, find the minimum number of prerequisite edges to remove to make the schedule valid.', whyDifferent: 'Transforms from cycle detection to minimum feedback arc set, an NP-hard problem in general that requires heuristic or special-case solutions.', example: 'For prerequisites [[0,1],[1,2],[2,0]], removing any one edge breaks the cycle. Minimum removals = 1.' },
-            { title: 'Check Specific Order Validity', difficulty: 'Easy', description: 'Given a proposed course ordering, verify if it respects all prerequisite constraints.', whyDifferent: 'Inverts from generating a valid order to validating a given one, which is simpler -- just check that every prerequisite appears before its dependent course.', example: 'For prereqs [[1,0],[2,1]] and order [0,1,2], return true. For order [1,0,2], return false because 1 appears before its prereq 0.' }
+            { id: '03-topological-sort/01-course-schedule/twist-01-course-schedule-ii-order', name: 'Course Schedule II (Order)', difficulty: 'Medium' },
+            { id: '03-topological-sort/01-course-schedule/twist-02-course-schedule-with-groups', name: 'Course Schedule with Groups', difficulty: 'Hard' },
+            { id: '03-topological-sort/01-course-schedule/twist-03-dfs-cycle-detection', name: 'DFS Cycle Detection', difficulty: 'Medium' },
+            { id: '03-topological-sort/01-course-schedule/twist-04-minimum-prerequisites-to-remove', name: 'Minimum Prerequisites to Remove', difficulty: 'Hard' },
+            { id: '03-topological-sort/01-course-schedule/twist-05-check-specific-order-validity', name: 'Check Specific Order Validity', difficulty: 'Easy' }
         ],
         similar: [
 

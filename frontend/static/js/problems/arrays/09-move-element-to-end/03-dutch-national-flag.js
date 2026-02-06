@@ -159,13 +159,6 @@ func main() {
     // Output: [3 3 3 3]
 }`
         },
-        twists: [
-            { title: 'Four-Way Partition', difficulty: 'Very Hard', description: 'Extend the Dutch National Flag to four categories: less than pivot1, between pivot1 and pivot2, between pivot2 and pivot3, and greater than pivot3.', whyDifferent: 'Three pivots require four pointers and more complex swap logic, significantly harder to maintain invariants.', example: 'array = [3,1,4,1,5,9,2,6], pivots = [2,5,7]. Result: [1,1,2, 3,4,5, 6, 9].' },
-            { title: 'Stable Three-Way Partition', difficulty: 'Very Hard', description: 'Partition into three groups around the pivot but preserve the relative order within each group.', whyDifferent: 'Standard DNF is unstable. Achieving stability in O(n) time and O(1) space is extremely challenging.', example: 'array = [5, 3, 1, 3, 5, 1], pivot = 3. Stable result: [1, 1, 3, 3, 5, 5].' },
-            { title: 'Count Swaps in DNF', difficulty: 'Hard', description: 'Perform the Dutch National Flag partition and return the exact number of swaps performed.', whyDifferent: 'Forces careful analysis of when swaps actually occur vs. when mid pointer simply advances.', example: 'array = [2, 0, 1, 2, 1, 0], pivot = 1. After partition, count exactly how many swaps were made.' },
-            { title: 'DNF with Custom Comparator', difficulty: 'Hard', description: 'Instead of comparing to a single pivot value, partition using a custom three-way comparator function that classifies each element.', whyDifferent: 'The classification is decoupled from simple numeric comparison, requiring the algorithm to work with arbitrary predicates.', example: 'array = [\"cat\", \"ant\", \"bat\", \"dog\"], classify by first letter groups. Three groups defined by custom function.' },
-            { title: 'Online Dutch National Flag', difficulty: 'Very Hard', description: 'Elements arrive one at a time in a stream. Maintain a partitioned array as each new element arrives, inserting it into the correct position.', whyDifferent: 'Insertion into a maintained partition requires shifting elements, changing the problem from rearrangement to dynamic insertion.', example: 'Stream: 2, 0, 1, 2. After each: [2], [0,2], [0,1,2], [0,1,2,2]. Pivot = 1.' }
-        ],
         similar: [
 
         ]

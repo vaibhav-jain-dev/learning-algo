@@ -130,43 +130,6 @@ func main() {
     fmt.Println(AllNonConstructible([]int{1, 5, 10}, 20))  // [2,3,4,7,8,9,12,13,14,17,18,19]
 }`
         },
-        twists: [
-            {
-                title: 'Count Non-Constructible Values',
-                difficulty: 'Medium',
-                description: 'Instead of listing all non-constructible values, just return their count up to the limit.',
-                whyDifferent: 'Can potentially be more efficient: count = limit - (number of constructible values). Changes from enumeration to arithmetic.',
-                example: 'coins=[1,5,10], limit=20 → count of non-constructible values up to 20'
-            },
-            {
-                title: 'Non-Constructible Ranges',
-                difficulty: 'Medium',
-                description: 'Return the non-constructible values as compressed ranges [start, end] instead of individual values.',
-                whyDifferent: 'Requires identifying contiguous gaps in the constructible set and representing them compactly, adding a grouping/compression step.',
-                example: 'coins=[1,5,10], limit=20 → [[2,4],[7,9],[12,14],[17,19]] (ranges of non-constructible)'
-            },
-            {
-                title: 'All Non-Constructible with Unlimited Coins',
-                difficulty: 'Hard',
-                description: 'Each coin denomination can be used unlimited times. Find all non-constructible values up to the limit.',
-                whyDifferent: 'Switches from subset-sum (0/1 knapsack) to unbounded knapsack DP, where the traversal direction in DP changes from backward to forward.',
-                example: 'coins=[3,5], limit=20 → non-constructible: [1,2,4,7] (after 7, all values constructible)'
-            },
-            {
-                title: 'Minimum Coin to Make Value Constructible',
-                difficulty: 'Medium',
-                description: 'For each non-constructible value up to the limit, find the minimum single coin you would need to add to make it constructible.',
-                whyDifferent: 'Pairs each gap with its minimal fix, requiring reverse analysis of what single coin addition would fill each gap.',
-                example: 'coins=[1,5], limit=10, non-constructible=4 → adding coin 4 makes it constructible, or adding 3 (since 1+3=4)'
-            },
-            {
-                title: 'All Non-Constructible with Coin Usage Limits',
-                difficulty: 'Hard',
-                description: 'Each coin has a maximum number of times it can be used (given as a parallel array). Find all non-constructible values.',
-                whyDifferent: 'Requires bounded knapsack DP instead of 0/1 knapsack, with each coin contributing multiple possible amounts.',
-                example: 'coins=[1,5], limits=[3,2], limit=15 → can use three 1s and two 5s → constructible: 1-3,5-8,10-13'
-            }
-        ],
         similar: [
 
         ]

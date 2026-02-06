@@ -284,41 +284,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Unified Iterative Traversal (Single Template)',
-                difficulty: 'Hard',
-                description: 'Implement all three traversals using a single unified iterative template. Use a marker/flag system where you push nodes with a "visited" boolean, so the same loop structure handles inorder, preorder, and postorder by simply changing the push order.',
-                whyDifferent: 'The standard iterative approaches use fundamentally different stack strategies for each traversal. A unified template forces you to think about a general framework that abstracts the traversal order into a configurable parameter.',
-                example: 'Using a (node, visited) tuple on the stack: for inorder, push right, self(marked), left. Popping a marked node means process it. Same structure for all three by reordering pushes.'
-            },
-            {
-                title: 'Iterative Postorder Without Reverse',
-                difficulty: 'Hard',
-                description: 'Implement iterative postorder traversal without using the "reverse of modified preorder" trick. Use a single stack and track the previously visited node to determine when to process the current node.',
-                whyDifferent: 'The common shortcut (reverse of root-right-left preorder) avoids the real challenge. True single-stack postorder requires tracking the last-visited node to decide whether to go right or process the current node, which is a much more nuanced state machine.',
-                example: 'Tree: [1,2,3,4,5,null,6]. Must produce [4,5,2,6,3,1] using one stack, no reversal, tracking prev pointer.'
-            },
-            {
-                title: 'Iterative Traversal with Parent Pointers',
-                difficulty: 'Medium',
-                description: 'Each node has a parent pointer. Implement inorder traversal iteratively using O(1) auxiliary space by navigating up and down via parent pointers instead of using a stack.',
-                whyDifferent: 'Parent pointers eliminate the need for a stack entirely. The traversal becomes a state machine: you must determine whether you arrived at a node from its parent, from its left child, or from its right child, and transition accordingly.',
-                example: 'Tree: [1,2,3,4,5]. Using parent pointers, navigate: start at 1, go left to 2, go left to 4, process 4, go up to 2, process 2, go right to 5, process 5, go up to 2, go up to 1, process 1, go right to 3, process 3.'
-            },
-            {
-                title: 'Iterative Level-Aware Inorder',
-                difficulty: 'Medium',
-                description: 'Perform iterative inorder traversal but also track and return the depth of each node alongside its value.',
-                whyDifferent: 'The standard iterative inorder does not naturally track depth. You must augment the stack to store depth information alongside each node, changing the stack from storing just nodes to storing (node, depth) pairs.',
-                example: 'Tree: [10,5,15]. Iterative inorder with depth: [(5,1), (10,0), (15,1)].'
-            },
-            {
-                title: 'Interruptible Iterative Traversal',
-                difficulty: 'Medium',
-                description: 'Design the iterative traversal so it can be paused and resumed. Return a "continuation" object that captures the current stack state, allowing the traversal to be split across multiple calls.',
-                whyDifferent: 'Standard traversal runs to completion. Making it interruptible requires externalizing all state (the stack and current pointer) into a resumable object, essentially building a manual coroutine or iterator from the traversal logic.',
-                example: 'Tree: [1,2,3,4,5]. resume(null)={value:4, state:S1}. resume(S1)={value:2, state:S2}. resume(S2)={value:5, state:S3}...'
-            }
+            { id: '04-bst-traversal/01-iterative-tree-traversal/twist-01-unified-iterative-traversal-single-template', name: 'Unified Iterative Traversal (Single Template)', difficulty: 'Hard' },
+            { id: '04-bst-traversal/01-iterative-tree-traversal/twist-02-iterative-postorder-without-reverse', name: 'Iterative Postorder Without Reverse', difficulty: 'Hard' },
+            { id: '04-bst-traversal/01-iterative-tree-traversal/twist-03-iterative-traversal-with-parent-pointers', name: 'Iterative Traversal with Parent Pointers', difficulty: 'Medium' },
+            { id: '04-bst-traversal/01-iterative-tree-traversal/twist-04-iterative-level-aware-inorder', name: 'Iterative Level-Aware Inorder', difficulty: 'Medium' },
+            { id: '04-bst-traversal/01-iterative-tree-traversal/twist-05-interruptible-iterative-traversal', name: 'Interruptible Iterative Traversal', difficulty: 'Medium' }
         ],
         similar: [
 

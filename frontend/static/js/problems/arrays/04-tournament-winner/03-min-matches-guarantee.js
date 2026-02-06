@@ -168,43 +168,6 @@ func main() {
     fmt.Println(MinMatchesGuarantee([]int{6, 6, 6}, 3))  // 2
 }`
         },
-        twists: [
-            {
-                title: 'Min Matches for Top K Guarantee',
-                difficulty: 'Hard',
-                description: 'Instead of guaranteeing a single winner, find the minimum matches to guarantee the top K teams are determined.',
-                whyDifferent: 'Must ensure K teams are uncatchable, not just one. The gap analysis must consider multiple teams simultaneously.',
-                example: 'scores=[10,8,6,4], k=2 → how many matches until top 2 spots are guaranteed?'
-            },
-            {
-                title: 'Min Matches with Known Schedule',
-                difficulty: 'Hard',
-                description: 'Given the remaining schedule of who plays whom, find the minimum number of those scheduled matches that must be played to guarantee a winner.',
-                whyDifferent: 'Cannot assume arbitrary matchups. Must reason about specific pairings and their worst-case outcomes.',
-                example: 'scores=[9,6,6], remaining: A vs B, B vs C → only 1 match (A vs B, if A wins, A is uncatchable)'
-            },
-            {
-                title: 'Probability of Winner After K Matches',
-                difficulty: 'Very Hard',
-                description: 'Given win probabilities for each team, find the probability that a clear winner exists after k more matches.',
-                whyDifferent: 'Shifts from deterministic to probabilistic analysis, requiring expected value calculations or simulation over match outcome distributions.',
-                example: 'scores=[6,6], P(A wins)=0.6, after 1 match: P(clear winner)=1.0 (one match always decides between 2 teams)'
-            },
-            {
-                title: 'Min Matches with Bonus Points',
-                difficulty: 'Medium',
-                description: 'Some matches award bonus points (e.g., 4 points instead of 3 for a decisive victory). Factor this into the guarantee calculation.',
-                whyDifferent: 'Variable point awards mean worst-case analysis must consider opponents potentially earning bonus points, widening the gap needed.',
-                example: 'scores=[10,7], base=3, bonus=4 → second place could gain 4 per match, need bigger lead to guarantee'
-            },
-            {
-                title: 'Min Matches Across Multiple Groups',
-                difficulty: 'Hard',
-                description: 'Teams are in separate groups. Find the minimum total matches across all groups to guarantee a winner in every group.',
-                whyDifferent: 'Must optimize across independent groups, where matches in one group do not affect another, but total match count should be minimized globally.',
-                example: 'Group1 scores=[8,6,4], Group2 scores=[5,5,5] → Group1 needs 1, Group2 needs 2 → total 3'
-            }
-        ],
         similar: [
 
         ]

@@ -27,11 +27,11 @@
     }
         ],
         twists: [
-            { title: 'Finite Deck', difficulty: 'Hard', description: 'Instead of an infinite deck with uniform distribution, use a standard 52-card deck where drawn cards are removed (without replacement).', whyDifferent: 'Cards are no longer independent -- the probability of drawing each value changes with each draw, requiring tracking the remaining deck composition in the state.', example: 'With a finite deck, drawing a 10 first reduces the probability of drawing another 10 from 4/52 to 3/51, affecting all subsequent bust calculations.' },
-            { title: 'Expected Hand Value', difficulty: 'Medium', description: 'Instead of bust probability, compute the expected (average) final hand value when drawing until reaching the target or busting.', whyDifferent: 'Changes the recursion from probability accumulation to expected value calculation, summing weighted hand values instead of just bust probabilities.', example: 'For target=21, startingHand=15, compute the expected final hand value across all possible draw sequences.' },
-            { title: 'Optimal Strategy', difficulty: 'Very Hard', description: 'At each hand value, you can choose to draw or stand. Find the strategy that minimizes bust probability (or maximizes expected value).', whyDifferent: 'Introduces a decision at each step, transforming from a pure probability calculation into a dynamic programming optimization with choice.', example: 'At hand value 17 with target 21, is it better to stand or draw? Compute the optimal threshold for standing.' },
-            { title: 'Multiple Players', difficulty: 'Hard', description: 'Compute the probability that player 1 beats player 2, where both draw from the same infinite deck following the same rules.', whyDifferent: 'Requires computing the probability distribution of final hand values for each player, then convolving them to find the win probability.', example: 'Player 1 starts at 12, player 2 starts at 14. Both draw until >= 21. What is the probability player 1 gets a higher non-bust hand?' },
-            { title: 'Bust Probability with Aces', difficulty: 'Hard', description: 'Add the rule that aces can count as 1 or 11, automatically choosing the best value. Compute the bust probability with this flexible card.', whyDifferent: 'Aces create branching hand values -- a hand might be simultaneously valued at both X and X+10, requiring tracking of "soft" vs "hard" hand states.', example: 'Starting hand 15, draw an ace: hand is either 16 or 26. Since 26 busts, ace counts as 1 giving 16. This changes all probability calculations.' }
+            { id: '12-blackjack-probability/twist-01-finite-deck', name: 'Finite Deck', difficulty: 'Hard' },
+            { id: '12-blackjack-probability/twist-02-expected-hand-value', name: 'Expected Hand Value', difficulty: 'Medium' },
+            { id: '12-blackjack-probability/twist-03-optimal-strategy', name: 'Optimal Strategy', difficulty: 'Very Hard' },
+            { id: '12-blackjack-probability/twist-04-multiple-players', name: 'Multiple Players', difficulty: 'Hard' },
+            { id: '12-blackjack-probability/twist-05-bust-probability-with-aces', name: 'Bust Probability with Aces', difficulty: 'Hard' }
         ],
         similar: [
 

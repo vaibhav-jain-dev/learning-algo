@@ -227,11 +227,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Exactly K Stops', difficulty: 'Medium', description: 'Find the cheapest flight with exactly K stops (not at most K). You must make exactly K+1 flights.', whyDifferent: 'The at-most-K version allows early arrival. Exactly K forces you to keep going even if a shorter path exists, requiring you to track stop count precisely.', example: 'Path with 0 stops costs 500, path with 1 stop costs 300. With exactly K=1, answer is 300 even though direct flight exists.' },
-            { title: 'All Cheapest Paths', difficulty: 'Hard', description: 'Find the cheapest price from src to dst for each possible number of stops from 0 to K. Return an array of K+1 prices.', whyDifferent: 'You need to record the best price at each stop level, maintaining a 2D DP table instead of a 1D distance array.', example: 'Stops 0: 500 (direct), Stops 1: 300 (via city A), Stops 2: 280 (via A and B). Return [500, 300, 280].' },
-            { title: 'Return the Route', difficulty: 'Medium', description: 'Besides the cheapest price, return the actual route (sequence of cities) taken.', whyDifferent: 'Bellman-Ford variant needs predecessor tracking at each iteration level. Reconstructing the path requires backtracking through the DP table.', example: 'Cheapest path: 0 -> 1 -> 2 -> 3 with cost 700. Return {cost: 700, route: [0, 1, 2, 3]}.' },
-            { title: 'Multiple Destinations', difficulty: 'Medium', description: 'Find the cheapest price from src to any of a set of destination cities with at most K stops.', whyDifferent: 'After running the K-limited Bellman-Ford, check all destination cities and return the minimum. Simple extension but tests understanding of when results are available.', example: 'Destinations: [3, 5, 7]. Cheapest to 3: 700, to 5: 400, to 7: 900. Answer: 400 (city 5).' },
-            { title: 'Bidirectional Flights', difficulty: 'Easy', description: 'All flights are bidirectional with the same price. Find cheapest round-trip from src to dst and back with at most K total stops.', whyDifferent: 'Bidirectional doubles the edge set. Round-trip requires finding cheapest path there and back, but stops are shared across both directions.', example: 'One-way cheapest 0->3: cost 300 with 1 stop. Return 0->3->0: cost 600 with 2 stops total.' }
+            { id: '11-detect-arbitrage/01-cheapest-flights-k-stops/twist-01-exactly-k-stops', name: 'Exactly K Stops', difficulty: 'Medium' },
+            { id: '11-detect-arbitrage/01-cheapest-flights-k-stops/twist-02-all-cheapest-paths', name: 'All Cheapest Paths', difficulty: 'Hard' },
+            { id: '11-detect-arbitrage/01-cheapest-flights-k-stops/twist-03-return-the-route', name: 'Return the Route', difficulty: 'Medium' },
+            { id: '11-detect-arbitrage/01-cheapest-flights-k-stops/twist-04-multiple-destinations', name: 'Multiple Destinations', difficulty: 'Medium' },
+            { id: '11-detect-arbitrage/01-cheapest-flights-k-stops/twist-05-bidirectional-flights', name: 'Bidirectional Flights', difficulty: 'Easy' }
         ],
         similar: [
 

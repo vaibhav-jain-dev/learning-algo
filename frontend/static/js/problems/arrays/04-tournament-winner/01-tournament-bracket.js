@@ -173,43 +173,6 @@ func main() {
     fmt.Println(TournamentBracket(bracket2, [][]int{}, 0)) // "Team2"
 }`
         },
-        twists: [
-            {
-                title: 'Double Elimination Bracket',
-                difficulty: 'Hard',
-                description: 'Simulate a double-elimination tournament where a team must lose twice to be eliminated.',
-                whyDifferent: 'Requires tracking a winners bracket and losers bracket simultaneously, with teams moving between them based on match results.',
-                example: 'Teams [A,B,C,D]: A beats B, C beats D, A beats C (winners final), B beats D (losers), B beats C (losers final), then grand final'
-            },
-            {
-                title: 'Bracket with Seeding',
-                difficulty: 'Medium',
-                description: 'Teams have seed rankings. Generate the optimal bracket (1 vs N, 2 vs N-1, etc.) then simulate with given win probabilities.',
-                whyDifferent: 'Adds a bracket generation phase before simulation, requiring you to construct the pairing structure from seeds rather than receiving it.',
-                example: 'seeds=[1,2,3,4] → pairs: (1v4, 2v3), then winners face off'
-            },
-            {
-                title: 'Predict All Possible Champions',
-                difficulty: 'Hard',
-                description: 'Given the bracket but no results, determine all teams that could potentially be the champion.',
-                whyDifferent: 'Changes from simulation to possibility analysis, requiring you to enumerate valid result combinations or prove structural constraints.',
-                example: 'bracket=[["A","B"],["C","D"]] → all 4 teams could potentially win the final'
-            },
-            {
-                title: 'Bracket Reset from Results',
-                difficulty: 'Medium',
-                description: 'Given only the list of winners from each round (not the pairings), reconstruct the original bracket.',
-                whyDifferent: 'Reverses the problem: instead of simulating forward, you must work backwards from results to deduce the bracket structure.',
-                example: 'Round 1 winners: [A,C], Final winner: A → bracket must have been [[A,?],[C,?]]'
-            },
-            {
-                title: 'Minimum Upsets to Change Champion',
-                difficulty: 'Very Hard',
-                description: 'Given completed bracket results, find the minimum number of match outcomes that would need to change for a different team to win.',
-                whyDifferent: 'Requires counterfactual reasoning about cascading effects of changing early round results through the bracket.',
-                example: 'If A won the tournament, changing just 1 result in the final changes the champion, but changing a first-round result requires tracing effects through later rounds'
-            }
-        ],
         similar: [
 
         ]

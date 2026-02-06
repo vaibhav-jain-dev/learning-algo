@@ -263,11 +263,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Flip K Zeros', difficulty: 'Very Hard', description: 'Instead of flipping exactly one 0 to 1, you can flip up to K zeros. Find the largest island achievable.', whyDifferent: 'With K>1, you cannot just check adjacent islands. You need to consider combinations of flips, potentially using BFS from island boundaries or sliding window techniques.', example: 'Grid 5x5 with two islands of size 4 separated by 2 zeros. K=2 gives island of size 10.' },
-            { title: 'Remove One Cell', difficulty: 'Hard', description: 'Instead of adding a cell, remove one land cell (set 1 to 0). Find the largest remaining island.', whyDifferent: 'Removing a cell can split an island into multiple pieces. You need to check if the cell is an articulation point of its island, which requires bridge-finding algorithms.', example: 'Island shaped like a line [1,1,1,1]. Removing the middle cell splits it into two islands of size 1 and 2.' },
-            { title: 'Rectangular Grid Constraint', difficulty: 'Medium', description: 'The grid is not square (m x n where m != n). Ensure the solution handles non-square grids correctly.', whyDifferent: 'The original problem specifies n x n. Non-square grids require using separate row/column bounds throughout, a common source of index bugs.', example: 'Grid 2x5: [[1,0,1,0,1],[0,1,0,1,0]]. Flip cell (0,1) to connect two islands.' },
-            { title: 'Weighted Cells', difficulty: 'Hard', description: 'Each land cell has a positive weight. Maximize the total weight of the island after flipping one 0 to 1 (with weight 1).', whyDifferent: 'Island size becomes island weight. You must sum weights during the labeling pass instead of counting cells, and the flip adds weight 1 specifically.', example: 'Cells with weights [[3,0],[0,5]]. Flipping (0,1) gives island with total weight 3+1+5=9 (if connected diagonally not applicable since 4-dir).' },
-            { title: 'No Flip Needed', difficulty: 'Easy', description: 'Simply find the largest island without any modifications. No flipping allowed.', whyDifferent: 'Without the flip optimization, you just need basic flood fill. The two-pass approach with island labeling is unnecessary, simplifying the solution dramatically.', example: 'Grid [[1,1,0],[1,0,0],[0,0,1]]. Largest island is 3 (top-left group).' }
+            { id: '05-river-sizes/03-making-a-large-island/twist-01-flip-k-zeros', name: 'Flip K Zeros', difficulty: 'Very Hard' },
+            { id: '05-river-sizes/03-making-a-large-island/twist-02-remove-one-cell', name: 'Remove One Cell', difficulty: 'Hard' },
+            { id: '05-river-sizes/03-making-a-large-island/twist-03-rectangular-grid-constraint', name: 'Rectangular Grid Constraint', difficulty: 'Medium' },
+            { id: '05-river-sizes/03-making-a-large-island/twist-04-weighted-cells', name: 'Weighted Cells', difficulty: 'Hard' },
+            { id: '05-river-sizes/03-making-a-large-island/twist-05-no-flip-needed', name: 'No Flip Needed', difficulty: 'Easy' }
         ],
         similar: [
 

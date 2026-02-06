@@ -169,43 +169,6 @@ func main() {
     fmt.Println(KthSmallestSquared([]int{-4, -2, 0, 1, 3}, 1))  // 0
 }`
         },
-        twists: [
-            {
-                title: 'Kth Smallest Squared Across Multiple Arrays',
-                difficulty: 'Hard',
-                description: 'Given multiple sorted arrays, find the kth smallest squared value across all of them.',
-                whyDifferent: 'Requires a min-heap with multiple two-pointer pairs, or merging multiple squared streams simultaneously.',
-                example: 'arrays=[[-3,1,4],[-2,0,5]], k=3 → 1 (squares: [0,1,4,9,16,25], 3rd is 4... wait, sorted: 0,1,4,4,9,16,25 → 3rd is 4)'
-            },
-            {
-                title: 'Kth Smallest Unique Squared',
-                difficulty: 'Medium',
-                description: 'Find the kth smallest squared value, but skip duplicate squares (e.g., -3 and 3 both give 9, count it only once).',
-                whyDifferent: 'Adds deduplication to the progressive search, requiring you to detect when both pointers yield the same squared value.',
-                example: 'array=[-3,-1,0,1,3], k=2 → 1 (unique squares sorted: 0,1,9 → 2nd is 1)'
-            },
-            {
-                title: 'Median of Squared Array',
-                difficulty: 'Medium',
-                description: 'Find the median of the squared array without fully sorting it.',
-                whyDifferent: 'The kth-smallest approach works, but you need to determine k=n/2 first, and for even-length arrays, average two middle elements.',
-                example: 'array=[-4,-2,0,1,3] → median of [0,1,4,9,16] is 4'
-            },
-            {
-                title: 'Kth Smallest with Range Query',
-                difficulty: 'Very Hard',
-                description: 'Support range queries: given indices l and r, find the kth smallest squared value from array[l..r] only.',
-                whyDifferent: 'The subarray may not have a clean negative/positive split, requiring segment tree or persistent data structure approaches.',
-                example: 'array=[-4,-2,0,1,3], query(l=1,r=3,k=2) → from [-2,0,1], squares [0,1,4], 2nd is 1'
-            },
-            {
-                title: 'Kth Smallest Squared Sum of Pairs',
-                difficulty: 'Very Hard',
-                description: 'Instead of squaring individual elements, find the kth smallest value of a[i]^2 + a[j]^2 for all pairs i<j.',
-                whyDifferent: 'Completely changes the problem from single-element to pair-based, requiring a heap-based enumeration of sorted pair sums.',
-                example: 'array=[-2,0,1], pairs: (0+4)=4, (0+1)=1, (4+1)=5 → sorted: 1,4,5 → k=1 gives 1'
-            }
-        ],
         similar: [
 
         ]

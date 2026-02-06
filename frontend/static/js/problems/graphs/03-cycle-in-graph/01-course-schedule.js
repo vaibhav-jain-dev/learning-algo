@@ -171,41 +171,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Return a Valid Course Order (Topological Sort)',
-                difficulty: 'Medium',
-                description: 'Instead of just checking feasibility, return an actual ordering of courses that satisfies all prerequisites. This is Course Schedule II.',
-                whyDifferent: 'Shifts from pure cycle detection to topological sorting. You must collect nodes in post-order during DFS and reverse them, or use Kahn\'s algorithm to build the order incrementally.',
-                example: 'numCourses=4, prerequisites=[[1,0],[2,0],[3,1],[3,2]]. Valid order: [0,1,2,3] or [0,2,1,3]. Not just true/false.'
-            },
-            {
-                title: 'Course Schedule with BFS (Kahn\'s Algorithm)',
-                difficulty: 'Medium',
-                description: 'Solve the same problem using BFS-based topological sort instead of DFS. Process courses with no remaining prerequisites first.',
-                whyDifferent: 'Completely different mental model: instead of exploring depth-first and detecting back edges, you iteratively remove courses whose prerequisites are met. More intuitive for some and naturally produces a valid order.',
-                example: 'Same input. Start with courses having 0 prerequisites, remove them, decrement neighbors\' in-degrees, repeat. If all courses processed, answer is true.'
-            },
-            {
-                title: 'Minimum Semesters to Complete All Courses',
-                difficulty: 'Hard',
-                description: 'Each semester you can take any courses whose prerequisites are met (in parallel). Find the minimum number of semesters to finish all courses, or -1 if impossible.',
-                whyDifferent: 'Adds a time dimension. This requires finding the longest path in the DAG (critical path), which combines topological sorting with level-based processing. The answer is the depth of the dependency graph.',
-                example: 'prerequisites=[[1,0],[2,0],[3,1],[3,2]]. Semester 1: [0]. Semester 2: [1,2]. Semester 3: [3]. Answer: 3 semesters.'
-            },
-            {
-                title: 'Course Schedule with Weighted Prerequisites',
-                difficulty: 'Hard',
-                description: 'Each prerequisite edge has a "study time" weight. Find if all courses can be completed and the minimum total time if courses must be taken sequentially along the critical path.',
-                whyDifferent: 'Transforms from a simple DAG feasibility check to a critical path analysis problem. You need longest-path computation on a weighted DAG, which uses topological order and dynamic programming.',
-                example: 'Course 0 (2 weeks) -> Course 1 (3 weeks) -> Course 3 (1 week). Course 0 -> Course 2 (1 week) -> Course 3. Critical path: 0->1->3 = 6 weeks.'
-            },
-            {
-                title: 'Detect Which Courses Form Circular Dependencies',
-                difficulty: 'Medium',
-                description: 'If courses cannot all be completed, return the list of courses that are involved in circular dependencies (i.e., the courses that prevent completion).',
-                whyDifferent: 'Not just detecting a cycle exists, but identifying all nodes that are part of or lead into cycles. This is the complement of "eventual safe states" - nodes remaining gray after DFS are the problematic ones.',
-                example: 'numCourses=4, prerequisites=[[1,0],[0,1],[2,3]]. Courses 0 and 1 form a cycle. Courses 2 and 3 are fine. Return [0,1].'
-            }
+            { id: '03-cycle-in-graph/01-course-schedule/twist-01-return-a-valid-course-order-topological-sort', name: 'Return a Valid Course Order (Topological Sort)', difficulty: 'Medium' },
+            { id: '03-cycle-in-graph/01-course-schedule/twist-02-course-schedule-with-bfs-kahns-algorithm', name: 'Course Schedule with BFS (Kahn\\'s Algorithm)', difficulty: 'Medium' },
+            { id: '03-cycle-in-graph/01-course-schedule/twist-03-minimum-semesters-to-complete-all-courses', name: 'Minimum Semesters to Complete All Courses', difficulty: 'Hard' },
+            { id: '03-cycle-in-graph/01-course-schedule/twist-04-course-schedule-with-weighted-prerequisites', name: 'Course Schedule with Weighted Prerequisites', difficulty: 'Hard' },
+            { id: '03-cycle-in-graph/01-course-schedule/twist-05-detect-which-courses-form-circular-dependencies', name: 'Detect Which Courses Form Circular Dependencies', difficulty: 'Medium' }
         ],
         similar: [
 

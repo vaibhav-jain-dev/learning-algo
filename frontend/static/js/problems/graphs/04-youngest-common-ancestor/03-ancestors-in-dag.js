@@ -332,11 +332,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'All Descendants Instead', difficulty: 'Medium', description: 'Instead of finding ancestors of each node, find all descendants of each node in the DAG.', whyDifferent: 'You reverse the direction of propagation. Instead of tracing backward from each node, you trace forward, requiring a different traversal order.', example: 'DAG with edges [0->3,0->4,1->3]. Descendants of 0 are {3,4,5,6,7}, descendants of 1 are {3,5,6,7}.' },
-            { title: 'Ancestors in a Tree Only', difficulty: 'Easy', description: 'The graph is guaranteed to be a tree (each node has exactly one parent). Find all ancestors of each node.', whyDifferent: 'In a tree, each node has a unique path to root. You simply walk up the parent chain, making the problem O(N*depth) without needing topological sort.', example: 'Tree with parent=[−1,0,0,1,1]. Ancestors of 3 are [0,1], ancestors of 4 are [0,1].' },
-            { title: 'Count Common Ancestors', difficulty: 'Hard', description: 'Given two nodes u and v in the DAG, find the number of common ancestors they share.', whyDifferent: 'You need to compute ancestor sets for two specific nodes and intersect them, rather than computing all ancestors for every node.', example: 'Nodes 5 and 6 in the DAG. Ancestors of 5={0,1,3}, Ancestors of 6={0,1,2,3,4}. Common={0,1,3}, count=3.' },
-            { title: 'Nearest Ancestor with Property', difficulty: 'Hard', description: 'Each node has a boolean property. For each node, find its nearest ancestor (in terms of shortest path) that has the property set to true.', whyDifferent: 'You cannot just collect all ancestors. You need BFS on the reverse graph and track distances, stopping at the first ancestor with the property.', example: 'Nodes 0-7, property true for nodes {0, 3}. Nearest true-ancestor of 5 is 3 (distance 1).' },
-            { title: 'Transitive Reduction', difficulty: 'Very Hard', description: 'After finding all ancestors, remove redundant edges from the DAG. An edge u->v is redundant if there is another path from u to v.', whyDifferent: 'You use ancestor information to determine edge redundancy, combining set operations with graph structure in a way that tests deep understanding of reachability.', example: 'Edges [0->1, 0->2, 1->2]. Edge 0->2 is redundant because 0->1->2 exists. Remove it.' }
+            { id: '04-youngest-common-ancestor/03-ancestors-in-dag/twist-01-all-descendants-instead', name: 'All Descendants Instead', difficulty: 'Medium' },
+            { id: '04-youngest-common-ancestor/03-ancestors-in-dag/twist-02-ancestors-in-a-tree-only', name: 'Ancestors in a Tree Only', difficulty: 'Easy' },
+            { id: '04-youngest-common-ancestor/03-ancestors-in-dag/twist-03-count-common-ancestors', name: 'Count Common Ancestors', difficulty: 'Hard' },
+            { id: '04-youngest-common-ancestor/03-ancestors-in-dag/twist-04-nearest-ancestor-with-property', name: 'Nearest Ancestor with Property', difficulty: 'Hard' },
+            { id: '04-youngest-common-ancestor/03-ancestors-in-dag/twist-05-transitive-reduction', name: 'Transitive Reduction', difficulty: 'Very Hard' }
         ],
         similar: [
 

@@ -217,41 +217,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Bidirectional BST Iterator',
-                difficulty: 'Hard',
-                description: 'Extend the iterator to support both next() and prev() operations, allowing forward and backward traversal at any point.',
-                whyDifferent: 'A single stack only supports one direction. Supporting both requires either two stacks or a different state representation. Switching direction mid-traversal is particularly tricky since you need to reverse the stack semantics.',
-                example: 'Tree: [7,3,15,null,null,9,20]. next()=3, next()=7, prev()=3, next()=7, next()=9.'
-            },
-            {
-                title: 'BST Iterator with Peek',
-                difficulty: 'Medium',
-                description: 'Add a peek() operation that returns the next value without advancing the iterator. It must be O(1) time.',
-                whyDifferent: 'While conceptually simple, peek() must not modify the stack state. You need to think about caching the top-of-stack value and handling the case where peek is called multiple times vs. interleaved with next().',
-                example: 'Tree: [7,3,15]. peek()=3, peek()=3, next()=3, peek()=7, next()=7.'
-            },
-            {
-                title: 'BST Iterator Starting from a Given Value',
-                difficulty: 'Medium',
-                description: 'Initialize the iterator so that the first call to next() returns the smallest value >= a given start value, rather than the minimum of the entire tree.',
-                whyDifferent: 'Instead of pushing all left children from root, you must selectively push nodes during initialization based on the start value, using BST search logic to position the stack correctly.',
-                example: 'Tree: [7,3,15,1,5,9,20], start=6 -> first next()=7, then 9, then 15, then 20.'
-            },
-            {
-                title: 'Merge Two BST Iterators',
-                difficulty: 'Hard',
-                description: 'Given two BST iterators, create a merged iterator that yields all values from both trees in sorted order.',
-                whyDifferent: 'This is a merge operation on two lazy streams. You must compare the peek values of both iterators and advance the appropriate one, similar to merge sort but with iterator state management.',
-                example: 'BST1: [3,1,5], BST2: [4,2,6]. Merged iterator yields: 1,2,3,4,5,6.'
-            },
-            {
-                title: 'BST Iterator Resilient to Modifications',
-                difficulty: 'Very Hard',
-                description: 'The BST may have nodes inserted or deleted between iterator calls. The iterator should still yield all remaining values in sorted order, including newly inserted ones and excluding deleted ones.',
-                whyDifferent: 'Standard iterators assume a static tree. Handling concurrent modifications requires either snapshotting, versioning, or re-validating the stack state before each next() call -- a fundamentally different design.',
-                example: 'Tree: [5,3,7]. next()=3. Insert 4. next()=4 (newly inserted). next()=5. Delete 7. hasNext()=false.'
-            }
+            { id: '02-bst-construction/01-bst-iterator/twist-01-bidirectional-bst-iterator', name: 'Bidirectional BST Iterator', difficulty: 'Hard' },
+            { id: '02-bst-construction/01-bst-iterator/twist-02-bst-iterator-with-peek', name: 'BST Iterator with Peek', difficulty: 'Medium' },
+            { id: '02-bst-construction/01-bst-iterator/twist-03-bst-iterator-starting-from-a-given-value', name: 'BST Iterator Starting from a Given Value', difficulty: 'Medium' },
+            { id: '02-bst-construction/01-bst-iterator/twist-04-merge-two-bst-iterators', name: 'Merge Two BST Iterators', difficulty: 'Hard' },
+            { id: '02-bst-construction/01-bst-iterator/twist-05-bst-iterator-resilient-to-modifications', name: 'BST Iterator Resilient to Modifications', difficulty: 'Very Hard' }
         ],
         similar: [
 

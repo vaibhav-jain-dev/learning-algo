@@ -34,41 +34,11 @@
     }
         ],
         twists: [
-            {
-                title: 'Count Nodes Within Distance',
-                difficulty: 'Medium',
-                description: 'Instead of finding the single closest value, count how many nodes in the BST have values within a given distance D of the target.',
-                whyDifferent: 'You can no longer prune an entire subtree just because the current node is farther than your best. Both subtrees might contain values within distance D, so you need a range-aware traversal strategy.',
-                example: 'Tree: [10,5,15,2,5,13,22,1], target=12, D=3 -> Count=3 (values 10, 13, 15 are all within distance 3 of 12).'
-            },
-            {
-                title: 'Closest Value Without Parent Pointers (Iterative)',
-                difficulty: 'Easy',
-                description: 'Solve the same problem but you must use an iterative approach with O(1) space -- no recursion allowed.',
-                whyDifferent: 'Forces you to think about the traversal iteratively. While the logic is similar, managing state explicitly rather than via the call stack changes how you reason about the control flow.',
-                example: 'Same input/output as base problem, but solution must use a while loop instead of recursion.'
-            },
-            {
-                title: 'Closest Value in a Modified BST with Duplicates',
-                difficulty: 'Medium',
-                description: 'The BST may contain duplicate values (duplicates go to the right subtree). Find the closest value, and if there are ties, return the smallest one.',
-                whyDifferent: 'Duplicates break the assumption of unique closest value. You must handle tie-breaking logic and cannot stop early when you find an exact match since duplicates may exist on either side.',
-                example: 'Tree: [10,5,15,5,7,10,20], target=10 -> Return 10 (exact match exists, but you must find it among duplicates).'
-            },
-            {
-                title: 'Closest Value in Each Subtree',
-                difficulty: 'Hard',
-                description: 'For every node in the BST, compute the closest value to the target within that node\'s subtree (including itself). Return a mapping of node value to its subtree\'s closest value.',
-                whyDifferent: 'This is a bottom-up aggregation problem rather than a top-down search. You need to combine results from left and right subtrees at each node, completely changing the traversal pattern.',
-                example: 'Tree: [10,5,15], target=12 -> {10: 10, 5: 5, 15: 15} (each node\'s subtree closest to 12).'
-            },
-            {
-                title: 'Closest Value After Insertions',
-                difficulty: 'Medium',
-                description: 'Given a stream of values being inserted into an initially empty BST, after each insertion report the closest value in the current tree to a fixed target.',
-                whyDifferent: 'The tree structure changes with each insertion. You must think about how insertions affect the search path and whether you can maintain the closest value incrementally rather than re-searching from scratch.',
-                example: 'Target=12, insertions=[10,15,5,13,22] -> After each: [10, 10, 10, 13, 13].'
-            }
+            { id: '01-find-closest-value/twist-01-count-nodes-within-distance', name: 'Count Nodes Within Distance', difficulty: 'Medium' },
+            { id: '01-find-closest-value/twist-02-closest-value-without-parent-pointers-iterative', name: 'Closest Value Without Parent Pointers (Iterative)', difficulty: 'Easy' },
+            { id: '01-find-closest-value/twist-03-closest-value-in-a-modified-bst-with-duplicates', name: 'Closest Value in a Modified BST with Duplicates', difficulty: 'Medium' },
+            { id: '01-find-closest-value/twist-04-closest-value-in-each-subtree', name: 'Closest Value in Each Subtree', difficulty: 'Hard' },
+            { id: '01-find-closest-value/twist-05-closest-value-after-insertions', name: 'Closest Value After Insertions', difficulty: 'Medium' }
         ],
         similar: [
     { id: '01-find-closest-value/01-k-closest-values-bst', name: 'K Closest Values in BST', difficulty: 'Medium' },

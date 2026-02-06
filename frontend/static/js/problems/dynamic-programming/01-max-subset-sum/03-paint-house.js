@@ -161,41 +161,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Generalize to K Colors',
-                difficulty: 'Hard',
-                description: 'Instead of 3 colors, generalize to k colors. For each house, you have k cost options and no two adjacent houses can share a color. How does the recurrence change? What is the complexity?',
-                whyDifferent: 'With 3 colors, you can hardcode min of the other two. With k colors, you need an efficient way to find the minimum of all colors except the current one. Naive is O(n*k^2), but O(n*k) is possible using first and second minimum tracking.',
-                example: 'For k=4 colors, dp[i][j] = costs[i][j] + min(dp[i-1][c] for c != j). Track the two smallest values in the previous row to compute this in O(1) per cell.'
-            },
-            {
-                title: 'Print the Color Assignment',
-                difficulty: 'Medium',
-                description: 'Return not just the minimum cost but which color each house was painted. Backtrack through your DP to reconstruct the optimal assignment.',
-                whyDifferent: 'You need to store not just the minimum cost but also which color achieved it, then trace backward from the last house to reconstruct the full coloring.',
-                example: 'For costs=[[17,2,17],[16,16,5],[14,3,19]]: optimal is blue(2) + green(5) + blue(3) = 10. Output: ["blue", "green", "blue"].'
-            },
-            {
-                title: 'Circular Houses (First = Last Neighbor)',
-                difficulty: 'Very Hard',
-                description: 'What if the houses are in a circle, so the first and last house are also adjacent and must have different colors? How do you handle this additional constraint?',
-                whyDifferent: 'Similar to House Robber II\'s circular decomposition, but here you fix the first house\'s color and run DP for each possible first color, then check the last house\'s color doesn\'t match.',
-                example: 'Fix house 0 as red: solve the rest with house n-1 not red. Repeat for blue and green. Take minimum across all three.'
-            },
-            {
-                title: 'Space Optimization: O(1) Instead of O(n)',
-                difficulty: 'Easy',
-                description: 'The current solution already uses O(1) space with three variables. Verify you understand why: which values from the previous row do you need to compute the current row?',
-                whyDifferent: 'Unlike single-state DP where you need one or two previous values, here you have multiple states (one per color) at each position. Understanding that only the previous row matters is key.',
-                example: 'At each step, curr_red = costs[i][0] + min(prev_blue, prev_green). You only need the three previous color costs, not the entire table.'
-            },
-            {
-                title: 'Greedy Fails: Show a Counterexample',
-                difficulty: 'Medium',
-                description: 'A greedy approach picks the cheapest valid color at each house. Construct an input where this fails to find the global minimum.',
-                whyDifferent: 'Understanding when local optimal choices don\'t lead to global optimal is crucial for recognizing when DP is needed over greedy.',
-                example: 'Costs=[[1,100,100],[100,1,100],[100,100,1],[1,100,100]]. Greedy: red(1), blue(1), green(1), red(1)=4. But consider: red(1), blue(1), red(100)... greedy can get stuck. Actually with 3 colors this specific greedy works. Try: [[1,5,6],[6,2,5],[5,6,1],[6,1,5]] - greedy picks 1,2,1,1=5, but optimal might differ.'
-            }
+            { id: '01-max-subset-sum/03-paint-house/twist-01-generalize-to-k-colors', title: 'Generalize to K Colors', difficulty: 'Hard' },
+            { id: '01-max-subset-sum/03-paint-house/twist-02-print-the-color-assignment', title: 'Print the Color Assignment', difficulty: 'Medium' },
+            { id: '01-max-subset-sum/03-paint-house/twist-03-circular-houses-first-last-neighbor', title: 'Circular Houses (First = Last Neighbor)', difficulty: 'Very Hard' },
+            { id: '01-max-subset-sum/03-paint-house/twist-04-space-optimization-o1-instead-of-on', title: 'Space Optimization: O(1) Instead of O(n)', difficulty: 'Easy' },
+            { id: '01-max-subset-sum/03-paint-house/twist-05-greedy-fails-show-a-counterexample', title: 'Greedy Fails: Show a Counterexample', difficulty: 'Medium' }
         ],
         similar: [
 

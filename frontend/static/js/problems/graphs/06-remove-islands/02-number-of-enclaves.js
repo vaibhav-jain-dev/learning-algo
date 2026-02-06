@@ -217,11 +217,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Enclave Island Count', difficulty: 'Easy', description: 'Instead of counting enclave land cells, count the number of distinct enclave islands.', whyDifferent: 'You count connected components rather than individual cells. After eliminating border-connected land, each remaining DFS start is one enclave island.', example: 'Grid with 5 enclave cells forming 2 separate islands. Answer: 2 (not 5).' },
-            { title: 'Largest Enclave', difficulty: 'Medium', description: 'Find the size of the largest enclave (largest land region that cannot reach the boundary).', whyDifferent: 'You must track the size of each enclave during traversal and keep a running maximum, adding a comparison step to the flood fill.', example: 'Three enclaves with sizes [3, 7, 2]. Answer: 7.' },
-            { title: 'Distance to Boundary', difficulty: 'Hard', description: 'For each enclave cell, compute its minimum distance to the nearest boundary cell. Return the maximum such distance.', whyDifferent: 'Instead of binary reachability, you need BFS from all boundary cells simultaneously and compute distances, then filter to enclave cells only.', example: 'An enclave cell at grid center in a 10x10 grid has distance 5 to nearest boundary. Answer: 5.' },
-            { title: 'Water Enclaves', difficulty: 'Medium', description: 'Instead of land enclaves, count water cells (0s) that are completely enclosed by land (1s) and cannot reach the boundary.', whyDifferent: 'You flip the roles of 0 and 1. Now you DFS from boundary water cells and count remaining interior water cells.', example: 'Grid [[1,1,1],[1,0,1],[1,1,1]]. The center 0 is a water enclave. Answer: 1.' },
-            { title: 'Enclaves After Adding Walls', difficulty: 'Hard', description: 'You can add K land cells (change 0 to 1) to the boundary. Maximize the number of enclave cells created.', whyDifferent: 'Strategically placing boundary walls can block escape paths for border-connected land regions, converting them to enclaves. This is an optimization problem on top of flood fill.', example: 'A land region connects to border through 2 water cells on the edge. Adding K=2 walls blocks both paths, creating 10 new enclave cells.' }
+            { id: '06-remove-islands/02-number-of-enclaves/twist-01-enclave-island-count', name: 'Enclave Island Count', difficulty: 'Easy' },
+            { id: '06-remove-islands/02-number-of-enclaves/twist-02-largest-enclave', name: 'Largest Enclave', difficulty: 'Medium' },
+            { id: '06-remove-islands/02-number-of-enclaves/twist-03-distance-to-boundary', name: 'Distance to Boundary', difficulty: 'Hard' },
+            { id: '06-remove-islands/02-number-of-enclaves/twist-04-water-enclaves', name: 'Water Enclaves', difficulty: 'Medium' },
+            { id: '06-remove-islands/02-number-of-enclaves/twist-05-enclaves-after-adding-walls', name: 'Enclaves After Adding Walls', difficulty: 'Hard' }
         ],
         similar: [
 

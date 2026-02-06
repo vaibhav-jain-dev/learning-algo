@@ -132,11 +132,11 @@ func main() {
 }`
         },
         twists: [
-            { title: 'Find the Repeating Unit', difficulty: 'Easy', description: 'If the string can be constructed from a repeated substring, return that shortest repeating unit.', whyDifferent: 'Extends from boolean detection to extraction -- use the same LPS approach but return the substring s[0:patternLen] instead of just true/false.', example: 'For "abcabcabc", return "abc". For "abab", return "ab". For "abc", return "" (no repeating unit).' },
-            { title: 'Minimum Appends for Repetition', difficulty: 'Medium', description: 'Find the minimum number of characters to append to the string so that it becomes a repeated pattern.', whyDifferent: 'Uses the LPS array to find the longest suffix-prefix overlap, then computes how many more characters are needed to complete the next repetition.', example: 'For "abcab", the pattern is "abc" and we need to append "c" (1 character) to get "abcabc".' },
-            { title: 'Count Repetitions', difficulty: 'Easy', description: 'If the string is a repeated pattern, return how many times the base pattern is repeated.', whyDifferent: 'After confirming the pattern exists using KMP/LPS, simply divide the string length by the pattern length to get the count.', example: 'For "abcabcabc", the pattern "abc" repeats 3 times. Return 3.' },
-            { title: 'Double String Method', difficulty: 'Medium', description: 'Solve the repeated substring problem by checking if s exists in (s + s) with the first and last characters removed.', whyDifferent: 'Uses a completely different mathematical insight -- if s is a repeated pattern, removing a character from each end of s+s still contains s. No LPS needed.', example: 'For s="abab", s+s="abababab". Remove first and last: "babababa". Does "abab" appear in it? Yes, so it is a repeated pattern.' },
-            { title: 'Longest Repeated Substring', difficulty: 'Hard', description: 'Find the longest substring that appears at least twice in the string (not necessarily as a full repetition pattern).', whyDifferent: 'A fundamentally different problem that requires binary search + rolling hash or suffix array approaches, not just LPS analysis.', example: 'For "banana", the longest repeated substring is "ana" which appears at positions 1 and 3.' }
+            { id: '04-knuth-morris-pratt/02-repeated-substring/twist-01-find-the-repeating-unit', name: 'Find the Repeating Unit', difficulty: 'Easy' },
+            { id: '04-knuth-morris-pratt/02-repeated-substring/twist-02-minimum-appends-for-repetition', name: 'Minimum Appends for Repetition', difficulty: 'Medium' },
+            { id: '04-knuth-morris-pratt/02-repeated-substring/twist-03-count-repetitions', name: 'Count Repetitions', difficulty: 'Easy' },
+            { id: '04-knuth-morris-pratt/02-repeated-substring/twist-04-double-string-method', name: 'Double String Method', difficulty: 'Medium' },
+            { id: '04-knuth-morris-pratt/02-repeated-substring/twist-05-longest-repeated-substring', name: 'Longest Repeated Substring', difficulty: 'Hard' }
         ],
         similar: [
 

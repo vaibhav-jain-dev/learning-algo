@@ -157,48 +157,12 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Count Paths Instead of Listing Them',
-                difficulty: 'Medium',
-                description: 'Instead of returning all paths, just return the total count of paths from source to target. Optimize to avoid materializing each path.',
-                whyDifferent: 'When you only need the count, you can use memoization/dynamic programming instead of backtracking. This shifts from exponential space (storing paths) to polynomial space (storing counts per node).',
-                example: 'Graph: [[1,2],[3],[3],[]]. All paths: [[0,1,3],[0,2,3]]. Count: 2. With memoization, dp[0]=2, dp[1]=1, dp[2]=1, dp[3]=1.'
-            },
-            {
-                title: 'All Paths in a Graph with Cycles',
-                difficulty: 'Hard',
-                description: 'Find all simple paths (no repeated nodes) from source to target in a general directed graph that may contain cycles.',
-                whyDifferent: 'The original DAG guarantee means no cycles, so no visited tracking is needed. With cycles, you must maintain a visited set in the current path and backtrack it, adding significant complexity.',
-                example: 'Graph: 0->1, 1->2, 2->0, 2->3. Paths from 0 to 3: [0,1,2,3]. Without visited tracking, 0->1->2->0->1->... loops forever.'
-            },
-            {
-                title: 'Shortest Path Among All Paths',
-                difficulty: 'Medium',
-                description: 'Find the shortest path (fewest edges) from source to target. Return the path itself, not just its length.',
-                whyDifferent: 'DFS naturally finds all paths but not necessarily the shortest first. This twist pushes you toward BFS, which guarantees shortest path in unweighted graphs. Using DFS for this requires comparing all paths.',
-                example: 'Graph: [[1,2],[3],[1,3],[]]. DFS might find [0,1,3] first, but [0,2,3] is same length. BFS finds shortest: [0,1,3] or [0,2,3] (length 3).'
-            },
-            {
-                title: 'All Paths with Weighted Edges and Maximum Weight',
-                difficulty: 'Hard',
-                description: 'Each edge has a weight. Find all paths from source to target and return the one with maximum total weight.',
-                whyDifferent: 'Introduces edge weights, transforming the problem from pure graph traversal to path optimization. You must track cumulative weights during backtracking and compare across all complete paths.',
-                example: 'Graph edges: 0->1(w=5), 0->2(w=3), 1->3(w=2), 2->3(w=8). Path [0,1,3] weight=7, [0,2,3] weight=11. Return [0,2,3].'
-            },
-            {
-                title: 'All Paths with BFS (Level-Order)',
-                difficulty: 'Medium',
-                description: 'Find all paths from source to target using BFS instead of DFS. Paths should be generated in order of increasing length.',
-                whyDifferent: 'BFS explores paths by length, producing shorter paths first. The challenge is maintaining partial paths in the queue, which can consume significantly more memory than DFS backtracking.',
-                example: 'Graph: [[1,2],[3],[1,3],[]]. BFS order finds paths: [0,1,3] and [0,2,3] (length 3) before any length-4 paths.'
-            },
-            {
-                title: 'Paths from Source to Target in an Undirected Graph',
-                difficulty: 'Hard',
-                description: 'Find all simple paths in an undirected graph. Since edges are bidirectional, you must avoid revisiting nodes within the same path.',
-                whyDifferent: 'Undirected edges create many more potential paths and cycles. The visited tracking per path becomes critical, and the search space explodes compared to the DAG version.',
-                example: 'Undirected: 0-1, 1-2, 0-2, 2-3. Paths 0->3: [0,1,2,3], [0,2,3], [0,2,1,...] - but 1 does not reach 3 without 2, so just [0,1,2,3] and [0,2,3].'
-            }
+            { id: '01-depth-first-search/03-all-paths-source-target/twist-01-count-paths-instead-of-listing-them', name: 'Count Paths Instead of Listing Them', difficulty: 'Medium' },
+            { id: '01-depth-first-search/03-all-paths-source-target/twist-02-all-paths-in-a-graph-with-cycles', name: 'All Paths in a Graph with Cycles', difficulty: 'Hard' },
+            { id: '01-depth-first-search/03-all-paths-source-target/twist-03-shortest-path-among-all-paths', name: 'Shortest Path Among All Paths', difficulty: 'Medium' },
+            { id: '01-depth-first-search/03-all-paths-source-target/twist-04-all-paths-with-weighted-edges-and-maximum-weight', name: 'All Paths with Weighted Edges and Maximum Weight', difficulty: 'Hard' },
+            { id: '01-depth-first-search/03-all-paths-source-target/twist-05-all-paths-with-bfs-level-order', name: 'All Paths with BFS (Level-Order)', difficulty: 'Medium' },
+            { id: '01-depth-first-search/03-all-paths-source-target/twist-06-paths-from-source-to-target-in-an-undirected-graph', name: 'Paths from Source to Target in an Undirected Graph', difficulty: 'Hard' }
         ],
         similar: [
 

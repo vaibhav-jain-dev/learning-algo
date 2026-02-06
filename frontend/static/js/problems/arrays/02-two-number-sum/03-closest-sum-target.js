@@ -166,41 +166,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'K Closest Pairs from Two Arrays',
-                difficulty: 'Hard',
-                description: 'Instead of the single closest pair, return the k pairs (one from each array) with sums closest to target.',
-                whyDifferent: 'Cannot stop at the first optimal answer. Requires a min-heap or sorted enumeration of candidate pairs by their distance from target.',
-                example: 'arr1=[1,3,5], arr2=[2,4,6], target=8, k=2 → [[3,6],[5,4]] (sums 9 and 9, closest to 8)'
-            },
-            {
-                title: 'Closest Sum from Three Arrays',
-                difficulty: 'Hard',
-                description: 'Given three sorted arrays, pick one element from each to minimize the distance of their sum to target.',
-                whyDifferent: 'Extends from two-pointer on two arrays to three arrays, where a simple two-pointer approach does not directly apply. Requires fixing one element and applying two-pointer to the other two.',
-                example: 'arr1=[1,3], arr2=[2,5], arr3=[4,6], target=12 → [3,5,4]=12 (exact)'
-            },
-            {
-                title: 'Closest Pair with Minimum Index Distance',
-                difficulty: 'Medium',
-                description: 'Among all pairs with the closest sum to target, return the one where the two chosen indices (original positions) are farthest apart.',
-                whyDifferent: 'Adds a secondary optimization criterion, requiring you to track not just the closest sum but also index positions from the original arrays.',
-                example: 'arr1=[1,3,5,7], arr2=[2,4,6,8], target=10 → [3,8] instead of [5,6] if index distance is larger'
-            },
-            {
-                title: 'Closest Sum with Exclusion List',
-                difficulty: 'Medium',
-                description: 'Find the closest pair sum to target, but certain sum values are forbidden and must be skipped.',
-                whyDifferent: 'The two-pointer approach must skip over forbidden sums, potentially passing the optimal answer and requiring backtracking or maintaining multiple candidates.',
-                example: 'arr1=[1,3,5], arr2=[2,4,6], target=8, forbidden=[8] → next closest is 7 or 9'
-            },
-            {
-                title: 'Dynamic Closest Sum with Array Updates',
-                difficulty: 'Very Hard',
-                description: 'Support insert/delete operations on both arrays and query the closest sum pair after each update.',
-                whyDifferent: 'Static two-pointer no longer works. Requires balanced BSTs or augmented data structures to maintain sorted order and efficiently find closest pairs after modifications.',
-                example: 'arr1=[1,5], arr2=[3,7], target=8 → [1,7]. Insert 4 into arr1 → [4,3] is now closer'
-            }
+            { id: '02-two-number-sum/03-closest-sum-target/twist-01-k-closest-pairs-from-two-arrays', name: 'K Closest Pairs from Two Arrays', difficulty: 'Hard' },
+            { id: '02-two-number-sum/03-closest-sum-target/twist-02-closest-sum-from-three-arrays', name: 'Closest Sum from Three Arrays', difficulty: 'Hard' },
+            { id: '02-two-number-sum/03-closest-sum-target/twist-03-closest-pair-with-minimum-index-distance', name: 'Closest Pair with Minimum Index Distance', difficulty: 'Medium' },
+            { id: '02-two-number-sum/03-closest-sum-target/twist-04-closest-sum-with-exclusion-list', name: 'Closest Sum with Exclusion List', difficulty: 'Medium' },
+            { id: '02-two-number-sum/03-closest-sum-target/twist-05-dynamic-closest-sum-with-array-updates', name: 'Dynamic Closest Sum with Array Updates', difficulty: 'Very Hard' }
         ],
         similar: []
     };

@@ -59,13 +59,6 @@
         explanation: 'Processing the input data produces the output. For input array=[1, 2, 1], the result is false.'
     }
         ],
-        twists: [
-            { title: 'Strictly Monotonic Check', difficulty: 'Easy', description: 'Check if the array is strictly increasing or strictly decreasing (no equal adjacent elements allowed).', whyDifferent: 'The comparison changes from <= />= to < / >, which seems trivial but alters edge case handling with equal elements.', example: 'array = [1, 2, 2, 3]. Non-decreasing but NOT strictly increasing, so return false.' },
-            { title: 'Monotonic with One Exception', difficulty: 'Medium', description: 'Check if the array can become monotonic by changing at most one element.', whyDifferent: 'Requires tracking violations and determining if a single fix can resolve them, adding a greedy correction step.', example: 'array = [1, 5, 3, 4, 5]. Change 5 at index 1 to 2: [1,2,3,4,5]. Return true.' },
-            { title: 'Direction of Monotonicity', difficulty: 'Easy', description: 'Return which direction the array is monotonic: "increasing", "decreasing", "constant", or "neither".', whyDifferent: 'Must distinguish between all four cases explicitly, handling arrays with all equal elements as a special case.', example: 'array = [5, 5, 5] returns "constant". array = [1, 2, 3] returns "increasing".' },
-            { title: 'Longest Monotonic Prefix', difficulty: 'Medium', description: 'Find the length of the longest prefix of the array that is monotonic.', whyDifferent: 'You scan from the start and stop at the first violation, but must handle the ambiguity of direction at the beginning.', example: 'array = [1, 2, 3, 1, 5]. Longest monotonic prefix is [1,2,3] with length 3.' },
-            { title: 'Count Monotonic Subarrays', difficulty: 'Medium', description: 'Count the total number of contiguous subarrays of length >= 2 that are monotonic.', whyDifferent: 'Requires counting all valid subarrays, not just checking the whole array. Use math to count from run lengths.', example: 'array = [1, 2, 3, 1]. Monotonic subarrays: [1,2], [2,3], [1,2,3], [3,1] = 4 total.' }
-        ],
         similar: [
     { id: '10-monotonic-array/01-longest-monotonic-subarray', name: '01 Longest Monotonic Subarray', difficulty: 'Medium' },
     { id: '10-monotonic-array/02-minimum-removals-monotonic', name: '02 Minimum Removals Monotonic', difficulty: 'Hard' },

@@ -165,41 +165,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Three Sum with Maximum K Triplets',
-                difficulty: 'Medium',
-                description: 'Return at most k unique triplets that sum to target, prioritizing those with the smallest absolute values.',
-                whyDifferent: 'Adds a selection/priority constraint on top of finding all triplets, requiring you to sort results or use a heap.',
-                example: 'nums=[-2,-1,0,1,2,3], target=0, k=2 → [[-1,0,1],[-2,-1,3]] (smallest abs values first)'
-            },
-            {
-                title: 'Count Unique Triplets Without Listing',
-                difficulty: 'Medium',
-                description: 'Instead of returning all triplets, just count how many unique triplets sum to target.',
-                whyDifferent: 'While the core algorithm is similar, counting allows mathematical shortcuts: when duplicates exist, you can calculate combinations instead of enumerating.',
-                example: 'nums=[0,0,0,0], target=0 → 1 (only one unique triplet [0,0,0])'
-            },
-            {
-                title: 'Three Sum with Forbidden Pairs',
-                difficulty: 'Hard',
-                description: 'Find unique triplets summing to target, but certain pairs of indices cannot both appear in the same triplet.',
-                whyDifferent: 'Forbidden pairs add a constraint graph on top of the sum problem, requiring you to check pair compatibility during enumeration.',
-                example: 'nums=[-1,0,1,2,-1], target=0, forbidden=[(0,4)] → cannot use indices 0 and 4 together'
-            },
-            {
-                title: 'Three Sum in Sorted Matrix Rows',
-                difficulty: 'Hard',
-                description: 'Given a matrix where each row is sorted, pick one element from each of exactly three different rows so they sum to target. List all unique triplets.',
-                whyDifferent: 'The elements come from different rows, so you cannot sort a single array. Requires combining row-wise two-pointer with cross-row iteration.',
-                example: 'matrix=[[-1,0,1],[1,2,3],[-2,0,2]], target=3 → [[1,2,0]] etc.'
-            },
-            {
-                title: 'Three Sum Closest with Duplicates Allowed',
-                difficulty: 'Medium',
-                description: 'Find the closest sum to target, but report ALL unique triplets achieving that closest sum.',
-                whyDifferent: 'Combines the closest-sum search with duplicate-aware enumeration, requiring two phases: find the closest sum, then collect all triplets matching it.',
-                example: 'nums=[-1,0,1,2,-1], target=1 → closest=1, triplets=[[-1,0,2]]'
-            }
+            { id: '02-two-number-sum/02-three-sum-duplicates/twist-01-three-sum-with-maximum-k-triplets', name: 'Three Sum with Maximum K Triplets', difficulty: 'Medium' },
+            { id: '02-two-number-sum/02-three-sum-duplicates/twist-02-count-unique-triplets-without-listing', name: 'Count Unique Triplets Without Listing', difficulty: 'Medium' },
+            { id: '02-two-number-sum/02-three-sum-duplicates/twist-03-three-sum-with-forbidden-pairs', name: 'Three Sum with Forbidden Pairs', difficulty: 'Hard' },
+            { id: '02-two-number-sum/02-three-sum-duplicates/twist-04-three-sum-in-sorted-matrix-rows', name: 'Three Sum in Sorted Matrix Rows', difficulty: 'Hard' },
+            { id: '02-two-number-sum/02-three-sum-duplicates/twist-05-three-sum-closest-with-duplicates-allowed', name: 'Three Sum Closest with Duplicates Allowed', difficulty: 'Medium' }
         ],
         similar: []
     };

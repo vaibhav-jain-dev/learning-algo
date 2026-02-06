@@ -61,13 +61,6 @@
         explanation: 'After sorting the input, we can apply an efficient algorithm to find the result. For input array=[1, 2, 3, 4, 5], targetSum=100, the result is [].'
     }
         ],
-        twists: [
-            { title: 'Closest Three Sum', difficulty: 'Medium', description: 'Instead of finding triplets that sum exactly to the target, find the triplet whose sum is closest to the target. Return that closest sum.', whyDifferent: 'You must track the minimum absolute difference rather than checking for exact matches, changing the pointer movement logic.', example: 'array = [1, 2, 3, 4, 5], target = 10. Closest triplet sum is 3+4+5 = 12, so return 12.' },
-            { title: 'Three Sum Count Only', difficulty: 'Medium', description: 'Count the number of unique triplets that sum to the target without enumerating them. Return just the count.', whyDifferent: 'Forces you to think about counting without storing results, and whether early termination or deduplication logic changes.', example: 'array = [1, 2, 3, -1, -2, 0], target = 0. Count = 3 triplets.' },
-            { title: 'Three Sum Without Sorting', difficulty: 'Hard', description: 'Find all triplets summing to target but you are not allowed to sort the array. Use a hash-based approach instead.', whyDifferent: 'Removes the two-pointer technique entirely, forcing a hash map approach with careful deduplication.', example: 'array = [12, 3, 1, 2, -6, 5, -8, 6], target = 0. Same result but found using hash lookups.' },
-            { title: 'Three Sum in Range', difficulty: 'Hard', description: 'Find all triplets whose sum falls within a range [lo, hi] inclusive, not just a single target value.', whyDifferent: 'The two-pointer logic must handle a range of valid sums, making the pointer advancement decisions more nuanced.', example: 'array = [1, 2, 3, 4, 5], lo = 8, hi = 10. Triplets: [1,2,5], [1,3,4], [1,4,5], [2,3,4], [2,3,5].' },
-            { title: 'Three Sum With Multiplicity', difficulty: 'Hard', description: 'Given an array that may contain duplicates, count all ordered triplet indices (i, j, k) where i < j < k and array[i] + array[j] + array[k] = target.', whyDifferent: 'Instead of unique value triplets, you count index-based combinations, requiring combinatorial math when duplicates exist.', example: 'array = [1, 1, 2, 2, 3, 3], target = 6. Multiple index combinations yield the same value triplet.' }
-        ],
         similar: [
             { id: '07-three-number-sum/03-four-number-sum', name: 'Four Number Sum', difficulty: 'Hard' }
         ]

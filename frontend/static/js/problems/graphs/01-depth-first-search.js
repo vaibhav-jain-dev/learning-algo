@@ -40,41 +40,11 @@
     }
         ],
         twists: [
-            {
-                title: 'Iterative DFS with Explicit Stack',
-                difficulty: 'Easy',
-                description: 'Implement the same DFS traversal but using an explicit stack instead of recursion. The output order must be identical to the recursive version.',
-                whyDifferent: 'Forces you to think about how the call stack works and manually manage the traversal order. You must push children in reverse order to maintain left-to-right processing.',
-                example: 'Same tree input produces the same output ["A","B","E","F","I","J","C","D","G","K","H"], but implemented with a while loop and stack.'
-            },
-            {
-                title: 'DFS on a Directed Graph with Cycles',
-                difficulty: 'Medium',
-                description: 'Perform DFS on a general directed graph (not a tree) that may contain cycles. Return the traversal order without visiting any node twice.',
-                whyDifferent: 'Unlike tree DFS, you need a visited set to avoid infinite loops. The mental model shifts from "tree branches" to "graph exploration with backtracking guards."',
-                example: 'Graph: A->B, B->C, C->A, A->D. DFS from A: ["A","B","C","D"]. Without cycle detection, you would loop forever on A->B->C->A.'
-            },
-            {
-                title: 'DFS with Entry and Exit Times',
-                difficulty: 'Medium',
-                description: 'Modify DFS to record the discovery time and finish time for each node. These timestamps are crucial for many advanced graph algorithms.',
-                whyDifferent: 'Requires tracking global state (a timer) across recursive calls and understanding pre-order vs post-order processing. This is foundational for topological sort and SCC detection.',
-                example: 'Tree A->[B,C]: discovery/finish times might be A(1/6), B(2/3), C(4/5).'
-            },
-            {
-                title: 'DFS on an Adjacency Matrix',
-                difficulty: 'Medium',
-                description: 'Given the same graph represented as an adjacency matrix instead of a children list, perform DFS. The matrix is n x n where matrix[i][j] = 1 means an edge from i to j.',
-                whyDifferent: 'Changes how you find neighbors - instead of iterating a list, you scan a row. This affects both the implementation pattern and the time complexity for sparse graphs.',
-                example: 'Matrix: [[0,1,1],[0,0,0],[0,0,0]] represents A->B, A->C. DFS from A: [A,B,C].'
-            },
-            {
-                title: 'Bidirectional DFS',
-                difficulty: 'Hard',
-                description: 'Given a source and target in an undirected graph, run DFS simultaneously from both ends. Detect when the two searches meet to find a connecting path.',
-                whyDifferent: 'You must manage two separate DFS states and a meeting condition. This is rarely done with DFS (BFS is more natural for bidirectional search), so it challenges your understanding of DFS limitations.',
-                example: 'Graph: A-B-C-D-E. Source=A, Target=E. Forward DFS explores A,B,C while backward DFS explores E,D,C. They meet at C.'
-            }
+            { id: '01-depth-first-search/twist-01-iterative-dfs-with-explicit-stack', name: 'Iterative DFS with Explicit Stack', difficulty: 'Easy' },
+            { id: '01-depth-first-search/twist-02-dfs-on-a-directed-graph-with-cycles', name: 'DFS on a Directed Graph with Cycles', difficulty: 'Medium' },
+            { id: '01-depth-first-search/twist-03-dfs-with-entry-and-exit-times', name: 'DFS with Entry and Exit Times', difficulty: 'Medium' },
+            { id: '01-depth-first-search/twist-04-dfs-on-an-adjacency-matrix', name: 'DFS on an Adjacency Matrix', difficulty: 'Medium' },
+            { id: '01-depth-first-search/twist-05-bidirectional-dfs', name: 'Bidirectional DFS', difficulty: 'Hard' }
         ],
         similar: [
     { id: '01-depth-first-search/01-number-of-islands', name: 'Number of Islands', difficulty: 'Medium' },

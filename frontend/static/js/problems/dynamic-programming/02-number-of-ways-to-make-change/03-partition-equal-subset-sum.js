@@ -136,41 +136,11 @@ func main() {
 }`
         },
         twists: [
-            {
-                title: 'Early Exit: Odd Sum Check',
-                difficulty: 'Easy',
-                description: 'Before running any DP, what is the simplest check that immediately tells you partitioning is impossible? Why does this work?',
-                whyDifferent: 'This tests whether you analyze the problem before coding. If the total sum is odd, you cannot split into two equal integer halves. This O(n) check can save you from running O(n*sum) DP.',
-                example: 'nums=[1,2,3,5], sum=11 (odd). Impossible immediately. No need to run DP. Return false.'
-            },
-            {
-                title: 'Count the Number of Valid Partitions',
-                difficulty: 'Hard',
-                description: 'Instead of just returning true/false, count how many distinct ways the array can be partitioned into two subsets with equal sum.',
-                whyDifferent: 'Switches from boolean DP (dp[s] = true/false) to counting DP (dp[s] = number of subsets summing to s). Same structure but different aggregation: OR becomes addition.',
-                example: 'nums=[1,5,5,11]: target=11. Subsets summing to 11: {11} and {1,5,5}. Two subsets but they form one partition (the complement is determined). So count = 1 way... unless [1,1,5,5] where {1,5} and {1,5} gives 2 ways.'
-            },
-            {
-                title: 'Print the Actual Partition',
-                difficulty: 'Medium',
-                description: 'Return which elements go in each subset. Backtrack through the DP to determine which elements were included in the subset summing to totalSum/2.',
-                whyDifferent: 'The boolean DP tells you IF a solution exists but not WHICH elements to pick. You need to either store additional information or backtrack through the table checking which elements caused each true cell.',
-                example: 'nums=[1,5,11,5]: Partition into {11} and {1,5,5}. Backtrack: dp[11] became true when we added 11 (dp[11-11]=dp[0]=true). So 11 is in subset A.'
-            },
-            {
-                title: 'Greedy Fails: Construct a Counterexample',
-                difficulty: 'Medium',
-                description: 'A greedy approach might sort the array and alternately assign elements to two groups. Show an input where greedy fails to find a valid partition that exists.',
-                whyDifferent: 'Understanding greedy failure motivates the DP approach. The partition problem is NP-complete in general, so no polynomial greedy can always work.',
-                example: 'nums=[3,3,3,3,3,3,3,21]. Sum=42, target=21. Greedy sorted: assign 21 to A, then 3,3,3,3,3,3 alternating: A=21+3+3+3=30, B=3+3+3=9. Fails! But valid partition exists: {21} and {3,3,3,3,3,3,3}.'
-            },
-            {
-                title: 'Bitset Optimization',
-                difficulty: 'Very Hard',
-                description: 'Instead of a boolean array, use a bitset where bit i represents whether sum i is achievable. How does this change the DP update operation?',
-                whyDifferent: 'A bitset approach uses bitwise OR and shift operations, which is the same logic but dramatically faster in practice due to word-level parallelism. It tests understanding of the boolean DP at a bit-level.',
-                example: 'Start: bits = 1 (only bit 0 set). For each num: bits |= (bits << num). After all nums, check if bit at position target is set. Each shift+OR processes 64 sums simultaneously.'
-            }
+            { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-01-early-exit-odd-sum-check', title: 'Early Exit: Odd Sum Check', difficulty: 'Easy' },
+            { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-02-count-the-number-of-valid-partitions', title: 'Count the Number of Valid Partitions', difficulty: 'Hard' },
+            { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-03-print-the-actual-partition', title: 'Print the Actual Partition', difficulty: 'Medium' },
+            { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-04-greedy-fails-construct-a-counterexample', title: 'Greedy Fails: Construct a Counterexample', difficulty: 'Medium' },
+            { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-05-bitset-optimization', title: 'Bitset Optimization', difficulty: 'Very Hard' }
         ],
         similar: [
 

@@ -124,11 +124,11 @@
     }
         ],
         twists: [
-            { title: 'Bidirectional Routes', difficulty: 'Medium', description: 'All routes are bidirectional instead of one-way. Find the minimum additional bidirectional routes needed.', whyDifferent: 'In undirected graphs, reachability is symmetric. You just need to connect all components to the starting airport component, simplifying to counting disconnected components minus 1.', example: '5 airports in 3 connected components. Need 2 additional bidirectional routes to connect them all.' },
-            { title: 'Weighted Routes', difficulty: 'Hard', description: 'Each new route has a construction cost proportional to the distance between airports. Minimize total cost of new routes.', whyDifferent: 'Instead of minimizing route count, you minimize total cost. This becomes a minimum spanning tree problem connecting unreachable components to the starting airport.', example: 'Three unreachable airports at distances 100, 200, 50 from starting airport. Optimal cost: add routes to closest airports first.' },
-            { title: 'Remove Routes Instead', difficulty: 'Hard', description: 'All airports are currently reachable. Find the maximum number of existing routes you can remove while keeping all airports reachable from the starting airport.', whyDifferent: 'This is the inverse problem: find the minimum routes to keep (a spanning arborescence), and remove the rest. The answer is total routes minus (N-1).', example: '18 airports with 19 routes. Minimum routes to keep: 17. Maximum removable: 19-17=2.' },
-            { title: 'Two Starting Airports', difficulty: 'Very Hard', description: 'There are two starting airports. Every other airport must be reachable from at least one starting airport. Minimize new routes.', whyDifferent: 'Unreachable components can be connected to either starting airport. You must optimally assign each component to one of the two starts, a set cover variant.', example: '3 unreachable components. Assign 2 to start A and 1 to start B. Total new routes: 3.' },
-            { title: 'Route Capacity', difficulty: 'Hard', description: 'Each route can handle at most K flights per day. Find minimum new routes so that starting airport can send at least one flight path to every other airport.', whyDifferent: 'Capacity constraints turn this into a network flow problem. You must ensure sufficient flow paths exist, not just reachability.', example: 'Route A->B has capacity 1, but 3 airports are reachable only through B. Need parallel routes or alternative paths.' }
+            { id: '10-airport-connections/twist-01-bidirectional-routes', name: 'Bidirectional Routes', difficulty: 'Medium' },
+            { id: '10-airport-connections/twist-02-weighted-routes', name: 'Weighted Routes', difficulty: 'Hard' },
+            { id: '10-airport-connections/twist-03-remove-routes-instead', name: 'Remove Routes Instead', difficulty: 'Hard' },
+            { id: '10-airport-connections/twist-04-two-starting-airports', name: 'Two Starting Airports', difficulty: 'Very Hard' },
+            { id: '10-airport-connections/twist-05-route-capacity', name: 'Route Capacity', difficulty: 'Hard' }
         ],
         similar: [
     { id: '10-airport-connections/01-critical-connections', name: 'Critical Connections in a Network', difficulty: 'Hard' },
