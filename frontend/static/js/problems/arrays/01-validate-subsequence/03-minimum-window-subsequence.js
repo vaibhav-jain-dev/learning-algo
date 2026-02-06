@@ -245,6 +245,43 @@ func main() {
     fmt.Println(minWindow("abcdef", "ace"))                        // "abcde"
 }`
         },
+        twists: [
+            {
+                title: 'All Minimum Windows',
+                difficulty: 'Hard',
+                description: 'Instead of returning just one minimum window, return all non-overlapping minimum-length windows where s2 is a subsequence.',
+                whyDifferent: 'Requires collecting all optimal windows and then resolving overlaps, adding a greedy interval selection step after the window-finding phase.',
+                example: 's1="abcdbcde", s2="bce" → ["bcde"] or all minimum windows found'
+            },
+            {
+                title: 'Minimum Window with Character Order Relaxed',
+                difficulty: 'Medium',
+                description: 'Find the minimum window that contains all characters of s2 (as an anagram, not a subsequence).',
+                whyDifferent: 'Changes from subsequence matching to frequency matching, converting the problem to a classic sliding window with character counts.',
+                example: 's1="adobecodebanc", s2="abc" → "banc" (contains a, b, c in any order)'
+            },
+            {
+                title: 'Minimum Window Subsequence in Circular String',
+                difficulty: 'Very Hard',
+                description: 'The string s1 is circular. Find the minimum window where s2 is a subsequence, allowing wrap-around.',
+                whyDifferent: 'The circular nature means windows can span the wrap-around point, requiring concatenation tricks or careful modular index handling.',
+                example: 's1="cdeab", s2="abc" → "abc" via wrap-around (a at index 3, b at index 4, c at index 0)'
+            },
+            {
+                title: 'K Shortest Window Subsequences',
+                difficulty: 'Hard',
+                description: 'Find the k shortest windows in s1 where s2 appears as a subsequence. Windows may overlap.',
+                whyDifferent: 'Requires maintaining a priority queue or sorted collection of all valid windows, not just tracking the single best.',
+                example: 's1="abcdebdde", s2="bde", k=2 → ["bcde", "bdde"]'
+            },
+            {
+                title: 'Minimum Window Subsequence with Wildcards',
+                difficulty: 'Hard',
+                description: 'The pattern s2 can contain wildcard characters "?" that match any single character in s1.',
+                whyDifferent: 'Wildcards change the matching logic: instead of exact character comparison, you need conditional matching that accepts any character at wildcard positions.',
+                example: 's1="abcdebdde", s2="b?e" → "bcd" (? matches c, then e completes)'
+            }
+        ],
         similar: []
     };
 

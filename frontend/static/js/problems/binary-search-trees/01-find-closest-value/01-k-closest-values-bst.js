@@ -245,6 +245,43 @@ func main() {
     fmt.Println(KClosestValuesInBst(data))
 }`
         },
+        twists: [
+            {
+                title: 'K Closest with Early Termination',
+                difficulty: 'Medium',
+                description: 'Find k closest values but optimize by leveraging the BST inorder property to stop early once you know no closer values can exist.',
+                whyDifferent: 'Instead of visiting all n nodes, you must reason about when the sorted order guarantees no future node can be closer than your current worst in the k-set. This requires maintaining a sliding window mindset.',
+                example: 'Tree: [20,10,30,5,15,25,35], target=12, k=2 -> [10,15]. You can stop after visiting 15 since all subsequent inorder values are farther.'
+            },
+            {
+                title: 'K Closest Using Two BST Iterators',
+                difficulty: 'Hard',
+                description: 'Solve using two custom iterators: one that traverses forward (inorder) and one backward (reverse inorder), both starting from the target position. Merge results to find k closest.',
+                whyDifferent: 'Requires building two separate iterator stacks initialized to the target position, then alternating between them like a merge operation. This achieves O(log n + k) time instead of O(n log k).',
+                example: 'Tree: [8,4,12,2,6,10,14], target=7, k=3 -> [6,8,10]. Forward iterator yields 8,10,12... Backward yields 6,4,2...'
+            },
+            {
+                title: 'K Closest Values in Streaming BST',
+                difficulty: 'Hard',
+                description: 'The BST receives insertions and deletions over time. After each modification, return the current k closest values to a fixed target.',
+                whyDifferent: 'Maintaining a dynamic result set under mutations requires augmented data structures or efficient re-computation strategies, unlike the static single-pass approach.',
+                example: 'Target=10, k=2. Insert 8,12,9,11. After insert 8: [8]. After insert 12: [8,12]. After insert 9: [9,8]. After insert 11: [11,9].'
+            },
+            {
+                title: 'K Closest Distinct Values',
+                difficulty: 'Medium',
+                description: 'The BST may contain duplicate values. Find the k closest distinct values to the target.',
+                whyDifferent: 'You must skip duplicates during traversal while still maintaining the heap/window of size k. This adds bookkeeping that changes how you process each node.',
+                example: 'Tree: [10,5,15,5,7,10,20], target=8, k=3 -> [7,5,10]. Despite duplicates of 5 and 10, each appears only once.'
+            },
+            {
+                title: 'K Closest Values with Weighted Distance',
+                difficulty: 'Hard',
+                description: 'Instead of absolute difference, use a weighted distance where nodes deeper in the tree cost more: distance = |value - target| * (1 + depth * 0.1). Find k values with smallest weighted distance.',
+                whyDifferent: 'The BST ordering property no longer directly correlates with closeness since depth affects the metric. You cannot use simple pruning rules and may need to explore both subtrees.',
+                example: 'Tree: [10,5,15], target=12. Node 10 (depth 0): |10-12|*1.0=2.0. Node 15 (depth 1): |15-12|*1.1=3.3. Node 5 (depth 1): |5-12|*1.1=7.7.'
+            }
+        ],
         similar: [
 
         ]

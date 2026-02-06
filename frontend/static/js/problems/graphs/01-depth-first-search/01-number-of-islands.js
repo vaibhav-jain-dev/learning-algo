@@ -207,6 +207,43 @@ func main() {
     fmt.Println(numIslands(grid)) // Output: 1
 }`
         },
+        twists: [
+            {
+                title: 'Count Islands with Diagonal Connections',
+                difficulty: 'Medium',
+                description: 'Same grid, but land cells are also connected diagonally (8 directions instead of 4). Count the number of islands.',
+                whyDifferent: 'Expanding from 4-directional to 8-directional connectivity changes which cells form a single island. Two separate islands in the original might merge into one.',
+                example: 'Grid: [["1","0","1"],["0","1","0"],["1","0","1"]]. With 4-dir: 5 islands. With 8-dir: 1 island (all connected through center).'
+            },
+            {
+                title: 'Number of Islands Using BFS',
+                difficulty: 'Medium',
+                description: 'Solve the same problem using BFS instead of DFS. Compare the traversal pattern and discuss when BFS might be preferred.',
+                whyDifferent: 'Forces you to switch from recursive flood-fill to iterative queue-based exploration. BFS avoids stack overflow on very large islands but uses more memory for wide islands.',
+                example: 'Same input/output, but the internal exploration of each island radiates outward level by level instead of going deep first.'
+            },
+            {
+                title: 'Number of Islands Using Union-Find',
+                difficulty: 'Hard',
+                description: 'Solve the problem using a Union-Find (Disjoint Set Union) data structure instead of DFS/BFS. Merge adjacent land cells and count distinct components.',
+                whyDifferent: 'Completely different algorithmic paradigm. Instead of traversal, you process cells sequentially and merge sets. This approach generalizes better to dynamic problems where land appears over time.',
+                example: 'Same grid input, same output. But internally you maintain parent[] and rank[] arrays, union adjacent 1-cells, then count unique roots.'
+            },
+            {
+                title: 'Number of Islands in a Stream',
+                difficulty: 'Hard',
+                description: 'Initially the grid is all water. Land cells appear one at a time at given positions. After each addition, report the current number of islands.',
+                whyDifferent: 'You cannot re-scan the entire grid after each addition. This forces an online/incremental approach (Union-Find is ideal). Adding one cell might merge multiple existing islands.',
+                example: 'Positions: [(0,0),(0,1),(1,2),(2,1)]. After each: [1, 1, 2, 3]. Adding (1,1) next merges islands: count becomes 1.'
+            },
+            {
+                title: 'Number of Islands on a 3D Grid',
+                difficulty: 'Hard',
+                description: 'Extend the problem to a 3D grid (layers x rows x cols). A "3D island" is a connected component of 1s connected in 6 directions (up/down/left/right/above/below).',
+                whyDifferent: 'Adds a third dimension to the DFS, requiring 6-directional exploration. The mental model shifts from 2D grid to 3D space, and stack depth can grow significantly.',
+                example: '3D grid with 2 layers: layer0=[[1,0],[0,1]], layer1=[[0,1],[1,0]]. Cells (0,1,1) and (1,1,1) are vertically adjacent, forming connections across layers.'
+            }
+        ],
         similar: [
 
         ]

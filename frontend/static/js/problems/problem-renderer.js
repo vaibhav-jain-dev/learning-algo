@@ -234,6 +234,53 @@
             html += '</div>\n';
         }
 
+        // ========== PROBLEM TWISTS SECTION ==========
+        if (problem.twists && problem.twists.length > 0) {
+            html += '<div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid #e2e8f0;">\n';
+            html += '<button onclick="toggleProblemTwists(this)" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#ffffff;border:none;padding:0.75rem 1.5rem;border-radius:8px;font-size:0.95rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:0.5rem;transition:all 0.2s;" onmouseover="this.style.transform=\'translateY(-2px)\';this.style.boxShadow=\'0 4px 12px rgba(245,158,11,0.4)\'" onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'none\'">\n';
+            html += '<span>&#x1f9e0;</span> Show ' + problem.twists.length + ' Alternative Twists\n';
+            html += '</button>\n';
+
+            html += '<div id="problem-twists-container" style="display:none;margin-top:1rem;">\n';
+            html += '<h3 style="color:#f59e0b;margin-bottom:0.5rem;font-size:1.1rem;">Alternative Thinking Twists</h3>\n';
+            html += '<p style="color:#64748b;margin-bottom:1rem;font-size:0.85rem;">These twists force a different thought process. Each requires re-thinking the core approach.</p>\n';
+            html += '<div style="display:flex;flex-direction:column;gap:0.75rem;">\n';
+
+            problem.twists.forEach((twist, idx) => {
+                var twistDiff = diffColors[twist.difficulty] || { bg: '#f1f5f9', text: '#64748b' };
+                html += '<details style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:0;margin:0;">\n';
+                html += '<summary style="padding:1rem 1.25rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:1rem;list-style:none;" onmouseover="this.parentElement.style.borderColor=\'#f59e0b\'" onmouseout="this.parentElement.style.borderColor=\'#fde68a\'">';
+                html += '<div style="display:flex;align-items:center;gap:0.75rem;">';
+                html += '<span style="color:#b45309;font-size:0.9rem;font-weight:700;">' + (idx + 1) + '.</span>';
+                html += '<span style="color:#92400e;font-weight:600;">' + twist.title + '</span>';
+                html += '</div>';
+                html += '<div style="display:flex;align-items:center;gap:0.75rem;">';
+                html += '<span style="background:' + twistDiff.bg + ';color:' + twistDiff.text + ';padding:0.25rem 0.625rem;border-radius:0.75rem;font-size:0.75rem;font-weight:600;">' + twist.difficulty + '</span>';
+                html += '<span style="color:#d97706;font-size:0.8rem;">&#x25BC;</span>';
+                html += '</div>';
+                html += '</summary>\n';
+
+                html += '<div style="padding:0 1.25rem 1rem 1.25rem;border-top:1px solid #fde68a;">\n';
+                html += '<p style="color:#78350f;margin:0.75rem 0 0.5rem 0;line-height:1.6;font-size:0.95rem;">' + twist.description + '</p>\n';
+                if (twist.whyDifferent) {
+                    html += '<div style="background:#fef3c7;border-radius:6px;padding:0.75rem 1rem;margin-top:0.5rem;">\n';
+                    html += '<p style="color:#92400e;margin:0;font-size:0.85rem;line-height:1.5;"><strong style="color:#b45309;">Why it\'s different:</strong> ' + twist.whyDifferent + '</p>\n';
+                    html += '</div>\n';
+                }
+                if (twist.example) {
+                    html += '<div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:0.75rem 1rem;margin-top:0.5rem;">\n';
+                    html += '<p style="color:#334155;margin:0;font-size:0.85rem;line-height:1.5;font-family:\'SF Mono\',\'Fira Code\',\'Consolas\',monospace;"><strong style="color:#3b82f6;">Example:</strong> ' + twist.example + '</p>\n';
+                    html += '</div>\n';
+                }
+                html += '</div>\n';
+                html += '</details>\n';
+            });
+
+            html += '</div>\n';
+            html += '</div>\n';
+            html += '</div>\n';
+        }
+
         html += '</div>\n'; // End .tab-content-problem
 
         // ========== HINTS TAB CONTENT (hidden by default) ==========
@@ -922,6 +969,24 @@ ${testCases.map((tc, i) => {
             var count = container.querySelectorAll('[onclick]').length;
             btn.innerHTML = '<span>🔗</span> Show ' + count + ' Related Problems';
             btn.style.background = 'linear-gradient(135deg,#10b981,#34d399)';
+        }
+    };
+
+    // Global toggle function for problem twists
+    window.toggleProblemTwists = function(btn) {
+        var container = document.getElementById('problem-twists-container');
+        if (!container) return;
+
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            var count = container.querySelectorAll('details').length;
+            btn.innerHTML = '<span>&#x1f9e0;</span> Hide Alternative Twists';
+            btn.style.background = 'linear-gradient(135deg,#d97706,#f59e0b)';
+        } else {
+            container.style.display = 'none';
+            var count = container.querySelectorAll('details').length;
+            btn.innerHTML = '<span>&#x1f9e0;</span> Show ' + count + ' Alternative Twists';
+            btn.style.background = 'linear-gradient(135deg,#f59e0b,#fbbf24)';
         }
     };
 

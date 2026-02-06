@@ -248,6 +248,43 @@ func main() {
     fmt.Println(TwoSumClosestInBst(data))
 }`
         },
+        twists: [
+            {
+                title: 'Three Sum Closest in BST',
+                difficulty: 'Hard',
+                description: 'Find three nodes in the BST whose sum is closest to the target. Return the three values.',
+                whyDifferent: 'Two pointers naturally work for two-sum on sorted data, but three-sum requires fixing one element and running two-sum on the remaining, changing the time complexity and requiring nested iteration strategies.',
+                example: 'Tree: [10,5,15,2,7,12,20], target=30 -> [7,10,15] with sum=32 (closest to 30).'
+            },
+            {
+                title: 'Two Sum Exact in BST (Boolean)',
+                difficulty: 'Medium',
+                description: 'Instead of finding the closest sum, determine if any two nodes sum to exactly the target. Return true/false.',
+                whyDifferent: 'The exact match version allows for early termination and can use a HashSet approach during traversal, avoiding the need to collect all values first. The BST iterator approach also works differently with exact matching.',
+                example: 'Tree: [5,3,7,1,4,6,8], target=10 -> true (3+7=10).'
+            },
+            {
+                title: 'Two Sum Closest Using O(h) Space',
+                difficulty: 'Hard',
+                description: 'Solve two-sum closest using only O(h) auxiliary space by implementing forward and reverse BST iterators instead of collecting all values into an array.',
+                whyDifferent: 'Replaces the O(n) array with two controlled stacks simulating forward and reverse inorder traversal. Managing two independent iterators simultaneously requires careful state management.',
+                example: 'Same output as base problem, but space usage is O(h) where h is tree height, not O(n).'
+            },
+            {
+                title: 'Two Sum Closest Across Two BSTs',
+                difficulty: 'Hard',
+                description: 'Given two separate BSTs, find one node from each tree such that their sum is closest to the target.',
+                whyDifferent: 'You cannot merge the two trees into a single sorted array efficiently. Instead, use a forward iterator on one BST and a reverse iterator on the other, requiring coordination across two separate data structures.',
+                example: 'BST1: [3,1,5], BST2: [8,6,10], target=12 -> [3,10] or [5,8] (both sum to 13, closest to 12).'
+            },
+            {
+                title: 'Two Sum Closest with No Ancestor-Descendant Pair',
+                difficulty: 'Very Hard',
+                description: 'Find two nodes with sum closest to target, but the two nodes must not be in an ancestor-descendant relationship.',
+                whyDifferent: 'The constraint eliminates pairs that lie on the same root-to-leaf path. You must track the path relationships between candidate pairs, which the simple two-pointer approach on sorted values completely ignores.',
+                example: 'Tree: [10,5,15,2,7,12,20], target=17 -> Cannot use (10,7) since 10 is ancestor of 7. Valid: (5,12)=17.'
+            }
+        ],
         similar: [
 
         ]
