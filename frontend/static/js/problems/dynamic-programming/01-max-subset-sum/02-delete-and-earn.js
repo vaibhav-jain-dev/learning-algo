@@ -141,6 +141,43 @@ func main() {
     fmt.Println(DeleteAndEarn(map[string]interface{}{"nums": []interface{}{2.0, 2.0, 3.0, 3.0, 3.0, 4.0}}))  // Expected: 9
 }`
         },
+        twists: [
+            {
+                title: 'Recognize the Reduction to House Robber',
+                difficulty: 'Medium',
+                description: 'Before writing any code, explain how Delete and Earn maps to House Robber. What is the "points array" and why does choosing value v force you to skip v-1 and v+1?',
+                whyDifferent: 'The key insight is the problem transformation, not the DP itself. If you can reduce to House Robber, the DP is straightforward. This twist tests pattern recognition.',
+                example: 'For nums=[2, 2, 3, 3, 3, 4]: points[2]=4, points[3]=9, points[4]=4. Now solve House Robber on [0, 0, 4, 9, 4]. Taking value 3 (points=9) means you skip 2 and 4. Answer: 9.'
+            },
+            {
+                title: 'Write the Recurrence Without the Reduction',
+                difficulty: 'Hard',
+                description: 'Instead of reducing to House Robber, write the DP recurrence directly. Define your state as dp[v] = max points considering values 1 through v. What is the transition?',
+                whyDifferent: 'Writing the recurrence from the original problem statement forces you to identify the state space and transitions yourself, rather than relying on the reduction insight.',
+                example: 'Let earn[v] = v * count(v). Then dp[v] = max(dp[v-1], dp[v-2] + earn[v]). Base: dp[0] = 0, dp[1] = earn[1].'
+            },
+            {
+                title: 'Count the Number of Optimal Strategies',
+                difficulty: 'Hard',
+                description: 'Instead of finding the maximum points, count how many distinct sets of values achieve that maximum. Two strategies are different if they choose different sets of values.',
+                whyDifferent: 'Switches from optimization to counting. You need a parallel DP that tracks both the max value AND the count of ways to achieve it at each step.',
+                example: 'For nums=[2, 2, 3, 3, 3, 4]: points=[0, 0, 4, 9, 4]. dp[3]=9 is the only max strategy (take 3s). But if points were [0, 0, 5, 5, 5], taking {2,4} and taking {3} both give 10, so count=2.'
+            },
+            {
+                title: 'Print Which Numbers Were Deleted',
+                difficulty: 'Medium',
+                description: 'Return not just the max points but the actual list of original numbers that were deleted to earn those points.',
+                whyDifferent: 'Backtracking through the DP requires tracking which values were "taken" at each step, then mapping back to the original array elements.',
+                example: 'For nums=[2, 2, 3, 3, 3, 4]: optimal takes value 3. Output: [3, 3, 3] with points 9.'
+            },
+            {
+                title: 'Space Optimization to O(1)',
+                difficulty: 'Easy',
+                description: 'The points array is O(max_val) and the DP uses O(max_val). Can you reduce the DP to O(1) extra space (beyond the points array)?',
+                whyDifferent: 'Same rolling-variable technique as House Robber, but you need to recognize that the points array construction is separate from the DP traversal.',
+                example: 'After building points array, use prev2=0, prev1=0, iterate: curr = max(prev1, prev2 + points[v]). Only two variables needed for the DP phase.'
+            }
+        ],
         similar: [
 
         ]

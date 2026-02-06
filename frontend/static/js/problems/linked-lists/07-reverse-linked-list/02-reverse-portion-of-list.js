@@ -302,6 +302,13 @@ func main() {
     fmt.Println(toArray(result)) // [1 4 3 2 5]
 }`
         },
+        twists: [
+            { title: 'Reverse Two Separate Portions', difficulty: 'Hard', description: 'Given two non-overlapping ranges [left1, right1] and [left2, right2], reverse both portions of the list simultaneously in a single pass.', whyDifferent: 'Managing two reversal zones in one traversal requires tracking multiple sets of pointers and carefully handling the transition between reversed and non-reversed sections.', example: 'list=[1,2,3,4,5,6,7], left1=2, right1=3, left2=5, right2=6: reverse positions 2-3 and 5-6. Result=[1,3,2,4,6,5,7].' },
+            { title: 'Reverse Portion by Values', difficulty: 'Medium', description: 'Instead of positions, reverse the sublist between the first occurrence of value A and the first occurrence of value B (inclusive).', whyDifferent: 'Position-based indexing is replaced by value-based searching, requiring a scan phase before reversal and handling cases where A or B is not found.', example: 'list=[1,2,3,4,5], A=2, B=4: reverse from node 2 to node 4. Result=[1,4,3,2,5].' },
+            { title: 'Reverse Portion and Sort Rest', difficulty: 'Hard', description: 'Reverse the nodes from position left to right, then sort all nodes outside this range in ascending order.', whyDifferent: 'Combines reversal of a portion with sorting of the complement, requiring you to isolate three segments, process each differently, and reconnect them.', example: 'list=[5,3,1,2,4], left=2, right=3: reverse positions 2-3: [5,1,3,2,4]. Sort rest (positions 1,4,5): sort [5,2,4]->[2,4,5]. Result=[2,1,3,4,5].' },
+            { title: 'Cyclically Shift Portion', difficulty: 'Medium', description: 'Instead of reversing the portion from left to right, cyclically shift those nodes by one position to the right.', whyDifferent: 'A cyclic shift moves the last element to the front of the portion, a different rearrangement than full reversal, requiring last-node extraction and insertion.', example: 'list=[1,2,3,4,5], left=2, right=4: shift portion [2,3,4] right by 1 -> [4,2,3]. Result=[1,4,2,3,5].' },
+            { title: 'Reverse Portion in Doubly Linked List', difficulty: 'Medium', description: 'Reverse the portion from position left to right in a doubly linked list, updating both next and prev pointers.', whyDifferent: 'Each node reversal must swap both next and prev pointers, and the boundary connections require updating four pointers instead of two.', example: 'doubly linked [1,2,3,4,5], left=2, right=4: reverse [2,3,4] to [4,3,2], update all prev and next pointers. Result=[1,4,3,2,5].' }
+        ],
         similar: [
 
         ]

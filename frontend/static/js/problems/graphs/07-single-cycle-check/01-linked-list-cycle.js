@@ -161,6 +161,13 @@ func main() {
     fmt.Println(HasCycle(head)) // false
 }`
         },
+        twists: [
+            { title: 'Find Cycle Start', difficulty: 'Medium', description: 'If a cycle exists, return the node where the cycle begins. Use O(1) space.', whyDifferent: 'Detecting a cycle is only the first step. After fast and slow meet, you must reset one pointer to head and advance both at the same speed to find the cycle entrance.', example: 'List [3,2,0,-4] with cycle at position 1. After detection, reset slow to head. Both advance by 1. They meet at node 2 (the cycle start).' },
+            { title: 'Cycle Length', difficulty: 'Easy', description: 'If a cycle exists, return the length of the cycle (number of nodes in the cycle).', whyDifferent: 'After detection, keep one pointer fixed and advance the other around the cycle counting steps until they meet again.', example: 'List [3,2,0,-4] with cycle at position 1. Cycle contains nodes 2,0,-4 -> length 3.' },
+            { title: 'Detect Cycle with Hash Set', difficulty: 'Easy', description: 'Use O(n) space with a hash set to detect cycles. Compare the tradeoffs with Floyd approach.', whyDifferent: 'Hash set makes detection trivial but uses O(n) space. The twist is understanding when the space tradeoff is acceptable and when it is not.', example: 'Add each node to a set. If you encounter a node already in the set, cycle exists. First duplicate is the cycle start.' },
+            { title: 'Remove the Cycle', difficulty: 'Medium', description: 'If a cycle exists, break it by setting the last node next pointer to null, making the list acyclic.', whyDifferent: 'You must find both the cycle start and the node just before it in the cycle. This requires tracking the previous pointer during the cycle-start detection phase.', example: 'List [1,2,3,4] where 4 points back to 2. Set 4.next = null to break the cycle.' },
+            { title: 'Count Nodes Before Cycle', difficulty: 'Medium', description: 'Return the number of nodes in the non-cyclic portion of the list (the tail leading into the cycle).', whyDifferent: 'After finding the cycle start, you traverse from head to the cycle start counting nodes. This combines cycle detection with distance measurement.', example: 'List [1,2,3,4,5] where 5 points to 3. Non-cyclic portion has 2 nodes (1 and 2). Answer: 2.' }
+        ],
         similar: [
 
         ]

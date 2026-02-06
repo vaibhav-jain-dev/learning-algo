@@ -139,6 +139,13 @@ func main() {
     // Output: [2 2 2]
 }`
         },
+        twists: [
+            { title: 'Preserve Order Move to Front', difficulty: 'Medium', description: 'Move all instances of the target value to the front while preserving relative order of remaining elements.', whyDifferent: 'The write pointer approach reverses direction: non-target elements shift right, targets fill from the left.', example: 'array = [2, 1, 2, 3, 2, 4], toMove = 2. Result: [2, 2, 2, 1, 3, 4].' },
+            { title: 'Stable Partition Two Values', difficulty: 'Medium', description: 'Given two target values A and B, move all As to the end and all Bs to the beginning, preserving order within each group.', whyDifferent: 'Three-way stable partition requires multiple passes or careful pointer management to maintain all orderings.', example: 'array = [3, 1, 2, 1, 3, 2], A = 2, B = 1. Result: [1, 1, 3, 3, 2, 2].' },
+            { title: 'Move with Minimum Writes', difficulty: 'Hard', description: 'Move targets to end preserving order, but minimize the number of array write operations (not swaps, but assignments).', whyDifferent: 'Standard approach writes every non-target element. Can you skip writes for elements already in their correct position?', example: 'array = [1, 2, 3, 2, 4], toMove = 2. Optimal: only 2 writes needed (move 3 and 4 left).' },
+            { title: 'Move in Linked List', difficulty: 'Medium', description: 'Solve the same problem but on a singly linked list instead of an array. Move nodes with target value to the end.', whyDifferent: 'No random access means you must re-link nodes, requiring careful pointer manipulation to avoid breaking the list.', example: '1->2->3->2->4, toMove = 2. Result: 1->3->4->2->2.' },
+            { title: 'Move Preserving Stability Index', difficulty: 'Hard', description: 'After moving targets to end (preserving order), return the new index of every element as a mapping from original to new position.', whyDifferent: 'You must track index transformations during the rearrangement, not just the final array state.', example: 'array = [2, 1, 2, 3], toMove = 2. Result: [1, 3, 2, 2]. Index map: {0->2, 1->0, 2->3, 3->1}.' }
+        ],
         similar: [
 
         ]

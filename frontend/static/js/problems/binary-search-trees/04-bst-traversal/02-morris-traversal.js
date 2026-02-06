@@ -279,6 +279,43 @@ func main() {
     fmt.Println(MorrisTraversal(data))
 }`
         },
+        twists: [
+            {
+                title: 'Morris Postorder Traversal',
+                difficulty: 'Very Hard',
+                description: 'Implement postorder traversal using Morris threading with O(1) auxiliary space. This is significantly harder than Morris inorder or preorder.',
+                whyDifferent: 'Morris inorder/preorder naturally yield their orders through the threading mechanism. Postorder requires processing nodes in reverse along right boundaries of left subtrees when removing threads, involving a linked-list reversal step within the traversal.',
+                example: 'Tree: [1,2,3,4,5,6,7]. Morris postorder must produce [4,5,2,6,7,3,1] using O(1) space by reversing right-boundary chains.'
+            },
+            {
+                title: 'Morris Traversal on a Threaded BST',
+                difficulty: 'Hard',
+                description: 'The BST is already threaded (null right pointers point to inorder successors). Perform inorder traversal using these existing threads without creating new ones.',
+                whyDifferent: 'Standard Morris creates and removes threads temporarily. With pre-existing threads, you must distinguish real right children from thread pointers (typically via a boolean flag per node), changing the navigation logic entirely.',
+                example: 'Pre-threaded tree: node 1 right-thread points to 2, node 3 right-thread points to 4. Traverse using existing threads without modification.'
+            },
+            {
+                title: 'Morris Traversal with Modification Detection',
+                difficulty: 'Hard',
+                description: 'Another thread is concurrently reading the tree. Implement Morris traversal that detects if the tree was modified by another reader during traversal (since Morris temporarily modifies the tree).',
+                whyDifferent: 'Morris traversal creates temporary modifications that could confuse concurrent readers. You need a mechanism to detect conflicts -- perhaps using version numbers or checksums -- and either retry or abort gracefully.',
+                example: 'Thread A does Morris traversal. Thread B reads node.right and sees a thread pointer instead of null. Detection mechanism should flag this conflict.'
+            },
+            {
+                title: 'Flatten BST to Linked List Using Morris',
+                difficulty: 'Medium',
+                description: 'Use Morris traversal to flatten a BST into a sorted linked list in-place using right pointers, with O(1) auxiliary space.',
+                whyDifferent: 'Instead of just visiting nodes, you must permanently restructure the tree into a right-skewed chain during the traversal. The threading mechanism of Morris is repurposed for permanent modification rather than temporary navigation.',
+                example: 'Tree: [4,2,6,1,3,5,7] -> Flattened: 1->2->3->4->5->6->7 (each node\'s left is null, right points to next).'
+            },
+            {
+                title: 'Count BST Nodes Using O(1) Space',
+                difficulty: 'Medium',
+                description: 'Count the total number of nodes in a BST using Morris traversal, achieving O(1) space. Also compute the sum and average of all node values in the same pass.',
+                whyDifferent: 'While the traversal mechanism is the same, aggregating statistics requires careful counting. The key challenge is that Morris visits some nodes twice (once when creating the thread, once when removing it), so you must only count on the correct visit.',
+                example: 'Tree: [10,5,15,2,7]. Morris traversal visits 5 twice (thread creation and removal). Count on thread-removal visit only. Result: count=5, sum=39, avg=7.8.'
+            }
+        ],
         similar: [
 
         ]

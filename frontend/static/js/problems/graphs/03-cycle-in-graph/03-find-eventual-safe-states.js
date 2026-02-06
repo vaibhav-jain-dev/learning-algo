@@ -188,6 +188,43 @@ func main() {
     fmt.Println(eventualSafeNodes(graph2)) // Output: [4]
 }`
         },
+        twists: [
+            {
+                title: 'Find Eventual Safe States Using Reverse Graph BFS',
+                difficulty: 'Medium',
+                description: 'Solve the problem by reversing all edges and using BFS from terminal nodes. Process nodes whose all original outgoing edges lead to safe nodes.',
+                whyDifferent: 'Completely different approach: instead of DFS with coloring, you reverse the graph and propagate "safety" backward from terminal nodes using topological-sort-like BFS processing.',
+                example: 'Same graph. Reverse edges, start BFS from terminal nodes (5,6). Propagate safety: 2 and 4 are safe (all successors safe). 0,1,3 are unsafe (part of cycle).'
+            },
+            {
+                title: 'Find Unsafe States and the Cycles They Belong To',
+                difficulty: 'Hard',
+                description: 'Return not just the safe nodes, but for each unsafe node, identify which cycle it participates in or leads to.',
+                whyDifferent: 'Requires not just classification but cycle extraction. You need to trace back through gray nodes to reconstruct the actual cycles, grouping unsafe nodes by their associated cycle.',
+                example: 'Graph: [[1,2],[2,3],[5],[0],[5],[],[]]. Unsafe: {0,1,3} form cycle 0->1->3->0. Node 1 also reaches safe node 2 but has a path to cycle.'
+            },
+            {
+                title: 'Safe States in an Undirected Graph',
+                difficulty: 'Hard',
+                description: 'Define a "safe node" in an undirected graph as one that is not part of any cycle. Find all such nodes (articulation-related concept).',
+                whyDifferent: 'In undirected graphs, cycle detection works differently (must track parent). A node is "safe" only if it is not on any cycle, which relates to biconnected components and bridge detection.',
+                example: 'Undirected: 0-1, 1-2, 2-0, 2-3, 3-4. Nodes 0,1,2 are in a cycle (unsafe). Nodes 3,4 are safe (not in any cycle).'
+            },
+            {
+                title: 'Safe States with Time-Varying Edges',
+                difficulty: 'Very Hard',
+                description: 'Edges are active only during certain time intervals. A node is safe if at no point in time can following active edges from it lead to an infinite loop.',
+                whyDifferent: 'The graph structure changes over time, so a static DFS is insufficient. You must consider temporal paths where each step uses an edge active at the right time, creating a much more complex state space.',
+                example: 'Edge 0->1 active t=[0,5], Edge 1->0 active t=[3,8]. At t=4, cycle 0->1->0 is possible (both edges active). Node 0 is unsafe during t=[3,5].'
+            },
+            {
+                title: 'Output Prediction: Which Nodes are Safe?',
+                difficulty: 'Medium',
+                description: 'Given a graph diagram, predict which nodes are safe without running an algorithm. Trace paths mentally from each node to determine if all paths terminate.',
+                whyDifferent: 'Tests conceptual understanding rather than coding. You must reason about the difference between "some paths terminate" and "ALL paths terminate" from a node, which is the key insight of the problem.',
+                example: 'Graph: A->B, A->C, B->D, D->B, C->E. A is unsafe (path A->B->D->B loops). C is safe (C->E terminates). Even though A->C->E terminates, A is still unsafe because A->B loops.'
+            }
+        ],
         similar: [
 
         ]

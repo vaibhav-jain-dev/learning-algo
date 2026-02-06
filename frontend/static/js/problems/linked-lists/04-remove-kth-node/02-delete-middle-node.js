@@ -273,6 +273,13 @@ func main() {
     fmt.Println(toArray(result)) // [1 3 4 1 2 6]
 }`
         },
+        twists: [
+            { title: 'Delete Middle Without Slow-Fast', difficulty: 'Medium', description: 'Delete the middle node but you are not allowed to use the slow-fast pointer technique. Find another approach.', whyDifferent: 'Forces you to use a two-pass approach (count then delete) or a different single-pass technique like using a counter variable, rather than the elegant slow-fast trick.', example: 'list=[1,3,4,7,1,2,6]: first pass counts 7 nodes, middle index=3. Second pass deletes node at index 3 (value 7). Result=[1,3,4,1,2,6].' },
+            { title: 'Delete Both Middle Nodes', difficulty: 'Medium', description: 'For even-length lists, delete both middle nodes (the two center nodes). For odd-length lists, delete the single middle node.', whyDifferent: 'Even-length lists require removing two consecutive nodes, which means tracking the node before both middle nodes and adjusting pointers to skip two nodes.', example: 'list=[1,2,3,4]: both middles are 2 and 3. Result=[1,4]. list=[1,2,3,4,5]: single middle is 3. Result=[1,2,4,5].' },
+            { title: 'Delete Middle Given Only That Node', difficulty: 'Medium', description: 'You are only given a reference to the middle node itself (not the head). Delete it from the list.', whyDifferent: 'Without access to the previous node, you must copy the next node value into the current node and delete the next node instead, a classic trick that changes the deletion strategy entirely.', example: 'Given pointer to node with value 7 in list [1,3,4,7,1,2,6]: copy value 1 from next node, delete next. List becomes [1,3,4,1,2,6].' },
+            { title: 'Move Middle to End', difficulty: 'Medium', description: 'Instead of deleting the middle node, move it to the end of the list while maintaining the relative order of all other nodes.', whyDifferent: 'Requires both finding the middle and relinking it at the tail. You need to detach the middle from its position and append it, requiring both predecessor and tail tracking.', example: 'list=[1,3,4,7,1,2,6]: move middle (7) to end. Result=[1,3,4,1,2,6,7].' },
+            { title: 'Delete Every Kth Middle', difficulty: 'Hard', description: 'Repeatedly delete the middle node of the remaining list k times. Return the list after k deletions.', whyDifferent: 'Requires running the middle-finding algorithm k times on a shrinking list, where the list length and middle position change after each deletion.', example: 'list=[1,2,3,4,5,6,7], k=3: delete middle(4)->[1,2,3,5,6,7], delete middle(5)->[1,2,3,6,7], delete middle(3)->[1,2,6,7].' }
+        ],
         similar: [
 
         ]

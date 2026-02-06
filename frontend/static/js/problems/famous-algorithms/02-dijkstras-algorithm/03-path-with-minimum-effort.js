@@ -209,6 +209,50 @@ func main() {
     fmt.Println(MinimumEffortPath(heights)) // Output: 2
 }`
         },
+        twists: [
+            {
+                title: 'Alternative: Binary Search + BFS',
+                difficulty: 'Medium',
+                description: 'Instead of modified Dijkstra\'s, binary search on the answer (maximum effort E), and for each candidate E, run BFS/DFS to check if a path exists using only edges with absolute difference <= E. Compare the two approaches.',
+                whyDifferent: 'Completely different algorithmic paradigm: decision problem + binary search vs optimization with priority queue. The BFS approach is simpler to implement but the binary search adds a log factor.',
+                example: 'Heights [[1,2,2],[3,8,2],[5,3,5]]. Binary search range [0, 7]. Try E=3: can we reach (2,2) using only edges with diff<=3? BFS finds path 1->2->2->2->5 with max diff 3. Try E=2: path 1->2->2->2->3->5 with max diff 2. Answer: 2.'
+            },
+            {
+                title: 'Alternative: Union-Find Approach',
+                difficulty: 'Hard',
+                description: 'Sort all edges by weight (height difference), then add them one by one using Union-Find until (0,0) and (rows-1, cols-1) are connected. The last edge added gives the minimum effort.',
+                whyDifferent: 'This is essentially Kruskal\'s algorithm applied to a shortest-path-like problem. It reframes the minimax path problem as a minimum spanning tree problem, connecting two seemingly different algorithmic domains.',
+                example: 'For the grid, list all adjacent cell pairs with their height difference. Sort: (1,2)=1, (2,2)=0, ... Add edges smallest first. When (0,0) connects to (2,2), the largest edge used is the answer.'
+            },
+            {
+                title: 'Proof: Why Dijkstra Works With Max Instead of Sum',
+                difficulty: 'Hard',
+                description: 'Standard Dijkstra minimizes sum of edge weights. Here we minimize the maximum edge weight on the path. Prove that Dijkstra\'s greedy property still holds: when a cell is extracted from the min-heap, its effort value is optimal.',
+                whyDifferent: 'The max operation is not the same as sum. You must prove that the "bottleneck shortest path" variant preserves the key property: any alternative path through unvisited nodes has effort >= current effort.',
+                example: 'If cell (r,c) is extracted with effort E, any other path to (r,c) goes through some unvisited cell with effort >= E. Since max(E, anything) >= E, no alternative can be better.'
+            },
+            {
+                title: 'Conceptual Trap: Diagonal Movement',
+                difficulty: 'Medium',
+                description: 'What if diagonal movement is allowed (8 directions instead of 4)? Does the algorithm change structurally, or just the neighbor generation? What if diagonal movement costs sqrt(2) times the height difference?',
+                whyDifferent: 'Adding diagonals increases edges from ~4*M*N to ~8*M*N but does not change the algorithm structure. The weighted diagonal variant adds complexity to the edge weight calculation and changes the optimal paths.',
+                example: 'Grid [[1,10],[10,1]]. With 4-directions: must go through 10, effort=9. With diagonals: can go (0,0)->(1,1) directly, effort=|1-1|=0. Diagonals can dramatically reduce effort.'
+            },
+            {
+                title: 'Parallel Version: Wavefront Processing',
+                difficulty: 'Very Hard',
+                description: 'In the Dijkstra approach, cells with the same effort value can be processed in parallel. Design a parallel wavefront algorithm that processes all cells at effort level E simultaneously before moving to E+1.',
+                whyDifferent: 'Standard Dijkstra is sequential (one cell at a time). The discrete nature of height differences means many cells share the same effort level. Batch processing these cells enables parallelism.',
+                example: 'If effort values are integers, process all cells reachable with effort 0 first (flat regions), then effort 1, etc. Each batch can be processed in parallel using parallel BFS.'
+            },
+            {
+                title: 'Space-Time Tradeoff: A* Enhancement',
+                difficulty: 'Hard',
+                description: 'Add an A* heuristic to guide the search toward the destination. What is a valid admissible heuristic for the minimum effort problem? Note that Manhattan distance does NOT work as a heuristic here.',
+                whyDifferent: 'The minimax objective makes heuristic design tricky. For sum-based shortest paths, Manhattan distance works. For bottleneck paths, you need a heuristic that lower-bounds the maximum edge weight on any path to the goal.',
+                example: 'One admissible heuristic: h(cell) = 0 (trivially admissible but useless). A better one might use the minimum height difference along any axis-aligned path to the goal, but this requires precomputation.'
+            }
+        ],
         similar: [
 
         ]

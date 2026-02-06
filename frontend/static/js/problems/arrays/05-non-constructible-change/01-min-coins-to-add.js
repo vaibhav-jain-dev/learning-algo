@@ -145,6 +145,36 @@ func main() {
     fmt.Println(MinCoinsToAdd([]int{1, 2, 5}, 10))   // 0
 }`
         },
+        twists: [
+            {
+                title: 'Min Coins to Add with Denomination Constraint',
+                difficulty: 'Hard',
+                description: 'You can only add coins of specific denominations (e.g., powers of 2). Find the minimum coins to add to cover 1 to target.',
+                whyDifferent: 'The greedy strategy of adding currentMax+1 may not be possible. Must choose from allowed denominations, turning this into a constrained optimization.',
+                example: 'coins=[1,3], target=7, allowed=[1,2,4] → add 2 (one coin) to cover 1-7'
+            },
+            {
+                title: 'Min Total Value of Coins to Add',
+                difficulty: 'Hard',
+                description: 'Instead of minimizing the count of coins added, minimize the total value of coins added to cover 1 to target.',
+                whyDifferent: 'Optimizing for value instead of count may lead to adding many small coins rather than fewer large ones, changing the greedy strategy.',
+                example: 'coins=[1,10], target=15 → adding [2,4] (value=6) vs adding [2,3] (value=5) → minimize total value'
+            },
+            {
+                title: 'Min Coins to Add for Range [L, R]',
+                difficulty: 'Medium',
+                description: 'Cover all values from L to R (not 1 to target). Find minimum coins to add.',
+                whyDifferent: 'Starting at L instead of 1 means existing coins may already cover the lower range. Must find the first gap at or above L.',
+                example: 'coins=[1,2,3,10], L=5, R=15 → can make 1-6 and 10-16, need to cover 7-9 → add [4] to extend to 10'
+            },
+            {
+                title: 'Min Coins to Add with Coin Limit',
+                difficulty: 'Hard',
+                description: 'You can add at most k coins. What is the maximum target you can reach with at most k additions?',
+                whyDifferent: 'Inverts the problem: instead of minimizing coins for a fixed target, maximize coverage with a fixed budget of coins.',
+                example: 'coins=[1,5], k=2 → add [2,?] → with [1,2,5] can make 1-8, then add [9?] → maximize range'
+            }
+        ],
         similar: [
 
         ]

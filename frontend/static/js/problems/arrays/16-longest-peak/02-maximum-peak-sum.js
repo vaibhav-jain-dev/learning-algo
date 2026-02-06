@@ -155,6 +155,13 @@ func main() {
     fmt.Println(MaximumPeakSum([]int{1, 3, 2}))  // 6
 }`
         },
+        twists: [
+            { title: 'Minimum Peak Sum', difficulty: 'Medium', description: 'Find the peak with the minimum sum of its elements. Still requires at least 3 elements in the peak.', whyDifferent: 'Minimizing instead of maximizing may favor narrow peaks with small values, changing which peaks are interesting.', example: 'array = [10, 20, 5, 3, 5, 2]. Peak [3, 5, 2] has sum 10. Peak [10, 20, 5] has sum 35. Min = 10.' },
+            { title: 'Maximum Peak Average', difficulty: 'Hard', description: 'Find the peak with the maximum average value (sum divided by length).', whyDifferent: 'Longer peaks are penalized per-element, so shorter peaks with high values may win over longer peaks with more total sum.', example: 'array = [1, 100, 1, 2, 5, 3]. Peak [1,100,1] avg = 34. Peak [2,5,3] avg = 3.33. Max avg = 34.' },
+            { title: 'Top K Peak Sums', difficulty: 'Hard', description: 'Find the K peaks with the largest sums. Return their sums in descending order.', whyDifferent: 'Must collect all peak sums and select the top K, potentially using a min-heap for efficiency.', example: 'array = [1, 10, 2, 100, 50, 1, 5, 8, 3], K = 2. Peak sums: [1+10+2]=13, [2+100+50+1]=153, [5+8+3]=16. Top 2: [153, 16].' },
+            { title: 'Peak Sum with Overlap Constraint', difficulty: 'Very Hard', description: 'Find the maximum sum of two non-overlapping peaks. The peaks cannot share any elements.', whyDifferent: 'An optimization problem combining peak detection with interval scheduling to avoid overlap.', example: 'array = [1, 3, 1, 5, 2, 1, 4, 1]. Peaks: [1,3,1] sum 5, [1,5,2] sum 8, [1,4,1] sum 6. Best non-overlapping: 8+6=14.' },
+            { title: 'Weighted Peak Sum', difficulty: 'Hard', description: 'Elements at the tip of the peak have double weight. Compute peak sums where tip elements count twice.', whyDifferent: 'The tip value is amplified, favoring peaks with high tips regardless of arm sums, changing the optimization landscape.', example: 'array = [1, 10, 2, 100, 50, 1]. Peak [2,100,50,1] weighted sum = 2+200+50+1 = 253 (tip 100 doubled).' }
+        ],
         similar: [
 
         ]

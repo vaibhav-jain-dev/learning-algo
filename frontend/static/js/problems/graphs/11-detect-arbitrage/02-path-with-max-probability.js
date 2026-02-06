@@ -224,6 +224,13 @@ func main() {
     fmt.Println(MaxProbability(3, edges3, succProb3, 0, 2)) // 0
 }`
         },
+        twists: [
+            { title: 'Minimum Probability Path', difficulty: 'Easy', description: 'Find the path with the minimum success probability (most risky path) from start to end.', whyDifferent: 'You swap max-heap for min-heap and track minimum probability instead of maximum. The relaxation condition flips to update when new probability is lower.', example: 'Paths: 0.25 and 0.04. Most risky path has probability 0.04. Return 0.04.' },
+            { title: 'Path with K Edges', difficulty: 'Hard', description: 'Find the maximum probability path using exactly K edges from start to end.', whyDifferent: 'You need matrix exponentiation on the probability adjacency matrix, or K-limited BFS/Bellman-Ford variant. Standard Dijkstra cannot enforce exact edge count.', example: 'With K=2, must take exactly 2 edges. Direct edge (probability 0.9) is invalid. Path through intermediate node (0.5 * 0.8 = 0.4) is valid.' },
+            { title: 'Probability with Additive Costs', difficulty: 'Hard', description: 'Each edge has both a probability and a monetary cost. Find the path that maximizes probability subject to total cost <= budget.', whyDifferent: 'This is a constrained optimization problem. Standard Dijkstra cannot handle two metrics. You need state (node, remaining_budget) with probability tracking.', example: 'Path A: probability 0.8, cost 50. Path B: probability 0.6, cost 20. Budget=30. Must take Path B.' },
+            { title: 'Top K Paths by Probability', difficulty: 'Very Hard', description: 'Return the K highest-probability distinct paths from start to end.', whyDifferent: 'Dijkstra finds one best path. Finding K best paths requires Yen algorithm or modified Dijkstra that allows nodes to be visited multiple times.', example: 'Top 3 paths: 0.25 (path A), 0.2 (path B), 0.15 (path C). Return [0.25, 0.2, 0.15] with their paths.' },
+            { title: 'Log-Transform Approach', difficulty: 'Medium', description: 'Solve using log-transformed weights and standard shortest path instead of modified Dijkstra with products.', whyDifferent: 'Taking -log(probability) converts products to sums and maximization to minimization. You can then use standard Dijkstra without modification.', example: 'Probability 0.5 becomes -log(0.5) = 0.693. Minimize sum of logs, then convert back: e^(-sum) = max probability.' }
+        ],
         similar: [
 
         ]

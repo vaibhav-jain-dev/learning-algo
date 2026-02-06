@@ -236,6 +236,13 @@ func main() {
     fmt.Println(IsBipartite(graph2)) // true
 }`
         },
+        twists: [
+            { title: 'Bipartite with Edge Additions', difficulty: 'Hard', description: 'Given a bipartite graph, edges are added one by one. After each addition, report whether the graph is still bipartite.', whyDifferent: 'Rerunning BFS after each edge is too slow. You need Union-Find with parity tracking to maintain bipartiteness incrementally in near O(1) per update.', example: 'Graph is bipartite. Add edge (0,1): still bipartite. Add edge (1,2): still bipartite. Add edge (0,2): not bipartite (odd cycle).' },
+            { title: 'Minimum Edges to Remove', difficulty: 'Hard', description: 'If the graph is not bipartite, find the minimum number of edges to remove to make it bipartite.', whyDifferent: 'This is the minimum edge deletion for bipartiteness problem. You need to find all odd cycles and compute the minimum edge set that breaks all of them.', example: 'Graph with one triangle (3 edges). Remove 1 edge to break the odd cycle. Answer: 1.' },
+            { title: 'Bipartite Check via DFS', difficulty: 'Easy', description: 'Use DFS instead of BFS for the coloring approach. Verify correctness with recursive color assignment.', whyDifferent: 'The algorithm logic is the same, but the traversal order differs. DFS goes deep first, which can find conflicts faster in some graph structures.', example: 'Graph [[1,3],[0,2],[1,3],[0,2]]. DFS colors: 0->0, 1->1, 2->0, 3->1. No conflicts. Bipartite.' },
+            { title: 'Count Bipartite Components', difficulty: 'Medium', description: 'For a disconnected graph, count how many connected components are bipartite and how many are not.', whyDifferent: 'You run bipartite checks per component and maintain separate counters, requiring component-level tracking beyond a single boolean answer.', example: 'Graph with 4 components: 3 are bipartite, 1 has an odd cycle. Answer: 3 bipartite, 1 non-bipartite.' },
+            { title: 'Maximum Independent Set', difficulty: 'Hard', description: 'If the graph is bipartite, find the size of the maximum independent set (largest set of nodes with no edges between them).', whyDifferent: 'For bipartite graphs, maximum independent set = total nodes - maximum matching (Konig theorem). This combines graph coloring with matching theory.', example: 'Bipartite graph with 4 nodes and 2 edges. Maximum matching: 2. Maximum independent set: 4-2=2.' }
+        ],
         similar: [
 
         ]

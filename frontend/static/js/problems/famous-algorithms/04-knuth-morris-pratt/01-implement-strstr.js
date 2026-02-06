@@ -165,6 +165,13 @@ func main() {
     fmt.Println(StrStr("leetcode", "leeto")) // Output: -1
 }`
         },
+        twists: [
+            { title: 'Last Occurrence', difficulty: 'Easy', description: 'Find the index of the last occurrence of needle in haystack, instead of the first.', whyDifferent: 'Requires running KMP to completion instead of stopping at the first match, keeping track of the most recent match position found.', example: 'For haystack="sadbutsad", needle="sad", return 6 (last occurrence) instead of 0 (first occurrence).' },
+            { title: 'All Occurrences', difficulty: 'Medium', description: 'Find all starting indices where needle appears in haystack, including overlapping occurrences.', whyDifferent: 'After each match, instead of returning immediately, use the LPS array to continue searching from the appropriate position for overlapping matches.', example: 'For haystack="AAAA", needle="AA", return [0,1,2] for all overlapping positions.' },
+            { title: 'Case-Insensitive Search', difficulty: 'Easy', description: 'Implement strStr with case-insensitive matching, where "Hello" matches "hello" and "HELLO".', whyDifferent: 'Requires normalizing characters during comparison while preserving the original index positions, affecting both LPS building and matching phases.', example: 'For haystack="HelloWorld", needle="world", return 5 despite the case difference.' },
+            { title: 'Rabin-Karp Alternative', difficulty: 'Medium', description: 'Implement strStr using the Rabin-Karp rolling hash algorithm instead of KMP.', whyDifferent: 'Uses a completely different approach based on hashing -- compute a rolling hash of each window and compare with the pattern hash, only doing full comparison on hash matches.', example: 'Hash "sad" = h1. Slide window over "sadbutsad", comparing rolling hash with h1. On match, verify character by character.' },
+            { title: 'Search with Regex Dot', difficulty: 'Hard', description: 'Implement strStr where the needle can contain "." characters that match any single character (like simple regex).', whyDifferent: 'The dot wildcard means the LPS array cannot be built normally, and character comparisons must account for the special dot matching behavior.', example: 'For haystack="sadbutsad", needle="s.d", return 0 because "sad" matches "s.d" where . matches a.' }
+        ],
         similar: [
 
         ]

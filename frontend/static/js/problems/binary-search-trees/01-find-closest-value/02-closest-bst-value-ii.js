@@ -211,6 +211,43 @@ func main() {
     fmt.Println(InorderPredecessorAndSuccessor(data))
 }`
         },
+        twists: [
+            {
+                title: 'Kth Predecessor and Kth Successor',
+                difficulty: 'Hard',
+                description: 'Instead of finding the immediate predecessor and successor, find the kth predecessor (kth largest value smaller than target) and kth successor (kth smallest value larger than target).',
+                whyDifferent: 'You cannot simply track a single candidate while traversing. You need to maintain k candidates, which may require a stack-based or augmented approach rather than a simple greedy search.',
+                example: 'Tree: [10,5,15,2,7,12,20,1,3], target=10, k=2 -> predecessor=5, successor=15. The 2nd predecessor is 5 (after 7), 2nd successor is 15 (after 12).'
+            },
+            {
+                title: 'Predecessor and Successor with Node Deletion',
+                difficulty: 'Medium',
+                description: 'Find the inorder predecessor and successor, then delete the target node if it exists. Return the predecessor, successor, and the modified tree.',
+                whyDifferent: 'Combining search with mutation requires careful ordering. The predecessor/successor relationship may change after deletion, so you must find them first, then handle the deletion cases (leaf, one child, two children).',
+                example: 'Tree: [5,3,7,2,4,6,8], target=5 -> predecessor=4, successor=6, new tree root becomes 6 with restructured children.'
+            },
+            {
+                title: 'Predecessor and Successor in Threaded BST',
+                difficulty: 'Hard',
+                description: 'The BST is threaded (null right pointers point to inorder successor, null left pointers point to inorder predecessor). Find predecessor and successor using only thread pointers, no stack.',
+                whyDifferent: 'Threaded trees change the traversal paradigm entirely. You follow thread links instead of using a stack or recursion, requiring you to distinguish between real children and thread pointers.',
+                example: 'Same logical result as base problem but traversal follows thread pointers instead of using recursive calls.'
+            },
+            {
+                title: 'All Predecessors and Successors Within Range',
+                difficulty: 'Medium',
+                description: 'Find all inorder predecessors within distance D below the target and all successors within distance D above the target.',
+                whyDifferent: 'Instead of finding exactly one predecessor and one successor, you must collect a variable-length set. This requires continuing the search beyond the first match and knowing when to stop.',
+                example: 'Tree: [10,5,15,2,7,12,20], target=10, D=5 -> predecessors=[7,5], successors=[12,15]. All values within 5 of target on each side.'
+            },
+            {
+                title: 'Predecessor and Successor with Parent Pointers',
+                difficulty: 'Easy',
+                description: 'Each node has a parent pointer. Given a direct reference to the target node (not the value), find its inorder predecessor and successor by traversing the tree using parent pointers.',
+                whyDifferent: 'With parent pointers, you navigate up and down rather than from the root. The successor of a node with no right child is the first ancestor where the node is in its left subtree, which is a fundamentally different traversal pattern.',
+                example: 'Given direct pointer to node 4 in tree [5,3,7,2,4,6,8] -> predecessor=3 (go up to parent), successor=5 (go up until we are a left child).'
+            }
+        ],
         similar: [
 
         ]

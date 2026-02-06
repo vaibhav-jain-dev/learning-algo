@@ -153,6 +153,43 @@ func main() {
     fmt.Println(numDistinct("babgbag", "bag"))    // 5
 }`
         },
+        twists: [
+            {
+                title: 'Count Subsequences with At Most K Gaps',
+                difficulty: 'Hard',
+                description: 'Count distinct subsequences of s that equal t, but consecutive matched characters must have at most k characters between them in s.',
+                whyDifferent: 'Adds a gap constraint that requires tracking the last matched position in the DP state, changing from 2D to 3D DP.',
+                example: 's="rabbbit", t="rbt", k=2 → fewer matches since characters must be close together'
+            },
+            {
+                title: 'Minimum Deletions to Reach Exactly K Subsequences',
+                difficulty: 'Very Hard',
+                description: 'Given s and t, delete the minimum characters from s so that the number of distinct subsequences matching t equals exactly k.',
+                whyDifferent: 'Inverts the counting problem into an optimization problem, requiring binary search or careful DP over deletion choices.',
+                example: 's="rabbbit", t="rabbit", k=1 → delete 1 "b" to get exactly 1 way'
+            },
+            {
+                title: 'Count Distinct Subsequences Modulo Large Prime',
+                difficulty: 'Medium',
+                description: 'Same problem but strings can be up to 10^5 length. Return the count modulo 10^9+7.',
+                whyDifferent: 'Forces thinking about overflow handling and modular arithmetic throughout the DP, and space optimization becomes essential.',
+                example: 's="aaa...a" (1000 a\'s), t="aa" → C(1000,2) mod 10^9+7'
+            },
+            {
+                title: 'Count Common Subsequences of Two Strings',
+                difficulty: 'Hard',
+                description: 'Given two strings s1 and s2, count the total number of common subsequences (not just the longest one).',
+                whyDifferent: 'Changes the DP recurrence: instead of matching against a target, you must count all shared subsequences between two strings simultaneously.',
+                example: 's1="abc", s2="abc" → 8 (empty + a + b + c + ab + ac + bc + abc)'
+            },
+            {
+                title: 'Distinct Subsequences with Character Substitution Budget',
+                difficulty: 'Very Hard',
+                description: 'Count subsequences of s that equal t, but you are allowed to substitute up to m characters in s before counting.',
+                whyDifferent: 'Combines edit distance thinking with subsequence counting, requiring an additional DP dimension for substitution budget.',
+                example: 's="rxbbit", t="rabbit", m=1 → count subsequences after optimally changing 1 char'
+            }
+        ],
         similar: []
     };
 

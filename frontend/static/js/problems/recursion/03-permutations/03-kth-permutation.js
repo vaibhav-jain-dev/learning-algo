@@ -140,6 +140,13 @@ func main() {
     fmt.Println(KthPermutationSequence(map[string]interface{}{"n": float64(3), "k": float64(1)}))  // "123"
 }`
         },
+        twists: [
+            { title: 'Kth Permutation with Duplicates', difficulty: 'Very Hard', description: 'Find the kth permutation sequence when the set contains duplicate elements, so not all n! permutations are unique.', whyDifferent: 'The factorial number system approach breaks because duplicate elements reduce the total count of unique permutations, requiring multinomial coefficient calculations.', example: 'For elements [1,1,2,3] and k=3, the unique permutations in order are [1,1,2,3], [1,1,3,2], [1,2,1,3], ... so k=3 gives "1213".' },
+            { title: 'Inverse: Permutation to Rank', difficulty: 'Hard', description: 'Given a specific permutation of [1..n], compute its 1-indexed rank in lexicographic order without enumerating all permutations.', whyDifferent: 'Reverses the original problem. Instead of mapping rank to permutation, you map permutation to rank, requiring counting smaller permutations using factorials.', example: 'For permutation [3,1,2] of n=3, rank is 5 because order is 123,132,213,231,312,321.' },
+            { title: 'Kth Permutation in Reverse Order', difficulty: 'Medium', description: 'Find the kth permutation when permutations are listed in reverse lexicographic order (largest first).', whyDifferent: 'Requires flipping the selection logic -- instead of picking the smallest available digit, you pick from the largest, or equivalently compute the (total-k+1)th forward permutation.', example: 'For n=3, reverse order is 321,312,231,213,132,123. The k=2 result is "312".' },
+            { title: 'Next k Permutations', difficulty: 'Hard', description: 'Given a starting permutation and integer k, return the list of the next k permutations in lexicographic order.', whyDifferent: 'Combines the next-permutation iterative approach with the mathematical jump approach, choosing the most efficient strategy based on k relative to n!.', example: 'Starting from [2,1,3] with k=3, return [[2,3,1],[3,1,2],[3,2,1]].' },
+            { title: 'Kth Permutation of Subset', difficulty: 'Hard', description: 'Find the kth permutation of length r chosen from n elements (r < n), listed in lexicographic order.', whyDifferent: 'The factorial decomposition changes from n! to P(n,r) = n!/(n-r)!, requiring adjusted group sizes at each digit selection step.', example: 'For n=4, r=2, k=5: permutations of length 2 from [1,2,3,4] in order are 12,13,14,21,23,24,... so k=5 gives "23".' }
+        ],
         similar: [
 
         ]

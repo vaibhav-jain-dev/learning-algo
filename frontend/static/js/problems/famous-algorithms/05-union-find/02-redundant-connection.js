@@ -145,6 +145,13 @@ func main() {
     fmt.Println(FindRedundantConnection([][]int{{1,2},{1,3},{2,3}})) // Output: [2 3]
 }`
         },
+        twists: [
+            { title: 'Redundant Connection in Directed Graph', difficulty: 'Hard', description: 'In a directed graph that started as a rooted tree with one extra edge, find the edge that can be removed to restore the tree.', whyDifferent: 'Directed edges create two possible cases: a node with two parents, or a cycle. Requires handling both scenarios with different logic.', example: 'For edges [[1,2],[1,3],[2,3]], node 3 has two parents (1 and 2). Removing [2,3] restores the tree.' },
+            { title: 'Multiple Redundant Edges', difficulty: 'Hard', description: 'If k extra edges were added to the tree (not just one), find all k redundant edges.', whyDifferent: 'After finding the first cycle-creating edge, the graph may still have additional redundant edges, requiring continued processing with Union-Find.', example: 'For a tree with 2 extra edges, process all edges and collect every edge where union returns false (both endpoints already connected).' },
+            { title: 'Last Redundant Edge Only', difficulty: 'Medium', description: 'If multiple edges create cycles, return the one that appears last in the input (the original problem specification).', whyDifferent: 'Emphasizes the ordering constraint -- among all cycle-creating edges, the last one in the input array is the answer, not necessarily the first one detected.', example: 'For edges [[1,2],[2,3],[3,1],[1,4]], both [3,1] and potentially others create cycles. Return [3,1] since it appears last among redundant edges.' },
+            { title: 'Minimum Weight Redundant Edge', difficulty: 'Hard', description: 'Edges have weights. Among all edges that could be removed to restore a tree, find the one with minimum weight.', whyDifferent: 'Cannot simply return the first cycle-creating edge. Must identify all edges in the cycle, then return the minimum-weight one from that cycle.', example: 'For weighted edges [[1,2,5],[2,3,1],[3,1,3]], the cycle is 1-2-3-1. Removing edge [2,3,1] (weight 1) is cheapest.' },
+            { title: 'DFS Cycle Detection Alternative', difficulty: 'Medium', description: 'Solve the redundant connection problem using DFS cycle detection instead of Union-Find.', whyDifferent: 'Uses a fundamentally different approach -- build the graph incrementally and detect cycles via DFS back-edge detection rather than disjoint set operations.', example: 'Add edges one by one. Before adding each edge, run DFS/BFS to check if the endpoints are already connected. If so, that edge is redundant.' }
+        ],
         similar: [
 
         ]

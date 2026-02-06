@@ -311,6 +311,13 @@ func main() {
     fmt.Println(toArray(result)) // [2 1 4 3 5]
 }`
         },
+        twists: [
+            { title: 'Reverse Short Groups Too', difficulty: 'Medium', description: 'If fewer than k nodes remain at the end, reverse them anyway instead of leaving them as-is.', whyDifferent: 'Removes the hasKNodes check, simplifying the stopping condition but requiring you to handle the final partial group reversal correctly.', example: 'list=[1,2,3,4,5], k=3: reverse [1,2,3]->[3,2,1], then reverse remaining [4,5]->[5,4]. Result=[3,2,1,5,4].' },
+            { title: 'Reverse in Decreasing Group Sizes', difficulty: 'Hard', description: 'Reverse the first 1 node, then the next 2 nodes, then the next 3 nodes, and so on with increasing group sizes.', whyDifferent: 'The group size changes dynamically, requiring a counter that increments after each group. The k parameter is replaced by a growing variable.', example: 'list=[1,2,3,4,5,6,7,8,9,10]: reverse [1](size 1), [2,3](size 2)->[3,2], [4,5,6](size 3)->[6,5,4], [7,8,9,10](size 4)->[10,9,8,7]. Result=[1,3,2,6,5,4,10,9,8,7].' },
+            { title: 'Rotate Groups Instead of Reverse', difficulty: 'Hard', description: 'Instead of reversing each group of k, rotate each group by one position to the right (last element becomes first).', whyDifferent: 'Rotation is not the same as reversal. You must detach the last node of each group and insert it at the front, requiring different pointer manipulation.', example: 'list=[1,2,3,4,5,6], k=3: rotate [1,2,3]->[3,1,2], rotate [4,5,6]->[6,4,5]. Result=[3,1,2,6,4,5].' },
+            { title: 'Reverse K Groups From End', difficulty: 'Hard', description: 'Group the nodes from the end of the list in groups of k, then reverse each group. Leftover nodes at the beginning remain as-is.', whyDifferent: 'Grouping from the end means the leftover partial group is at the start, not the end. Requires knowing the total length first to determine the offset.', example: 'list=[1,2,3,4,5], k=3: from end, groups are [3,4,5] and leftover [1,2]. Reverse [3,4,5]->[5,4,3]. Result=[1,2,5,4,3].' },
+            { title: 'Reverse K Groups and Sort Each', difficulty: 'Hard', description: 'Instead of reversing each group of k nodes, sort each group in ascending order while keeping the groups in their original relative positions.', whyDifferent: 'Sorting a linked list segment is fundamentally different from reversing. You need insertion sort or extraction-based sorting within each k-group.', example: 'list=[3,1,2,6,4,5], k=3: sort [3,1,2]->[1,2,3], sort [6,4,5]->[4,5,6]. Result=[1,2,3,4,5,6].' }
+        ],
         similar: [
 
         ]

@@ -183,6 +183,50 @@ func main() {
     fmt.Println(NetworkDelayTime(times, 4, 2)) // Output: 2
 }`
         },
+        twists: [
+            {
+                title: 'Negative Weight Edge Added',
+                difficulty: 'Hard',
+                description: 'What if some network links have negative delay (time travel shortcuts)? Dijkstra\'s will fail. Modify the solution to handle negative edge weights correctly. What algorithm would you use instead?',
+                whyDifferent: 'Dijkstra\'s greedy assumption breaks with negative edges. You need Bellman-Ford which relaxes all edges V-1 times, or detect negative cycles that would make the delay unbounded.',
+                example: 'times=[[1,2,5],[2,3,-3],[1,3,4]], n=3, k=1. Dijkstra might finalize node 3 with dist=4 (direct), missing path 1->2->3 with dist=5+(-3)=2.'
+            },
+            {
+                title: 'Output Prediction: Disconnected Graph',
+                difficulty: 'Medium',
+                description: 'Predict the output when the graph is disconnected: times=[[1,2,1],[3,4,1]], n=4, k=1. Trace through Dijkstra\'s and explain why the answer is -1. What is the minimum number of edges to add to make all nodes reachable?',
+                whyDifferent: 'Forces thinking about graph connectivity, not just shortest paths. The algorithm\'s termination condition and how unreachable nodes manifest as infinity in the distance array.',
+                example: 'From node 1: dist[1]=0, dist[2]=1, dist[3]=inf, dist[4]=inf. Max dist = inf, so return -1. Adding edge [2,3,x] would connect the components.'
+            },
+            {
+                title: 'Space-Time Tradeoff: Bidirectional Dijkstra',
+                difficulty: 'Hard',
+                description: 'Instead of running Dijkstra from source k, run it simultaneously from k forward and from all nodes backward. When the searches meet, you have the answer. Analyze the space-time tradeoff.',
+                whyDifferent: 'Bidirectional search explores roughly half the graph in each direction, potentially reducing explored nodes from V to 2*sqrt(V). But for network delay (all-nodes reachable), the benefit is limited since we need ALL distances.',
+                example: 'For network delay specifically, bidirectional is not helpful since we need max(all distances). But for single-pair shortest path, it can reduce search space significantly.'
+            },
+            {
+                title: 'Online Variant: Edges Arrive Dynamically',
+                difficulty: 'Very Hard',
+                description: 'Network links are added one at a time. After each addition, report the current network delay time. Can you update the answer incrementally without re-running Dijkstra from scratch?',
+                whyDifferent: 'Static Dijkstra\'s recomputes everything. The dynamic version requires understanding which distances could potentially improve when a new edge (u,v,w) is added: only nodes reachable through v whose current distance exceeds dist[u]+w.',
+                example: 'Initial: times=[[1,2,5]], n=3, k=1. Delay=-1 (node 3 unreachable). Add [2,3,1]: now delay=6. Add [1,3,4]: delay might decrease to 4 if shorter path exists.'
+            },
+            {
+                title: 'Conceptual Trap: Multiple Edges Between Nodes',
+                difficulty: 'Medium',
+                description: 'What if there are multiple flights between the same pair of nodes with different times? Does Dijkstra\'s handle this correctly without modification? What about self-loops?',
+                whyDifferent: 'Some implementations assume unique edges between node pairs. Multiple edges are handled naturally by the adjacency list, but self-loops (times=[[1,1,5]]) add unnecessary heap entries. Forces careful analysis of edge cases.',
+                example: 'times=[[1,2,10],[1,2,5],[2,3,1]], n=3, k=1. Both edges 1->2 are in adjacency list. Dijkstra correctly finds dist[2]=5 via the cheaper edge. Self-loop [1,1,5] is harmless but wasteful.'
+            },
+            {
+                title: 'Approximation: Limited Heap Size',
+                difficulty: 'Hard',
+                description: 'What if memory is limited and you can only keep K entries in the priority queue? Design an approximation that gives correct answers when possible and bounded error otherwise. When does this limitation cause incorrect results?',
+                whyDifferent: 'Standard Dijkstra\'s may push O(E) entries to the heap. With limited heap size, you must decide which entries to discard, potentially losing optimal paths. Forces thinking about which approximation guarantees are achievable.',
+                example: 'Dense graph with 1M edges but heap limited to 1000 entries. Must prioritize which candidates to keep. Evicting the highest-distance entry is a reasonable heuristic but may miss paths through high-intermediate-cost nodes.'
+            }
+        ],
         similar: [
 
         ]

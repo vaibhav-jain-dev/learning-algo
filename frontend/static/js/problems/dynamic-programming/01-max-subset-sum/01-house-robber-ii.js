@@ -156,6 +156,43 @@ func main() {
     fmt.Println(HouseRobberIi(map[string]interface{}{"nums": []interface{}{1.0, 2.0, 3.0, 1.0}}))  // Expected: 4
 }`
         },
+        twists: [
+            {
+                title: 'Decompose Circular to Linear',
+                difficulty: 'Medium',
+                description: 'Explain precisely why the circular problem can be split into two linear House Robber subproblems. Why is max(rob[0..n-2], rob[1..n-1]) correct and complete?',
+                whyDifferent: 'Understanding the decomposition is the core insight. Many students memorize "run it twice" without understanding why this covers all cases and doesn\'t double-count.',
+                example: 'For [1, 2, 3, 1]: Either we don\'t rob house 0 (solve [2, 3, 1] = 3) or we don\'t rob house n-1 (solve [1, 2, 3] = 4). Answer: max(3, 4) = 4. This works because any valid solution must exclude at least one of house 0 or house n-1.'
+            },
+            {
+                title: 'Track Which Houses Were Robbed',
+                difficulty: 'Hard',
+                description: 'Modify the solution to return not just the maximum amount, but the list of house indices that were actually robbed in the optimal solution.',
+                whyDifferent: 'Reconstructing the solution path from the circular variant is trickier than linear. You must backtrack through whichever subproblem gave the better answer, then map indices back to the original array.',
+                example: 'For [1, 2, 3, 1]: if rob[1..3] gives 4 (houses 1 and 2 in the subproblem), the actual house indices are [1, 2].'
+            },
+            {
+                title: 'Conceptual Trap: Off-by-One in Circular Indexing',
+                difficulty: 'Medium',
+                description: 'When solving the two subproblems (exclude first, exclude last), what are the exact array slices? What happens if n <= 2? Walk through the edge cases.',
+                whyDifferent: 'Off-by-one errors in the circular decomposition are the most common bug. You must handle n=1 (just return nums[0]) and n=2 (return max) as special cases.',
+                example: 'n=1: [5] -> return 5. n=2: [5, 3] -> return 5. n=3: [2, 3, 2] -> solve [2, 3] and [3, 2], both give 3. The slices are nums[0..n-2] and nums[1..n-1] inclusive.'
+            },
+            {
+                title: 'Top-Down Memoization Approach',
+                difficulty: 'Medium',
+                description: 'Rewrite the solution using top-down recursion with memoization instead of the bottom-up iterative approach. How do you handle the circular constraint in recursive form?',
+                whyDifferent: 'Top-down thinking is different - you start from the goal and ask "what are my choices?" Converting circular constraints into recursive parameters requires careful thought about what state to pass.',
+                example: 'def rob(nums, start, end, memo): base case when start > end. Choice: rob(start) + rob(start+2, end) or rob(start+1, end). Call max(rob(0, n-2), rob(1, n-1)).'
+            },
+            {
+                title: 'Three Houses in a Triangle',
+                difficulty: 'Hard',
+                description: 'Generalize: what if houses are arranged not in a circle but in a general graph? With just 3 houses where each is adjacent to both others, what is the maximum you can rob?',
+                whyDifferent: 'Forces thinking about the problem beyond the 1D circular case. On a general graph, this becomes the Maximum Independent Set problem, which is NP-hard. The circular structure is what makes it tractable.',
+                example: 'Three houses with values [10, 20, 30] all adjacent to each other: you can only rob one house. Answer: 30. This is much harder on general graphs.'
+            }
+        ],
         similar: [
 
         ]

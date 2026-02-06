@@ -308,6 +308,13 @@ func main() {
     fmt.Println(MinCostConnectPoints(points)) // 20
 }`
         },
+        twists: [
+            { title: 'Euclidean Distance', difficulty: 'Medium', description: 'Use Euclidean distance instead of Manhattan distance. Points are connected by straight-line distance.', whyDifferent: 'The MST algorithm is the same, but the distance metric changes all edge weights. Euclidean distance is sqrt((x1-x2)^2 + (y1-y2)^2), which may change the optimal spanning tree.', example: 'Points (0,0) and (3,4). Manhattan: 7. Euclidean: 5. The optimal MST edges may differ.' },
+            { title: 'Connect with Existing Edges', difficulty: 'Hard', description: 'Some points are already connected with fixed cost 0. Find the MST cost for the remaining points.', whyDifferent: 'Pre-connected points start in the same Union-Find component. You skip free edges and only pay for edges that connect different components.', example: 'Points A, B, C, D. A-B already connected (cost 0). MST only needs to add edges connecting {A,B} to C and D.' },
+            { title: 'Maximum Spanning Tree', difficulty: 'Medium', description: 'Find the maximum cost spanning tree instead of minimum. Connect all points using the most expensive edges.', whyDifferent: 'Sort edges in descending order instead of ascending for Kruskal, or negate weights for Prim. The greedy choice is reversed.', example: 'Points forming a square. MST uses short edges, MaxST uses the diagonals and one long side.' },
+            { title: 'K-Connected Points', difficulty: 'Very Hard', description: 'Instead of a spanning tree, find the minimum cost to make the graph K-edge-connected (every pair of points has K edge-disjoint paths).', whyDifferent: 'K-connectivity requires more than N-1 edges. You need augmentation algorithms beyond basic MST, combining MST with edge augmentation theory.', example: '4 points forming a square. 1-connected: MST (3 edges). 2-connected: need all 4 edges of the square.' },
+            { title: 'Connect in Groups', difficulty: 'Hard', description: 'Points have colors. Only connect points of different colors. Find the minimum cost to make all points reachable from each other.', whyDifferent: 'Same-color edges are forbidden. The edge set is restricted, and valid MST must only use inter-color edges, which may not always produce a spanning tree.', example: 'Red points: (0,0),(1,0). Blue points: (0,1),(1,1). Can only use red-blue edges. MST uses cheapest cross-color edges.' }
+        ],
         similar: [
 
         ]

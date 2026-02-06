@@ -127,6 +127,13 @@ func main() {
     fmt.Println(CountDistinctRanges([]int{1, 3, 5, 7}))  // 4
 }`
         },
+        twists: [
+            { title: 'Count Ranges Without Sorting', difficulty: 'Hard', description: 'Count distinct consecutive ranges without sorting the array. Use a hash set approach.', whyDifferent: 'Forces O(n) solution using hash sets to identify range starts, avoiding the O(n log n) sort step.', example: 'nums = [5, 6, 1, 2, 3, 8]. Three ranges: [1,2,3], [5,6], [8]. Count = 3. Found via hash set.' },
+            { title: 'List All Ranges', difficulty: 'Medium', description: 'Instead of just counting, return the actual ranges as [start, end] pairs sorted by start.', whyDifferent: 'Must track both endpoints of each range, not just count transitions. Requires collecting range boundaries.', example: 'nums = [1, 2, 3, 5, 6, 8]. Ranges: [[1,3], [5,6], [8,8]].' },
+            { title: 'Average Range Length', difficulty: 'Medium', description: 'Compute the average length of all distinct consecutive ranges in the array.', whyDifferent: 'Must compute both the count and total length of ranges, then divide. Requires tracking range sizes.', example: 'nums = [1, 2, 3, 5, 6, 8, 10, 11, 12]. Ranges lengths: 3, 2, 1, 3. Average = 9/4 = 2.25.' },
+            { title: 'Minimum Ranges After K Additions', difficulty: 'Hard', description: 'You can add at most K values to the array. Find the minimum number of distinct ranges after optimal additions.', whyDifferent: 'Greedy: use additions to bridge the smallest gaps between ranges first, reducing the range count maximally.', example: 'nums = [1, 2, 3, 5, 6, 8], K = 1. Add 4: bridge [1,3] and [5,6] into [1,6]. Ranges: [1,6], [8]. Min = 2.' },
+            { title: 'Ranges with Tolerance', difficulty: 'Medium', description: 'Count ranges where consecutive means within gap T (not strictly +1). Two values are consecutive if their difference is at most T.', whyDifferent: 'Relaxed consecutiveness creates larger, overlapping ranges. Sorting and scanning with a gap threshold changes boundary detection.', example: 'nums = [1, 3, 5, 10, 12], T = 2. Ranges: [1,3,5] (gaps <= 2), [10, 12]. Count = 2.' }
+        ],
         similar: [
 
         ]

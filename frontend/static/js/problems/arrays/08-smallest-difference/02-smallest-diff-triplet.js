@@ -175,6 +175,13 @@ func main() {
     // Output: [3 3 3]
 }`
         },
+        twists: [
+            { title: 'Maximize Triplet Range', difficulty: 'Hard', description: 'Instead of minimizing (max - min) of the triplet, maximize it. Pick one element from each of three sorted arrays to maximize the range.', whyDifferent: 'The greedy pointer strategy reverses: instead of advancing the minimum, you consider endpoints of arrays for maximum spread.', example: 'arr1 = [1, 4, 5], arr2 = [10, 20], arr3 = [14, 19]. Max range triplet: [1, 20, 14], range = 19.' },
+            { title: 'Smallest Diff Quadruplet', difficulty: 'Very Hard', description: 'Extend to four sorted arrays. Pick one from each to minimize (max - min).', whyDifferent: 'Four pointers must be managed simultaneously, and deciding which to advance requires comparing all four minimums.', example: 'arr1 = [1,4], arr2 = [5,10], arr3 = [3,7], arr4 = [6,8]. Best quad: [4,5,3,6], range = 3.' },
+            { title: 'K Closest Triplets', difficulty: 'Very Hard', description: 'Find the K triplets (one from each array) with the smallest ranges. Return all K of them.', whyDifferent: 'After finding the best triplet, you must systematically explore the next-best options, requiring a heap or similar structure.', example: 'arr1 = [1,2], arr2 = [3,4], arr3 = [5,6]. K=2 closest: [2,3,5] range=3, [2,4,5] range=3.' },
+            { title: 'Unsorted Input Arrays', difficulty: 'Hard', description: 'The three arrays are not sorted. Find the triplet minimizing (max - min) without sorting.', whyDifferent: 'Sorting is O(n log n) per array. Can you do better with hash-based or bucket-based approaches for special input ranges?', example: 'arr1 = [5,1,4], arr2 = [20,10], arr3 = [19,14]. Same answer [5,10,14] but arrays unsorted.' },
+            { title: 'Triplet Within Threshold', difficulty: 'Medium', description: 'Find any triplet from three sorted arrays where (max - min) is at most T. Return true/false.', whyDifferent: 'Decision problem rather than optimization; you can stop as soon as you find one valid triplet, enabling early termination.', example: 'arr1 = [1,4,5], arr2 = [10,20], arr3 = [14,19], T = 10. Triplet [5,10,14] has range 9 <= 10, return true.' }
+        ],
         similar: [
 
         ]

@@ -67,6 +67,13 @@
         explanation: 'Using a hash table, we store seen values for O(1) lookup to find the answer. For input array=[8, 4, ..., 1] (length 9), the result is [6, 10].'
     }
         ],
+        twists: [
+            { title: 'K Largest Ranges', difficulty: 'Hard', description: 'Find the K largest consecutive ranges in the array. Return them sorted by range length descending.', whyDifferent: 'Must find all ranges and select the top K, requiring collection and sorting of all range intervals.', example: 'array = [1, 11, 3, 0, 15, 5, 2, 4, 10, 7, 12, 6], K = 2. Ranges: [0,7] len 8, [10,12] len 3. Top 2: [[0,7],[10,12]].' },
+            { title: 'Largest Range with Duplicates', difficulty: 'Medium', description: 'The array may contain duplicates. Find the largest range of consecutive integers present (each value needs to appear at least once).', whyDifferent: 'Duplicates should not extend the range but must not break the algorithm. Hash set deduplication is essential.', example: 'array = [1, 2, 2, 3, 3, 3, 5]. Range: [1, 3] length 3.' },
+            { title: 'Largest Range Starting from Value', difficulty: 'Medium', description: 'Given a starting value V, find the longest consecutive range that includes V.', whyDifferent: 'Instead of global maximum, find the specific range containing a given value, requiring targeted expansion from V.', example: 'array = [1, 11, 3, 0, 15, 5, 2, 4], V = 3. Range containing 3: [0, 5] length 6.' },
+            { title: 'Largest Even Range', difficulty: 'Hard', description: 'Find the largest range of consecutive even integers present in the array (step of 2 between consecutive elements).', whyDifferent: 'The consecutive step is 2 instead of 1, requiring the hash expansion to check num+2 and num-2.', example: 'array = [2, 4, 6, 1, 3, 8, 10]. Even range: [2, 4, 6, 8, 10] length 5 values.' },
+            { title: 'Largest Range After One Removal', difficulty: 'Hard', description: 'Find the largest range if you could remove one element from the array (to bridge two separate ranges).', whyDifferent: 'Removal cannot help directly, but it reframes as: find two consecutive ranges separated by gap 1 and merge them.', example: 'array = [1, 2, 3, 5, 6, 7]. Ranges: [1,3] and [5,7]. Gap is 1 value (4). If 4 existed, range would be [1,7]. Still [5,7] len 3 or [1,3] len 3 without 4.' }
+        ],
         similar: [
     { id: '19-largest-range/01-longest-consecutive-gap-k', name: 'Longest Consecutive with Gap K', difficulty: 'Medium' },
     { id: '19-largest-range/02-count-distinct-ranges', name: 'Count Distinct Ranges', difficulty: 'Medium' },

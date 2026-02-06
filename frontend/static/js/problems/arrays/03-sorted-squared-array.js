@@ -46,6 +46,43 @@
         explanation: 'Mixed array. Compare (-7)²=49 vs 30²=900: 900 wins. Then (-7)² vs 22²=484: 484 wins. Then (-7)²=49 vs 9²=81: 81 wins. Then 49 vs 1²: 49 wins. Continue until done.'
     }
         ],
+        twists: [
+            {
+                title: 'Sorted Cubed Array',
+                difficulty: 'Medium',
+                description: 'Instead of squaring, cube each element and return the sorted result. Cubing preserves sign, which changes the problem significantly.',
+                whyDifferent: 'Unlike squaring, cubing preserves negative signs, so the relative order may already be correct. The two-pointer-from-ends approach needs reconsideration.',
+                example: 'array=[-3,-1,0,2,4] → [-27,-1,0,8,64] (already sorted since cubing preserves order)'
+            },
+            {
+                title: 'Sorted Squared with Count of Position Changes',
+                difficulty: 'Medium',
+                description: 'Return the sorted squared array AND the count of elements that changed position after squaring and sorting.',
+                whyDifferent: 'Adds an inversion-counting aspect on top of the squaring problem, requiring you to track original vs final positions.',
+                example: 'array=[-3,-1,2,4] → squares=[1,4,9,16], positions changed: -3 moved from 0→2, -1 moved from 1→0 → 2 changes'
+            },
+            {
+                title: 'In-Place Sorted Squared Array',
+                difficulty: 'Hard',
+                description: 'Square the elements and sort them in-place using O(1) extra space (no result array allowed).',
+                whyDifferent: 'The standard two-pointer solution requires O(n) extra space. In-place requires clever swapping strategies, possibly using block-based merging.',
+                example: 'array=[-3,-1,2,4] → mutate to [1,4,9,16] in place'
+            },
+            {
+                title: 'Sorted Squared Array with Custom Transform',
+                difficulty: 'Medium',
+                description: 'Given a sorted array and a quadratic function f(x)=ax^2+bx+c, apply f to each element and return the sorted result.',
+                whyDifferent: 'Generalizes squaring to any parabolic transform. The direction of the parabola (a>0 or a<0) determines whether the two-pointer approach fills from the ends or the middle.',
+                example: 'array=[-3,-1,0,2], a=1, b=0, c=0 → same as squaring; but a=-1, b=0, c=10 → [1,9,10,6] needs different logic'
+            },
+            {
+                title: 'Streaming Sorted Squared',
+                difficulty: 'Hard',
+                description: 'Elements arrive one at a time in sorted order. After each new element, output the current sorted squared array in O(n) time.',
+                whyDifferent: 'Cannot rebuild from scratch each time. Requires maintaining a sorted squared structure and efficiently inserting new squared values.',
+                example: 'stream: -3 → [9], then -1 → [1,9], then 2 → [1,4,9], then 4 → [1,4,9,16]'
+            }
+        ],
         similar: [
             { id: '03-sorted-squared-array/01-merge-sorted-arrays-with-squares', name: 'Merge Sorted Arrays With Squares', difficulty: 'Medium' },
             { id: '03-sorted-squared-array/02-sorted-squared-no-duplicates', name: 'Sorted Squared No Duplicates', difficulty: 'Medium' },

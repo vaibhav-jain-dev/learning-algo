@@ -129,6 +129,43 @@ func main() {
     fmt.Println(MaximumDepthOfNestedArrays(map[string]interface{}{"array": arr2})) // Output: 1
 }`
         },
+        twists: [
+            {
+                title: 'Iterative BFS Approach',
+                difficulty: 'Medium',
+                description: 'Find maximum nesting depth using a BFS (level-order) approach with a queue, processing one level at a time. No recursion allowed.',
+                whyDifferent: 'BFS naturally processes level by level, so depth equals the number of BFS rounds. This is a fundamentally different traversal order than DFS recursion and requires queue management instead of call stack.',
+                example: 'For [1, [2, [3, 4]]]: Level 0 queue: [1, [2,[3,4]]]. Level 1 queue: [2, [3,4]]. Level 2 queue: [3, 4]. Max depth = 3.'
+            },
+            {
+                title: 'Iterative DFS with Stack',
+                difficulty: 'Easy',
+                description: 'Replace the recursive DFS with an explicit stack. Each stack entry stores an element and its depth. Track the maximum depth seen.',
+                whyDifferent: 'Forces you to manually manage what the call stack does automatically. You must pair each element with its depth metadata, which recursion provides implicitly through nesting.',
+                example: 'Push (array, 1) to stack. Pop and push children: (1, 1), ([2,[3,4]], 1). Pop sub-array, push children at depth 2: (2, 2), ([3,4], 2). Continue. Max seen = 3.'
+            },
+            {
+                title: 'Output Prediction Challenge',
+                difficulty: 'Easy',
+                description: 'Without running code, predict the output for: [[[], [[[]]]], [1, 2]]. What is the maximum depth? Be careful with empty arrays.',
+                whyDifferent: 'Tests understanding of edge cases: empty arrays have depth 1, and the deeply nested empty array [[[]]] contributes depth even though it contains no integers. You must trace the recursion mentally.',
+                example: '[[[], [[[]]]], [1, 2]]: Outer = depth 1. Inner [[], [[[]]]] = depth 2. [] at depth 3 = 3. [[[]]] at depth 3, [[]] at depth 4, [] at depth 5. Answer: 5.'
+            },
+            {
+                title: 'Return Depth of Each Element',
+                difficulty: 'Medium',
+                description: 'Instead of just returning the max depth, return a flat list of (value, depth) pairs for every integer in the nested array.',
+                whyDifferent: 'Shifts from aggregation (max) to enumeration. You must carry the depth through the recursion and collect results, turning a reduce operation into a map-like traversal.',
+                example: 'For [1, [2, [3, 4]]]: output is [(1, 1), (2, 2), (3, 3), (4, 3)]. Each integer is tagged with the depth at which it was found.'
+            },
+            {
+                title: 'Tail Recursion Impossibility',
+                difficulty: 'Hard',
+                description: 'Explain why maximum depth of nested arrays cannot be trivially converted to tail recursion. What property of the problem prevents it?',
+                whyDifferent: 'This is a conceptual analysis twist. The problem requires comparing results from multiple recursive calls (siblings in the array), which means you need the results of sub-calls before you can combine them. This prevents simple tail-call optimization.',
+                example: 'For [A, B] where A and B are sub-arrays: depth = 1 + max(depth(A), depth(B)). You cannot compute this with a single tail call because you need both depth(A) and depth(B) before taking the max.'
+            }
+        ],
         similar: [
 
         ]

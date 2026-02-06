@@ -225,6 +225,43 @@ func main() {
     fmt.Println(CountNodesInRange(data))
 }`
         },
+        twists: [
+            {
+                title: 'Count Nodes in Range with Augmented BST',
+                difficulty: 'Hard',
+                description: 'Augment the BST so that each node stores the size of its subtree. Use this to answer range count queries in O(log n) time without visiting every node in the range.',
+                whyDifferent: 'The base approach visits all nodes in range (O(k)). With subtree sizes, you can compute the count using rank queries: count = rank(high) - rank(low-1). This requires order-statistic tree thinking instead of range traversal.',
+                example: 'Augmented Tree: [10(7),5(3),15(3),3(1),7(1),null,18(1)], range [5,15] -> rank(15)=6, rank(4)=2, count=6-2=4.'
+            },
+            {
+                title: 'Dynamic Range Count with Updates',
+                difficulty: 'Hard',
+                description: 'Support both range count queries and insert/delete operations. After each modification, range count queries must reflect the current tree state.',
+                whyDifferent: 'Static range counting is a one-shot traversal. Dynamic updates require maintaining auxiliary information (subtree sizes) through insertions and deletions, adding complexity to every mutation operation.',
+                example: 'Initial tree: [10,5,15]. countInRange(5,15)=3. Insert 12. countInRange(5,15)=4. Delete 5. countInRange(5,15)=3.'
+            },
+            {
+                title: 'Range Count on Multiple Non-Overlapping Ranges',
+                difficulty: 'Medium',
+                description: 'Given multiple non-overlapping ranges, count nodes in each range in a single traversal of the BST.',
+                whyDifferent: 'Multiple ranges mean you must track which range you are currently evaluating during traversal. Sorting ranges and using a pointer that advances through them during inorder traversal turns this into a merge-like operation.',
+                example: 'Tree: [10,5,15,3,7,12,20], ranges=[[3,5],[10,15],[18,25]] -> counts=[3,3,1]. Single inorder traversal counts for all ranges.'
+            },
+            {
+                title: 'Kth Smallest in Range',
+                difficulty: 'Medium',
+                description: 'Instead of counting all nodes in range, find the kth smallest value within the range [low, high].',
+                whyDifferent: 'You need to enumerate values in order within the range and stop at the kth one. This combines range pruning with order-statistic logic, and you must handle the case where fewer than k values exist in the range.',
+                example: 'Tree: [10,5,15,3,7,12,20], range=[3,15], k=3 -> Values in range sorted: [3,5,7,10,12,15], 3rd smallest is 7.'
+            },
+            {
+                title: 'Range Count Excluding Subtree',
+                difficulty: 'Hard',
+                description: 'Count nodes in range [low, high] but exclude all nodes in the subtree of a given node X. Essentially count nodes in range that are NOT descendants of X.',
+                whyDifferent: 'You must compute two things: total range count and range count within X\'s subtree, then subtract. Identifying which nodes are in X\'s subtree while also checking range boundaries requires careful traversal control.',
+                example: 'Tree: [10,5,15,3,7,12,20], range=[3,15], exclude subtree of node 5. Total in range: 6. In node 5\'s subtree and in range: [3,5,7] = 3. Answer: 6-3=3.'
+            }
+        ],
         similar: [
 
         ]

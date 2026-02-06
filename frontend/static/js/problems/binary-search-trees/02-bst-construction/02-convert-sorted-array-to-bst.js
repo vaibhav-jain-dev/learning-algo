@@ -181,6 +181,43 @@ func main() {
     fmt.Println(ConvertSortedArrayToBst(data))
 }`
         },
+        twists: [
+            {
+                title: 'Convert Sorted Linked List to BST',
+                difficulty: 'Medium',
+                description: 'Instead of a sorted array, convert a sorted singly linked list to a height-balanced BST. You cannot use random access.',
+                whyDifferent: 'Without random access to the middle element, you cannot simply index into the list. You must either convert to array first (O(n) space) or use a bottom-up construction approach that simulates inorder traversal, which inverts the typical top-down thinking.',
+                example: 'LinkedList: 1->2->3->4->5 -> BST: [3,2,5,1,null,4] (height-balanced).'
+            },
+            {
+                title: 'All Possible Height-Balanced BSTs',
+                difficulty: 'Hard',
+                description: 'Given the sorted array, return all possible height-balanced BSTs that can be formed. When the array length is even, the middle can be chosen as either of two elements.',
+                whyDifferent: 'The base problem picks one middle element deterministically. This twist requires exploring both choices when the subarray has even length, turning a single recursive path into a branching enumeration problem.',
+                example: 'nums=[1,2,3,4] -> Two valid BSTs: [2,1,3,null,null,null,4] and [3,2,4,1]. Both are height-balanced.'
+            },
+            {
+                title: 'Convert Sorted Array to Weight-Balanced BST',
+                difficulty: 'Hard',
+                description: 'Each element has an associated weight. Build a BST where the root of each subtree is the weighted median (minimizes total weighted depth) rather than the simple median.',
+                whyDifferent: 'Finding the weighted median requires prefix sum computation and binary search within subarrays, replacing the simple midpoint calculation with an optimization problem at each recursive level.',
+                example: 'nums=[1,2,3,4,5], weights=[1,1,10,1,1] -> Root should be 3 (highest weight), not necessarily the positional median.'
+            },
+            {
+                title: 'Iterative Sorted Array to BST',
+                difficulty: 'Medium',
+                description: 'Convert the sorted array to a height-balanced BST using an iterative approach with an explicit stack instead of recursion.',
+                whyDifferent: 'You must manually manage the subarray ranges and parent-child connections using a stack of pending work items. This requires encoding the recursive state (left, right bounds, parent reference, direction) explicitly.',
+                example: 'Same output as base problem, but must use a while loop with a stack instead of recursive calls.'
+            },
+            {
+                title: 'Sorted Array to BST with Minimum Rotations',
+                difficulty: 'Very Hard',
+                description: 'Given an existing unbalanced BST and a sorted array of the same elements, determine the minimum number of rotations needed to transform the existing BST into the balanced one.',
+                whyDifferent: 'This combines BST construction knowledge with rotation mechanics. You must compare two tree structures and find an optimal sequence of rotations, which is a tree distance problem rather than a construction problem.',
+                example: 'Existing: [1,null,2,null,3] (skewed), target: [2,1,3] (balanced). Minimum: 1 left rotation at node 1.'
+            }
+        ],
         similar: [
 
         ]

@@ -116,6 +116,43 @@
                 explanation: 'Large array (1000 elements) - testing O(n) time complexity.'
             }
         ],
+        twists: [
+            {
+                title: 'Circular Array Subsequence',
+                difficulty: 'Medium',
+                description: 'What if the main array is circular? The sequence can wrap around from the end back to the beginning.',
+                whyDifferent: 'You need to handle wrap-around logic with modular arithmetic and decide when to stop to avoid infinite loops.',
+                example: 'array=[4,5,1,2,3], sequence=[3,4,5] → true (wraps from 3 back to 4,5)'
+            },
+            {
+                title: 'Count All Valid Starting Positions',
+                difficulty: 'Medium',
+                description: 'Instead of just true/false, count how many starting positions in the array allow the sequence to be matched going forward.',
+                whyDifferent: 'Changes from a single-pass check to exploring multiple potential starting points, requiring careful counting.',
+                example: 'array=[1,2,1,2,3], sequence=[1,2] → 2 (can start at index 0 or index 2)'
+            },
+            {
+                title: 'Bidirectional Subsequence Check',
+                difficulty: 'Medium',
+                description: 'The sequence is valid if it can be found going left-to-right OR right-to-left in the array.',
+                whyDifferent: 'You must consider two traversal directions, potentially doubling the search space but also the solution space.',
+                example: 'array=[1,2,3,4,5], sequence=[5,3,1] → true (valid right-to-left)'
+            },
+            {
+                title: 'Minimum Deletions for Valid Subsequence',
+                difficulty: 'Hard',
+                description: 'The sequence is NOT a subsequence. Find the minimum elements to delete from the array so it becomes one.',
+                whyDifferent: 'Switches from verification to optimization. Requires thinking about which elements block subsequence formation.',
+                example: 'array=[5,1,3,2,4], sequence=[1,2,4] → delete 3 (1 deletion)'
+            },
+            {
+                title: 'Subsequence with Maximum Gap Constraint',
+                difficulty: 'Hard',
+                description: 'The sequence must be a subsequence, but consecutive matched elements must be at most k positions apart in the original array.',
+                whyDifferent: 'Adds a proximity constraint that turns the greedy approach into a more careful search, possibly requiring DP.',
+                example: 'array=[1,2,3,1,4], sequence=[1,4], k=2 → false (gap between 1@index0 and 4@index4 is 4 > k=2, but 1@index3 and 4@index4 gap=1 → true)'
+            }
+        ],
         similar: [
             { id: '01-validate-subsequence/01-longest-common-subsequence', name: 'Longest Common Subsequence', difficulty: 'Medium' },
             { id: '01-validate-subsequence/02-count-distinct-subsequences', name: 'Count Distinct Subsequences', difficulty: 'Hard' },

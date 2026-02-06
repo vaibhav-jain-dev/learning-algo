@@ -148,6 +148,13 @@ func main() {
     // Output: [[1 1 2] [1 2 1] [2 1 1]]
 }`
         },
+        twists: [
+            { title: 'Count Only', difficulty: 'Medium', description: 'Instead of generating all unique permutations, return only the count of unique permutations without building them.', whyDifferent: 'Shifts from backtracking enumeration to a mathematical/combinatorial counting approach using factorial division by duplicate counts.', example: 'For [1,1,2], return 3 instead of [[1,1,2],[1,2,1],[2,1,1]]. Use formula n!/(k1!*k2!*...) = 3!/(2!*1!) = 3.' },
+            { title: 'Lexicographic Order', difficulty: 'Hard', description: 'Generate all unique permutations in strict lexicographic (sorted) order, but without sorting the final result.', whyDifferent: 'Requires building permutations in order during generation rather than sorting afterward, demanding careful control of the recursion tree traversal.', example: 'For [2,1,1], output must be [[1,1,2],[1,2,1],[2,1,1]] generated in this exact order without a post-sort step.' },
+            { title: 'Streaming Permutations', difficulty: 'Hard', description: 'Generate permutations one at a time using an iterator/generator pattern, yielding each unique permutation without storing all of them in memory.', whyDifferent: 'Forces lazy evaluation thinking instead of collecting all results into a list, which is critical for very large inputs where memory is constrained.', example: 'For [1,1,2,2,3], yield permutations one by one so at any point only O(n) extra space is used, not O(n! * n).' },
+            { title: 'Circular Permutations', difficulty: 'Hard', description: 'Generate unique circular permutations where rotations of the same arrangement are considered identical.', whyDifferent: 'Adds equivalence class reasoning on top of duplicate handling. You must fix one element to break rotational symmetry while still skipping duplicates.', example: 'For [1,1,2], circular permutations are [1,1,2] and [1,2,1] only (since [2,1,1] is a rotation of [1,1,2]).' },
+            { title: 'Partial Permutations', difficulty: 'Medium', description: 'Given an array with duplicates and an integer k, generate all unique permutations of length k (not necessarily using all elements).', whyDifferent: 'Changes the base case from full-length to partial-length, requiring different termination logic while still handling duplicates correctly.', example: 'For [1,1,2] with k=2, return [[1,1],[1,2],[2,1]] -- all unique 2-length arrangements.' }
+        ],
         similar: [
 
         ]

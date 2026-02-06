@@ -214,6 +214,43 @@ func main() {
     fmt.Println(PathSumToTarget(data)) // [[5 4 11 2] [5 8 4 5]]
 }`
         },
+        twists: [
+            {
+                title: 'Any-to-Any Path Sum',
+                difficulty: 'Hard',
+                description: 'Find all paths that sum to the target, but the path can start and end at any node (not just root-to-leaf). Paths must go downward only.',
+                whyDifferent: 'You need prefix sums to track all possible start points. At each node, check if currentSum - target exists in the prefix sum map, requiring a hash map approach instead of simple backtracking.',
+                example: 'Tree: 10->5->3, 10->5->2, target=8. Path 5->3=8 is valid even though it does not start at root.'
+            },
+            {
+                title: 'N-ary Tree Path Sum',
+                difficulty: 'Medium',
+                description: 'Find all root-to-leaf paths summing to target in an N-ary tree where each node can have any number of children.',
+                whyDifferent: 'Instead of checking left/right children, you must iterate over a variable-length children array. Leaf detection changes from "no left and no right" to "empty children array".',
+                example: 'Node(1, children=[Node(2, children=[Node(4)]), Node(6)]), target=7. Result: [[1,2,4], [1,6]].'
+            },
+            {
+                title: 'Path Sum Count Only',
+                difficulty: 'Medium',
+                description: 'Instead of returning all paths, return only the count of root-to-leaf paths that sum to the target. Optimize to avoid storing paths.',
+                whyDifferent: 'Eliminates the need for backtracking path arrays. You only need a counter, which simplifies space usage but requires careful thought about when to increment.',
+                example: 'Same tree as base, target=22. Output: 2 (instead of [[5,4,11,2],[5,8,4,5]]).'
+            },
+            {
+                title: 'Iterative Path Sum with Stack',
+                difficulty: 'Medium',
+                description: 'Solve the path sum to target problem without recursion, using an explicit stack that tracks the current path and running sum.',
+                whyDifferent: 'Backtracking is natural in recursion but must be manually managed with a stack. You need to carefully detect when to pop path elements as you backtrack through the iterative traversal.',
+                example: 'Stack stores (node, currentSum, pathSoFar). When popping, no automatic cleanup happens like in recursion.'
+            },
+            {
+                title: 'Closest Path Sum',
+                difficulty: 'Medium',
+                description: 'If no exact path sum equals the target, return the path whose sum is closest to the target. If there is a tie, return the shorter path.',
+                whyDifferent: 'Changes from an exact match to an optimization problem. You must track the best candidate path and its difference from target throughout the entire traversal, never pruning early.',
+                example: 'Tree: 1->2->3, 1->4. Target=5. Path 1->4=5 is exact match. If target=7, closest is 1->2->3=6 (diff=1).'
+            }
+        ],
         similar: [
 
         ]

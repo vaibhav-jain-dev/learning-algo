@@ -173,6 +173,43 @@ func main() {
     fmt.Println(cloned.Val) // Output: 1
 }`
         },
+        twists: [
+            {
+                title: 'Clone a Directed Graph',
+                difficulty: 'Medium',
+                description: 'Clone a directed graph where edges are one-way. The cloned graph must preserve edge directions exactly.',
+                whyDifferent: 'In undirected graphs, each edge appears in both neighbor lists. In directed graphs, you must be careful not to assume symmetry. The DFS traversal might not reach all nodes from a single starting node.',
+                example: 'Directed graph: 1->2, 2->3, 3->1. Clone preserves: clone(1)->clone(2)->clone(3)->clone(1).'
+            },
+            {
+                title: 'Clone a Weighted Graph',
+                difficulty: 'Medium',
+                description: 'Clone a graph where each edge has a weight. The node structure includes neighbors as (node, weight) pairs. Preserve all weights in the clone.',
+                whyDifferent: 'The data structure is more complex - you must track and copy edge weights alongside node references. The mapping must handle weighted adjacency correctly.',
+                example: 'Node 1 neighbors: [(2, 5), (3, 10)]. Clone must have clone(1) neighbors: [(clone(2), 5), (clone(3), 10)].'
+            },
+            {
+                title: 'Clone Graph Using BFS',
+                difficulty: 'Medium',
+                description: 'Clone the same undirected graph but use BFS instead of DFS. The result must be identical.',
+                whyDifferent: 'Switches from recursive/stack-based to iterative queue-based cloning. You must handle the mapping of old-to-new nodes in a different traversal order, which changes when clones are created vs when their neighbors are populated.',
+                example: 'Same graph 1-2-3-4 cycle. BFS processes level by level: clone 1, then clone 2 and 4 (level 1), then clone 3 (level 2).'
+            },
+            {
+                title: 'Clone a Disconnected Graph',
+                difficulty: 'Hard',
+                description: 'Clone a graph that may have multiple disconnected components. You are given a list of all nodes, not just one starting node.',
+                whyDifferent: 'A single DFS from one node will not reach disconnected components. You need to iterate over all nodes and start new DFS traversals for unvisited nodes, fundamentally changing the entry point logic.',
+                example: 'Nodes: [1,2,3,4]. Edges: 1-2, 3-4 (two components). Must clone both components completely.'
+            },
+            {
+                title: 'Clone Graph with Random Pointers',
+                difficulty: 'Hard',
+                description: 'Each node has a regular neighbor list plus a random pointer to any node in the graph. Clone the graph preserving both neighbor relationships and random pointers.',
+                whyDifferent: 'The random pointer can point to any node, including ones not yet cloned during DFS. You must handle forward references gracefully, requiring the clone map to serve double duty for both neighbor and random pointer resolution.',
+                example: 'Node 1 (neighbors: [2], random: 3), Node 2 (neighbors: [1], random: 1), Node 3 (neighbors: [], random: 2). All pointers must map to cloned versions.'
+            }
+        ],
         similar: [
 
         ]

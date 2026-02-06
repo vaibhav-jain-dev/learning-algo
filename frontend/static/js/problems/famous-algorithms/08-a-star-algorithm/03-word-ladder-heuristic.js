@@ -219,6 +219,13 @@ func main() {
     fmt.Println(WordLadderWithHeuristic(data)) // 5
 }`
         },
+        twists: [
+            { title: 'All Shortest Paths', difficulty: 'Hard', description: 'Return all shortest transformation sequences from beginWord to endWord, not just one.', whyDifferent: 'Requires BFS to find the shortest distance first, then DFS/backtracking to enumerate all paths of that length, maintaining a parent map of all predecessors.', example: 'For hit->cog, there might be two shortest paths: hit->hot->dot->dog->cog and hit->hot->lot->log->cog. Return both.' },
+            { title: 'Bidirectional BFS', difficulty: 'Hard', description: 'Solve word ladder using bidirectional BFS from both beginWord and endWord simultaneously.', whyDifferent: 'Explores from both ends, meeting in the middle, dramatically reducing the search space from O(b^d) to O(b^(d/2)) where b is branching factor and d is depth.', example: 'Forward frontier: {hit} -> {hot}. Backward frontier: {cog} -> {dog,log}. Continue until frontiers overlap.' },
+            { title: 'Weighted Transformations', difficulty: 'Hard', description: 'Each character substitution has a different cost (e.g., changing vowels costs 1, consonants costs 2). Find the minimum cost transformation.', whyDifferent: 'Unit-cost BFS no longer works. Need Dijkstra or A* with proper g-cost tracking for variable-weight edges.', example: 'Transforming "hit" to "hot" costs 1 (vowel change i->o), but "hit" to "hat" costs 2 (consonant change i to vowel a? depends on definition).' },
+            { title: 'Maximum Ladder Length', difficulty: 'Medium', description: 'Find the longest possible transformation sequence from beginWord to endWord (visiting each word at most once).', whyDifferent: 'Inverts the optimization from shortest to longest path, which is NP-hard in general graphs. For word ladders, the small graph size may make it tractable with DFS+backtracking.', example: 'From "hit" to "cog", the shortest path is 5 but the longest (non-repeating) path might visit 10 intermediate words.' },
+            { title: 'Edit Distance Heuristic Analysis', difficulty: 'Medium', description: 'Prove that the character-difference heuristic is admissible and consistent for the word ladder problem.', whyDifferent: 'Focuses on theoretical understanding -- showing that hamming distance never overestimates the true distance (each difference requires at least one step) and that it satisfies the triangle inequality.', example: 'h("hit","cog")=3 (all chars differ). Actual distance is 4. Since 3 <= 4, the heuristic is admissible (never overestimates).' }
+        ],
         similar: [
 
         ]

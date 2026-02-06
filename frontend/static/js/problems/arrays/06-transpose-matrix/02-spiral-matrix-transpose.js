@@ -263,6 +263,13 @@ func main() {
     }
 }`
         },
+        twists: [
+            { title: 'Spiral Read, Row-Major Write', difficulty: 'Medium', description: 'Read the matrix in spiral order but write the values in standard row-major order to a transposed-dimension matrix.', whyDifferent: 'The writing pattern is simple (sequential), so only the reading is spiral. Decouples the two spiral operations.', example: 'matrix = [[1,2,3],[4,5,6]]. Spiral read: [1,2,3,6,5,4]. Write to 3x2 row-major: [[1,2],[3,6],[5,4]].' },
+            { title: 'Row-Major Read, Spiral Write', difficulty: 'Medium', description: 'Read elements in standard row-major order but write them in spiral order to the output matrix.', whyDifferent: 'Reading is trivial, writing in spiral order requires the spiral-write logic. The inverse of the previous twist.', example: 'matrix = [[1,2,3],[4,5,6]]. Row-major: [1,2,3,4,5,6]. Spiral-write to 3x2: [[1,2],[6,3],[5,4]].' },
+            { title: 'Diagonal Read, Spiral Write', difficulty: 'Hard', description: 'Read the matrix in diagonal order (anti-diagonals) and write in spiral order to a transposed matrix.', whyDifferent: 'Diagonal traversal is a completely different read pattern, combining two non-trivial traversal methods.', example: 'matrix = [[1,2,3],[4,5,6]]. Diagonal read: [1,4,2,5,3,6]. Spiral-write to 3x2.' },
+            { title: 'In-Place Spiral Transpose', difficulty: 'Very Hard', description: 'For a square matrix, perform the spiral-read-spiral-write transpose in-place using O(1) extra space.', whyDifferent: 'In-place requires computing the mapping from each position to its destination and performing cyclic permutations.', example: 'matrix = [[1,2,3],[4,5,6],[7,8,9]]. Transform in-place following spiral-to-spiral mapping.' },
+            { title: 'Reverse Spiral Transpose', difficulty: 'Hard', description: 'Read in reverse spiral order (start from the center outward) and write in spiral order to the transposed matrix.', whyDifferent: 'Reverse spiral reading starts from the center and expands, the opposite of normal spiral reading from outside in.', example: 'matrix = [[1,2,3],[4,5,6]]. Reverse spiral read order is the reverse of normal spiral. Write normally.' }
+        ],
         similar: [
 
         ]

@@ -205,6 +205,43 @@ func main() {
     fmt.Println(AverageOfLevelsInBinaryTree(data)) // [3 14.5 11]
 }`
         },
+        twists: [
+            {
+                title: 'DFS Average of Levels',
+                difficulty: 'Medium',
+                description: 'Compute the average of each level using DFS instead of BFS. You must collect level sums and counts without processing level by level.',
+                whyDifferent: 'DFS visits nodes depth-first, not level by level. You need a data structure (array or map) indexed by level to accumulate sums and counts, then compute averages after traversal completes.',
+                example: 'DFS visits: 3(level 0), 9(level 1), 20(level 1), 15(level 2), 7(level 2). Map: {0:[3,1], 1:[29,2], 2:[22,2]}.'
+            },
+            {
+                title: 'Median of Levels',
+                difficulty: 'Hard',
+                description: 'Instead of the average, compute the median of node values at each level.',
+                whyDifferent: 'Average only needs sum and count. Median requires storing all values at each level, sorting them, and picking the middle. This changes space complexity significantly.',
+                example: 'Level with values [9, 20]: median = 14.5. Level with [15, 7]: median = 11.'
+            },
+            {
+                title: 'N-ary Tree Average of Levels',
+                difficulty: 'Easy',
+                description: 'Compute average of levels in an N-ary tree where nodes can have any number of children.',
+                whyDifferent: 'BFS logic is nearly identical, but when enqueuing children you iterate over a children array instead of checking left/right. Level boundaries remain the same.',
+                example: 'Node(3, children=[Node(9), Node(20, children=[Node(15), Node(7)])]). Same output: [3.0, 14.5, 11.0].'
+            },
+            {
+                title: 'Streaming Level Averages',
+                difficulty: 'Hard',
+                description: 'Nodes arrive one at a time with their level specified. Maintain running averages that update in O(1) per insertion without re-scanning.',
+                whyDifferent: 'Instead of a full BFS, you maintain running sum and count per level. Each insertion updates one level\'s average incrementally. Handles dynamic trees that grow over time.',
+                example: 'Insert (3, level=0): avg=[3.0]. Insert (9, level=1): avg=[3.0, 9.0]. Insert (20, level=1): avg=[3.0, 14.5].'
+            },
+            {
+                title: 'Floating Point Precision Trap',
+                difficulty: 'Medium',
+                description: 'Level has node values summing to a very large number (e.g., 2^53 + 1). How do you compute the average without losing precision?',
+                whyDifferent: 'Forces thinking about floating-point limitations. Naive sum/count can lose precision with large numbers. You may need incremental averaging: avg = avg + (val - avg)/count to avoid overflow.',
+                example: 'Level values: [Number.MAX_SAFE_INTEGER, 1]. Naive sum overflows. Incremental: avg = MAX_SAFE_INT, then avg + (1-avg)/2.'
+            }
+        ],
         similar: [
 
         ]

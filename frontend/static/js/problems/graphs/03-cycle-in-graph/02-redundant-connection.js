@@ -194,6 +194,43 @@ func main() {
     fmt.Println(findRedundantConnection(edges2)) // Output: [1 4]
 }`
         },
+        twists: [
+            {
+                title: 'Redundant Connection in a Directed Graph',
+                difficulty: 'Hard',
+                description: 'Same problem but on a directed graph (rooted tree with one extra directed edge). The extra edge might create a cycle or give a node two parents.',
+                whyDifferent: 'In directed graphs, the redundant edge might not be in a cycle - it could create a node with two parents instead. You must handle both cases: two-parent scenario and cycle scenario, possibly with overlap.',
+                example: 'Edges: [[1,2],[1,3],[2,3]]. Directed: node 3 has two parents (1 and 2). Remove [2,3]. But [[1,2],[2,3],[3,1]] has a cycle - remove [3,1].'
+            },
+            {
+                title: 'Remove Edge Using DFS Instead of Union-Find',
+                difficulty: 'Medium',
+                description: 'Solve the same problem using DFS-based cycle detection instead of Union-Find. When adding each edge, use DFS to check if a path already exists between the endpoints.',
+                whyDifferent: 'Different algorithmic paradigm. DFS checks path existence before each edge addition, while Union-Find merges sets. DFS is O(V+E) per edge check, making it less efficient but more intuitive.',
+                example: 'Edges: [[1,2],[1,3],[2,3]]. Before adding [2,3], DFS finds path 2->1->3 already exists. So [2,3] is redundant.'
+            },
+            {
+                title: 'Remove Minimum Weight Edge to Break All Cycles',
+                difficulty: 'Hard',
+                description: 'Each edge has a weight. A tree with multiple extra edges has multiple cycles. Remove edges with minimum total weight to make it a tree again.',
+                whyDifferent: 'Multiple redundant edges mean multiple cycles to break. This becomes a maximum spanning tree problem (keep heaviest edges, remove lightest redundant ones), requiring a fundamentally different approach.',
+                example: 'Edges: [1,2,w=5],[2,3,w=1],[3,1,w=3],[3,4,w=2],[4,1,w=4]. Two extra edges. Remove [2,3,w=1] and [3,1,w=3] (total=4) to form spanning tree.'
+            },
+            {
+                title: 'Find the Last Redundant Edge',
+                difficulty: 'Medium',
+                description: 'If multiple edges could be removed to form a tree, return the one that appears latest in the input array (the original problem\'s tie-breaking rule).',
+                whyDifferent: 'Tests understanding of why Union-Find naturally returns the last cycle-creating edge: it processes edges in order and the last one that fails union is the answer. Other approaches need explicit tie-breaking.',
+                example: 'Edges: [[1,2],[2,3],[3,1],[1,4]]. Both [3,1] and [2,3] could be removed. Union-Find returns [3,1] (appears later).'
+            },
+            {
+                title: 'Redundant Connection with Disconnected Components',
+                difficulty: 'Medium',
+                description: 'The initial graph might have disconnected components with one extra edge within one component. Find the redundant edge and also report how many components exist.',
+                whyDifferent: 'Union-Find naturally handles disconnected components by counting distinct roots. But the problem statement changes: you must verify the extra edge is within one component and identify which component has the cycle.',
+                example: 'Edges: [[1,2],[3,4],[2,1]]. Two components: {1,2} and {3,4}. Edge [2,1] is redundant in component {1,2}. Answer: [2,1], components: 2.'
+            }
+        ],
         similar: [
 
         ]

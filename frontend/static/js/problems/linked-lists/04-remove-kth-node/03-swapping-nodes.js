@@ -262,6 +262,13 @@ func main() {
     fmt.Println(toArray(result)) // [1 4 3 2 5]
 }`
         },
+        twists: [
+            { title: 'Swap Nodes Not Values', difficulty: 'Hard', description: 'Swap the actual nodes (relinking pointers) instead of just swapping their values. The node objects themselves must move.', whyDifferent: 'Swapping node pointers requires tracking predecessors of both nodes and carefully relinking four pointers, handling adjacent-node and head-node edge cases.', example: 'list=[1,2,3,4,5], k=2: swap node 2 and node 4 by relinking. After swap: [1,4,3,2,5]. Same result but nodes actually moved.' },
+            { title: 'Swap Kth From Start and Kth From Start', difficulty: 'Medium', description: 'Swap the values of the ith node and jth node from the beginning (given two indices i and j).', whyDifferent: 'Both positions are from the start, so no two-pointer end-detection is needed. Simple traversal to both positions suffices, but you must handle i==j edge case.', example: 'list=[1,2,3,4,5], i=2, j=4: swap values at positions 2 and 4 (1-indexed). Result=[1,4,3,2,5].' },
+            { title: 'Swap Adjacent Pairs', difficulty: 'Medium', description: 'Swap every two adjacent nodes in the list. If the list has odd length, the last node remains in place.', whyDifferent: 'Instead of swapping two specific nodes, you must iterate through the entire list swapping pairs, requiring careful pointer management in a loop.', example: 'list=[1,2,3,4,5]: swap (1,2), (3,4), leave 5. Result=[2,1,4,3,5].' },
+            { title: 'Swap to Make Sorted', difficulty: 'Hard', description: 'Given a nearly-sorted linked list where exactly one swap is needed to sort it, find the two nodes that need swapping and swap their values.', whyDifferent: 'Requires detecting which two nodes are out of order by finding inversions, then swapping only those. This combines searching for the anomaly with the swap operation.', example: 'list=[1,5,3,4,2,6]: swapping 5 and 2 gives [1,2,3,4,5,6]. Find and swap these two nodes.' },
+            { title: 'Rotate Swap Positions', difficulty: 'Hard', description: 'Instead of swapping the kth from start and kth from end, perform a three-way rotation: move the kth-from-start value to the kth-from-end position, kth-from-end to the middle position, and middle to the kth-from-start position.', whyDifferent: 'A three-way rotation requires finding three specific nodes and rotating their values in a cycle, adding complexity beyond a simple two-element swap.', example: 'list=[1,2,3,4,5], k=2: positions are 2nd from start (2), middle (3), 2nd from end (4). Rotate: 2->4 pos, 4->3 pos, 3->2 pos. Result=[1,3,4,2,5].' }
+        ],
         similar: [
 
         ]

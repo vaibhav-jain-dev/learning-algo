@@ -246,6 +246,13 @@ func main() {
     fmt.Println(SlidingPuzzle(data)) // 1
 }`
         },
+        twists: [
+            { title: 'Solvability Check', difficulty: 'Medium', description: 'Before solving, determine if the puzzle is solvable by counting inversions in the flattened sequence.', whyDifferent: 'Uses a mathematical property (inversion count parity) to determine solvability in O(n^2) without any search, a completely different approach from BFS/A*.', example: 'For a 2x3 board, count pairs (a,b) where a appears before b but a > b (excluding 0). If inversion count parity matches the blank position, the puzzle is solvable.' },
+            { title: 'IDA* Approach', difficulty: 'Hard', description: 'Solve the sliding puzzle using Iterative Deepening A* (IDA*) to save memory compared to standard A*.', whyDifferent: 'IDA* uses DFS with an increasing f-cost threshold instead of maintaining a priority queue, trading time (re-exploration) for dramatically reduced memory usage.', example: 'Set threshold to initial heuristic. DFS prunes branches exceeding threshold. If unsolved, increase threshold to the minimum pruned f-cost and repeat.' },
+            { title: 'Larger Puzzle (3x3 or 4x4)', difficulty: 'Very Hard', description: 'Scale the solution to a 3x3 (8-puzzle) or 4x4 (15-puzzle) board.', whyDifferent: 'The state space explodes (9!/2 = 181,440 for 8-puzzle, 16!/2 ~ 10^13 for 15-puzzle), requiring more sophisticated heuristics like pattern databases.', example: 'The 15-puzzle cannot be solved by brute-force BFS. Need IDA* with Manhattan distance heuristic or pattern database heuristic.' },
+            { title: 'Bidirectional BFS', difficulty: 'Hard', description: 'Solve the puzzle using bidirectional BFS -- searching forward from initial state and backward from goal, meeting in the middle.', whyDifferent: 'Explores roughly sqrt(N) states from each direction instead of N total, significantly reducing the search space for puzzles with large state spaces.', example: 'Forward BFS from initial state and backward BFS from [[1,2,3],[4,5,0]]. When they share a state, combine the two half-paths.' },
+            { title: 'Count Minimum Moves Only', difficulty: 'Medium', description: 'Return just the move count without tracking the actual sequence of moves or states.', whyDifferent: 'Can use A* without storing the path, only the move count in each state, reducing memory overhead per state from O(moves) to O(1) extra.', example: 'For board [[4,1,2],[5,0,3]], return 5 (minimum moves) without specifying which tiles to move in what order.' }
+        ],
         similar: [
 
         ]

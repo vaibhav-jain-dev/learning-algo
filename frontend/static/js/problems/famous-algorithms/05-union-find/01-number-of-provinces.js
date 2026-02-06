@@ -161,6 +161,13 @@ func main() {
     fmt.Println(FindCircleNum([][]int{{1,1,0},{1,1,0},{0,0,1}})) // Output: 2
 }`
         },
+        twists: [
+            { title: 'DFS/BFS Approach', difficulty: 'Medium', description: 'Solve the number of provinces problem using DFS or BFS graph traversal instead of Union-Find.', whyDifferent: 'Uses a completely different paradigm -- connected component counting via traversal rather than disjoint set merging, with visited arrays instead of parent arrays.', example: 'Start DFS from each unvisited node, marking all reachable nodes. Each DFS initiation counts as one province.' },
+            { title: 'Largest Province Size', difficulty: 'Medium', description: 'Instead of counting provinces, find the size of the largest province (most cities in a single connected group).', whyDifferent: 'Requires tracking component sizes during union operations, maintaining a size array that updates when sets merge.', example: 'For 5 cities in 2 provinces of sizes 3 and 2, return 3 as the largest province size.' },
+            { title: 'Province After Removal', difficulty: 'Hard', description: 'For each city, compute how many provinces would exist if that city and all its connections were removed.', whyDifferent: 'Removing a node can split components, which Union-Find cannot handle directly. Requires rebuilding the UF structure n times or using articulation point analysis.', example: 'If city 0 connects two otherwise separate groups, removing it increases the province count by 1.' },
+            { title: 'Online Province Queries', difficulty: 'Medium', description: 'Connections are added one at a time. After each new connection, report the current number of provinces.', whyDifferent: 'Naturally fits Union-Find with a decreasing counter, but emphasizes the incremental/online nature of the algorithm vs. a batch processing approach.', example: 'Start: 4 provinces. Add (0,1): 3. Add (2,3): 2. Add (1,2): 1. Report count after each addition.' },
+            { title: 'Minimum Connections to Single Province', difficulty: 'Medium', description: 'Find the minimum number of new connections needed to merge all provinces into one.', whyDifferent: 'The answer is simply (number of provinces - 1), but understanding why requires recognizing that each new connection can merge at most two provinces.', example: 'For 4 provinces, minimum 3 new connections are needed: connect province 1 to 2, then to 3, then to 4.' }
+        ],
         similar: [
 
         ]
