@@ -222,6 +222,13 @@ func main() {
     fmt.Println(ShortestPathAllKeys(grid2)) // 6
 }`
         },
+        twists: [
+            { title: 'Keys with Expiration', difficulty: 'Very Hard', description: 'Each key expires after T moves. If you do not reach the corresponding lock within T moves of picking up the key, you lose it.', whyDifferent: 'The bitmask state must encode not just which keys you have but when you picked each one. State space explodes, requiring careful pruning or different state representation.', example: 'Key a at distance 3 from lock A, T=5. You have 5 moves after picking up a to use it. If lock A is 6 moves away, the key expires.' },
+            { title: 'One Key Opens Multiple Locks', difficulty: 'Hard', description: 'There are fewer keys than locks. Each key opens all locks of matching and higher letters (key a opens locks A, B, C, etc.).', whyDifferent: 'The lock-checking logic changes from exact match to range comparison, and the optimal key collection order may differ from the standard problem.', example: 'Key a opens locks A, B, C. Grid has locks B and C but no keys b or c. Picking up a alone suffices.' },
+            { title: 'Return the Path', difficulty: 'Medium', description: 'Instead of just the move count, return the actual path (sequence of cells) taken to collect all keys.', whyDifferent: 'You must store parent pointers for each state (row, col, keys) and backtrack from the final state to reconstruct the path.', example: 'Path: (0,0)->(0,1)->(0,2) pick key a ->(1,2)->(2,2) open lock A ->(2,1) pick key b. Return the coordinate sequence.' },
+            { title: 'Two Players', difficulty: 'Very Hard', description: 'Two players start at different positions and share keys. Either player picking up a key makes it available to both. Find minimum total moves.', whyDifferent: 'The state space now includes positions of both players plus shared key bitmask. Coordination between players adds a new dimension to the BFS.', example: 'Player 1 near key a, Player 2 near lock A. Player 1 picks up a (1 move), Player 2 opens A (1 move). Total: 2 moves instead of one player doing both.' },
+            { title: 'Keys Behind Keys', difficulty: 'Hard', description: 'Some keys are behind locks. You must find the correct order to collect keys, creating dependency chains.', whyDifferent: 'The BFS with bitmask handles this naturally, but understanding why is the twist. The state space exploration automatically resolves dependency ordering.', example: 'Key b is behind lock A, key a is freely accessible. Must get a first, open A, then get b.' }
+        ],
         similar: [
 
         ]

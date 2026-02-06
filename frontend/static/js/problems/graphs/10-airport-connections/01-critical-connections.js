@@ -185,6 +185,13 @@ func main() {
     fmt.Println(CriticalConnections(n, connections)) // [[0 1]]
 }`
         },
+        twists: [
+            { title: 'Critical Nodes Instead', difficulty: 'Hard', description: 'Find all critical nodes (articulation points) instead of critical edges. A node is critical if removing it disconnects the graph.', whyDifferent: 'Articulation point detection modifies the Tarjan condition: a node is an articulation point if it has a child with low[child] >= disc[node], with special handling for the root.', example: 'Graph: 0-1, 1-2, 2-0, 1-3. Node 1 is an articulation point (removing it disconnects 3). Edge (1,3) is a bridge.' },
+            { title: 'Bridge Edge Count Only', difficulty: 'Easy', description: 'Return just the count of critical connections, not the actual edges.', whyDifferent: 'Simplifies the output but the algorithm is identical. The twist tests whether you understand the algorithm deeply enough to know the count comes for free.', example: 'Graph with 10 edges and 3 bridges. Answer: 3.' },
+            { title: 'Make All Edges Non-Critical', difficulty: 'Very Hard', description: 'Find the minimum number of edges to add so that no edge in the graph is a bridge (make the graph 2-edge-connected).', whyDifferent: 'You need to find all bridge components, build a bridge tree, and then add edges to make the tree have no leaves, which is ceil(leaves/2).', example: 'Bridge tree has 4 leaves. Need ceil(4/2)=2 additional edges to make all bridges redundant.' },
+            { title: 'Weighted Critical Connections', difficulty: 'Hard', description: 'Each connection has a weight (importance). Among all bridges, find the one with maximum weight.', whyDifferent: 'Tarjan algorithm finds all bridges, then you filter by weight. The combination of structural graph analysis with weight comparison adds a selection step.', example: 'Bridges: (1,3) weight 5, (4,5) weight 10. Most critical connection: (4,5) with weight 10.' },
+            { title: 'Directed Critical Connections', difficulty: 'Very Hard', description: 'The graph is directed. Find edges whose removal would make some node unreachable from node 0.', whyDifferent: 'Bridge detection in directed graphs requires dominator tree or strong connectivity analysis, which is substantially more complex than undirected Tarjan.', example: 'Directed graph: 0->1, 1->2, 0->2, 2->3. Edge (2,3) is critical for reaching node 3. Edge (0->1) is not critical because 0->2->... provides alternate path to other nodes but not to 1.' }
+        ],
         similar: [
 
         ]

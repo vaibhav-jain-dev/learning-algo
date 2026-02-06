@@ -194,6 +194,13 @@ func main() {
     fmt.Println(AccountsMerge(accounts))
 }`
         },
+        twists: [
+            { title: 'DFS/BFS Graph Approach', difficulty: 'Medium', description: 'Solve accounts merge using a graph where emails are nodes and same-account emails have edges, then find connected components via DFS.', whyDifferent: 'Builds an explicit adjacency list graph and traverses it, which is conceptually different from the implicit grouping done by Union-Find.', example: 'Build graph: a@m.co -- b@m.co (account 1), a@m.co -- d@m.co (account 3). DFS from a@m.co finds {a,b,d}.' },
+            { title: 'Accounts with Conflicts', difficulty: 'Hard', description: 'Some emails are flagged as belonging to different people. Merge accounts while respecting these conflict constraints.', whyDifferent: 'Adds negative constraints (cannot merge) alongside positive ones, requiring checking that no two conflicting emails end up in the same merged account.', example: 'If a@m.co and b@m.co are known to be different people, accounts sharing a@m.co cannot merge with accounts sharing b@m.co.' },
+            { title: 'Incremental Account Merge', difficulty: 'Hard', description: 'Accounts arrive one at a time in a stream. After each new account, output the current merged state.', whyDifferent: 'Requires maintaining the Union-Find structure incrementally, merging new emails with existing ones as accounts arrive, rather than batch processing.', example: 'Account 1 arrives: {John, a@m.co, b@m.co}. Account 2 arrives: {John, c@m.co}. Account 3 arrives: {John, a@m.co, d@m.co}. After 3, accounts 1 and 3 merge.' },
+            { title: 'Find Duplicate Accounts Only', difficulty: 'Easy', description: 'Instead of merging, just identify which accounts are duplicates (share at least one email) without producing the merged result.', whyDifferent: 'Simplifies the output -- you only need to identify connected account indices, not reconstruct the full merged email lists with sorted output.', example: 'For accounts 0, 1, 2 where 0 and 2 share an email, return [[0,2],[1]] showing which account indices are linked.' },
+            { title: 'Account Merge with Phone Numbers', difficulty: 'Medium', description: 'Accounts have both emails and phone numbers. Merge accounts that share any email OR any phone number.', whyDifferent: 'Doubles the types of identifiers that can connect accounts, requiring Union-Find to handle two namespaces of identifiers that both trigger merging.', example: 'Account [John, a@m.co, 555-1234] and [John, b@m.co, 555-1234] merge because they share phone number 555-1234.' }
+        ],
         similar: [
 
         ]
