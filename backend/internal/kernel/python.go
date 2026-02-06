@@ -127,8 +127,30 @@ while True:
         tracemalloc.start()
         start_time = _time.perf_counter()
 
-        # Create restricted namespace
+        # Create restricted namespace with common imports pre-loaded
         namespace = {"__builtins__": safe_builtins}
+
+        # Pre-import typing names so users don't need 'from typing import ...'
+        try:
+            from typing import List, Dict, Set, Tuple, Optional, Any, Union, Deque
+            namespace.update({
+                'List': List, 'Dict': Dict, 'Set': Set, 'Tuple': Tuple,
+                'Optional': Optional, 'Any': Any, 'Union': Union, 'Deque': Deque,
+            })
+        except Exception:
+            pass
+
+        # Pre-import common algorithm modules
+        try:
+            import collections, heapq, bisect, math, itertools, functools
+            namespace.update({
+                'collections': collections, 'heapq': heapq, 'bisect': bisect,
+                'math': math, 'itertools': itertools, 'functools': functools,
+                'defaultdict': collections.defaultdict, 'Counter': collections.Counter,
+                'deque': collections.deque, 'OrderedDict': collections.OrderedDict,
+            })
+        except Exception:
+            pass
 
         # Capture stdout from the START (including module-level prints during exec)
         old_stdout = sys.stdout
