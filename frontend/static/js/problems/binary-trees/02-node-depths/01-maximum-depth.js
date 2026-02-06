@@ -163,6 +163,43 @@ func main() {
     fmt.Println(MaximumDepthOfBinaryTree(data)) // 3
 }`
         },
+        twists: [
+            {
+                title: 'Iterative Maximum Depth',
+                difficulty: 'Easy',
+                description: 'Find the maximum depth of the binary tree using BFS (level-order traversal) instead of recursion. Count the number of levels.',
+                whyDifferent: 'BFS naturally counts levels. Instead of recursive max(left, right)+1, you increment a depth counter each time you process a complete level from the queue.',
+                example: 'Queue processes level by level. After 3 levels are exhausted, return 3.'
+            },
+            {
+                title: 'N-ary Tree Maximum Depth',
+                difficulty: 'Easy',
+                description: 'Find the maximum depth of an N-ary tree where each node has a variable number of children.',
+                whyDifferent: 'Instead of max(left, right), you take the max over all children. Leaf detection is an empty children array rather than null left/right pointers.',
+                example: 'Node(1, children=[Node(2, children=[Node(5)]), Node(3), Node(4)]). Max depth: 3 (path 1->2->5).'
+            },
+            {
+                title: 'Maximum Depth with O(1) Space',
+                difficulty: 'Hard',
+                description: 'Find the maximum depth without recursion and without using any auxiliary data structure (no stack, no queue). Use Morris traversal.',
+                whyDifferent: 'Morris traversal does not inherently track depth. You must compute depth by counting thread link hops or maintaining a running depth counter that adjusts when following threads back up.',
+                example: 'Same result as base problem, but space usage is O(1) excluding the return value.'
+            },
+            {
+                title: 'Conceptual Trap: Depth vs Height',
+                difficulty: 'Easy',
+                description: 'What is the maximum depth of a tree with a single node? Some define depth as edges (answer: 0), others as nodes (answer: 1). Solve for both definitions.',
+                whyDifferent: 'Forces you to clarify the definition. The recursive base case changes: return 0 for null (node-counting) vs return -1 for null (edge-counting). Off-by-one errors are extremely common here.',
+                example: 'Single node tree: depth=1 (counting nodes) or depth=0 (counting edges).'
+            },
+            {
+                title: 'Streaming Depth Updates',
+                difficulty: 'Medium',
+                description: 'Nodes are inserted into a BST one at a time. After each insertion, report the current maximum depth without full re-traversal.',
+                whyDifferent: 'You track the current max depth incrementally. Each insertion follows a path whose length might exceed the current max, so you simply compare the insertion depth against the running maximum.',
+                example: 'Insert 5: maxDepth=1. Insert 3: maxDepth=2. Insert 7: maxDepth=2. Insert 1: maxDepth=3.'
+            }
+        ],
         similar: [
 
         ]

@@ -195,6 +195,43 @@ func main() {
     fmt.Println(TournamentTiebreakers(competitions, results)) // "A"
 }`
         },
+        twists: [
+            {
+                title: 'Multi-Level Tiebreakers',
+                difficulty: 'Hard',
+                description: 'Use cascading tiebreakers: first by points, then head-to-head, then goal difference, then alphabetical order.',
+                whyDifferent: 'Requires implementing a multi-criteria comparator that falls through to the next criterion only when the previous one is tied.',
+                example: 'A and B tied on points and head-to-head → compare goal difference → if still tied, alphabetical'
+            },
+            {
+                title: 'Circular Head-to-Head Resolution',
+                difficulty: 'Hard',
+                description: 'What if head-to-head among tied teams is also circular (A beat B, B beat C, C beat A)? Apply a secondary tiebreaker.',
+                whyDifferent: 'Circular head-to-head means no single winner exists from direct comparison, requiring a fallback strategy like most total wins or fewest losses.',
+                example: 'A beats B, B beats C, C beats A (all tied on points) → use total goal difference as fallback'
+            },
+            {
+                title: 'Tournament with Group Stages',
+                difficulty: 'Medium',
+                description: 'Teams are divided into groups. Apply tiebreakers within each group to determine who advances to knockout rounds.',
+                whyDifferent: 'Requires partitioning teams into groups and applying tiebreaker logic independently per group before combining results.',
+                example: 'Group 1: [A,B,C], Group 2: [D,E,F] → top 2 from each group advance using tiebreakers'
+            },
+            {
+                title: 'Weighted Tiebreaker Points',
+                difficulty: 'Medium',
+                description: 'In head-to-head tiebreaker, wins against higher-ranked opponents count more than wins against lower-ranked ones.',
+                whyDifferent: 'Adds positional awareness to the tiebreaker calculation, requiring ranking information during the head-to-head evaluation.',
+                example: 'A and B tied, but A beat the #1 team while B beat the #5 team → A wins tiebreaker'
+            },
+            {
+                title: 'Retroactive Tiebreaker After Disqualification',
+                difficulty: 'Hard',
+                description: 'A team is disqualified mid-tournament. Recompute all standings and tiebreakers as if that team never participated.',
+                whyDifferent: 'Requires removing all matches involving the disqualified team and recomputing everything, testing incremental update capabilities.',
+                example: 'Team C disqualified → remove all C matches → recompute points and head-to-head for remaining teams'
+            }
+        ],
         similar: [
 
         ]

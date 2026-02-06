@@ -218,6 +218,43 @@ func main() {
     fmt.Println(LargestBstSubtree(data))
 }`
         },
+        twists: [
+            {
+                title: 'Largest BST Subtree by Height',
+                difficulty: 'Medium',
+                description: 'Instead of finding the BST subtree with the most nodes, find the one with the greatest height.',
+                whyDifferent: 'A tall but narrow BST subtree beats a short but wide one. The post-order aggregation must track height instead of size, and the optimal subtree may be different from the size-based answer.',
+                example: 'Tree where left subtree is a chain BST of height 4 (5 nodes) and right subtree is a complete BST of height 2 (7 nodes). By height: left wins (4). By size: right wins (7).'
+            },
+            {
+                title: 'Largest Almost-BST Subtree',
+                difficulty: 'Hard',
+                description: 'Find the largest subtree that can become a valid BST by removing at most one node from it.',
+                whyDifferent: 'You must consider subtrees that are "almost valid" -- one violation is tolerable. This requires tracking not just validity but the number of violations and which node to remove, adding a dimension to the state.',
+                example: 'Tree: [10,5,15,1,8,7,20]. Subtree at 15: [15,7,20] is not BST (7<15 on right). Remove 7 -> [15,null,20] is BST of size 2. But subtree at 10 with one removal might be larger.'
+            },
+            {
+                title: 'All Maximal BST Subtrees',
+                difficulty: 'Hard',
+                description: 'Find all BST subtrees that are maximal -- meaning they are valid BSTs and no proper super-tree containing them is also a valid BST. Return all their roots.',
+                whyDifferent: 'Instead of finding the single largest, you must identify all BST subtrees that cannot be extended upward. This requires understanding the boundary between BST and non-BST regions throughout the tree.',
+                example: 'Tree: [8,4,12,2,6,9,15,1,3,5,7,null,11,13,20] might have multiple maximal BST subtrees if the root itself is not a valid BST.'
+            },
+            {
+                title: 'Minimum Nodes to Remove for Full BST',
+                difficulty: 'Very Hard',
+                description: 'Find the minimum number of nodes to remove from the binary tree so that the entire remaining tree is a valid BST.',
+                whyDifferent: 'This is an optimization problem over all possible subsets of nodes to remove, not just finding existing BST subtrees. Removing a node may fix one violation but create another, requiring global reasoning.',
+                example: 'Tree: [5,3,8,1,4,6,10,null,null,null,null,7] -> Remove node 7 (which violates right subtree of 6). Minimum removals: 1.'
+            },
+            {
+                title: 'Largest BST Subtree with Augmented Nodes',
+                difficulty: 'Medium',
+                description: 'While finding the largest BST subtree, augment each node with its BST subtree size. After processing, each node should know the size of the largest BST subtree rooted at or below it.',
+                whyDifferent: 'This adds an output requirement -- you are not just computing a single answer but annotating the entire tree. The augmentation must propagate correctly, and non-BST nodes must carry the max of their children\'s BST sizes.',
+                example: 'Tree: [10,5,15,1,8,null,7]. Node 5 gets augmented with bstSize=3 (subtree [5,1,8] is valid BST). Node 15 gets bstSize=1 (only itself). Node 10 gets bstSize=3 (max of children).'
+            }
+        ],
         similar: [
 
         ]

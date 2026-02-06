@@ -182,6 +182,43 @@ func main() {
     fmt.Println(ladderLength(beginWord, endWord, wordList2)) // Output: 0
 }`
         },
+        twists: [
+            {
+                title: 'Return the Actual Transformation Path',
+                difficulty: 'Hard',
+                description: 'Instead of returning just the length, return one actual shortest transformation sequence as a list of words from beginWord to endWord.',
+                whyDifferent: 'Tracking the path during BFS requires parent pointers or storing full paths in the queue. Reconstructing the path adds significant complexity compared to just counting levels.',
+                example: 'beginWord="hit", endWord="cog", wordList=["hot","dot","dog","lot","log","cog"]. Output: ["hit","hot","dot","dog","cog"] instead of just 5.'
+            },
+            {
+                title: 'Return All Shortest Transformation Sequences',
+                difficulty: 'Very Hard',
+                description: 'Return all shortest transformation sequences from beginWord to endWord. Multiple paths of the same minimum length may exist.',
+                whyDifferent: 'You must find ALL shortest paths, not just one. This requires building a BFS layer graph and then doing DFS backtracking to enumerate all paths. Much harder than single-path BFS.',
+                example: 'beginWord="hit", endWord="cog". Two paths: ["hit","hot","dot","dog","cog"] and ["hit","hot","lot","log","cog"]. Return both.'
+            },
+            {
+                title: 'Bidirectional BFS Word Ladder',
+                difficulty: 'Hard',
+                description: 'Optimize Word Ladder using bidirectional BFS: search from beginWord and endWord simultaneously, meeting in the middle.',
+                whyDifferent: 'Dramatically reduces the search space by shrinking the BFS frontier from both ends. You must alternate between forward and backward frontiers and detect when they intersect.',
+                example: 'Same input, same output (5), but explores far fewer intermediate words. Forward: hit->hot, Backward: cog->dog,log. They meet faster.'
+            },
+            {
+                title: 'Word Ladder with Two-Character Changes',
+                difficulty: 'Medium',
+                description: 'Each transformation step can change up to 2 characters instead of exactly 1. Find the shortest sequence under this relaxed rule.',
+                whyDifferent: 'The adjacency definition changes dramatically - each word has many more neighbors. The graph becomes much denser, so the BFS frontier grows faster but the shortest path is shorter.',
+                example: 'beginWord="hit", endWord="cog". With 1-change: 5 steps. With 2-change: "hit"->"cot"->"cog" = 3 steps (changing h->c and i->o simultaneously).'
+            },
+            {
+                title: 'Word Ladder on a Directed Dictionary',
+                difficulty: 'Hard',
+                description: 'Transformations are directional: you can only change a character to a letter later in the alphabet (a->b ok, b->a not ok). Find the shortest sequence.',
+                whyDifferent: 'The graph becomes directed, which means some paths available in the undirected version are now blocked. You might need longer detours or the answer might become impossible.',
+                example: 'beginWord="abc", endWord="abd". "abc"->"abd" is valid (c->d). But "abd"->"abc" is invalid (d->c goes backward). Some transformations become one-way streets.'
+            }
+        ],
         similar: [
 
         ]

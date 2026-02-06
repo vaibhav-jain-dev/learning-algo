@@ -189,6 +189,50 @@ func main() {
     fmt.Println(FindCheapestPrice(4, flights, 0, 3, 1)) // Output: 700
 }`
         },
+        twists: [
+            {
+                title: 'When Dijkstra Greedy Fails Here',
+                difficulty: 'Hard',
+                description: 'Standard Dijkstra\'s can give wrong answers for this problem. Construct an example where the cheapest path to dst has more stops than a more expensive path, and explain why the "skip if already visited" optimization must be modified.',
+                whyDifferent: 'In standard Dijkstra\'s, once a node is finalized, it is never revisited. But with a stop limit, a more expensive path with fewer stops may be the only valid path. The visited check must account for stops remaining.',
+                example: 'n=4, flights=[[0,1,1],[0,2,5],[1,2,1],[2,3,1]], src=0, dst=3, k=1. Dijkstra finalizes node 2 via 0->1->2 (cost=2, stops=2). But k=1 means max 1 stop, so valid path is 0->2->3 (cost=6, stops=1).'
+            },
+            {
+                title: 'Alternative: Bellman-Ford Approach',
+                difficulty: 'Medium',
+                description: 'Solve this problem using Bellman-Ford with exactly K+1 relaxation rounds instead of modified Dijkstra\'s. Compare the implementations. Why does Bellman-Ford naturally handle the stop constraint?',
+                whyDifferent: 'Bellman-Ford\'s i-th round finds shortest paths using at most i edges. Running K+1 rounds directly encodes the stop constraint without any modification to the visited logic.',
+                example: 'n=4, k=1: run 2 rounds of Bellman-Ford. Round 1: direct flights from src. Round 2: extend by one more flight. Natural K-stop enforcement without complex state tracking.'
+            },
+            {
+                title: 'Proof: Why State Must Include Stops',
+                difficulty: 'Hard',
+                description: 'Prove that the state space for this problem must include (node, stops_used) rather than just (node). Show that without stops in the state, the algorithm can produce incorrect results even with the modified visited check.',
+                whyDifferent: 'Forces formal reasoning about state space design. The standard Dijkstra state (node, distance) is insufficient because two paths to the same node with different stop counts represent fundamentally different states.',
+                example: 'Node X reached via 2 stops (cost 10) and 4 stops (cost 5). If K=3, only the 2-stop path can continue. The cheaper 4-stop path is useless despite lower cost.'
+            },
+            {
+                title: 'Amortized Analysis of Modified Dijkstra',
+                difficulty: 'Very Hard',
+                description: 'The time complexity is O(E*K) rather than O((V+E) log V). Explain why the stop constraint causes nodes to be processed up to K times, and analyze the amortized cost per node extraction.',
+                whyDifferent: 'Standard Dijkstra processes each node once. The stop constraint means the same node can be extracted with different stop counts. The K factor in complexity comes from this re-processing, not from edge relaxation.',
+                example: 'With K=5 and a hub node connected to everything, that hub could be extracted up to 5 times from the heap, once for each possible stop count from 1 to 5.'
+            },
+            {
+                title: 'Conceptual Trap: K=0 Edge Case',
+                difficulty: 'Easy',
+                description: 'What happens when k=0? You can take at most 0 stops, meaning only direct flights from src to dst are valid. Trace through the algorithm with k=0 and verify it handles this correctly.',
+                whyDifferent: 'With k=0, the priority queue immediately limits exploration depth. Many implementations have off-by-one errors here: is k the number of stops (intermediate nodes) or the number of flights?',
+                example: 'n=3, flights=[[0,1,100],[1,2,100],[0,2,500]], src=0, dst=2, k=0. Only direct flight 0->2 is valid. Answer: 500, not 200 (which would need 1 stop).'
+            },
+            {
+                title: 'Space-Time Tradeoff: DP Table vs Heap',
+                difficulty: 'Medium',
+                description: 'Compare the modified Dijkstra approach (heap-based) with a 2D DP approach where dp[i][v] = cheapest cost to reach v using at most i flights. Analyze memory usage and when each approach is better.',
+                whyDifferent: 'The DP approach uses O(N*K) space but has predictable access patterns. The heap approach uses less space on sparse graphs but has unpredictable memory allocation. Forces analysis of when each is preferable.',
+                example: 'N=10000, K=100, E=20000. DP table: 10000*100 = 1M entries. Heap approach: at most E*K = 2M entries but typically much less. For sparse graphs with small K, heap wins; for dense graphs, DP may be simpler.'
+            }
+        ],
         similar: [
 
         ]

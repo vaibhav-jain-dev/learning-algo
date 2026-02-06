@@ -179,6 +179,36 @@ func main() {
     fmt.Println(MergeSortedArraysWithSquares([]int{-5, 0, 3}, []int{1, 2, 6}))
 }`
         },
+        twists: [
+            {
+                title: 'Merge K Sorted Arrays with Squares',
+                difficulty: 'Hard',
+                description: 'Given k sorted arrays instead of two, square all elements and merge into a single sorted array.',
+                whyDifferent: 'Merging k arrays requires a min-heap approach instead of simple two-pointer merge, changing the complexity analysis.',
+                example: 'arr1=[-3,1], arr2=[-2,4], arr3=[0,5] → [0,1,4,4,9,16,25]'
+            },
+            {
+                title: 'Merge Sorted Squares with Duplicate Removal',
+                difficulty: 'Medium',
+                description: 'Merge two sorted arrays after squaring, but remove all duplicate squared values from the result.',
+                whyDifferent: 'Adds deduplication during the merge phase, requiring comparison with the last added element at each merge step.',
+                example: 'arr1=[-3,-1,2], arr2=[-2,1,3] → [1,4,9] (removes duplicate 1 from -1 and 1, duplicate 9 from -3 and 3)'
+            },
+            {
+                title: 'Intersection of Squared Arrays',
+                difficulty: 'Medium',
+                description: 'Instead of merging, find the common elements between the two squared sorted arrays.',
+                whyDifferent: 'Switches from union to intersection logic during the merge phase, requiring equality checks and synchronized pointer advancement.',
+                example: 'arr1=[-3,-1,2], arr2=[-2,1,3] → [1,9] (both arrays contain 1 and 9 after squaring)'
+            },
+            {
+                title: 'Merge Squares with Weighted Sum',
+                difficulty: 'Hard',
+                description: 'Each array has associated weights. Merge the squared values and for duplicates, sum their weights instead of including duplicates.',
+                whyDifferent: 'Requires carrying metadata (weights) alongside values during the merge, and aggregating when duplicate squared values appear.',
+                example: 'arr1=[(-3,2),(-1,5),(2,1)], arr2=[(-2,3),(4,1)] → [(1,5),(4,4),(9,2),(16,1)] with merged weights'
+            }
+        ],
         similar: [
 
         ]

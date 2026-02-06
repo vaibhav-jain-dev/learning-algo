@@ -279,6 +279,43 @@ func main() {
     fmt.Println("Copy created, first val:", copy.Val)
 }`
         },
+        twists: [
+            {
+                title: 'O(1) Space Interleaving Deep Dive',
+                difficulty: 'Hard',
+                description: 'Implement the O(1) space approach by interleaving copied nodes (A->A\'->B->B\'->...), setting random pointers via the interleaved structure, then separating the lists. Trace through each step carefully.',
+                whyDifferent: 'The hash map approach is straightforward but uses O(n) space. The interleaving method requires three distinct passes with tricky pointer manipulation. One wrong pointer assignment corrupts both the original and the copy.',
+                example: 'Original: 1->2->3 (1.random=3, 2.random=1). Interleaved: 1->1\'->2->2\'->3->3\'. Set randoms: 1\'.random=3\' (via 1.random.next). Separate: 1->2->3 and 1\'->2\'->3\'.'
+            },
+            {
+                title: 'Copy Doubly Linked List with Random Pointer',
+                difficulty: 'Hard',
+                description: 'The list is doubly linked (has prev, next, and random pointers). Deep copy it while maintaining all three pointer types.',
+                whyDifferent: 'Adding a prev pointer means the interleaving approach needs additional care during separation to restore prev pointers. The hash map approach handles it naturally but requires setting three pointers per node instead of two.',
+                example: 'Original: null<->1<->2<->3 with randoms. Copy must have valid prev, next, AND random pointers all pointing to new nodes.'
+            },
+            {
+                title: 'Copy Circular List with Random Pointer',
+                difficulty: 'Hard',
+                description: 'The list with random pointers is circular (tail.next = head). Deep copy it maintaining both the circular structure and all random pointers.',
+                whyDifferent: 'The traversal loop cannot use null as termination. For the hash map approach, you must detect the cycle. For the interleaving approach, separating the lists while maintaining circularity adds another layer of pointer complexity.',
+                example: 'Circular: 1->2->3->back to 1, with random pointers. Copy must be a separate circular list with its own random pointers.'
+            },
+            {
+                title: 'Recursive Deep Copy',
+                difficulty: 'Medium',
+                description: 'Clone the list with random pointers using a recursive DFS approach. Use a visited map to handle the random pointers that may point forward or backward.',
+                whyDifferent: 'The recursive approach mirrors graph cloning. Each call clones one node, recursively clones next and random, and uses memoization to avoid infinite loops. This reframes the problem as a graph traversal rather than a linked list traversal.',
+                example: 'clone(node1) -> create copy1, copy1.next = clone(node2), copy1.random = clone(node3). Memoize to return existing copies.'
+            },
+            {
+                title: 'Verify Deep Copy Correctness',
+                difficulty: 'Medium',
+                description: 'Write a function that given the original list and a purported copy, verifies the copy is correct: same structure, same values, same random pointer pattern, but NO shared node references.',
+                whyDifferent: 'This inverts the problem from construction to validation. You must check that corresponding nodes have matching values, that random pointer indices match, and critically that no copy node is the same object as any original node.',
+                example: 'Original: 1(random->3)->2(random->1)->3(random->null). Copy verification: check values match, check copy[0].random == copy[2], check original[0] !== copy[0].'
+            }
+        ],
         similar: [
 
         ]

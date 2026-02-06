@@ -127,6 +127,43 @@ func main() {
     fmt.Println(FlattenNestedList(map[string]interface{}{"array": arr2})) // Output: [1 2 3 4]
 }`
         },
+        twists: [
+            {
+                title: 'Iterative with Explicit Stack',
+                difficulty: 'Medium',
+                description: 'Flatten the nested list using an explicit stack instead of recursion. Process elements right-to-left so they come off the stack in the correct order.',
+                whyDifferent: 'You must reverse the push order to maintain element ordering, which is a subtle detail that recursion handles naturally. The stack replaces the call stack but requires manual ordering management.',
+                example: 'For [[1,2],[3,[4,5]],6]: Push 6, [3,[4,5]], [1,2] to stack. Pop [1,2] -> push 2,1. Pop 1 -> add to result. Pop 2 -> add. Pop [3,[4,5]] -> push [4,5],3. Continue.'
+            },
+            {
+                title: 'Generator / Lazy Flatten',
+                difficulty: 'Hard',
+                description: 'Implement flatten as a generator that yields one element at a time without building the full result array. This is useful for very large nested structures.',
+                whyDifferent: 'Generators use lazy evaluation, producing values on demand rather than building the entire output eagerly. This changes the space complexity from O(n) result storage to O(d) for the recursion/iteration stack only.',
+                example: 'function* flatten(arr) { for (el of arr) { if (Array.isArray(el)) yield* flatten(el); else yield el; } }. Calling next() returns one value at a time.'
+            },
+            {
+                title: 'Flatten to Specific Depth',
+                difficulty: 'Medium',
+                description: 'Modify flatten to accept a depth parameter. Only flatten arrays up to the specified depth, leaving deeper arrays intact. This matches JavaScript\'s Array.flat(depth) behavior.',
+                whyDifferent: 'Adds a depth constraint to the recursion, requiring you to track and decrement the allowed depth. When depth reaches 0, you stop flattening and include sub-arrays as-is.',
+                example: 'flatten([[1,[2]],[3,[4,[5]]]], depth=1) -> [1,[2],3,[4,[5]]]. Only one level is flattened; deeper nesting is preserved.'
+            },
+            {
+                title: 'Stack Overflow with Deep Nesting',
+                difficulty: 'Medium',
+                description: 'Given an array nested 50,000 levels deep, the recursive solution will crash. Implement a purely iterative flatten that handles arbitrary depth.',
+                whyDifferent: 'Deep nesting directly translates to deep recursion. The iterative stack-based approach is the only viable option, and you must carefully manage the stack to preserve element ordering.',
+                example: 'A 50000-deep nested array [[[...[42]...]]] should flatten to [42]. The iterative solution processes this by repeatedly checking if the top of stack is an array, unwrapping it layer by layer.'
+            },
+            {
+                title: 'Flatten with Path Tracking',
+                difficulty: 'Medium',
+                description: 'While flattening, also record the index path to each element. Return pairs of (value, path) where path is an array of indices.',
+                whyDifferent: 'Requires maintaining additional state through the recursion: the current index path. This transforms a simple traversal into one that tracks positional context, useful for debugging or reconstructing the original structure.',
+                example: 'For [[1,2],[3,[4,5]]]: output is [(1,[0,0]), (2,[0,1]), (3,[1,0]), (4,[1,1,0]), (5,[1,1,1])]. Each path shows how to navigate from root to that element.'
+            }
+        ],
         similar: [
 
         ]

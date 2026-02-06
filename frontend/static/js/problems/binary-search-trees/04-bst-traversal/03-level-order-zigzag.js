@@ -216,6 +216,43 @@ func main() {
     fmt.Println(BinaryTreeZigzagLevelOrderTraversal(data))
 }`
         },
+        twists: [
+            {
+                title: 'Spiral Order with K-Level Groups',
+                difficulty: 'Medium',
+                description: 'Instead of alternating direction every level, alternate direction every K levels. For example, with K=2, go left-to-right for 2 levels, then right-to-left for 2 levels.',
+                whyDifferent: 'The simple toggle becomes a counter-based state machine. You must track how many levels have been processed in the current direction before flipping, adding a modular arithmetic dimension to the level processing.',
+                example: 'Tree: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], K=2 -> [[1],[2,3],[7,6,5,4],[8,9,10,11,12,13,14,15]].'
+            },
+            {
+                title: 'Zigzag Traversal Using Two Stacks',
+                difficulty: 'Medium',
+                description: 'Implement zigzag level order using two stacks instead of a deque. One stack processes left-to-right levels, the other right-to-left.',
+                whyDifferent: 'Using two stacks changes the fundamental data structure from BFS with a queue to an alternating stack approach. You push children to the other stack in a specific order depending on the current direction, which is a different mental model.',
+                example: 'Tree: [1,2,3,4,5,6,7]. Stack1 processes level 0 (push right then left for even levels). Stack2 processes level 1 (push left then right for odd levels).'
+            },
+            {
+                title: 'Zigzag with Column Index',
+                difficulty: 'Hard',
+                description: 'Perform zigzag level order traversal but additionally return the column index of each node. Column index follows vertical order conventions (root=0, left child=parent-1, right child=parent+1).',
+                whyDifferent: 'Tracking column indices through the zigzag complicates the bookkeeping significantly. The visual position of a node in the zigzag output does not correspond to its column index, requiring dual tracking of BFS level and vertical position.',
+                example: 'Tree: [3,9,20,null,null,15,7]. Zigzag: [[3@col0], [20@col1, 9@col-1], [15@col0, 7@col2]].'
+            },
+            {
+                title: 'Zigzag Level Order on N-ary Tree',
+                difficulty: 'Medium',
+                description: 'Extend zigzag level order traversal to an N-ary tree where each node can have any number of children.',
+                whyDifferent: 'Binary trees have exactly two children to manage. N-ary trees require iterating over a variable-length children list, and the reversal logic must account for reversing all children rather than just swapping left/right.',
+                example: 'N-ary tree: root=1 with children [2,3,4], node 2 has children [5,6]. Zigzag: [[1], [4,3,2], [5,6]].'
+            },
+            {
+                title: 'Anti-Zigzag: Reconstruct Tree from Zigzag Output',
+                difficulty: 'Hard',
+                description: 'Given the zigzag level order traversal output (array of arrays), reconstruct the original binary tree.',
+                whyDifferent: 'This is the reverse problem. You must undo the alternating reversal to recover the true left-to-right order at each level, then build the tree level by level connecting parents to children in the correct order.',
+                example: 'Zigzag output: [[3],[20,9],[15,7]] -> Tree: [3,9,20,null,null,15,7]. Must un-reverse odd levels before connecting children.'
+            }
+        ],
         similar: [
 
         ]

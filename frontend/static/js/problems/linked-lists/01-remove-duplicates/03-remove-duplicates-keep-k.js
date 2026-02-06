@@ -236,6 +236,43 @@ func main() {
     fmt.Println(toArray(result)) // [1 1 2 2 3]
 }`
         },
+        twists: [
+            {
+                title: 'Unsorted List Keep-K',
+                difficulty: 'Hard',
+                description: 'The list is unsorted. Keep at most k occurrences of each value while preserving the original relative order of kept nodes.',
+                whyDifferent: 'You need a hash map that counts occurrences seen so far. For each node, check if its value has been seen fewer than k times. The sorted adjacency property no longer helps with grouping.',
+                example: 'Input: 3->1->2->3->1->3->2, k=2. Output: 3->1->2->3->1->2 (third 3 removed, first two of each kept).'
+            },
+            {
+                title: 'Doubly Linked Sorted List',
+                difficulty: 'Medium',
+                description: 'Apply the keep-at-most-k rule to a sorted doubly linked list. Maintain valid prev pointers after removals.',
+                whyDifferent: 'The counting and skipping logic stays the same, but each removal requires updating the prev pointer of the next surviving node. Batch removals within a duplicate group need careful prev/next rewiring.',
+                example: 'Input: null<->1<->1<->1<->2<->2<->3, k=2. Output: null<->1<->1<->2<->2<->3 with valid prev links.'
+            },
+            {
+                title: 'Streaming Window Dedup',
+                difficulty: 'Hard',
+                description: 'Nodes arrive in a stream. Maintain a linked list where each value appears at most k times. When a new node arrives, either append it or reject it in O(1) time.',
+                whyDifferent: 'Requires maintaining a persistent count map alongside the list. The challenge is making append O(1) while also supporting removal from arbitrary positions if the design changes.',
+                example: 'k=2. Stream: 1,1,1,2,2,3. After processing: 1->1->2->2->3. The third 1 was rejected on arrival.'
+            },
+            {
+                title: 'Reverse Thinking: Keep Only Duplicates',
+                difficulty: 'Medium',
+                description: 'Instead of removing extras, keep ONLY nodes that appear more than k times. Remove all values that appear k or fewer times.',
+                whyDifferent: 'The filtering logic inverts completely. You now need to first count all occurrences (requiring a full pass or hash map), then do a second pass to remove nodes whose count is <= k.',
+                example: 'Input: 1->1->1->2->2->3, k=2. Values with count > 2: only 1 (appears 3 times). Output: 1->1->1.'
+            },
+            {
+                title: 'Circular Sorted List Keep-K',
+                difficulty: 'Hard',
+                description: 'The sorted list is circular. Keep at most k occurrences. The "sorted" property means values increase around the cycle with one wrap-around point.',
+                whyDifferent: 'You must find the wrap-around point (where the value decreases) to establish a logical start. Duplicate groups might span the wrap-around point, complicating the count logic.',
+                example: 'Circular: ...->4->5->5->5->1->1->2->3->... k=2. After: ...->4->5->5->1->1->2->3->... (one 5 removed).'
+            }
+        ],
         similar: [
 
         ]
