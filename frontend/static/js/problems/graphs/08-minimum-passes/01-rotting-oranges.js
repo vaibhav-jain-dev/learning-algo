@@ -185,6 +185,13 @@ func main() {
     fmt.Println(OrangesRotting(grid2)) // -1
 }`
         },
+        twists: [
+            { title: 'Multiple Rot Speeds', difficulty: 'Hard', description: 'Some rotten oranges are super-rotten and can rot fresh oranges 2 cells away in one minute. Find the minimum minutes.', whyDifferent: 'Standard BFS processes one cell distance per level. Super-rotten oranges break this assumption, requiring you to add cells at distance 2 to the same BFS level.', example: 'Grid [[2,1,1,1,1]]. Normal rot: 4 minutes. With super-rot (distance 2): 2 minutes.' },
+            { title: 'Rot with Immunity', difficulty: 'Medium', description: 'Some fresh oranges are immune (value 3) and can never rot. Determine if all non-immune fresh oranges can rot.', whyDifferent: 'Immune oranges act as barriers that cannot be converted. You must skip them during BFS and check only non-immune fresh oranges remain at the end.', example: 'Grid [[2,1,3,1]]. The immune orange at position 2 blocks rot from reaching the last orange. Answer: -1.' },
+            { title: 'Minimum Rotten to Start', difficulty: 'Very Hard', description: 'No oranges are initially rotten. Place exactly K rotten oranges to minimize the total time for all fresh oranges to rot.', whyDifferent: 'This becomes an optimization problem. You must choose K source positions from all fresh orange locations to minimize the maximum BFS distance.', example: 'Grid 5x5 all fresh, K=2. Optimal placement at (1,1) and (3,3) minimizes total rot time.' },
+            { title: 'Reversible Rot', difficulty: 'Hard', description: 'A rotten orange becomes fresh again after 2 minutes. Fresh oranges adjacent to rotten ones still get infected during the minute. Does the grid stabilize?', whyDifferent: 'The BFS is no longer monotonic. Rot waves oscillate, and you must simulate until a steady state or detect an infinite cycle.', example: 'Grid [[2,1,0,0,1]]. Minute 1: rot spreads right. Minute 2: original rotten becomes fresh. Oscillation occurs.' },
+            { title: 'Weighted Rot Time', difficulty: 'Medium', description: 'Each fresh orange has a resistance value (1-3) indicating how many minutes of adjacent rot it takes before it rots.', whyDifferent: 'BFS levels no longer correspond to single minutes. You need a priority queue or track exposure time per cell, making this closer to Dijkstra than standard BFS.', example: 'Orange with resistance 3 needs 3 adjacent rotten minutes to rot, not 1.' }
+        ],
         similar: [
 
         ]

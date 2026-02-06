@@ -193,6 +193,13 @@ func main() {
     fmt.Println(AlienOrder([]string{"z","x"}))                        // Output: "zx"
 }`
         },
+        twists: [
+            { title: 'Verify Alien Order', difficulty: 'Medium', description: 'Given a proposed character ordering and the sorted word list, verify if the proposed ordering is consistent with the word list.', whyDifferent: 'Inverts from deriving the order to checking one -- simply verify that each adjacent word pair respects the proposed ordering, a much simpler task.', example: 'For words ["wrt","wrf"] and proposed order "wrtf...", verify that t comes before f in the order.' },
+            { title: 'All Valid Orderings', difficulty: 'Very Hard', description: 'Return all possible valid character orderings that are consistent with the word list, not just any one of them.', whyDifferent: 'Requires enumerating all topological orderings of the derived graph, which involves backtracking through all choices at each zero in-degree step.', example: 'If the constraints only define w<e and e<r, characters t and f could appear anywhere unconstrained, leading to many valid orderings.' },
+            { title: 'Minimum Additional Words', difficulty: 'Hard', description: 'Given a partial word list that yields an ambiguous ordering, determine the minimum number of additional words needed to fully determine the alphabet order.', whyDifferent: 'Requires analyzing which character pairs lack ordering constraints and designing words that would create those missing edges in the graph.', example: 'If words ["ab","ac"] only tell us b<c, we need more words to determine where other characters like d and e fit.' },
+            { title: 'Detect Inconsistency Details', difficulty: 'Medium', description: 'When the ordering is invalid, return the specific conflicting constraints (the cycle) that make it impossible.', whyDifferent: 'Goes beyond returning empty string to identifying and reporting the exact cycle of character relationships that creates the contradiction.', example: 'For words ["a","b","a"], the constraints b<a and a<b conflict. Return the cycle [a,b,a] as the conflict.' },
+            { title: 'Lexicographically First Order', difficulty: 'Hard', description: 'Among all valid orderings consistent with the word list, return the lexicographically smallest one (by English alphabet).', whyDifferent: 'Requires using a min-heap instead of a regular queue in the topological sort to always pick the smallest (by English alphabet) available character.', example: 'If both "a" and "c" have zero in-degree, choose "a" first to get the lexicographically smallest valid alien ordering.' }
+        ],
         similar: [
 
         ]
