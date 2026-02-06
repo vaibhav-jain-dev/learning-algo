@@ -145,7 +145,7 @@
         '11-rearrange-linked-list/twist-03-partition-around-median',
         '11-rearrange-linked-list/twist-04-dutch-national-flag-on-linked-list',
         '11-rearrange-linked-list/twist-05-stable-partition-with-multiple-pivots',
-    ]
+    ];
 
     // Category info
     window.CategoryInfo = window.CategoryInfo || {};
@@ -158,3 +158,4 @@
     console.log('[linked-lists] Loaded ' + PROBLEMS.length + ' problems');
 
 })();
+
