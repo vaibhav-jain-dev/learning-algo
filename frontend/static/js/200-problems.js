@@ -6996,8 +6996,8 @@
 
         // Build test cases struct
         var testCasesGo = testCases.map(function(tc) {
-            var inputVals = params.map(function(p) { return toGoLiteral(tc.input[p.name]); }).join(', ');
-            var expectedVal = toGoLiteral(tc.expectedOutput);
+            var inputVals = params.map(function(p) { return toGoLiteral(tc.input[p.name], p.type); }).join(', ');
+            var expectedVal = toGoLiteral(tc.expectedOutput, returnType);
             return '\t\t{"' + tc.name + '", ' + inputVals + ', ' + expectedVal + '},';
         }).join('\n');
 
@@ -7135,13 +7135,13 @@
     /**
      * Convert JS value to Go literal
      */
-    function toGoLiteral(val) {
+    function toGoLiteral(val, typeHint) {
         if (val === null || val === undefined) return 'nil';
         if (typeof val === 'boolean') return val ? 'true' : 'false';
         if (typeof val === 'string') return JSON.stringify(val);
         if (typeof val === 'number') return String(val);
         if (Array.isArray(val)) {
-            if (val.length === 0) return '[]interface{}{}';
+            if (val.length === 0) return (typeHint || '[]interface{}') + '{}';
             var first = val[0];
             if (typeof first === 'number' && Number.isInteger(first)) {
                 return '[]int{' + val.join(', ') + '}';
