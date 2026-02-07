@@ -5043,6 +5043,7 @@
             'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
             'True', 'False', 'None'
         ];
+        var pythonKeywordSet = new Set(pythonKeywords);
 
         var pythonMethods = [
             'append', 'extend', 'insert', 'remove', 'pop', 'clear', 'index', 'count', 'sort', 'reverse', 'copy',
@@ -5052,11 +5053,45 @@
             'encode', 'decode', 'isdigit', 'isalpha', 'isalnum'
         ];
 
-        // Known Python modules for dot-access context
-        var pythonModuleNames = new Set([
-            'os', 'sys', 'math', 'json', 're', 'collections', 'itertools', 'functools',
-            'heapq', 'bisect', 'random', 'string', 'datetime', 'typing'
-        ]);
+        // Extract local variables and function parameters from Python code
+        function extractPythonLocals(model, cursorLine) {
+            var text = model.getValue();
+            var lines = text.split('\n');
+            var locals = new Set();
+
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+                // Function parameters: def func_name(param1, param2, ...):
+                var defMatch = line.match(/^\s*def\s+\w+\s*\(([^)]*)\)/);
+                if (defMatch) {
+                    var params = defMatch[1].split(',');
+                    params.forEach(function(p) {
+                        var name = p.trim().replace(/\s*[:=].*$/, '').replace(/^\*+/, '');
+                        if (name && name !== 'self' && name !== 'cls') locals.add(name);
+                    });
+                }
+                // Variable assignments: var_name = ...
+                var assignMatch = line.match(/^\s*(\w+)\s*=[^=]/);
+                if (assignMatch && !pythonKeywordSet.has(assignMatch[1])) {
+                    locals.add(assignMatch[1]);
+                }
+                // For loop variables: for x in ...
+                var forMatch = line.match(/^\s*for\s+(\w+)(?:\s*,\s*(\w+))?\s+in\s/);
+                if (forMatch) {
+                    if (forMatch[1] && forMatch[1] !== '_') locals.add(forMatch[1]);
+                    if (forMatch[2] && forMatch[2] !== '_') locals.add(forMatch[2]);
+                }
+                // Multiple assignment: a, b = ...
+                var multiMatch = line.match(/^\s*((?:\w+\s*,\s*)+\w+)\s*=/);
+                if (multiMatch) {
+                    multiMatch[1].split(',').forEach(function(v) {
+                        var name = v.trim();
+                        if (name && name !== '_' && !pythonKeywordSet.has(name)) locals.add(name);
+                    });
+                }
+            }
+            return locals;
+        }
 
         monaco.languages.registerCompletionItemProvider('python', {
             triggerCharacters: ['.', '(', ',', ' '],
@@ -5088,29 +5123,46 @@
                         });
                     });
                 } else {
-                    // Normal: suggest snippets + builtins + keywords
-                    suggestions = pythonSnippets.map(function(s) {
-                        return Object.assign({}, s, { range: range });
+                    // Extract local variables and params - highest priority
+                    var locals = extractPythonLocals(model, position.lineNumber);
+                    locals.forEach(function(v) {
+                        suggestions.push({
+                            label: v,
+                            kind: monaco.languages.CompletionItemKind.Variable,
+                            insertText: v,
+                            range: range,
+                            sortText: '0' + v,
+                            detail: 'local'
+                        });
                     });
 
+                    // Snippets
+                    pythonSnippets.forEach(function(s) {
+                        suggestions.push(Object.assign({}, s, { range: range, sortText: '1' + s.label }));
+                    });
+
+                    // Keywords
                     pythonKeywords.forEach(function(kw) {
                         suggestions.push({
                             label: kw,
                             kind: monaco.languages.CompletionItemKind.Keyword,
                             insertText: kw,
                             range: range,
-                            sortText: '1' + kw
+                            sortText: '2' + kw
                         });
                     });
 
+                    // Builtins
                     pythonBuiltins.forEach(function(b) {
-                        suggestions.push({
-                            label: b,
-                            kind: monaco.languages.CompletionItemKind.Function,
-                            insertText: b,
-                            range: range,
-                            sortText: '2' + b
-                        });
+                        if (!locals.has(b)) {
+                            suggestions.push({
+                                label: b,
+                                kind: monaco.languages.CompletionItemKind.Function,
+                                insertText: b,
+                                range: range,
+                                sortText: '3' + b
+                            });
+                        }
                     });
                 }
 
@@ -5158,6 +5210,46 @@
             'string', 'bool', 'byte', 'rune', 'error'
         ];
 
+        var goKeywordSet = new Set(goKeywords);
+
+        // Extract local variables and function parameters from Go code
+        function extractGoLocals(model) {
+            var text = model.getValue();
+            var lines = text.split('\n');
+            var locals = new Set();
+
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+                // Function parameters: func name(param1 type1, param2 type2)
+                var funcMatch = line.match(/^\s*func\s+\w*\s*\(([^)]*)\)/);
+                if (funcMatch) {
+                    var params = funcMatch[1].split(',');
+                    params.forEach(function(p) {
+                        var parts = p.trim().split(/\s+/);
+                        if (parts[0] && !goKeywordSet.has(parts[0])) locals.add(parts[0]);
+                    });
+                }
+                // Short variable declaration: name := ...
+                var shortDecl = line.match(/^\s*(\w+)(?:\s*,\s*(\w+))?\s*:=/);
+                if (shortDecl) {
+                    if (shortDecl[1] && shortDecl[1] !== '_') locals.add(shortDecl[1]);
+                    if (shortDecl[2] && shortDecl[2] !== '_') locals.add(shortDecl[2]);
+                }
+                // Var declaration: var name type
+                var varDecl = line.match(/^\s*var\s+(\w+)/);
+                if (varDecl && !goKeywordSet.has(varDecl[1])) {
+                    locals.add(varDecl[1]);
+                }
+                // For range: for i, v := range ...
+                var forRange = line.match(/^\s*for\s+(\w+)(?:\s*,\s*(\w+))?\s*:=\s*range/);
+                if (forRange) {
+                    if (forRange[1] && forRange[1] !== '_') locals.add(forRange[1]);
+                    if (forRange[2] && forRange[2] !== '_') locals.add(forRange[2]);
+                }
+            }
+            return locals;
+        }
+
         monaco.languages.registerCompletionItemProvider('go', {
             triggerCharacters: ['.', '(', ','],
             provideCompletionItems: function(model, position) {
@@ -5169,28 +5261,48 @@
                     endColumn: word.endColumn
                 };
 
-                var suggestions = goSnippets.map(function(s) {
-                    return Object.assign({}, s, { range: range });
+                var suggestions = [];
+
+                // Extract local variables and params - highest priority
+                var locals = extractGoLocals(model);
+                locals.forEach(function(v) {
+                    suggestions.push({
+                        label: v,
+                        kind: monaco.languages.CompletionItemKind.Variable,
+                        insertText: v,
+                        range: range,
+                        sortText: '0' + v,
+                        detail: 'local'
+                    });
                 });
 
+                // Snippets
+                goSnippets.forEach(function(s) {
+                    suggestions.push(Object.assign({}, s, { range: range, sortText: '1' + s.label }));
+                });
+
+                // Keywords
                 goKeywords.forEach(function(kw) {
                     suggestions.push({
                         label: kw,
                         kind: monaco.languages.CompletionItemKind.Keyword,
                         insertText: kw,
                         range: range,
-                        sortText: '1' + kw
+                        sortText: '2' + kw
                     });
                 });
 
+                // Builtins
                 goBuiltins.forEach(function(b) {
-                    suggestions.push({
-                        label: b,
-                        kind: monaco.languages.CompletionItemKind.Function,
-                        insertText: b,
-                        range: range,
-                        sortText: '2' + b
-                    });
+                    if (!locals.has(b)) {
+                        suggestions.push({
+                            label: b,
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            insertText: b,
+                            range: range,
+                            sortText: '3' + b
+                        });
+                    }
                 });
 
                 return { suggestions: suggestions };
