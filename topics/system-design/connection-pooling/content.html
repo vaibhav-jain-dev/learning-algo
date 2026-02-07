@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="connection-pooling">Connection Pooling</h1>
 <h2 id="overview">Overview</h2>
@@ -153,7 +213,13 @@
 <p style="color: #78350f; margin: 0">Connection pools assume that application code will <strong>always</strong> return borrowed connections, even when exceptions occur. Failure to return connections leads to pool exhaustion - one of the most common production issues.</p>
 </div>
 <p><strong>Checkout Algorithm (Simplified)</strong>:</p>
-<pre><code>1. Acquire pool lock (mutex/semaphore)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>1. Acquire pool lock (mutex/semaphore)
 2. Search idle connection list:
    a. Skip connections exceeding maxLifetime
    b. Skip connections failing validation (if validateOnBorrow enabled)
@@ -169,8 +235,16 @@
 5. Update connection metadata (lastUsedTime, useCount)
 6. Release lock, return connection
 </code></pre>
+    </div>
+</div>
 <p><strong>Return Algorithm</strong>:</p>
-<pre><code>1. Acquire pool lock
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>1. Acquire pool lock
 2. Validate connection state:
    a. If error occurred during use, mark INVALID
    b. If transaction left open, rollback and mark INVALID
@@ -185,6 +259,8 @@
    c. Optionally create replacement
 5. Release lock
 </code></pre>
+    </div>
+</div>
 <div style="background: #f0fdf4;border-radius: 12px; padding: 20px; margin: 20px 0">
 <h4 style="color: #166534; margin-top: 0">Design Choice: LIFO vs FIFO Connection Selection</h4>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
@@ -265,8 +341,16 @@
 </div>
 <h3 id="the-hikaricp-formula">The HikariCP Formula</h3>
 <p>HikariCP, widely considered the fastest Java connection pool, recommends this formula based on extensive PostgreSQL benchmarking:</p>
-<pre><code>pool_size = ((core_count * 2) + effective_spindle_count)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>pool_size = ((core_count * 2) + effective_spindle_count)
 </code></pre>
+    </div>
+</div>
 <p><strong>For modern SSDs</strong>: <code>pool_size = (core_count * 2) + 1</code></p>
 <div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e293b; margin-top: 0">Why This Works: Database Thread Model</h4>
@@ -437,7 +521,13 @@
 </div>
 </div>
 <h3 id="validation-queries">Validation Queries</h3>
-<pre><code class="language-sql">-- PostgreSQL (fastest - uses protocol-level ping)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Sql</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-sql">-- PostgreSQL (fastest - uses protocol-level ping)
 /* isValid() method - no query needed */
 
 -- MySQL
@@ -455,6 +545,8 @@ SELECT 1
 -- Oracle (alternative with session check)
 SELECT 1 FROM v$session WHERE audsid = SYS_CONTEXT('USERENV', 'SESSIONID')
 </code></pre>
+    </div>
+</div>
 <div style="background: #fffbeb;border-radius: 12px; padding: 20px; margin: 20px 0">
 <h4 style="color: #92400e; margin-top: 0">Trade-off: Validation Overhead vs Reliability</h4>
 <p style="color: #78350f; margin: 0 0 12px 0">JDBC 4.0+ introduced <code>Connection.isValid(timeout)</code> which uses lightweight protocol-level pings instead of executing queries. HikariCP uses this by default, avoiding the overhead of query execution while still verifying the connection is responsive.</p>
@@ -712,7 +804,13 @@ AND now() - query_start > interval '5 minutes';</pre>
 <hr />
 <h2 id="production-implementation-example">Production Implementation Example</h2>
 <h3 id="python-connection-pool-with-full-observability">Python Connection Pool with Full Observability</h3>
-<pre><code class="language-python">&quot;&quot;&quot;
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">&quot;&quot;&quot;
 Production-grade connection pool implementation demonstrating:
 - Thread-safe connection management
 - Health checks and validation
@@ -1265,6 +1363,8 @@ metrics = pool.get_metrics()
 if metrics['utilization'] &gt; 0.8:
     logger.warning(f&quot;Pool utilization high: {metrics['utilization']:.1%}&quot;)
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="common-anti-patterns-and-mistakes">Common Anti-Patterns and Mistakes</h2>
 <div style="background: #fef2f2;border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -1408,3 +1508,15 @@ save_enriched(conn, enriched)</pre></p>
 </div>
 </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

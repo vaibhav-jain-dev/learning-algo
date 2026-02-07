@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="concurrency-patterns">Concurrency Patterns</h1>
 <h2 id="overview">Overview</h2>
@@ -769,7 +829,13 @@ Standard 2PL but with lock timeout. On timeout, abort transaction and retry with
 <hr />
 <h2 id="code-implementation">Code Implementation</h2>
 <h3 id="production-ready-thread-pool">Production-Ready Thread Pool</h3>
-<pre><code class="language-python">import threading
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import threading
 import queue
 import time
 import logging
@@ -1319,6 +1385,8 @@ if __name__ == &quot;__main__&quot;:
     for t in threads:
         t.join()
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="quick-reference-card">Quick Reference Card</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
@@ -1402,3 +1470,15 @@ if __name__ == &quot;__main__&quot;:
 <li><a href="/topic/system-design/bulkhead-pattern">[bulkhead-pattern]</a> - Isolation to prevent cascade failures</li>
 <li><a href="/topic/system-design/distributed-transactions">[distributed-transactions]</a> - Coordinating transactions across services</li>
 </ul>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

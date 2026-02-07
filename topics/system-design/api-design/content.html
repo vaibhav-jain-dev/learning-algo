@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="api-design">API Design</h1>
 <h2 id="overview">Overview</h2>
@@ -128,10 +188,18 @@
 <li><strong>Surrogate Keys</strong>: <code>Surrogate-Key: user-123</code> enables targeted cache invalidation</li>
 <li><strong>ETags</strong>: Content-based hashes enable conditional requests with <code>If-None-Match</code></li>
 </ol>
-<pre><code>Client -&gt; CDN (HIT) -&gt; Response (no origin contact)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>Client -&gt; CDN (HIT) -&gt; Response (no origin contact)
 Client -&gt; CDN (MISS) -&gt; Origin -&gt; Response -&gt; CDN stores -&gt; Client
 Client -&gt; CDN (STALE) -&gt; Origin (If-None-Match) -&gt; 304 Not Modified
 </code></pre>
+    </div>
+</div>
 <p><strong>Critical Assumption</strong>: REST caching assumes resources are independently cacheable. When user data depends on authentication state, naive caching leaks data between users.</p>
 <h4 id="graphql-execution-engine">GraphQL Execution Engine</h4>
 <p>GraphQL processes queries through a multi-phase pipeline:</p>
@@ -142,7 +210,13 @@ Client -&gt; CDN (STALE) -&gt; Origin (If-None-Match) -&gt; 304 Not Modified
 <li><strong>Serialization</strong>: Results assembled into JSON response</li>
 </ol>
 <p>The <strong>DataLoader pattern</strong> batches resolver calls to prevent N+1 queries:</p>
-<pre><code class="language-javascript">// Without DataLoader: N+1 queries
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Javascript</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-javascript">// Without DataLoader: N+1 queries
 // Query for 10 users triggers 10 separate DB calls for orders
 
 // With DataLoader: Batched
@@ -152,6 +226,8 @@ const orderLoader = new DataLoader(async (userIds) =&gt; {
   return userIds.map(id =&gt; orders.filter(o =&gt; o.userId === id));
 });
 </code></pre>
+    </div>
+</div>
 <h3 id="trade-offs-deep-dive">Trade-offs Deep Dive</h3>
 <div style="background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #92400e; margin: 0 0 16px 0">Critical Trade-off: Query Complexity Control</h4>
@@ -240,7 +316,13 @@ const orderLoader = new DataLoader(async (userIds) =&gt; {
 <p>The N+1 problem occurs when fetching a list of N items triggers N additional queries for related data. In GraphQL, this happens because resolvers execute independently.</p>
 <p><strong>Solution: DataLoader Pattern</strong></p>
 <p>DataLoader collects all keys requested during a single tick of the event loop, then executes a single batched query:</p>
-<pre><code class="language-javascript">// 1. Create loader with batch function
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Javascript</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-javascript">// 1. Create loader with batch function
 const userLoader = new DataLoader(async (ids) =&gt; {
   const users = await db.query('SELECT * FROM users WHERE id = ANY($1)', [ids]);
   // CRITICAL: Return in same order as input ids
@@ -261,6 +343,8 @@ app.use((req, res, next) =&gt; {
   next();
 });
 </code></pre>
+    </div>
+</div>
 <p><strong>Critical Implementation Details:</strong></p>
 <ul>
 <li>Loaders must be request-scoped to prevent cross-request data leakage</li>
@@ -274,12 +358,26 @@ app.use((req, res, next) =&gt; {
 <ol>
 <li><strong>Gateway Layer</strong>: Deploy GraphQL as a facade over existing REST services</li>
 </ol>
-<pre><code>Client -&gt; GraphQL Gateway -&gt; REST Services -&gt; Database
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>Client -&gt; GraphQL Gateway -&gt; REST Services -&gt; Database
 </code></pre>
+    </div>
+</div>
 <ol start="2">
 <li><strong>Resolver Implementation</strong>: GraphQL resolvers call REST endpoints internally</li>
 </ol>
-<pre><code class="language-javascript">const resolvers = {
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Javascript</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-javascript">const resolvers = {
   Query: {
     user: async (_, { id }, { restClient }) =&gt; {
       // GraphQL delegates to existing REST endpoint
@@ -289,6 +387,8 @@ app.use((req, res, next) =&gt; {
   }
 };
 </code></pre>
+    </div>
+</div>
 <ol start="3">
 <li>
 <p><strong>Incremental Migration Path:</strong></p>
@@ -376,7 +476,13 @@ app.use((req, res, next) =&gt; {
 </div>
 <h3 id="internal-mechanisms-cursor-implementation">Internal Mechanisms: Cursor Implementation</h3>
 <p>A robust cursor encodes the position state needed to resume pagination:</p>
-<pre><code class="language-javascript">// Cursor structure for multi-column sort
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Javascript</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-javascript">// Cursor structure for multi-column sort
 const cursorData = {
   // Values of the sort columns for the last item
   sortValues: {
@@ -405,6 +511,8 @@ function decodeCursor(cursor) {
   return JSON.parse(json);
 }
 </code></pre>
+    </div>
+</div>
 <p><strong>Critical Assumption</strong>: Cursor pagination assumes stable sort order. If <code>created_at</code> has duplicates, results become unpredictable without a tiebreaker (typically the unique <code>id</code>).</p>
 <h3 id="edge-cases-and-failure-modes">Edge Cases and Failure Modes</h3>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -429,7 +537,13 @@ function decodeCursor(cursor) {
 </div>
 </div>
 <h3 id="real-world-implementation-pattern">Real-World Implementation Pattern</h3>
-<pre><code class="language-sql">-- Keyset pagination with composite key for stable ordering
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Sql</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-sql">-- Keyset pagination with composite key for stable ordering
 -- Supports: created_at DESC, id DESC (newest first with tiebreaker)
 
 SELECT id, title, created_at
@@ -443,6 +557,8 @@ LIMIT $4 + 1;  -- Fetch one extra to detect has_more
 CREATE INDEX idx_posts_user_timeline
 ON posts (user_id, created_at DESC, id DESC);
 </code></pre>
+    </div>
+</div>
 <h3 id="interview-questions-pagination">Interview Questions: Pagination</h3>
 <h4 id="level-1-conceptual-understanding-1">Level 1: Conceptual Understanding</h4>
 <p><strong>Q: Why is offset pagination problematic for large datasets?</strong></p>
@@ -457,7 +573,13 @@ ON posts (user_id, created_at DESC, id DESC);
 <h4 id="level-2-implementation-depth-1">Level 2: Implementation Depth</h4>
 <p><strong>Q: How would you implement bidirectional cursor pagination that supports both forward and backward navigation?</strong></p>
 <p>Bidirectional pagination requires encoding direction in the cursor and adjusting query logic:</p>
-<pre><code class="language-javascript">async function paginate({ cursor, limit = 20, direction = 'forward' }) {
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Javascript</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-javascript">async function paginate({ cursor, limit = 20, direction = 'forward' }) {
   let query = db('posts').where('user_id', userId);
   let decoded = cursor ? decodeCursor(cursor) : null;
 
@@ -510,6 +632,8 @@ ON posts (user_id, created_at DESC, id DESC);
   };
 }
 </code></pre>
+    </div>
+</div>
 <p><strong>Edge Cases Handled:</strong></p>
 <ul>
 <li>First page has no previous cursor</li>
@@ -530,16 +654,30 @@ ON posts (user_id, created_at DESC, id DESC);
 <ol>
 <li><strong>Hybrid ID with Logical Clock:</strong></li>
 </ol>
-<pre><code class="language-javascript">// Use a hybrid logical clock (HLC) for ordering
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Javascript</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-javascript">// Use a hybrid logical clock (HLC) for ordering
 // Format: physical_timestamp + logical_counter + node_id
 const hlcId = `${Date.now()}-${logicalCounter.increment()}-${nodeId}`;
 // Example: 1705320000000-00042-shard3
 // Totally ordered even with clock skew
 </code></pre>
+    </div>
+</div>
 <ol start="2">
 <li><strong>Scatter-Gather with Merge:</strong></li>
 </ol>
-<pre><code class="language-javascript">async function paginateDistributed(cursor, limit) {
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Javascript</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-javascript">async function paginateDistributed(cursor, limit) {
   // 1. Parse cursor to get per-shard positions
   const shardCursors = cursor ? decodeDistributedCursor(cursor) : {};
 
@@ -595,6 +733,8 @@ const hlcId = `${Date.now()}-${logicalCounter.increment()}-${nodeId}`;
   };
 }
 </code></pre>
+    </div>
+</div>
 <ol start="3">
 <li><strong>Handling Clock Skew:</strong></li>
 </ol>
@@ -607,11 +747,19 @@ const hlcId = `${Date.now()}-${logicalCounter.increment()}-${nodeId}`;
 <ol start="4">
 <li><strong>Optimization - Shard Elimination:</strong></li>
 </ol>
-<pre><code class="language-javascript">// If cursor indicates shard3 is exhausted, skip querying it
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Javascript</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-javascript">// If cursor indicates shard3 is exhausted, skip querying it
 const activeShards = shards.filter(s =&gt;
   !shardCursors[s.id]?.exhausted
 );
 </code></pre>
+    </div>
+</div>
 <p><strong>Trade-offs:</strong></p>
 <ul>
 <li>Latency: P99 dominated by slowest shard</li>
@@ -666,7 +814,13 @@ const activeShards = shards.filter(s =&gt;
 </div>
 <h3 id="internal-implementation-version-resolution">Internal Implementation: Version Resolution</h3>
 <p>A production versioning system requires sophisticated routing:</p>
-<pre><code class="language-javascript">            // Version resolution middleware
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Javascript</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-javascript">            // Version resolution middleware
             function resolveVersion(req, res, next) {
             // Priority: Header &gt; Query &gt; URL Path &gt; Default
             let version = req.headers['api-version']
@@ -716,6 +870,8 @@ const activeShards = shards.filter(s =&gt;
             // v1 clients expect 'userName', v2+ use 'username'
             userName: data.username,
             }));</code></pre>
+    </div>
+</div>
 <h3 id="breaking-vs-non-breaking-changes">Breaking vs Non-Breaking Changes</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin: 0 0 16px 0">Change Classification</h4>
@@ -751,7 +907,13 @@ const activeShards = shards.filter(s =&gt;
 </div>
 </div>
 <h3 id="deprecation-lifecycle">Deprecation Lifecycle</h3>
-<pre><code>            Active -&gt; Deprecated -&gt; Sunset -&gt; Removed
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>            Active -&gt; Deprecated -&gt; Sunset -&gt; Removed
             |          |           |         |
             |     +Warnings    +Errors   Complete
             |     +Sunset      +Grace     removal
@@ -760,6 +922,8 @@ const activeShards = shards.filter(s =&gt;
             v          v           v
             6+ months   3+ months   1+ month
             notice      notice     (optional)</code></pre>
+    </div>
+</div>
 <p><strong>Deprecation Response Headers:</strong><br />
 <code>http HTTP/1.1 200 OK Deprecation: Sun, 01 Jan 2025 00:00:00 GMT Sunset: Mon, 01 Jul 2025 00:00:00 GMT Link: &lt;/docs/migration/v1-to-v2&gt;; rel=&quot;deprecation&quot; X-API-Warn: &quot;This endpoint is deprecated. Migrate to /v2/users&quot; </code></p>
 <h3 id="interview-questions-versioning">Interview Questions: Versioning</h3>
@@ -781,7 +945,13 @@ const activeShards = shards.filter(s =&gt;
 <p><strong>Q: How would you implement Stripe-style date-based API versioning that allows hundreds of version points?</strong></p>
 <p>Stripe's versioning uses dates (<code>2024-01-15</code>) as version identifiers, with each date representing a consistent API snapshot. Changes are captured as discrete transformations applied in sequence.</p>
 <p><strong>Implementation Approach:</strong></p>
-<pre><code class="language-javascript">            // 1. Define changes as dated, reversible transformations
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Javascript</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-javascript">            // 1. Define changes as dated, reversible transformations
             const apiChanges = [
             {
             date: '2024-01-15',
@@ -848,6 +1018,8 @@ const activeShards = shards.filter(s =&gt;
 
             next();
             }</code></pre>
+    </div>
+</div>
 <p><strong>Key Implementation Details:</strong><br />
 - Changes are bidirectional (forward for migration, backward for compatibility)<br />
 - Transformations are composable and ordered by date<br />
@@ -906,7 +1078,13 @@ const activeShards = shards.filter(s =&gt;
 async function handleRequest(req) {<br />
 const publicVersion = req.headers['api-version'] || '2024-06';<br />
 const serviceMapping = versionRegistry[publicVersion];</p>
-<pre><code>       // Route to appropriate service with version header
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>       // Route to appropriate service with version header
        const serviceConfig = serviceMapping[targetService];
        const response = await callService(targetService, {
        ...req,
@@ -926,6 +1104,8 @@ const serviceMapping = versionRegistry[publicVersion];</p>
        }
        ```
 </code></pre>
+    </div>
+</div>
 </li>
 <li>
 <p><strong>Service Contract Testing:</strong><br />
@@ -936,11 +1116,19 @@ it('returns user in v3.0 format', async () =&gt; {<br />
 const response = await request(app)<br />
 .get('/internal/users/123')<br />
 .set('X-Internal-Version', '3.0');</p>
-<pre><code>       expect(response.body).toMatchSchema(userSchemaV3);
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>       expect(response.body).toMatchSchema(userSchemaV3);
        });
        });
        ```
 </code></pre>
+    </div>
+</div>
 </li>
 <li>
 <p><strong>Version Compatibility Matrix:</strong><br />
@@ -958,13 +1146,21 @@ const response = await request(app)<br />
 <h2 id="idempotency">Idempotency</h2>
 <h3 id="the-problem-idempotency-solves">The Problem Idempotency Solves</h3>
 <p>In distributed systems, requests can fail at any point:</p>
-<pre><code>            Client -&gt; Server: POST /payments (create $100 charge)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>            Client -&gt; Server: POST /payments (create $100 charge)
             Server: Processes charge successfully
             Server -&gt; Client: 200 OK [NETWORK FAILURE - response lost]
             Client: Timeout! Did payment go through?
             Client -&gt; Server: POST /payments (retry)
             Server: Processes charge again
             Result: Customer charged $200 instead of $100</code></pre>
+    </div>
+</div>
 <p><strong>Idempotency</strong> ensures that performing the same operation multiple times produces the same result as performing it once.</p>
 <h3 id="mathematical-definition">Mathematical Definition</h3>
 <p>An operation <code>f</code> is idempotent if: <code>f(f(x)) = f(x)</code></p>
@@ -1011,7 +1207,13 @@ const response = await request(app)<br />
 </div>
 </div>
 <h3 id="production-implementation">Production Implementation</h3>
-<pre><code class="language-python">            import hashlib
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">            import hashlib
             import json
             from functools import wraps
             from redis import Redis
@@ -1139,6 +1341,8 @@ const response = await request(app)<br />
 
             return wrapper
             return decorator</code></pre>
+    </div>
+</div>
 <h3 id="edge-cases-and-failure-modes-1">Edge Cases and Failure Modes</h3>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #b91c1c; margin: 0 0 16px 0">Idempotency Edge Cases</h4>
@@ -1176,7 +1380,13 @@ const response = await request(app)<br />
 <p><strong>Q: How would you implement idempotency that survives both application and database crashes?</strong></p>
 <p>The core challenge is atomicity: the business logic and idempotency record must be committed together.</p>
 <p><strong>Solution: Database Transaction with Idempotency Record</strong></p>
-<pre><code class="language-python">            from contextlib import contextmanager
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">            from contextlib import contextmanager
 
             @contextmanager
             def idempotent_transaction(db, idempotency_key: str, request_hash: str):
@@ -1249,6 +1459,8 @@ const response = await request(app)<br />
             ctx['status_code'] = 201
 
             return jsonify(ctx['response']), 201</code></pre>
+    </div>
+</div>
 <p><strong>Critical Implementation Detail</strong>: The idempotency record uses <code>FOR UPDATE</code> to acquire a row-level lock, preventing concurrent requests with the same key.</p>
 <h4 id="level-3-architecture-and-edge-cases-3">Level 3: Architecture and Edge Cases</h4>
 <p><strong>Q: Design an idempotency system for a distributed microservices architecture where a single API call triggers operations across multiple services.</strong></p>
@@ -1295,7 +1507,13 @@ const response = await request(app)<br />
 </div>
 </div>
 <p><strong>Implementation:</strong></p>
-<pre><code class="language-python">            class SagaOrchestrator:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">            class SagaOrchestrator:
             &quot;&quot;&quot;
             Orchestrates multi-service saga with per-step idempotency.
 
@@ -1381,6 +1599,8 @@ const response = await request(app)<br />
             except Exception as e:
             # Log but continue - compensations should be retried
             logger.error(f&quot;Compensation failed: {step_name}&quot;, exc_info=e)</code></pre>
+    </div>
+</div>
 <p><strong>Key Design Decisions:</strong></p>
 <ol>
 <li><strong>Derived Keys</strong>: <code>order_abc123_reserve_inventory</code> ensures each step is independently idempotent</li>
@@ -1403,7 +1623,13 @@ const response = await request(app)<br />
 </ol>
 <p>Well-designed errors balance these needs while maintaining consistency across the API.</p>
 <h3 id="error-response-structure">Error Response Structure</h3>
-<pre><code class="language-json">            {
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Json</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-json">            {
             &quot;error&quot;: {
             &quot;code&quot;: &quot;PAYMENT_DECLINED&quot;,
             &quot;message&quot;: &quot;The card was declined by the issuing bank&quot;,
@@ -1417,6 +1643,8 @@ const response = await request(app)<br />
             &quot;doc_url&quot;: &quot;https://api.example.com/docs/errors#payment_declined&quot;
             }
             }</code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin: 0 0 16px 0">Error Field Purposes</h4>
 <table style="width: 100%; border-collapse: collapse; font-size: 14px">
@@ -1482,7 +1710,13 @@ const response = await request(app)<br />
 </div>
 </div>
 <h3 id="error-categories-implementation">Error Categories Implementation</h3>
-<pre><code class="language-python">            from enum import Enum
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">            from enum import Enum
             from dataclasses import dataclass
             from typing import Optional, Dict, Any
 
@@ -1594,6 +1828,8 @@ const response = await request(app)<br />
             &quot;request_id&quot;: request_id
             }
             }), 500</code></pre>
+    </div>
+</div>
 <h3 id="security-considerations">Security Considerations</h3>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #b91c1c; margin: 0 0 16px 0">Error Information Leakage Risks</h4>
@@ -1623,7 +1859,13 @@ const response = await request(app)<br />
 <h3 id="interview-questions-error-handling">Interview Questions: Error Handling</h3>
 <h4 id="level-1-conceptual-understanding-4">Level 1: Conceptual Understanding</h4>
 <p><strong>Q: What's the difference between HTTP 400, 401, 403, and 404, and when should each be used?</strong></p>
-<pre><code>            - **400 Bad Request**: The request syntax is malformed or contains invalid parameters. The client made an error that must be fixed before retrying. Examples: invalid JSON, missing required field, wrong data type.
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>            - **400 Bad Request**: The request syntax is malformed or contains invalid parameters. The client made an error that must be fixed before retrying. Examples: invalid JSON, missing required field, wrong data type.
 
             - **401 Unauthorized**: Authentication is missing or invalid. The client hasn't proven their identity. Examples: missing token, expired token, invalid signature. Client should re-authenticate.
 
@@ -1631,10 +1873,18 @@ const response = await request(app)<br />
 
             - **404 Not Found**: The resource doesn't exist (or the client shouldn't know it exists). Use when: resource genuinely missing, OR user lacks permission and you don't want to reveal existence.
 </code></pre>
+    </div>
+</div>
 <p><strong>Key insight</strong>: 401 vs 403 is about whether identity is established. 403 vs 404 depends on whether revealing resource existence is a security concern.</p>
 <h4 id="level-2-implementation-depth-4">Level 2: Implementation Depth</h4>
 <p><strong>Q: How would you design a validation error response that handles both single field errors and complex multi-field validation?</strong></p>
-<pre><code class="language-python">            class ValidationErrorResponse:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">            class ValidationErrorResponse:
             &quot;&quot;&quot;
             Validation error structure supporting:
             - Single field errors: one field failed
@@ -1743,6 +1993,8 @@ const response = await request(app)<br />
             ]
             }
             }</code></pre>
+    </div>
+</div>
 <h4 id="level-3-architecture-and-edge-cases-4">Level 3: Architecture and Edge Cases</h4>
 <p><strong>Q: Design an error handling system for a public API that needs to support i18n, A/B testing of error messages, and gradual error format migration.</strong></p>
 <p><strong>Requirements Analysis:</strong><br />
@@ -1750,7 +2002,13 @@ const response = await request(app)<br />
 - Test different message phrasings for conversion impact<br />
 - Migrate from legacy error format without breaking clients</p>
 <p><strong>Solution Architecture:</strong></p>
-<pre><code class="language-python">            class ErrorMessageRegistry:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">            class ErrorMessageRegistry:
             &quot;&quot;&quot;
             Centralized error message management supporting:
             - Internationalization (i18n)
@@ -1904,6 +2162,8 @@ const response = await request(app)<br />
             &quot;doc_url&quot;: f&quot;https://api.example.com/docs/errors#{error.code.lower()}&quot;
             }
             }, error.status_code</code></pre>
+    </div>
+</div>
 <p><strong>Migration Strategy:</strong></p>
 <ol>
 <li>Deploy with both formats supported</li>
@@ -1917,11 +2177,19 @@ const response = await request(app)<br />
 <h2 id="backward-compatibility">Backward Compatibility</h2>
 <h3 id="the-compatibility-contract">The Compatibility Contract</h3>
 <p>Once an API is published, external developers write code that depends on its behavior. Breaking that behavior costs money:</p>
-<pre><code>            - **Integration failures**: Production apps stop working
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>            - **Integration failures**: Production apps stop working
             - **Developer time**: Rewriting integrations
             - **Trust erosion**: Developers hesitate to adopt your API
             - **Support costs**: Increased tickets during transition
 </code></pre>
+    </div>
+</div>
 <p><strong>Rule of thumb</strong>: Assume any visible behavior is depended upon by someone.</p>
 <h3 id="types-of-breaking-changes">Types of Breaking Changes</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -1963,7 +2231,13 @@ const response = await request(app)<br />
 </div>
 <h3 id="compatibility-strategies">Compatibility Strategies</h3>
 <h4 id="1-additive-changes-only">1. Additive Changes Only</h4>
-<pre><code class="language-python">            # Original response (v1)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">            # Original response (v1)
             {
             &quot;user_id&quot;: 123,
             &quot;name&quot;: &quot;Alice&quot;
@@ -1976,9 +2250,17 @@ const response = await request(app)<br />
             &quot;email&quot;: &quot;alice@example.com&quot;,  # New optional field
             &quot;created_at&quot;: &quot;2024-01-15T10:00:00Z&quot;  # New optional field
             }</code></pre>
+    </div>
+</div>
 <p><strong>Assumption</strong>: Clients must ignore unknown fields. Document this expectation.</p>
 <h4 id="2-field-evolution-pattern">2. Field Evolution Pattern</h4>
-<pre><code class="language-python">            # Need to change user_id from int to string UUID
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">            # Need to change user_id from int to string UUID
 
             # Step 1: Add new field alongside old
             {
@@ -1989,8 +2271,16 @@ const response = await request(app)<br />
 
             # Step 2: Document deprecation, give timeline
             # Step 3: After sunset period, remove user_id in next major version</code></pre>
+    </div>
+</div>
 <h4 id="3-response-envelope-versioning">3. Response Envelope Versioning</h4>
-<pre><code class="language-python">            # Include version in response for client detection
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">            # Include version in response for client detection
             {
             &quot;_meta&quot;: {
             &quot;api_version&quot;: &quot;2024-01&quot;,
@@ -2003,8 +2293,16 @@ const response = await request(app)<br />
             &quot;name&quot;: &quot;Alice&quot;
             }
             }</code></pre>
+    </div>
+</div>
 <h3 id="contract-testing">Contract Testing</h3>
-<pre><code class="language-python">            import pytest
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">            import pytest
             from pact import Consumer, Provider
 
             class TestAPIContract:
@@ -2052,6 +2350,8 @@ const response = await request(app)<br />
             with pact:
             result = api_client_v2.get_user(123)
             assert result['id'] == 'usr_abc123'</code></pre>
+    </div>
+</div>
 <h3 id="interview-questions-backward-compatibility">Interview Questions: Backward Compatibility</h3>
 <h4 id="level-1-conceptual-understanding-5">Level 1: Conceptual Understanding</h4>
 <p><strong>Q: What makes a change &quot;breaking&quot; and how do you identify breaking changes before deployment?</strong></p>
@@ -2074,7 +2374,13 @@ const response = await request(app)<br />
 </ol>
 <h4 id="level-2-implementation-depth-5">Level 2: Implementation Depth</h4>
 <p><strong>Q: How would you implement a deprecation system that gives clients adequate warning and tracks migration progress?</strong></p>
-<pre><code class="language-python">            from datetime import datetime, timedelta
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">            from datetime import datetime, timedelta
             from dataclasses import dataclass
             from typing import Optional
             import logging
@@ -2193,6 +2499,8 @@ const response = await request(app)<br />
             GROUP BY feature_id
             ORDER BY days_remaining ASC;
             &quot;&quot;&quot;</code></pre>
+    </div>
+</div>
 <h4 id="level-3-architecture-and-edge-cases-5">Level 3: Architecture and Edge Cases</h4>
 <p><strong>Q: Design a system for safely rolling out breaking changes to an API used by thousands of external developers, minimizing disruption while ensuring eventual migration.</strong></p>
 <p><strong>Challenge Analysis:</strong><br />
@@ -2229,7 +2537,13 @@ const response = await request(app)<br />
 </div>
 </div>
 <p><strong>Implementation:</strong></p>
-<pre><code class="language-python">            class BreakingChangeMigration:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">            class BreakingChangeMigration:
             &quot;&quot;&quot;
             Orchestrates breaking change rollout with safety mechanisms.
             &quot;&quot;&quot;
@@ -2375,6 +2689,8 @@ const response = await request(app)<br />
 
             return True
             return False</code></pre>
+    </div>
+</div>
 <p><strong>Edge Cases:</strong></p>
 <ol>
 <li>
@@ -2458,7 +2774,13 @@ const response = await request(app)<br />
 </table>
 <p>*POST can be made idempotent with idempotency keys</p>
 <h3 id="status-code-quick-reference">Status Code Quick Reference</h3>
-<pre><code>            2xx Success
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>            2xx Success
             200 OK - General success
             201 Created - POST success
             204 No Content - DELETE success
@@ -2477,8 +2799,16 @@ const response = await request(app)<br />
             502 Bad Gateway - Upstream failed
             503 Unavailable - Overloaded
             504 Timeout - Upstream slow</code></pre>
+    </div>
+</div>
 <h3 id="pagination-response-template">Pagination Response Template</h3>
-<pre><code class="language-json">            {
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Json</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-json">            {
             &quot;data&quot;: [...],
             &quot;pagination&quot;: {
             &quot;next_cursor&quot;: &quot;eyJpZCI6MTAwfQ==&quot;,
@@ -2491,8 +2821,16 @@ const response = await request(app)<br />
             &quot;returned_count&quot;: 20
             }
             }</code></pre>
+    </div>
+</div>
 <h3 id="error-response-template">Error Response Template</h3>
-<pre><code class="language-json">            {
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Json</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-json">            {
             &quot;error&quot;: {
             &quot;code&quot;: &quot;VALIDATION_ERROR&quot;,
             &quot;message&quot;: &quot;Email format is invalid&quot;,
@@ -2502,8 +2840,16 @@ const response = await request(app)<br />
             &quot;doc_url&quot;: &quot;https://api.example.com/docs/errors#validation_error&quot;
             }
             }</code></pre>
+    </div>
+</div>
 <h3 id="essential-headers">Essential Headers</h3>
-<pre><code class="language-http">            # Request
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Http</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-http">            # Request
             Authorization: Bearer &lt;token&gt;
               Content-Type: application/json
               Idempotency-Key: &lt;client-generated-uuid&gt;
@@ -2518,11 +2864,33 @@ const response = await request(app)<br />
                     X-RateLimit-Reset: 1640000000
                     Deprecation: Sun, 01 Jan 2025 00:00:00 GMT
                     Sunset: Mon, 01 Jul 2025 00:00:00 GMT</code></pre>
+    </div>
+</div>
 <h2 id="cross-references">Cross-References</h2>
-<pre><code>- [[api-gateway]](/topics/system-design/api-gateway) - Gateway patterns, routing, aggregation
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- [[api-gateway]](/topics/system-design/api-gateway) - Gateway patterns, routing, aggregation
 - [[rate-limiting]](/topics/system-design/rate-limiting) - Token bucket, sliding window algorithms
 - [[authentication]](/topics/system-design/authentication) - OAuth, JWT, API keys
 - [[distributed-systems]](/topics/system-design/distributed-systems) - CAP theorem, consistency models
 - [[caching]](/topics/system-design/caching) - Cache strategies, invalidation patterns
 - [[microservices]](/topics/system-design/microservices) - Service communication patterns
 </code></pre>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

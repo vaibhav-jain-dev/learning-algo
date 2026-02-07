@@ -1,3 +1,64 @@
+<style>
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+</style>
+
 <h1 id="design-dunzo-logistics">Design Dunzo Logistics</h1>
 <h2 id="table-of-contents-toc">Table of Contents {#toc}</h2>
 <div class="diagram-container" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)">
@@ -202,7 +263,13 @@ Find best partner based on:<br/>
 <li><strong>Budget</strong>: $5,000 - $25,000/month</li>
 </ul>
 <h3 id="monolithic-architecture-phase1-architecture">Monolithic Architecture {#phase1-architecture}</h3>
-<pre><code class="language-python">class OrderService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class OrderService:
     def create_order(self, customer_id, pickup, drops, category):
         # Validate addresses
         pickup_geo = self.geocode(pickup)
@@ -291,6 +358,8 @@ class DispatchService:
 
         return distance_score + rating_score + acceptance_score - load_penalty
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -361,7 +430,13 @@ Modified TSP with precedence constraints<br/>
 </div>
 </div>
 <h3 id="order-batching-order-batching">Order Batching {#order-batching}</h3>
-<pre><code class="language-python">class BatchingService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class BatchingService:
     &quot;&quot;&quot;
     Combine multiple orders for single partner.
     &quot;&quot;&quot;
@@ -420,6 +495,8 @@ Modified TSP with precedence constraints<br/>
 
         return batch
 </code></pre>
+    </div>
+</div>
 <h3 id="partner-location-tracking-location-tracking">Partner Location Tracking {#location-tracking}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
@@ -519,7 +596,13 @@ Topic: partner.locations<br/><br/>
 </div>
 </div>
 <h3 id="ml-based-eta-prediction-ml-eta-prediction">ML-Based ETA Prediction {#ml-eta-prediction}</h3>
-<pre><code class="language-python">class ETAService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class ETAService:
     &quot;&quot;&quot;
     Machine learning based ETA prediction.
     &quot;&quot;&quot;
@@ -566,6 +649,8 @@ Topic: partner.locations<br/><br/>
 
         return total_eta
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -794,7 +879,13 @@ Topic: partner.locations<br/><br/>
 </div>
 </div>
 <h3 id="event-driven-architecture-event-driven">Event-Driven Architecture {#event-driven}</h3>
-<pre><code class="language-python">class EventDrivenDispatch:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class EventDrivenDispatch:
     &quot;&quot;&quot;
     Kafka-based event-driven dispatch system for scale.
     &quot;&quot;&quot;
@@ -847,6 +938,8 @@ Topic: partner.locations<br/><br/>
             if order_event['city_id'] == city_id:
                 self.process_dispatch(order_event)
 </code></pre>
+    </div>
+</div>
 <h3 id="auto-scaling-configuration-auto-scaling">Auto-Scaling Configuration {#auto-scaling}</h3>
 <div class="flow-row" style="gap: 12px; margin: 16px 0">
 <div class="data-card data-card-accent info" style="flex: 1">
@@ -881,7 +974,13 @@ Target: 5K connections/instance
 </div>
 </div>
 <h3 id="load-shedding-strategy-load-shedding">Load Shedding Strategy {#load-shedding}</h3>
-<pre><code class="language-python">class LoadShedder:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class LoadShedder:
     &quot;&quot;&quot;
     Graceful degradation during high load.
     &quot;&quot;&quot;
@@ -937,6 +1036,8 @@ Target: 5K connections/instance
             'skip_promotions': True       # Don't calculate discounts
         }
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -1033,7 +1134,13 @@ Target: 5K connections/instance
 <h3 id="edge-case-handling-edge-case-handling">Edge Case Handling {#edge-case-handling}</h3>
 <div style="margin-top: 24px">
 <h4 id="1-no-partners-available-no-partners">1. No Partners Available {#no-partners}</h4>
-<pre><code class="language-python">class NoPartnerHandler:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class NoPartnerHandler:
     &quot;&quot;&quot;Handle scenarios when no partners are available.&quot;&quot;&quot;
 
     def handle_no_partner(self, order):
@@ -1063,8 +1170,16 @@ Target: 5K connections/instance
                 )
         return StrategyResult(success=False)
 </code></pre>
+    </div>
+</div>
 <h4 id="2-duplicate-order-detection-duplicate-orders">2. Duplicate Order Detection {#duplicate-orders}</h4>
-<pre><code class="language-python">class DuplicateOrderDetector:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class DuplicateOrderDetector:
     &quot;&quot;&quot;Prevent accidental duplicate orders.&quot;&quot;&quot;
 
     def is_duplicate(self, customer_id, order_details):
@@ -1089,8 +1204,16 @@ Target: 5K connections/instance
 
         return (pickup_match + drop_match + category_match) / 3
 </code></pre>
+    </div>
+</div>
 <h4 id="3-gps-spoofing-detection-gps-spoofing">3. GPS Spoofing Detection {#gps-spoofing}</h4>
-<pre><code class="language-python">class GPSSpoofingDetector:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class GPSSpoofingDetector:
     &quot;&quot;&quot;Detect fraudulent GPS manipulation.&quot;&quot;&quot;
 
     def validate_location_update(self, partner_id, new_location):
@@ -1122,8 +1245,16 @@ Target: 5K connections/instance
 
         return True
 </code></pre>
+    </div>
+</div>
 <h4 id="4-order-value-mismatch-value-mismatch">4. Order Value Mismatch {#value-mismatch}</h4>
-<pre><code class="language-python">class OrderValueValidator:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class OrderValueValidator:
     &quot;&quot;&quot;Handle discrepancies in order value.&quot;&quot;&quot;
 
     def validate_merchant_order(self, order, merchant_confirmation):
@@ -1139,6 +1270,8 @@ Target: 5K connections/instance
         # &gt; 25% difference - likely wrong order
         return self.escalate_to_support(order, merchant_confirmation)
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="disaster-recovery-disaster-recovery">Disaster Recovery {#disaster-recovery}</h3>
 <div class="flow-row" style="gap: 12px; margin-top: 24px">
@@ -1289,8 +1422,16 @@ Imagine at 7:15 PM, Order #A and Order #B are both created within 50ms of each o
 <li><strong>Benefit</strong>: 90% of matching happens within a single zone with no cross-zone coordination</li>
 </ul>
 <p><strong>Layer 2: Distributed Locking</strong></p>
-<pre><code>SETNX rider_lock:123 order_id_A EX 30
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>SETNX rider_lock:123 order_id_A EX 30
 </code></pre>
+    </div>
+</div>
 <ul>
 <li>Lock TTL: 30 seconds (covers offer + acceptance window)</li>
 <li>If lock fails, immediately try next-best rider (pre-computed list of top 5)</li>
@@ -2254,3 +2395,15 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 </tbody>
 </table>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

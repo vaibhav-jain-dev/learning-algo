@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="design-a-parking-system">Design a Parking System</h1>
 <h2 id="problem-statement">Problem Statement</h2>
@@ -215,7 +275,13 @@ Parking System = <span style="color: #4ade80">Spot Allocation</span> + <span sty
 </div>
 </div>
 <h3 id="spot-allocation-strategies-implementation">Spot Allocation Strategies Implementation</h3>
-<pre><code class="language-python">class SpotAllocationStrategy:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class SpotAllocationStrategy:
     &quot;&quot;&quot;
     Production-grade spot allocation with multiple strategies.
 
@@ -343,6 +409,8 @@ Parking System = <span style="color: #4ade80">Spot Allocation</span> + <span sty
 
         return available_spots[0] if available_spots else None
 </code></pre>
+    </div>
+</div>
 <h3 id="spot-allocation-interview-questions-3-levels-deep">Spot Allocation Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: How would you design spot allocation for a parking system?</h4>
@@ -437,7 +505,13 @@ Parking System = <span style="color: #4ade80">Spot Allocation</span> + <span sty
 </div>
 </div>
 <h3 id="sensor-data-processing-implementation">Sensor Data Processing Implementation</h3>
-<pre><code class="language-python">class SensorEventProcessor:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class SensorEventProcessor:
     &quot;&quot;&quot;
     Process sensor events with reliability guarantees.
 
@@ -532,6 +606,8 @@ Parking System = <span style="color: #4ade80">Spot Allocation</span> + <span sty
                     event_id=f&quot;reconcile-{lot_id}-{spot_id}-{spot_state.last_update}&quot;
                 ))
 </code></pre>
+    </div>
+</div>
 <h3 id="sensor-integration-interview-questions-3-levels-deep">Sensor Integration Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: What sensors would you use for a parking system?</h4>
@@ -629,7 +705,13 @@ Parking System = <span style="color: #4ade80">Spot Allocation</span> + <span sty
 </div>
 </div>
 <h3 id="payment-processing-implementation">Payment Processing Implementation</h3>
-<pre><code class="language-python">class PaymentService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class PaymentService:
     &quot;&quot;&quot;
     Production payment processing with failure handling.
 
@@ -808,6 +890,8 @@ Parking System = <span style="color: #4ade80">Spot Allocation</span> + <span sty
         if failure_count &gt;= 3:
             await self._add_to_prepayment_required_list(ticket.license_plate)
 </code></pre>
+    </div>
+</div>
 <h3 id="payment-processing-interview-questions-3-levels-deep">Payment Processing Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: How would you design payment processing for a parking system?</h4>
@@ -911,7 +995,13 @@ Parking System = <span style="color: #4ade80">Spot Allocation</span> + <span sty
 </div>
 </div>
 <h3 id="real-time-availability-implementation">Real-Time Availability Implementation</h3>
-<pre><code class="language-python">class AvailabilityService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class AvailabilityService:
     &quot;&quot;&quot;
     Real-time availability tracking with multiple update channels.
 
@@ -1036,6 +1126,8 @@ Parking System = <span style="color: #4ade80">Spot Allocation</span> + <span sty
 
         return False
 </code></pre>
+    </div>
+</div>
 <h3 id="real-time-availability-interview-questions-3-levels-deep">Real-Time Availability Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: How would you show real-time parking availability?</h4>
@@ -1136,7 +1228,13 @@ Parking System = <span style="color: #4ade80">Spot Allocation</span> + <span sty
 </div>
 </div>
 <h3 id="dynamic-pricing-implementation">Dynamic Pricing Implementation</h3>
-<pre><code class="language-python">class DynamicPricingService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class DynamicPricingService:
     &quot;&quot;&quot;
     Calculate parking rates based on multiple demand signals.
 
@@ -1296,6 +1394,8 @@ Parking System = <span style="color: #4ade80">Spot Allocation</span> + <span sty
         await self.cache.hset(f&quot;ticket:{ticket_id}&quot;, 'locked_rate', rate)
         await self.cache.hset(f&quot;ticket:{ticket_id}&quot;, 'rate_locked_at', datetime.now().isoformat())
 </code></pre>
+    </div>
+</div>
 <h3 id="dynamic-pricing-interview-questions-3-levels-deep">Dynamic Pricing Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: How would you implement dynamic pricing for parking?</h4>
@@ -1452,7 +1552,13 @@ Parking System = <span style="color: #4ade80">Spot Allocation</span> + <span sty
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px">
 <h3 id="the-100month-parking-system">The &quot;$100/Month Parking System&quot;</h3>
-<pre><code>**Reality Check**: Most parking lots in the world run on incredibly simple systems.
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**Reality Check**: Most parking lots in the world run on incredibly simple systems.
 
 ```python
 # This is literally how many successful parking lots work:
@@ -1478,8 +1584,16 @@ return calculate_fee(entry_time)
 # Monthly cost: ~$100 for payment processing
 ```
 </code></pre>
+    </div>
+</div>
 <h3 id="when-you-dont-need-iot-sensors">When You DON'T Need IoT Sensors</h3>
-<pre><code>| Skip Per-Spot Sensors When... | Why |
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>| Skip Per-Spot Sensors When... | Why |
 |-------------------------------|-----|
 | Lot has &lt;100 spots | Visual scanning is faster than app lookup |
 | No &quot;find my car&quot; requirement | Counters per level are sufficient |
@@ -1487,16 +1601,32 @@ return calculate_fee(entry_time)
 | Retrofitting old structure | Wiring costs exceed sensor benefits |
 | Short average stay (&lt;2 hours) | High turnover makes spot-finding less critical |
 </code></pre>
+    </div>
+</div>
 <h3 id="when-you-dont-need-dynamic-pricing">When You DON'T Need Dynamic Pricing</h3>
-<pre><code>| Skip Dynamic Pricing When... | Why |
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>| Skip Dynamic Pricing When... | Why |
 |------------------------------|-----|
 | Predictable demand patterns | Peak/off-peak flat rates work fine |
 | Single use case (office parking) | All-day rates simpler to understand |
 | Customer base expects stability | Seniors, regulars dislike variable pricing |
 | Implementation cost &gt; revenue gain | Small lots won't see meaningful lift |
 </code></pre>
+    </div>
+</div>
 <h3 id="simpler-alternatives-that-work">Simpler Alternatives That Work</h3>
-<pre><code>| Complex Solution | Simpler Alternative | When Simple Wins |
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>| Complex Solution | Simpler Alternative | When Simple Wins |
 |-----------------|---------------------|------------------|
 | ML-based LPR | QR code tickets | &lt;1000 cars/day, budget constraints |
 | Dynamic pricing algorithm | Peak/off-peak flat rates | Predictable demand patterns |
@@ -1505,6 +1635,8 @@ return calculate_fee(entry_time)
 | Real-time WebSocket updates | 30-second polling | Display boards, non-critical |
 | Distributed Redis cache | PostgreSQL with indices | &lt;1000 concurrent users |
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -1636,3 +1768,15 @@ return calculate_fee(entry_time)
 <li><a href="/topics/system-design/connection-pooling">[connection-pooling]</a> - Resource management patterns</li>
 </ul>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="api-gateway">API Gateway</h1>
 <h2 id="overview">Overview</h2>
@@ -94,7 +154,13 @@
 </div>
 </div>
 <h3 id="internal-route-table-architecture">Internal Route Table Architecture</h3>
-<pre><code class="language-python">class RouteTable:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class RouteTable:
     &quot;&quot;&quot;
     Production route table implementation.
 
@@ -155,6 +221,8 @@
                 return None
         return route
 </code></pre>
+    </div>
+</div>
 <h3 id="edge-cases-and-failure-modes">Edge Cases and Failure Modes</h3>
 <div style="background: #fef3c7;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #92400e; margin-top: 0">Critical Edge Cases</h4>
@@ -212,7 +280,13 @@
 </div>
 </div>
 <h3 id="jwt-processing-pipeline">JWT Processing Pipeline</h3>
-<pre><code class="language-python">class JWTAuthenticator:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class JWTAuthenticator:
     &quot;&quot;&quot;
     Production JWT authentication with security hardening.
 
@@ -324,6 +398,8 @@
         # Atomic replacement
         self.public_keys = new_keys
 </code></pre>
+    </div>
+</div>
 <h3 id="authorization-patterns">Authorization Patterns</h3>
 <div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e293b; margin-top: 0">Gateway vs Service Authorization</h4>
@@ -397,7 +473,13 @@
 </div>
 </div>
 <h3 id="sliding-window-counter-implementation">Sliding Window Counter Implementation</h3>
-<pre><code class="language-python">class SlidingWindowCounter:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class SlidingWindowCounter:
     &quot;&quot;&quot;
     Hybrid sliding window rate limiter.
 
@@ -540,6 +622,8 @@ class DistributedRateLimiter:
         # All limits passed
         return RateLimitDecision(allowed=True)
 </code></pre>
+    </div>
+</div>
 <h3 id="edge-cases-in-distributed-rate-limiting">Edge Cases in Distributed Rate Limiting</h3>
 <div style="background: #fef2f2;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #991b1b; margin-top: 0">Critical Distributed Rate Limiting Challenges</h4>
@@ -603,7 +687,13 @@ class DistributedRateLimiter:
 </div>
 </div>
 <h3 id="request-transformation-implementation">Request Transformation Implementation</h3>
-<pre><code class="language-python">class RequestTransformer:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class RequestTransformer:
     &quot;&quot;&quot;
     Production request/response transformer.
 
@@ -833,6 +923,8 @@ class ProtocolTranslator:
             headers={&quot;Content-Type&quot;: &quot;application/json&quot;},
         )
 </code></pre>
+    </div>
+</div>
 <h3 id="request-transformation-interview-questions-3-levels-deep">Request Transformation Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: Why would you transform requests at the API Gateway level?</h4>
@@ -872,7 +964,13 @@ class ProtocolTranslator:
 </div>
 </div>
 <h3 id="service-discovery-implementation">Service Discovery Implementation</h3>
-<pre><code class="language-python">class ServiceRegistry:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class ServiceRegistry:
     &quot;&quot;&quot;
     Client-side service discovery with health checking.
 
@@ -1100,6 +1198,8 @@ class ProtocolTranslator:
 
             await asyncio.sleep(self.health_check_interval)
 </code></pre>
+    </div>
+</div>
 <h3 id="service-discovery-edge-cases">Service Discovery Edge Cases</h3>
 <div style="background: #fef3c7;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #92400e; margin-top: 0">Critical Edge Cases</h4>
@@ -1313,3 +1413,15 @@ class ProtocolTranslator:
 <li><a href="/topic/security/oauth2">[oauth2-oidc]</a> - Authentication protocol details</li>
 <li><a href="/topic/system-design/microservices">[microservices]</a> - Service decomposition patterns</li>
 </ul>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

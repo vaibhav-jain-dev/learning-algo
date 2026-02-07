@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="load-balancing">Load Balancing</h1>
 <div class="tldr-box">
@@ -87,12 +147,20 @@
 <div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #166534; margin-top: 0">Real-World Impact</h4>
 <div style="color: #1e293b">
-<pre><code>**Netflix** handles over 400 million streaming hours daily using load balancers to distribute requests across thousands of servers globally. Without load balancing, a single popular show release could crash their entire service.
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**Netflix** handles over 400 million streaming hours daily using load balancers to distribute requests across thousands of servers globally. Without load balancing, a single popular show release could crash their entire service.
 
 **Amazon** reported that every 100ms of latency costs them 1% in sales. Load balancing helps maintain sub-100ms response times by routing requests to the fastest available server.
 
 **GitHub** uses load balancing to handle millions of git operations daily. During peak hours, their load balancers distribute traffic across multiple data centers to maintain availability.
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <h3 id="key-benefits">Key Benefits</h3>
@@ -740,7 +808,13 @@ experiment=variant  --> Experiment Servers (10%)</pre>
 <h2 id="code-examples">Code Examples</h2>
 <h3 id="python---load-balancer-framework">Python - Load Balancer Framework</h3>
 <p style="color: #64748b; font-style: italic; margin-bottom: 16px">For specific algorithm implementations (Round Robin, Weighted Round Robin, Least Connections, etc.), see the dedicated algorithm pages linked in the table above.</p>
-<pre><code class="language-python">from abc import ABC, abstractmethod
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">from abc import ABC, abstractmethod
 from typing import List
 import time
 
@@ -799,8 +873,16 @@ class LoadBalancer:
         # Implementation would make actual health check request
         return True
 </code></pre>
+    </div>
+</div>
 <h3 id="nginx-configuration---production-load-balancing">Nginx Configuration - Production Load Balancing</h3>
-<pre><code class="language-nginx"># Upstream configuration with health checks and load balancing
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Nginx</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-nginx"># Upstream configuration with health checks and load balancing
 upstream api_backend {
     # Least connections algorithm
     least_conn;
@@ -886,6 +968,8 @@ server {
     }
 }
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="best-practices">Best Practices</h2>
 <div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -1492,3 +1576,15 @@ server {
 <li><a href="/topic/system-design/message-queues">[Message Queues]</a> - Asynchronous load handling</li>
 <li><a href="/topic/system-design/microservices">[Microservices]</a> - Service discovery and inter-service communication</li>
 </ul>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

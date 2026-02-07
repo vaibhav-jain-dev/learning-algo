@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="design-zepto-quick-commerce-platform">Design Zepto (Quick Commerce Platform)</h1>
 <nav style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
@@ -171,28 +231,50 @@
 <div style="display: flex; gap: 20px; flex-wrap: wrap; margin: 20px 0">
 <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 20px">
 <h4 style="color: #a78bfa; margin: 0 0 12px 0">Traditional E-commerce</h4>
-<pre><code>  - Large central warehouse (100,000+ sq ft)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>  - Large central warehouse (100,000+ sq ft)
   - 50,000+ SKUs
   - Next-day or same-day delivery
   - Optimize for selection and price
   - Low delivery cost per order
   - Works for planned purchases
 </code></pre>
+    </div>
+</div>
 </div>
 <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #1f3d2d 0%, #1a2e1a 100%); border-radius: 12px; padding: 20px">
 <h4 style="color: #4ade80; margin: 0 0 12px 0">Quick Commerce</h4>
-<pre><code>  - Network of dark stores (2,000-3,000 sq ft each)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>  - Network of dark stores (2,000-3,000 sq ft each)
   - 2,000-3,000 SKUs per store
   - 10-minute delivery
   - Optimize for speed and convenience
   - Higher delivery cost, higher margins
   - Captures impulse and urgent purchases
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <h3 id="unit-economics">The Unit Economics Reality</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
-<pre><code>**Per-Order Economics (Mature Market)**:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**Per-Order Economics (Mature Market)**:
 
 | Line Item | Amount | Notes |
 |-----------|--------|-------|
@@ -210,6 +292,8 @@
 
 **Break-even requires**: 400+ orders/day/store at current unit economics
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="latency-budget">The 10-Minute Promise: Latency Budget Breakdown</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
@@ -274,7 +358,13 @@
 </blockquote>
 <blockquote>
 <p><strong>Pricing Algorithm</strong>:</p>
-<pre><code class="language-python">def calculate_delivery_fee(store_id, customer_location, timestamp):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def calculate_delivery_fee(store_id, customer_location, timestamp):
     base_fee = 25  # INR
 
     # Demand multiplier (1.0 - 2.5x)
@@ -299,6 +389,8 @@
     surge_fee = base_fee * demand_multiplier * supply_multiplier * weather_multiplier * distance_multiplier
     return min(surge_fee, 99)  # Hard cap at INR 99
 </code></pre>
+    </div>
+</div>
 </blockquote>
 <blockquote>
 <p><strong>Trust Preservation</strong>: (1) Never surge for subscription customers - they paid for predictability; (2) Show estimated delivery time increasing before showing surge pricing - customers accept 'busy' more than 'expensive'; (3) Implement price anchoring - show original price crossed out; (4) Rate limiting on price changes - maximum 2 changes per hour per zone to avoid perception of gaming.</p>
@@ -347,7 +439,13 @@
 </div>
 <h3 id="dark-store-placement-strategy">Dark Store Placement Strategy</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
-<pre><code>**Location Selection Algorithm**:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**Location Selection Algorithm**:
 
 ```python
 class DarkStorePlacementOptimizer:
@@ -420,6 +518,8 @@ return self.local_search_optimize(selected)
 
 **Key Trade-off**: A store serving a 2km radius has ~12.5 sq km coverage. In dense urban areas, this means 50,000-200,000 potential customers. But only a fraction order frequently. The sweet spot is placing stores where order density justifies the fixed costs (~INR 3-5 lakh/month).
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="store-operations-system-design">Store Operations System Design</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
@@ -526,7 +626,13 @@ return self.local_search_optimize(selected)
 <p><strong>Algorithm Design</strong>:</p>
 </blockquote>
 <blockquote>
-<pre><code class="language-python">class PickerRoutingEngine:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class PickerRoutingEngine:
     def generate_pick_route(self, order_items, store_layout):
         # Phase 1: Categorize items by handling constraints
         fragile = [i for i in order_items if i.is_fragile]
@@ -589,6 +695,8 @@ return self.local_search_optimize(selected)
 
         return bags
 </code></pre>
+    </div>
+</div>
 </blockquote>
 <blockquote>
 <p><strong>Real-World Considerations</strong>:</p>
@@ -641,7 +749,13 @@ return self.local_search_optimize(selected)
 </div>
 <h3 id="rider-assignment-algorithm">Rider Assignment Algorithm</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
-<pre><code>**Multi-Objective Optimization Problem**:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**Multi-Objective Optimization Problem**:
 
 ```python
 class RiderAssignmentService:
@@ -733,6 +847,8 @@ load_penalty
 3. Sub-second assignment is required
 4. Interpretability matters for debugging
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="order-batching-strategy">Order Batching Strategy</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
@@ -808,7 +924,13 @@ load_penalty
 </div>
 <h3 id="real-time-tracking-system">Real-Time Tracking System</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
-<pre><code>**Architecture for Live Rider Tracking**:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**Architecture for Live Rider Tracking**:
 
 ```python
 class RiderTrackingService:
@@ -909,6 +1031,8 @@ return adjusted_eta + buffer
 | Battery optimization | OS throttles GPS updates | Request high-accuracy mode for active deliveries |
 | Spoofing attempts | Fake location to appear faster | Cross-reference with expected trajectory, accelerometer |
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <h3 id="interview-questions-delivery-optimization">Interview Questions: Delivery Optimization</h3>
@@ -956,13 +1080,21 @@ return adjusted_eta + buffer
 </blockquote>
 <blockquote>
 <p><strong>4. Feedback Loop</strong>:</p>
-<pre><code class="language-python">def update_neighborhood_factor(neighborhood_id, predicted, actual):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def update_neighborhood_factor(neighborhood_id, predicted, actual):
     error_ratio = actual / predicted
     current_factor = get_factor(neighborhood_id)
     # Exponential moving average with alpha=0.1
     new_factor = current_factor * 0.9 + error_ratio * 0.1
     set_factor(neighborhood_id, new_factor)
 </code></pre>
+    </div>
+</div>
 </blockquote>
 <blockquote>
 <p><strong>5. Alerting</strong>: Set up alerts when a neighborhood's error exceeds 20% for more than 3 days. This catches new issues before they become systematic.&quot;</p>
@@ -978,7 +1110,13 @@ return adjusted_eta + buffer
 <p><strong>System Architecture</strong>:</p>
 </blockquote>
 <blockquote>
-<pre><code class="language-python">class DynamicRadiusService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class DynamicRadiusService:
     def __init__(self):
         self.default_radius = 2.0  # km
         self.min_radius = 1.0  # Never go below this
@@ -1052,6 +1190,8 @@ return adjusted_eta + buffer
         # Sort by headroom (prefer stores with more buffer)
         return sorted(serviceable, key=lambda x: -x['headroom'])
 </code></pre>
+    </div>
+</div>
 </blockquote>
 <blockquote>
 <p><strong>Edge Cases</strong>:</p>
@@ -1102,7 +1242,13 @@ return adjusted_eta + buffer
 </div>
 <h3 id="real-time-inventory-architecture">Real-Time Inventory Architecture</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
-<pre><code>**Multi-Layer Inventory System**:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**Multi-Layer Inventory System**:
 
 ```python
 class InventoryService:
@@ -1253,6 +1399,8 @@ self.schedule_immediate_cycle_count(store_id, sku)
 return self.find_substitution(store_id, sku, order_id)
 ```
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="inventory-state-machine">Inventory Events and State Machine</h3>
 <!-- Visual State Machine Diagram -->
@@ -1366,7 +1514,13 @@ DELIVERED → AVAILABLE (return)
 </div>
 <h3 id="cycle-counting-and-reconciliation">Cycle Counting and Reconciliation</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
-<pre><code>**Continuous Cycle Count Strategy**:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**Continuous Cycle Count Strategy**:
 
 ```python
 class CycleCountService:
@@ -1461,6 +1615,8 @@ WHERE store_id = %s AND sku = %s
 &quot;&quot;&quot;, [store_id, sku])
 ```
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <h3 id="interview-questions-inventory-management">Interview Questions: Inventory Management</h3>
@@ -1473,13 +1629,21 @@ WHERE store_id = %s AND sku = %s
 </blockquote>
 <blockquote>
 <p>The solution is atomic check-and-decrement using Redis. Instead of read-modify-write as separate operations, we use a Lua script that executes atomically:</p>
-<pre><code class="language-lua">local available = redis.call('GET', key)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Lua</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-lua">local available = redis.call('GET', key)
 if available &gt;= requested then
     redis.call('DECRBY', key, requested)
     return 1
 end
 return 0
 </code></pre>
+    </div>
+</div>
 </blockquote>
 <blockquote>
 <p>This guarantees that the check and decrement happen as a single atomic operation. The second customer's request will fail because by the time it executes, available is already 0.</p>
@@ -1534,7 +1698,13 @@ return 0
 </blockquote>
 <blockquote>
 <p><strong>Pre-Sale Preparation</strong>:</p>
-<pre><code class="language-python">class FlashSalePreparation:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class FlashSalePreparation:
     def prepare_inventory_for_sale(self, sale_id, expected_multiplier=10):
         sale_items = self.get_sale_items(sale_id)
 
@@ -1557,10 +1727,18 @@ return 0
         # Pre-scale inventory service
         self.k8s.scale_deployment('inventory-service', replicas=expected_multiplier)
 </code></pre>
+    </div>
+</div>
 </blockquote>
 <blockquote>
 <p><strong>During Sale - Reservation Flow</strong>:</p>
-<pre><code class="language-python">class FlashSaleInventoryService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class FlashSaleInventoryService:
     def reserve_flash_item(self, sale_id, sku, quantity, customer_id):
         # Layer 1: Rate limiting (prevents thundering herd)
         rate_key = f'flash_rate_limit:{sale_id}:{sku}'
@@ -1599,6 +1777,8 @@ return 0
 
         return {'remaining': remaining, 'reserved': quantity}
 </code></pre>
+    </div>
+</div>
 </blockquote>
 <blockquote>
 <p><strong>Graceful Degradation Strategies</strong>:</p>
@@ -1626,25 +1806,47 @@ Flash inventory pool must be reconciled with main inventory within 1 hour of sal
 <div style="display: flex; gap: 20px; flex-wrap: wrap; margin: 20px 0">
 <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px">
 <h4 style="color: #fca5a5; margin: 0 0 12px 0">Understock (Stockout)</h4>
-<pre><code>  - Lost sale (INR 450 average)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>  - Lost sale (INR 450 average)
   - Lost customer lifetime value (10-20x single order)
   - Negative review / word of mouth
   - Competitor gains the customer
   - **Cost: INR 5,000-10,000 per incident**
 </code></pre>
+    </div>
+</div>
 </div>
 <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #78350f 0%, #451a03 100%); border-radius: 12px; padding: 20px">
 <h4 style="color: #fcd34d; margin: 0 0 12px 0">Overstock</h4>
-<pre><code>  - Working capital tied up
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>  - Working capital tied up
   - Storage space consumed
   - Expiry risk (especially fresh/dairy)
   - Markdown/write-off
   - **Cost: 20-100% of product cost**
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
-<pre><code>**The Forecasting Challenge**:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**The Forecasting Challenge**:
 
 Quick commerce forecasting is harder than traditional retail because:
 
@@ -1657,6 +1859,8 @@ Quick commerce forecasting is harder than traditional retail because:
 | **Lead time** | Days/Weeks | Hours |
 | **Data history** | Years | Months (new stores) |
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="forecasting-architecture">Forecasting Architecture</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
@@ -1709,7 +1913,13 @@ Quick commerce forecasting is harder than traditional retail because:
 </div>
 <h3 id="forecasting-model-implementation">Forecasting Model Implementation</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
-<pre><code class="language-python">class DemandForecastingService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class DemandForecastingService:
 &quot;&quot;&quot;
 Multi-model demand forecasting system.
 
@@ -1860,6 +2070,8 @@ return {
 'forecast_demand': mean_demand,
 'safety_stock': optimal_quantity - mean_demand
 }</code></pre>
+    </div>
+</div>
 </div>
 <h3 id="handling-demand-anomalies">Handling Demand Anomalies</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
@@ -2001,7 +2213,13 @@ return {
 <p><strong>1. Error Tracking and Attribution</strong>:</p>
 </blockquote>
 <blockquote>
-<pre><code class="language-python">class ForecastErrorTracker:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class ForecastErrorTracker:
     def record_actual_demand(self, store_id, sku, date, actual_demand):
         # Retrieve original forecast
         forecast = self.get_stored_forecast(store_id, sku, date)
@@ -2068,12 +2286,20 @@ return {
 
         return attributions
 </code></pre>
+    </div>
+</div>
 </blockquote>
 <blockquote>
 <p><strong>2. Automated Retraining Pipeline</strong>:</p>
 </blockquote>
 <blockquote>
-<pre><code class="language-python">class AutoRetrainer:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class AutoRetrainer:
     def should_retrain(self, model_id):
         # Get recent error metrics
         recent_errors = self.error_tracker.get_errors(
@@ -2113,12 +2339,20 @@ return {
         # After 7 days of shadow testing, compare performance
         # Auto-promote if new model is better
 </code></pre>
+    </div>
+</div>
 </blockquote>
 <blockquote>
 <p><strong>3. Feature Importance Drift Detection</strong>:</p>
 </blockquote>
 <blockquote>
-<pre><code class="language-python">def detect_feature_drift(self, model_id):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def detect_feature_drift(self, model_id):
     &quot;&quot;&quot;
     Detect when feature importances have shifted significantly.
     This indicates the model might be relying on outdated patterns.
@@ -2135,6 +2369,8 @@ return {
         self.alert(f'Feature drift detected for model {model_id}')
         self.trigger_investigation(model_id)
 </code></pre>
+    </div>
+</div>
 </blockquote>
 <blockquote>
 <p><strong>4. Human-in-the-Loop for Anomalies</strong>:</p>
@@ -2216,7 +2452,13 @@ return {
 </div>
 <h3 id="city-level-sharding-strategy">City-Level Sharding Strategy</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
-<pre><code>**Why City Sharding?**
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**Why City Sharding?**
 
 At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottleneck. City sharding provides:
 
@@ -2245,11 +2487,19 @@ At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottl
 - User traveling to another city: Query global user service, then local city services
 - Transfer inventory between cities: Asynchronous, not real-time
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="technology-stack-rationale">Technology Stack Rationale</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 style="color: #4ade80; margin: 0 0 20px 0; text-align: center">TECHNOLOGY DECISIONS AND ALTERNATIVES</h4>
-<pre><code>| Component | Choice | Why This | Alternative | When Alternative Is Better |
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>| Component | Choice | Why This | Alternative | When Alternative Is Better |
 |-----------|--------|----------|-------------|---------------------------|
 | **Primary DB** | PostgreSQL (Aurora) | ACID for orders, strong ecosystem | CockroachDB | Global distribution needed |
 | **Cache** | Redis Cluster | Atomic ops, geospatial queries | Memcached | Simple caching only |
@@ -2259,6 +2509,8 @@ At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottl
 | **ML Platform** | SageMaker | AWS integration | Vertex AI | GCP-first architecture |
 | **Monitoring** | Datadog | Full-stack observability | Prometheus/Grafana | Cost sensitive, self-hosted |
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -2467,7 +2719,13 @@ At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottl
 </div>
 <h3 id="response-framework">The Structured Response Framework</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
-<pre><code>When asked an open-ended question, structure your response:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>When asked an open-ended question, structure your response:
 
 **1. CLARIFY** (10 seconds)
 &gt; &quot;Let me confirm the scope - we're designing for X orders/day across Y cities?&quot;
@@ -2487,6 +2745,8 @@ At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottl
 **6. WHAT I'D SKIP** (30 seconds)
 &gt; &quot;For this scale, I'd skip [feature] because [simpler alternative] works until [trigger condition]&quot;
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -2837,3 +3097,15 @@ At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottl
 </tbody>
 </table>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

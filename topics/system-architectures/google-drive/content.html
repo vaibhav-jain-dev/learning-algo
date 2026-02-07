@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="design-google-drive">Design Google Drive</h1>
 <nav class="toc" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
@@ -263,13 +323,27 @@ Hash(C2) = <span style="color: #16a34a">def456</span><br>
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px">
 <h3 id="assumptions-phase1-assumptions">Assumptions {#phase1-assumptions}</h3>
-<pre><code>- **Users**: 1,000 - 50,000
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- **Users**: 1,000 - 50,000
 - **Storage**: 100GB - 10TB total
 - **Files**: Mostly small files (&lt; 100MB)
 - **Budget**: $500 - $3,000/month
 </code></pre>
+    </div>
+</div>
 <h3 id="monolithic-architecture-monolithic-architecture">Monolithic Architecture {#monolithic-architecture}</h3>
-<pre><code class="language-python"># Simple file storage service
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Simple file storage service
 class FileService:
 def __init__(self, s3_client, db):
 self.s3 = s3_client
@@ -308,6 +382,8 @@ raise PermissionError()
 # Get from S3
 response = self.s3.get_object(Bucket='files', Key=file.s3_key)
 return response['Body'].read()</code></pre>
+    </div>
+</div>
 <h4 id="simple-sync-protocol-simple-sync-protocol">Simple Sync Protocol {#simple-sync-protocol}</h4>
 <div style="background: #f1f5f9;border-radius: 16px; padding: 24px; margin: 16px 0">
 <div style="text-align: center; font-weight: bold; color: #1d4ed8; margin-bottom: 20px; font-size: 16px">POLLING-BASED SYNC</div>
@@ -334,11 +410,19 @@ return response['Body'].read()</code></pre>
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px">
 <h3 id="assumptions-phase2-assumptions">Assumptions {#phase2-assumptions}</h3>
-<pre><code>- **Users**: 1M - 10M
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- **Users**: 1M - 10M
 - **Storage**: 100PB+
 - **Uploads**: 10K files/second
 - **Budget**: $200K - $1M/month
 </code></pre>
+    </div>
+</div>
 <h3 id="microservices-with-chunking-microservices-with-chunking">Microservices with Chunking {#microservices-with-chunking}</h3>
 <div class="flow-diagram" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0">
   <!-- API Gateway -->
@@ -402,7 +486,13 @@ return response['Body'].read()</code></pre>
 </div>
 </div>
 <h3 id="delta-sync-algorithm-delta-sync-algorithm">Delta Sync Algorithm {#delta-sync-algorithm}</h3>
-<pre><code class="language-python">class DeltaSyncService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class DeltaSyncService:
 &quot;&quot;&quot;
 Only sync changed bytes, not entire files.
 Uses rolling checksum (rsync algorithm).
@@ -452,6 +542,8 @@ Body=change['data']
 
 # Update file manifest
 self.update_manifest(file_id, delta)</code></pre>
+    </div>
+</div>
 <h3 id="conflict-resolution-conflict-resolution">Conflict Resolution {#conflict-resolution}</h3>
 <div class="flow-diagram" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
   <!-- Three-way diagram -->
@@ -516,11 +608,19 @@ self.update_manifest(file_id, delta)</code></pre>
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px">
 <h3 id="assumptions-phase3-assumptions">Assumptions {#phase3-assumptions}</h3>
-<pre><code>- **Users**: 1B+
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- **Users**: 1B+
 - **Storage**: Exabytes
 - **Uploads**: 1M files/second
 - **Team**: 500+ engineers
 </code></pre>
+    </div>
+</div>
 <h3 id="global-architecture-global-architecture">Global Architecture {#global-architecture}</h3>
 <div class="flow-diagram" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0">
 <div style="text-align: center; font-weight: bold; color: #a371f7; font-size: 18px; margin-bottom: 24px">GLOBAL FILE STORAGE INFRASTRUCTURE</div>
@@ -719,7 +819,13 @@ self.update_manifest(file_id, delta)</code></pre>
 </div>
 </div>
 <h3 id="2-deduplication-at-scale-deduplication-at-scale">2. Deduplication at Scale {#deduplication-at-scale}</h3>
-<pre><code class="language-python">class GlobalDeduplicationService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class GlobalDeduplicationService:
 &quot;&quot;&quot;
 Cross-user deduplication saves 40%+ storage.
 Uses content-addressable storage.
@@ -754,6 +860,8 @@ refs = self.chunk_index.decrement_refs(chunk_hash)
 if refs == 0:
 # No more references, schedule deletion
 self.deletion_queue.add(chunk_hash)</code></pre>
+    </div>
+</div>
 <h3 id="3-quota-management-quota-management">3. Quota Management {#quota-management}</h3>
 <div style="background: #f1f5f9;border-radius: 16px; padding: 24px; margin: 16px 0">
 <div style="text-align: center; font-weight: bold; color: #f0883e; margin-bottom: 20px; font-size: 16px">QUOTA SERVICE</div>
@@ -885,7 +993,13 @@ self.deletion_queue.add(chunk_hash)</code></pre>
 - When Bob syncs, server says &quot;file abc123 moved to /Projects/2024-Q1/&quot;<br />
 - Bob's edit applies to new path automatically</p>
 <p><strong>Conflict Resolution Code Example</strong>:</p>
-<pre><code class="language-python">def resolve_conflict(base_version, version_a, version_b, file_type):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def resolve_conflict(base_version, version_a, version_b, file_type):
 if file_type in ['jpg', 'png', 'mp4', 'pdf']:
 # Binary: create conflict copy
 return ConflictCopy(version_a, version_b)
@@ -902,6 +1016,8 @@ winner = version_a if version_a.timestamp &gt; version_b.timestamp else version_
 loser = version_b if winner == version_a else version_a
 notify_user(loser.author, f&quot;Your changes were superseded by {winner.author}&quot;)
 return winner</code></pre>
+    </div>
+</div>
 <p><strong>Key Insight</strong>: &quot;Google Docs uses Operational Transform because users expect real-time character-by-character sync. Dropbox uses conflict copies because file-level sync is simpler and users don't expect real-time binary file collaboration. The choice depends on user expectations, not technical elegance.&quot;</p>
 <p><strong>When Simpler Works</strong>:</p>
 <blockquote>
@@ -1003,7 +1119,13 @@ return winner</code></pre>
 </div>
 </div>
 <p><strong>Step 1: Local SQLite Database Schema</strong></p>
-<pre><code class="language-sql">CREATE TABLE local_files (
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Sql</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-sql">CREATE TABLE local_files (
 file_path TEXT PRIMARY KEY,
 local_hash TEXT,           -- Hash of local file
 server_hash TEXT,          -- Last known server hash
@@ -1021,8 +1143,16 @@ old_path TEXT,             -- For moves/renames
 queued_at TIMESTAMP,
 retry_count INTEGER DEFAULT 0
 );</code></pre>
+    </div>
+</div>
 <p><strong>Step 2: File System Watcher Implementation</strong></p>
-<pre><code class="language-python"># Using FSEvents (Mac), inotify (Linux), or ReadDirectoryChangesW (Windows)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Using FSEvents (Mac), inotify (Linux), or ReadDirectoryChangesW (Windows)
 
 class FileWatcher:
 def __init__(self, sync_folder, db):
@@ -1047,9 +1177,17 @@ self.db.execute(&quot;&quot;&quot;
 UPDATE local_files SET sync_status = 'pending_upload'
 WHERE file_path = ?
 &quot;&quot;&quot;, event_path)</code></pre>
+    </div>
+</div>
 <p><strong>Step 3: Sync Engine on Reconnect</strong></p>
 <p>When network comes back, the sync engine runs this algorithm:</p>
-<pre><code class="language-python">def sync_on_reconnect(self):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def sync_on_reconnect(self):
 # Step 1: Get server changes since last sync
 last_sync = self.db.get_last_sync_timestamp()
 server_changes = self.api.get_changes(since=last_sync)
@@ -1085,6 +1223,8 @@ self.delete_local_file(server_change.path)
 for local_change in local_changes:
 if not has_conflict(local_change):
 self.upload_file(local_change)</code></pre>
+    </div>
+</div>
 <p><strong>Real-World Scenario: 2 Hours Offline on a Flight</strong></p>
 <ol>
 <li>User boards plane with laptop, internet disconnects</li>
@@ -1123,7 +1263,13 @@ self.upload_file(local_change)</code></pre>
 - Checksums on every read/write operation<br />
 - Automatic corruption detection and healing</p>
 <p><strong>Layer 2: Application-Level Protection</strong></p>
-<pre><code class="language-python">class DurableUploadService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class DurableUploadService:
 def upload_chunk(self, chunk_hash, chunk_data):
 # Step 1: Calculate checksum before upload
 expected_checksum = md5(chunk_data)
@@ -1150,6 +1296,8 @@ WHERE file_id = %s
 &quot;&quot;&quot;, chunk_hash, file_id)
 
 return True</code></pre>
+    </div>
+</div>
 <p><strong>Layer 3: Write-Ahead Logging for Metadata</strong></p>
 <p>PostgreSQL already does this, but here's the concept:</p>
 <ol>
@@ -1161,7 +1309,13 @@ return True</code></pre>
 If crash between steps 2 and 3: log entry replayed (idempotent operation)</p>
 <p><strong>Layer 4: Cross-Region Replication</strong></p>
 <p>For critical data (enterprise tier):</p>
-<pre><code>Primary Region (us-east-1)          Backup Region (eu-west-1)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>Primary Region (us-east-1)          Backup Region (eu-west-1)
 ┌──────────────────────┐            ┌──────────────────────┐
 │  S3 Bucket           │───sync───&gt; │  S3 Bucket (replica) │
 │  Aurora PostgreSQL   │───sync───&gt; │  Aurora Read Replica │
@@ -1169,12 +1323,20 @@ If crash between steps 2 and 3: log entry replayed (idempotent operation)</p>
 │                                    │
 │         If us-east-1 fails         │
 └──────── Failover to eu-west-1 ─────┘</code></pre>
+    </div>
+</div>
 <p><strong>Cost consideration</strong>: Cross-region replication doubles storage cost. Only enable for:<br />
 - Enterprise customers paying premium<br />
 - Compliance requirements (GDPR, HIPAA)<br />
 - Data that cannot be recreated (user uploads, not cached thumbnails)</p>
 <p><strong>Layer 5: Soft Deletes (Most Important!)</strong></p>
-<pre><code class="language-sql">-- Don't do this:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Sql</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-sql">-- Don't do this:
 DELETE FROM files WHERE id = 'abc123';
 
 -- Do this instead:
@@ -1182,6 +1344,8 @@ UPDATE files SET
 deleted_at = NOW(),
 scheduled_purge = NOW() + INTERVAL '30 days'
 WHERE id = 'abc123';</code></pre>
+    </div>
+</div>
 <p><strong>Why soft deletes prevent more data loss than replication</strong>:<br />
 - Most data loss is user error (accidental delete) or application bugs<br />
 - Cross-region replication faithfully replicates your mistake<br />
@@ -1190,7 +1354,13 @@ WHERE id = 'abc123';</code></pre>
 - With hard deletes + replication: Data is gone from both regions immediately<br />
 - With soft deletes: IT admin restores folder in 5 minutes</p>
 <p><strong>Layer 6: Version History</strong></p>
-<pre><code class="language-sql">CREATE TABLE file_versions (
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Sql</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-sql">CREATE TABLE file_versions (
 file_id UUID,
 version_number INTEGER,
 chunk_manifest JSONB,      -- Which chunks make up this version
@@ -1198,6 +1368,8 @@ created_at TIMESTAMP,
 created_by UUID,
 change_description TEXT    -- &quot;Edited by John at 3:45 PM&quot;
 );</code></pre>
+    </div>
+</div>
 <p>User can browse version history and restore any previous version. This catches:<br />
 - Accidental overwrites (&quot;I pasted the wrong data&quot;)<br />
 - Ransomware (restore pre-encryption versions)<br />
@@ -1989,7 +2161,13 @@ change_description TEXT    -- &quot;Edited by John at 3:45 PM&quot;
 </div>
 <h3 id="quota--rate-limit-failures-quota-rate-failures">Quota &amp; Rate Limit Failures {#quota-rate-failures}</h3>
 <div style="background: #f1f5f9; border-radius: 16px; padding: 24px; margin: 16px 0">
-<pre><code class="language-python">class QuotaManager:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class QuotaManager:
     &quot;&quot;&quot;Handle quota edge cases gracefully.&quot;&quot;&quot;
 
     def check_upload_quota(self, user_id, file_size):
@@ -2029,6 +2207,8 @@ change_description TEXT    -- &quot;Edited by John at 3:45 PM&quot;
         logical_size = file_manifest.total_size
         self.adjust_quota(user_id, actual_new_bytes - logical_size)
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -2205,7 +2385,13 @@ file_update -> publish to Kafka "file.updated" topic<br>
 </div>
 <h3 id="auto-scaling-policies-auto-scaling">Auto-Scaling Policies {#auto-scaling}</h3>
 <div style="background: #f1f5f9; border-radius: 16px; padding: 24px; margin: 16px 0">
-<pre><code class="language-yaml"># Kubernetes HPA Configuration
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Yaml</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-yaml"># Kubernetes HPA Configuration
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -2247,6 +2433,8 @@ spec:
         value: 10
         periodSeconds: 60
 </code></pre>
+    </div>
+</div>
 <table>
 <thead>
 <tr>
@@ -2492,12 +2680,32 @@ Plan for <strong>3x peak traffic</strong> over average. File storage services se
 </div>
 <h3 id="common-follow-up-questions-common-follow-up">Common Follow-up Questions {#common-follow-up}</h3>
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
-<pre><code>- **How do you handle large files (10GB+)?** Chunking with parallel upload, resumability
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- **How do you handle large files (10GB+)?** Chunking with parallel upload, resumability
 - **How do you ensure 11 nines durability?** S3's built-in replication, cross-region for critical data
 - **How do you implement real-time collaboration?** Operational Transform or CRDT, separate problem from file sync
 - **How do you handle offline editing?** Local SQLite + file watcher, queue changes, reconcile on reconnect
 - **How do you prevent malware uploads?** Async virus scanning, quarantine until scanned, signed URLs expire
 - **How do you handle quota?** Pre-check before upload, atomic increment, background recalculation for dedup credits
 </code></pre>
+    </div>
 </div>
 </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

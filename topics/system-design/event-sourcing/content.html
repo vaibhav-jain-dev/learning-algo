@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="event-sourcing">Event Sourcing</h1>
 <h2 id="overview">Overview</h2>
@@ -289,8 +349,16 @@
 <div style="font-weight: 600; font-size: 16px">Event Stream</div>
 <div style="font-size: 13px; opacity: 0.9; margin-top: 4px">OrderCreated, ItemAdded, PaymentReceived, OrderShipped...</div>
 </div>
-<pre><code>&lt;!-- Arrows --&gt;
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>&lt;!-- Arrows --&gt;
 </code></pre>
+    </div>
+</div>
 <div style="display: flex; justify-content: space-around; color: #8b5cf6">
 <div style="text-align: center">
 <div style="font-size: 24px">|</div>
@@ -305,8 +373,16 @@
 <div style="font-size: 20px">V</div>
 </div>
 </div>
-<pre><code>&lt;!-- Projections --&gt;
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>&lt;!-- Projections --&gt;
 </code></pre>
+    </div>
+</div>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px">
 <div style="background: #eff6ff;border-radius: 12px; padding: 16px">
 <div style="color: #1d4ed8; font-weight: 600; margin-bottom: 8px">Order Summary</div>
@@ -748,7 +824,13 @@
 <hr />
 <h2 id="implementation">Implementation</h2>
 <h3 id="complete-event-sourcing-system">Complete Event Sourcing System</h3>
-<pre><code class="language-python">from dataclasses import dataclass, field
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">from dataclasses import dataclass, field
 from datetime import datetime
 from typing import List, Dict, Optional, Any, Callable
 from abc import ABC, abstractmethod
@@ -1200,8 +1282,16 @@ print(f&quot;Transaction count: {summary['transaction_count']}&quot;)  # 2
 
 if __name__ == &quot;__main__&quot;:
 main()</code></pre>
+    </div>
+</div>
 <h3 id="event-schema-evolution">Event Schema Evolution</h3>
-<pre><code class="language-python">class EventUpcaster:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class EventUpcaster:
 &quot;&quot;&quot;
 Transform old event schemas to current version.
 
@@ -1253,6 +1343,8 @@ return {**event, &quot;data&quot;: data}
 upcaster = EventUpcaster()
 upcaster.register(&quot;AccountOpened&quot;, 1, upcast_account_opened_v1_to_v2)
 upcaster.register(&quot;AccountOpened&quot;, 2, upcast_account_opened_v2_to_v3)</code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="3-level-recursive-interview-questions">3-Level Recursive Interview Questions</h2>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -1380,7 +1472,13 @@ upcaster.register(&quot;AccountOpened&quot;, 2, upcast_account_opened_v2_to_v3)<
 <div style="color: #15803d; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you handle snapshot invalidation when aggregate logic changes?</div>
 <div style="color: #166534; font-size: 13px">
 <p><strong>Snapshot Versioning Strategy:</strong></p>
-<pre><code class="language-python">@dataclass
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">@dataclass
 class Snapshot:
 aggregate_id: str
 version: int
@@ -1411,6 +1509,8 @@ if self.should_snapshot(aggregate):
 self.create_snapshot(aggregate)
 
 return aggregate</code></pre>
+    </div>
+</div>
 <p><strong>Handling logic changes:</strong></p>
 <ol>
 <li>Increment <code>CURRENT_SCHEMA_VERSION</code> when aggregate <code>apply()</code> logic changes</li>
@@ -1446,7 +1546,13 @@ return aggregate</code></pre>
 ```python<br />
 async def place_order_and_wait(order_data):<br />
 event_version = await command_handler.place_order(order_data)</p>
-<pre><code># Wait for projection to catch up
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code># Wait for projection to catch up
 while True:
 projection = await order_projection.get(order_data.id)
 if projection and projection.version &gt;= event_version:
@@ -1454,6 +1560,8 @@ return projection
 await asyncio.sleep(0.1)
 ```
 </code></pre>
+    </div>
+</div>
 </li>
 <li>
 <p><strong>Optimistic UI updates</strong>: Update UI immediately, sync later</p>
@@ -1469,7 +1577,13 @@ await asyncio.sleep(0.1)
 <div style="color: #92400e; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you design idempotent projection handlers for exactly-once semantics?</div>
 <div style="color: #92400e; font-size: 13px">
 <p><strong>Idempotent Projection Pattern:</strong></p>
-<pre><code class="language-python">class IdempotentProjection:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class IdempotentProjection:
 def __init__(self, db):
 self.db = db
 
@@ -1495,6 +1609,8 @@ self.db.insert(&quot;processed_events&quot;, {
 &quot;version&quot;: version,
 &quot;processed_at&quot;: datetime.utcnow()
 })</code></pre>
+    </div>
+</div>
 <p><strong>Key techniques:</strong></p>
 <ul>
 <li>
@@ -1544,7 +1660,13 @@ self.db.insert(&quot;processed_events&quot;, {
 - Keep old event samples in test fixtures<br />
 - Integration test full replay path<br />
 - Monitor projection checksums after deployments</p>
-<pre><code class="language-python">def test_upcaster_chain():
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def test_upcaster_chain():
 v1_event = {&quot;event_type&quot;: &quot;AccountOpened&quot;, &quot;data&quot;: {&quot;name&quot;: &quot;Alice&quot;}}
 
 result = upcaster.upcast(v1_event)
@@ -1552,6 +1674,8 @@ result = upcaster.upcast(v1_event)
 assert result[&quot;data&quot;][&quot;owner&quot;] == &quot;Alice&quot;
 assert result[&quot;data&quot;][&quot;currency&quot;] == &quot;USD&quot;
 assert result[&quot;schema_version&quot;] == 3</code></pre>
+    </div>
+</div>
 <div style="background: #ede9fe;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
 <div style="color: #5b21b6; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you handle breaking changes that can't be upcasted?</div>
 <div style="color: #5b21b6; font-size: 13px">
@@ -1567,7 +1691,13 @@ assert result[&quot;schema_version&quot;] == 3</code></pre>
 ```python<br />
 # Original event (wrong)<br />
 OrderPlaced {amount: 100}  # Should have been 110</p>
-<pre><code># Compensation event
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code># Compensation event
 OrderAmountCorrected {
 original_event_id: &quot;evt-123&quot;,
 old_amount: 100,
@@ -1576,6 +1706,8 @@ reason: &quot;Pricing bug fix&quot;
 }
 ```
 </code></pre>
+    </div>
+</div>
 </li>
 <li>
 <p><strong>Event store migration</strong> (last resort):<br />
@@ -1618,10 +1750,18 @@ reason: &quot;Pricing bug fix&quot;
 - Need read/write separation for scaling<br />
 - Traditional database on write side is sufficient<br />
 - Example: E-commerce product catalog (read-heavy, simple writes)</p>
-<pre><code>CQRS without ES:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>CQRS without ES:
 [Command] -&gt; [Write DB] -&gt; [Change Data Capture] -&gt; [Read DB]
 |                                      |
 Normalized                           Denormalized</code></pre>
+    </div>
+</div>
 <div style="background: #fdf2f8;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
 <div style="color: #9d174d; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you handle cross-aggregate queries in an Event Sourced CQRS system?</div>
 <div style="color: #831843; font-size: 13px">
@@ -1632,7 +1772,13 @@ Normalized                           Denormalized</code></pre>
 ```python<br />
 class CustomerOrdersProjection:<br />
 &quot;&quot;&quot;Combines Customer and Order aggregate data.&quot;&quot;&quot;</p>
-<pre><code>def handle(self, event: Event):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>def handle(self, event: Event):
 if event.event_type == &quot;CustomerCreated&quot;:
 self.data[event.aggregate_id] = {
 &quot;customer_name&quot;: event.data[&quot;name&quot;],
@@ -1646,6 +1792,8 @@ self.data[customer_id][&quot;orders&quot;].append({
 })
 ```
 </code></pre>
+    </div>
+</div>
 </li>
 <li>
 <p><strong>Composite ID projection</strong>: Key by combination of aggregate IDs</p>
@@ -1684,7 +1832,13 @@ self.data[customer_id][&quot;orders&quot;].append({
 </li>
 <li>
 <p><strong>Hypothesis testing</strong>: Modify event data to test fixes</p>
-<pre><code class="language-python">class DebuggingReplayer:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class DebuggingReplayer:
 def replay_until(self, aggregate_id: str, target_version: int,
 breakpoint_fn: Callable[[Event, Aggregate], bool] = None):
 aggregate = self.aggregate_class()
@@ -1702,6 +1856,8 @@ print(f&quot;Breakpoint hit at v{event.version}&quot;)
 import pdb; pdb.set_trace()
 
 return aggregate</code></pre>
+    </div>
+</div>
 </li>
 </ol>
 <div style="background: #fef2f2;padding: 16px; margin-top: 16px; border-radius: 0 8px 8px 0">
@@ -1716,7 +1872,13 @@ class OrderAggregate:<br />
 def place_order(self, data):<br />
 # State change - replayed<br />
 self.add_event(&quot;OrderPlaced&quot;, data)</p>
-<pre><code># Side effects handled separately by process manager
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code># Side effects handled separately by process manager
 class OrderProcessManager:
 def handle(self, event: Event):
 if event.event_type == &quot;OrderPlaced&quot;:
@@ -1724,6 +1886,8 @@ if not self.is_replay_mode:
 self.email_service.send_confirmation(event.data)
 ```
 </code></pre>
+    </div>
+</div>
 </li>
 <li>
 <p><strong>Event handlers track execution</strong>:<br />
@@ -1750,7 +1914,13 @@ self.email_service.send_confirmation(event.data)
 class EventSourcedAggregate:<br />
 def <strong>init</strong>(self, clock: Callable[[], datetime] = datetime.utcnow):<br />
 self.clock = clock</p>
-<pre><code>def current_time(self) -&gt; datetime:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>def current_time(self) -&gt; datetime:
 return self.clock()
 
 # During replay, inject event timestamp as clock
@@ -1758,6 +1928,8 @@ def replay_clock(event: Event):
 return lambda: event.timestamp
 ```
 </code></pre>
+    </div>
+</div>
 </li>
 <li>
 <p><strong>Time events</strong>: Model time passage as events<br />
@@ -1791,10 +1963,18 @@ customer_id: &quot;456&quot;,<br />
 items: [{sku: &quot;ABC&quot;, qty: 2, price: 25.00}],<br />
 total: 50.00<br />
 }</p>
-<pre><code># Bad - requires lookup
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code># Bad - requires lookup
 OrderPlaced {order_id: &quot;123&quot;}  # Missing context
 ```
 </code></pre>
+    </div>
+</div>
 </li>
 <li>
 <p><span style="color:#10b981"><strong>Domain language</strong></span>: Use business terms, not technical<br />
@@ -1848,7 +2028,13 @@ OrderPlaced {order_id: &quot;123&quot;}  # Missing context
 </li>
 <li>
 <p>Would require expensive lookups</p>
-<pre><code class="language-python"># Good balance
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Good balance
 OrderPlaced {
 order_id: &quot;123&quot;,
 customer_id: &quot;456&quot;,
@@ -1857,6 +2043,8 @@ items: [...],
 total: 50.00,
 currency: &quot;USD&quot;
 }</code></pre>
+    </div>
+</div>
 </li>
 </ol>
 <div style="background: #d1fae5;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
@@ -1902,7 +2090,13 @@ account = BankAccount()<br />
 account.load_from_events([<br />
 Event(event_type=&quot;AccountOpened&quot;, data={&quot;owner&quot;: &quot;Alice&quot;, &quot;initial_balance&quot;: 100})<br />
 ])</p>
-<pre><code># When
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code># When
 account.withdraw(30)
 
 # Then
@@ -1912,6 +2106,8 @@ assert pending[0].event_type == &quot;MoneyWithdrawn&quot;
 assert pending[0].data[&quot;amount&quot;] == 30
 ```
 </code></pre>
+    </div>
+</div>
 </li>
 <li>
 <p><span style="color:#10b981"><strong>Projection tests</strong></span>: Given events, projection state matches</p>
@@ -1927,7 +2123,13 @@ assert pending[0].data[&quot;amount&quot;] == 30
 <div style="color: #1d4ed8; font-weight: 600; margin-bottom: 8px">Follow-up L2: How do you write integration tests that verify eventual consistency?</div>
 <div style="color: #1e40af; font-size: 14px">
 <p><strong>Eventual Consistency Testing:</strong></p>
-<pre><code class="language-python">@pytest.fixture
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">@pytest.fixture
 def event_sourced_system():
 event_store = InMemoryEventStore()
 projection = OrderProjection()
@@ -1960,11 +2162,19 @@ projection.handle(event)
 
 # Projection should buffer/reorder correctly
 assert projection.get_order(&quot;order-1&quot;) is not None</code></pre>
+    </div>
+</div>
 <div style="background: #dbeafe;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
 <div style="color: #1e40af; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you implement property-based testing for event-sourced aggregates?</div>
 <div style="color: #1e40af; font-size: 13px">
 <p><strong>Property-Based Testing with Hypothesis:</strong></p>
-<pre><code class="language-python">from hypothesis import given, strategies as st
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">from hypothesis import given, strategies as st
 from hypothesis.stateful import RuleBasedStateMachine, rule
 
 class BankAccountStateMachine(RuleBasedStateMachine):
@@ -2003,6 +2213,8 @@ assert replayed.balance == self.account.balance
 assert replayed.version == self.account.version
 
 TestBankAccount = BankAccountStateMachine.TestCase</code></pre>
+    </div>
+</div>
 <p><strong>Properties to test:</strong><br />
 - Replay produces identical state<br />
 - Events are idempotent when applied<br />
@@ -2146,7 +2358,13 @@ TestBankAccount = BankAccountStateMachine.TestCase</code></pre>
 </div>
 <hr />
 <h2 id="related-topics">Related Topics</h2>
-<pre><code>- [[CQRS Pattern]](/topic/design-patterns/cqrs) - Separating read and write models
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- [[CQRS Pattern]](/topic/design-patterns/cqrs) - Separating read and write models
 - [[Message Queues]](/topic/system-design/message-queues) - Publishing events to subscribers
 - [[Distributed Locking]](/topic/system-design/distributed-locking) - Concurrency control
 - [[Saga Pattern]](/topic/design-patterns/saga) - Coordinating distributed transactions
@@ -2154,3 +2372,17 @@ TestBankAccount = BankAccountStateMachine.TestCase</code></pre>
 - [[Change Data Capture]](/topic/system-design/cdc) - Generating events from databases
 - [[Microservices Event Strategies]](/topic/microservices/event-strategies) - Event-driven architecture patterns
 </code></pre>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

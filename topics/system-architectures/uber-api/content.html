@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="design-the-uber-api">Design The Uber API</h1>
 <nav class="toc" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
@@ -257,7 +317,13 @@
 </div>
 <h3 id="redis-geospatial-implementation">Redis Geospatial Implementation</h3>
 <p><span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px"><strong>Trade-off</strong>: Redis stores all data in memory, making it expensive at scale (~$0.02/driver/month) but providing sub-millisecond query latency that disk-based solutions cannot match.</span></p>
-<pre><code class="language-python">class GeospatialDriverIndex:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class GeospatialDriverIndex:
     &quot;&quot;&quot;
     Redis-backed geospatial index for real-time driver lookup.
     Uses GEOADD/GEORADIUS internally, which are O(N+log(M)) where
@@ -355,6 +421,8 @@
 
         return drivers
 </code></pre>
+    </div>
+</div>
 <h3 id="interview-questions-geospatial-indexing">Interview Questions: Geospatial Indexing</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 id="level-1-why-use-redis-georadius-instead-of-postgresql-postgis">Level 1: &quot;Why use Redis GEORADIUS instead of PostgreSQL PostGIS?&quot;</h4>
@@ -378,7 +446,13 @@
 <p>&quot;Geohash has the 'edge problem' - two adjacent points might have completely different geohash prefixes if they straddle a cell boundary. The solution is neighbor cell expansion.&quot;</p>
 </blockquote>
 <p><strong>Implementation detail</strong>:</p>
-<pre><code class="language-python">def get_candidate_cells(center_geohash: str, precision: int = 6) -&gt; List[str]:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def get_candidate_cells(center_geohash: str, precision: int = 6) -&gt; List[str]:
 &quot;&quot;&quot;
 Return the target cell plus all 8 neighbors to handle boundary cases.
 
@@ -388,6 +462,8 @@ dr5ru4, dr5ru5, dr5ru6, dr5rud, dr5ruk, dr5rus, dr5rut, dr5rue
 neighbors = geohash.neighbors(center_geohash)
 return [center_geohash] + list(neighbors.values())
 </code></pre>
+    </div>
+</div>
 <p><strong>H3 handles this better</strong>: With hexagonal cells, all 6 neighbors are equidistant from the center. The k-ring function returns all cells within k steps efficiently, avoiding the corner-distance problem of square grids.</p>
 <hr />
 <h4 id="level-3-how-do-you-handle-the-case-where-a-rider-is-at-the-exact-boundary-of-two-sharded-redis-clusters">Level 3: &quot;How do you handle the case where a rider is at the exact boundary of two sharded Redis clusters?&quot;</h4>
@@ -471,7 +547,13 @@ return [center_geohash] + list(neighbors.values())
 </div>
 <h3 id="hungarian-algorithm-implementation">Hungarian Algorithm Implementation</h3>
 <p><span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px"><strong>Trade-off</strong>: The Hungarian algorithm is O(n^3) which seems expensive, but for a 500x300 matrix, it completes in ~50ms. The optimization savings far exceed the computation cost.</span></p>
-<pre><code class="language-python">from scipy.optimize import linear_sum_assignment
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">from scipy.optimize import linear_sum_assignment
 import numpy as np
 
 class BatchDispatcher:
@@ -612,6 +694,8 @@ class BatchDispatcher:
         # Normalize: 0 degrees = 0 score, 180 degrees = 1 score
         return angle_diff / 180.0
 </code></pre>
+    </div>
+</div>
 <h3 id="interview-questions-driver-matching">Interview Questions: Driver Matching</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 id="level-1-why-batch-matching-instead-of-assigning-drivers-immediately-as-requests-come-in">Level 1: &quot;Why batch matching instead of assigning drivers immediately as requests come in?&quot;</h4>
@@ -690,7 +774,13 @@ class BatchDispatcher:
 <p><strong>Acceptance rate tracking</strong>:</p>
 </li>
 </ol>
-<pre><code class="language-python">def compute_driver_score(driver_id):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def compute_driver_score(driver_id):
 recent_offers = get_last_50_offers(driver_id)
 acceptance_rate = sum(o.accepted for o in recent_offers) / len(recent_offers)
 
@@ -699,6 +789,8 @@ if acceptance_rate &lt; 0.85:
 return base_score * (1 + (0.85 - acceptance_rate) * 2)
 return base_score
 </code></pre>
+    </div>
+</div>
 <ol start="3">
 <li>
 <p><strong>Consecutive decline penalty</strong>: After 3 declines, driver is temporarily deprioritized (soft timeout).</p>
@@ -772,7 +864,13 @@ return base_score
 </div>
 </div>
 <h3 id="surge-pricing-implementation">Surge Pricing Implementation</h3>
-<pre><code class="language-python">class SurgePricingService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class SurgePricingService:
     &quot;&quot;&quot;
     Calculates and applies surge multipliers based on real-time supply/demand.
 
@@ -949,6 +1047,8 @@ return base_score
             'surge_expires_at': surge_info['expires_at']
         }
 </code></pre>
+    </div>
+</div>
 <h3 id="interview-questions-surge-pricing">Interview Questions: Surge Pricing</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 id="level-1-how-do-you-prevent-surge-from-oscillating-wildly---spiking-to-3x-then-crashing-to-1x-every-few-minutes">Level 1: &quot;How do you prevent surge from oscillating wildly - spiking to 3x then crashing to 1x every few minutes?&quot;</h4>
@@ -958,9 +1058,17 @@ return base_score
 <p>&quot;Oscillation happens when the surge calculation is too responsive. A surge spike drives riders away, supply catches up, surge drops, riders flood back - rinse and repeat. The solution is damping through exponential smoothing.&quot;</p>
 </blockquote>
 <p><strong>Smoothing formula</strong>:</p>
-<pre><code class="language-python">new_surge = alpha * calculated_surge + (1 - alpha) * previous_surge
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">new_surge = alpha * calculated_surge + (1 - alpha) * previous_surge
 # where alpha = 0.3 means 30% weight on new value
 </code></pre>
+    </div>
+</div>
 <p><strong>Additional stabilization techniques</strong>:</p>
 <ol>
 <li><strong>Minimum dwell time</strong>: Surge can't change more than 0.25x per minute</li>
@@ -990,7 +1098,13 @@ return base_score
 <p><strong>Queue management</strong>: &quot;3,500 people waiting. Your estimated wait: 12 minutes. Price locked at current 1.75x&quot;</p>
 </li>
 </ol>
-<pre><code class="language-python">class PredictiveSurge:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class PredictiveSurge:
 def check_scheduled_events(self, h3_cell: str) -&gt; Optional[float]:
 &quot;&quot;&quot;
 Query event database for scheduled high-demand events.
@@ -1016,6 +1130,8 @@ current_supply = self.get_supply(h3_cell)
 # Return predicted ratio, capped
 return min(total_expected_riders / max(current_supply, 10), 5.0)
 </code></pre>
+    </div>
+</div>
 <hr />
 <h4 id="level-3-regulators-say-surge-pricing-is-exploitative-how-do-you-design-surge-thats-defensible-from-ethical-and-regulatory-perspectives">Level 3: &quot;Regulators say surge pricing is exploitative. How do you design surge that's defensible from ethical and regulatory perspectives?&quot;</h4>
 <p><strong>What they're probing</strong>: Systems thinking beyond pure engineering - ethics, regulation, stakeholder management.</p>
@@ -1045,7 +1161,13 @@ return min(total_expected_riders / max(current_supply, 10), 5.0)
 </li>
 </ol>
 <p><strong>Audit trail for regulators</strong>:</p>
-<pre><code class="language-python">class SurgeAuditLog:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class SurgeAuditLog:
 def log_surge_event(self, cell, old_surge, new_surge, demand, supply):
 &quot;&quot;&quot;
 Every surge change is logged with full context for regulatory audits.
@@ -1062,6 +1184,8 @@ self.db.insert({
 'event_id': self.get_active_event(cell)
 })
 </code></pre>
+    </div>
+</div>
 <p><span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px"><strong>Design choice</strong>: Surge is applied to driver-controllable components (distance, time) but not fixed fees (booking fee, tolls). This ensures drivers benefit from surge, aligning incentives.</span></p>
 </div>
 <p>See also: <a href="/topics/economics/market-mechanisms">[Market Mechanisms]</a>, <a href="/topics/system-design/dynamic-pricing">[Dynamic Pricing]</a></p>
@@ -1121,7 +1245,13 @@ self.db.insert({
 </div>
 </div>
 <h3 id="eta-prediction-service">ETA Prediction Service</h3>
-<pre><code class="language-python">class ETAService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class ETAService:
     &quot;&quot;&quot;
     Multi-layer ETA prediction combining real-time and historical data.
 
@@ -1274,6 +1404,8 @@ self.db.insert({
         # Cache for 20 minutes (overlaps with next bucket for smoothness)
         self.redis.setex(cache_key, 1200, eta)
 </code></pre>
+    </div>
+</div>
 <h3 id="interview-questions-eta-calculation">Interview Questions: ETA Calculation</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 id="level-1-why-not-just-use-google-maps-api-for-all-eta-calculations">Level 1: &quot;Why not just use Google Maps API for all ETA calculations?&quot;</h4>
@@ -1310,7 +1442,13 @@ self.db.insert({
 <li><strong>Directional bias</strong>: More willing to show increase (sets expectation) than decrease</li>
 <li><strong>Event-driven recalculation</strong>: Immediate update if driver deviates from route</li>
 </ol>
-<pre><code class="language-python">def should_update_displayed_eta(current_display: int, new_calculation: int) -&gt; bool:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def should_update_displayed_eta(current_display: int, new_calculation: int) -&gt; bool:
 diff = new_calculation - current_display
 
 # Always update if significant increase (&gt;2 min)
@@ -1324,6 +1462,8 @@ return True
 # Otherwise, keep stable display
 return False
 </code></pre>
+    </div>
+</div>
 <p><strong>Edge case - traffic jam</strong>:</p>
 <ul>
 <li>If ETA increases by &gt;10 minutes suddenly, show notification: &quot;Heavy traffic ahead. New ETA: X minutes&quot;</li>
@@ -1346,8 +1486,16 @@ return False
 <ol>
 <li><strong>Inverse propensity weighting</strong>: Upweight samples from under-represented routes</li>
 </ol>
-<pre><code class="language-python">weight = 1.0 / prediction_to_booking_ratio(route)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">weight = 1.0 / prediction_to_booking_ratio(route)
 </code></pre>
+    </div>
+</div>
 <ol start="2">
 <li>
 <p><strong>Simulated trips</strong>: Occasionally route empty vehicles on under-sampled routes to get ground truth</p>
@@ -1434,7 +1582,13 @@ return False
 </div>
 </div>
 <h3 id="event-sourced-implementation">Event Sourced Implementation</h3>
-<pre><code class="language-python">from enum import Enum
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">from enum import Enum
 from dataclasses import dataclass
 from typing import Optional, List
 import time
@@ -1676,6 +1830,8 @@ class RideSaga:
 
             raise
 </code></pre>
+    </div>
+</div>
 <h3 id="interview-questions-ride-state-machine">Interview Questions: Ride State Machine</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 id="level-1-why-use-event-sourcing-instead-of-just-updating-the-ride-status-in-a-database">Level 1: &quot;Why use event sourcing instead of just updating the ride status in a database?&quot;</h4>
@@ -1708,7 +1864,13 @@ class RideSaga:
 <p>&quot;Driver connectivity loss is a common failure mode. The state machine must distinguish between 'driver offline' and 'driver crashed' while keeping the trip functional.&quot;</p>
 </blockquote>
 <p><strong>Detection mechanism</strong>:</p>
-<pre><code class="language-python">def check_driver_heartbeat(trip_id: str):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def check_driver_heartbeat(trip_id: str):
 &quot;&quot;&quot;
 Driver app sends heartbeat every 4 seconds during active trip.
 After 3 missed heartbeats (12 seconds), mark as 'connection_lost'.
@@ -1720,6 +1882,8 @@ if seconds_since &gt; 12:
 return 'connection_lost'
 return 'connected'
 </code></pre>
+    </div>
+</div>
 <p><strong>Recovery flow</strong>:</p>
 <ol>
 <li>
@@ -1759,7 +1923,13 @@ return 'connected'
 <li>Lock bug allows both to proceed</li>
 </ul>
 <p><strong>Detection</strong>:</p>
-<pre><code class="language-python">def detect_conflicting_events(ride_id: str) -&gt; List[RideEvent]:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def detect_conflicting_events(ride_id: str) -&gt; List[RideEvent]:
 events = event_store.get_events(ride_id)
 
 # Find events within 5-second window with conflicting states
@@ -1769,6 +1939,8 @@ if len(terminal_events) &gt; 1:
 return terminal_events
 return []
 </code></pre>
+    </div>
+</div>
 <p><strong>Resolution policy</strong> (business rule, not technical):</p>
 <ol>
 <li><strong>Timestamp wins</strong>: Earlier cancel is &quot;real&quot;, later is ignored</li>
@@ -1777,7 +1949,13 @@ return []
 <li><strong>Async reconciliation</strong>: Background job detects conflicts, creates <code>reconciliation_event</code></li>
 </ol>
 <p><strong>Implementation</strong>:</p>
-<pre><code class="language-python">def reconcile_conflicting_cancels(events: List[RideEvent]) -&gt; RideEvent:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def reconcile_conflicting_cancels(events: List[RideEvent]) -&gt; RideEvent:
 # Sort by timestamp
 sorted_events = sorted(events, key=lambda e: e.timestamp)
 winner = sorted_events[0]
@@ -1799,6 +1977,8 @@ metadata={
 }
 )
 </code></pre>
+    </div>
+</div>
 <p><span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px"><strong>Design choice</strong>: Accept that race conditions will happen. Design for detection and resolution, not prevention. This is more robust than trying to build a &quot;perfect&quot; distributed lock.</span></p>
 </div>
 <p>See also: <a href="/topics/distributed-systems/event-sourcing">[Event Sourcing]</a>, <a href="/topics/distributed-systems/saga-pattern">[Saga Pattern]</a>, <a href="/topics/distributed-systems/distributed-locking">[Distributed Locking]</a></p>
@@ -1927,28 +2107,52 @@ metadata={
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px">
 <h3 id="phase-1-mvp">Phase 1: College Town MVP ($300/month)</h3>
 <p><span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px"><strong>Assumption</strong>: 50 drivers, 500 rides/day, single city</span></p>
-<pre><code>- **Infrastructure**: DigitalOcean droplet, managed PostgreSQL+PostGIS
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- **Infrastructure**: DigitalOcean droplet, managed PostgreSQL+PostGIS
 - **Architecture**: Monolithic Django/Rails app
 - **Matching**: Simple nearest-available driver
 - **Maps**: Google Maps API (~$200/month)
 - **Real-time**: HTTP polling every 5 seconds
 </code></pre>
+    </div>
+</div>
 <h3 id="phase-2-regional">Phase 2: Regional Player ($50K/month)</h3>
 <p><span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px"><strong>Assumption</strong>: 5K drivers, 50K rides/day, 5 cities</span></p>
-<pre><code>- **Infrastructure**: AWS with Redis ElastiCache, Aurora PostgreSQL
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- **Infrastructure**: AWS with Redis ElastiCache, Aurora PostgreSQL
 - **Architecture**: Beginning microservices (Location, Trip, Payment)
 - **Matching**: Batch matching with weighted scoring
 - **Maps**: Mix of Google + OSRM for bulk calculations
 - **Real-time**: WebSockets for active trips
 </code></pre>
+    </div>
+</div>
 <h3 id="phase-3-uber-scale">Phase 3: Uber Scale ($10M+/month)</h3>
 <p><span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px"><strong>Assumption</strong>: 5M drivers, 20M rides/day, 1000+ cities</span></p>
-<pre><code>- **Infrastructure**: Multi-region with geographic sharding
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- **Infrastructure**: Multi-region with geographic sharding
 - **Architecture**: Full microservices, Ringpop for stateful services
 - **Matching**: Hungarian algorithm + ML optimization
 - **Maps**: Fully self-hosted with ML-enhanced ETA
 - **Real-time**: Edge PoPs with WebSocket termination
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -2315,3 +2519,15 @@ Times Square, airports, stadiums create traffic spikes:
 <li><a href="/topics/algorithms/hungarian-algorithm">[Hungarian Algorithm]</a> - Optimal assignment problem</li>
 <li><a href="/topics/algorithms/geohash">[Geohash]</a> - Spatial indexing fundamentals</li>
 </ul>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

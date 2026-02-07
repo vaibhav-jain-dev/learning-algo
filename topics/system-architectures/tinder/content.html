@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="design-tinder-location-based-dating-platform">Design Tinder: Location-Based Dating Platform</h1>
 <nav style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
@@ -208,7 +268,13 @@ At 1000 concurrent requests: 150M calculations/second. Latency: ~500ms. Unaccept
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
 <h4 id="strategy-1-geohashing">Strategy 1: Geohashing</h4>
 <p>Geohashing converts 2D coordinates into a 1D string by interleaving latitude and longitude bits. Adjacent cells share common prefixes, enabling efficient range queries.</p>
-<pre><code>Manhattan coordinates: (40.7589, -73.9851)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>Manhattan coordinates: (40.7589, -73.9851)
 Geohash (precision 7): &quot;dr5ru7c&quot;
 
 Precision levels:
@@ -217,6 +283,8 @@ Precision levels:
 - 6 chars: ~1.2km x 610m cell
 - 7 chars: ~153m x 153m cell
 </code></pre>
+    </div>
+</div>
 <div style="background: rgba(56, 139, 253, 0.1);border-radius: 8px; padding: 12px; margin: 12px 0">
 <div style="color: #58a6ff; font-weight: bold">Key Insight</div>
 <div style="color: #1e293b; font-size: 13px">
@@ -227,7 +295,13 @@ For a 10-mile radius search, we use precision 5 (4.9km cells). We query the user
 <p><strong>Edge Case - Polar Distortion</strong>: Geohash cells distort near poles (elongate meridionally). For apps targeting polar regions, use <a href="/topic/geospatial/s2-geometry">[S2 Geometry]</a> or <a href="/topic/geospatial/h3-indexing">[H3]</a>.</p>
 <h4 id="strategy-2-r-tree-index-postgis">Strategy 2: R-Tree Index (PostGIS)</h4>
 <p>R-Trees organize spatial data in hierarchical bounding rectangles. PostGIS implements this via GIST indexes.</p>
-<pre><code class="language-sql">-- Create spatial index
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Sql</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-sql">-- Create spatial index
 CREATE INDEX idx_users_location ON users
 USING GIST(location);
 
@@ -245,10 +319,18 @@ AND gender = 'female' AND age BETWEEN 25 AND 35
 ORDER BY location &lt;-&gt; ST_SetSRID(ST_MakePoint(-73.9851, 40.7589), 4326)
 LIMIT 1000;
 </code></pre>
+    </div>
+</div>
 <p><strong>Performance</strong>: PostGIS handles 100K users with ~15ms query time using proper indexing. No geohashing complexity needed until 500K+ users per region.</p>
 <h4 id="strategy-3-redis-geo-commands">Strategy 3: Redis Geo Commands</h4>
 <p>Redis provides native geospatial indexing using sorted sets with geohash-encoded scores.</p>
-<pre><code class="language-python"># Add user locations
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Add user locations
 redis.geoadd(&quot;user_locations&quot;,
              -73.9851, 40.7589, &quot;user:12345&quot;,
              -73.9875, 40.7612, &quot;user:67890&quot;)
@@ -264,6 +346,8 @@ nearby = redis.georadius(
 )
 # Returns: [(&quot;user:12345&quot;, 0.0), (&quot;user:67890&quot;, 0.15), ...]
 </code></pre>
+    </div>
+</div>
 <p><strong>Trade-off</strong>: Redis Geo is extremely fast (~3ms for 100K users) but lacks complex filtering. You get user IDs, then must filter by preferences in application code.</p>
 </div>
 <h3 id="location-update-architecture-location-update-architecture">Location Update Architecture {#location-update-architecture}</h3>
@@ -303,7 +387,13 @@ nearby = redis.georadius(
 <li><strong>Threshold Binning</strong>: &quot;&lt; 1 mile&quot;, &quot;1-5 miles&quot;, &quot;5-10 miles&quot;, &quot;10+ miles&quot;</li>
 <li><strong>API Response Sanitization</strong>: Never return lat/lng in API responses</li>
 </ol>
-<pre><code class="language-python">def get_display_distance(actual_distance_km):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def get_display_distance(actual_distance_km):
     &quot;&quot;&quot;Convert precise distance to privacy-safe display string.&quot;&quot;&quot;
     if actual_distance_km &lt; 1.6:  # 1 mile
         return &quot;Less than a mile away&quot;
@@ -314,6 +404,8 @@ nearby = redis.georadius(
     else:
         return f&quot;{round(actual_distance_km / 1.6 / 5) * 5}+ miles away&quot;  # Round to nearest 5
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 </div>
@@ -398,7 +490,13 @@ nearby = redis.georadius(
 </div>
 <div style="color: #1e293b; font-size: 13px; line-height: 1.7">
 <p><strong>Scoring Formula:</strong></p>
-<pre><code>score = w1 * elo_compatibility
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>score = w1 * elo_compatibility
       + w2 * recency_boost
       + w3 * activity_score
       + w4 * mutual_interest_score
@@ -407,6 +505,8 @@ nearby = redis.georadius(
       + w7 * inverse_distance
       + w8 * they_liked_you_boost
 </code></pre>
+    </div>
+</div>
 <p><strong>Weight Calibration:</strong> A/B tested continuously. Current production weights are proprietary, but <code>elo_compatibility</code> and <code>they_liked_you_boost</code> typically dominate (w1, w8 &gt; 0.25).</p>
 </div>
 </div>
@@ -454,7 +554,13 @@ Users have varying levels of "desirability" that can be inferred from swipe patt
 </div>
 <p><strong>How ELO Works in Dating Apps:</strong></p>
 <p>Borrowed from chess rating systems, ELO assigns each user a score (typically 1000-2500 range) that represents their relative attractiveness on the platform.</p>
-<pre><code class="language-python">class ELOSystem:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class ELOSystem:
     K_FACTOR = 32  # How much a single interaction affects score
 
     def calculate_expected_score(self, rating_a, rating_b):
@@ -478,6 +584,8 @@ Users have varying levels of "desirability" that can be inferred from swipe patt
 
         return new_likee_rating
 </code></pre>
+    </div>
+</div>
 <p><strong>Why ELO Matters - Real Scenario:</strong></p>
 <blockquote>
 <p>Without ELO: Sarah (very attractive) gets 5,000 likes/day. She can only review 100 profiles. 4,900 users get no response - terrible experience.</p>
@@ -571,7 +679,13 @@ Run ML models on uploaded photos to assess quality (lighting, resolution, face v
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h3 id="swipe-data-model-swipe-data-model">Swipe Data Model {#swipe-data-model}</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
-<pre><code class="language-python"># Swipe event schema
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Swipe event schema
 {
     &quot;swipe_id&quot;: &quot;uuid&quot;,
     &quot;swiper_id&quot;: &quot;user_123&quot;,
@@ -586,6 +700,8 @@ Run ML models on uploaded photos to assess quality (lighting, resolution, face v
     }
 }
 </code></pre>
+    </div>
+</div>
 <p><strong>Why Store Context?</strong> This metadata powers ML models for recommendation improvement. A right-swipe after 8 seconds of viewing all 6 photos is a stronger positive signal than a 0.5-second right-swipe.</p>
 </div>
 <h3 id="storage-architecture-for-swipes-swipe-storage">Storage Architecture for Swipes {#swipe-storage}</h3>
@@ -593,7 +709,13 @@ Run ML models on uploaded photos to assess quality (lighting, resolution, face v
 <p>At 2B+ swipes/day, storage strategy is critical.</p>
 <div style="background: #f1f5f9;border-radius: 8px; padding: 16px; margin: 16px 0">
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px">Cassandra Schema for Swipes</div>
-<pre><code class="language-sql">-- Partition by swiper, cluster by timestamp for efficient &quot;my swipe history&quot;
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Sql</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-sql">-- Partition by swiper, cluster by timestamp for efficient &quot;my swipe history&quot;
 CREATE TABLE swipes_by_swiper (
     swiper_id UUID,
     swiped_at TIMESTAMP,
@@ -620,6 +742,8 @@ CREATE TABLE likes (
     PRIMARY KEY ((liker_id), liked_id)
 );
 </code></pre>
+    </div>
+</div>
 </div>
 <p><strong>Design Decision - TTL on Swipes:</strong></p>
 <div style="background: rgba(56, 139, 253, 0.1);border-radius: 8px; padding: 12px; margin: 12px 0">
@@ -634,7 +758,13 @@ Old swipes (> 6 months) have diminishing value. User preferences change, people'
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
 <p><strong>The Problem</strong>: When generating recommendations, we must exclude profiles the user already swiped on. Checking against 20,000+ swipe records per user is slow.</p>
 <p><strong>Solution</strong>: <a href="/topic/data-structures/bloom-filter">[Bloom Filters]</a> - probabilistic data structures for set membership.</p>
-<pre><code class="language-python">import redis
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import redis
 
 class SwipeTracker:
     def __init__(self, redis_client):
@@ -685,6 +815,8 @@ class SwipeTracker:
             if not swiped
         ]
 </code></pre>
+    </div>
+</div>
 <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0">
 <div style="background: #f1f5f9;border-radius: 8px; padding: 16px; flex: 1; min-width: 200px">
 <div style="color: #3fb950; font-weight: bold; margin-bottom: 8px">Bloom Filter Pros</div>
@@ -708,7 +840,13 @@ class SwipeTracker:
 <h3 id="rate-limiting-swipes-rate-limiting">Rate Limiting Swipes {#rate-limiting}</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
 <p><strong>Business Requirement</strong>: Free users get 100 right-swipes per 12-hour window. Premium users: unlimited. Super Likes: 1/day free, 5/day premium.</p>
-<pre><code class="language-python">class SwipeRateLimiter:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class SwipeRateLimiter:
     def __init__(self, redis_client):
         self.redis = redis_client
 
@@ -764,6 +902,8 @@ class SwipeTracker:
         # Left swipes always allowed
         return True, {}
 </code></pre>
+    </div>
+</div>
 <div style="background: rgba(240, 136, 62, 0.15);border-radius: 8px; padding: 12px; margin: 12px 0">
 <div style="color: #f0883e; font-weight: bold">Trade-off: Strictness vs. User Experience</div>
 <div style="color: #1e293b; font-size: 13px">
@@ -855,7 +995,13 @@ At 9:47:32.150pm, Sarah and Mike both swipe right on each other from different p
 </div>
 <h3 id="solution-1-deterministic-distributed-locking-distributed-locking">Solution 1: Deterministic Distributed Locking {#distributed-locking}</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
-<pre><code class="language-python">import redis
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import redis
 from contextlib import contextmanager
 
 class MatchDetector:
@@ -931,6 +1077,8 @@ class MatchDetector:
 
         return match_id
 </code></pre>
+    </div>
+</div>
 <div style="background: rgba(56, 139, 253, 0.1);border-radius: 8px; padding: 12px; margin: 12px 0">
 <div style="color: #58a6ff; font-weight: bold">Key Insight: Deterministic Lock Key</div>
 <div style="color: #1e293b; font-size: 13px">
@@ -941,7 +1089,13 @@ By sorting user IDs, we ensure that regardless of who swipes first (Sarah->Mike 
 <h3 id="solution-2-event-sourcing-with-asynchronous-reconciliation-event-sourcing">Solution 2: Event Sourcing with Asynchronous Reconciliation {#event-sourcing}</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
 <p>For extreme scale (&gt;100K swipes/second), synchronous locking creates contention. Alternative: eventually consistent match detection.</p>
-<pre><code class="language-python">class AsyncMatchDetector:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class AsyncMatchDetector:
     &quot;&quot;&quot;
     Event-sourced approach: swipes are immutable events.
     A stream processor detects matches asynchronously.
@@ -991,6 +1145,8 @@ By sorting user IDs, we ensure that regardless of who swipes first (Sarah->Mike 
                 self.create_match(event[&quot;swiper_id&quot;], event[&quot;swiped_id&quot;])
                 del state_store[pair_key]  # Clean up
 </code></pre>
+    </div>
+</div>
 <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0">
 <div style="background: #f1f5f9;border-radius: 8px; padding: 16px; flex: 1; min-width: 200px">
 <div style="color: #3fb950; font-weight: bold; margin-bottom: 8px">Pros</div>
@@ -1013,7 +1169,13 @@ By sorting user IDs, we ensure that regardless of who swipes first (Sarah->Mike 
 <h3 id="background-reconciliation-background-reconciliation">Background Reconciliation {#background-reconciliation}</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
 <p>Even with good match detection, edge cases exist. A nightly job catches orphaned mutual likes:</p>
-<pre><code class="language-python">def reconcile_orphaned_matches():
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def reconcile_orphaned_matches():
     &quot;&quot;&quot;
     Find pairs where both users liked each other but no match exists.
     Run nightly during low-traffic hours.
@@ -1037,6 +1199,8 @@ By sorting user IDs, we ensure that regardless of who swipes first (Sarah->Mike 
 
     metrics.record(&quot;orphaned_matches_reconciled&quot;, len(orphaned))
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <h3 id="interview-questions-match-detection-match-interview-questions">Interview Questions: Match Detection {#match-interview-questions}</h3>
@@ -1151,7 +1315,13 @@ When User A on Server 1 sends a message to User B on Server 3, the message is pu
 </div>
 <h3 id="message-data-model-message-data-model">Message Data Model {#message-data-model}</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
-<pre><code class="language-python"># Message schema
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Message schema
 {
     &quot;message_id&quot;: &quot;uuid&quot;,
     &quot;conversation_id&quot;: &quot;match_123_456&quot;,  # Derived from match
@@ -1168,8 +1338,16 @@ When User A on Server 1 sends a message to User B on Server 3, the message is pu
     &quot;status&quot;: &quot;sent&quot;       # sent, delivered, read
 }
 </code></pre>
+    </div>
+</div>
 <p><strong>Cassandra Schema:</strong></p>
-<pre><code class="language-sql">-- Messages by conversation (for loading chat history)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Sql</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-sql">-- Messages by conversation (for loading chat history)
 CREATE TABLE messages_by_conversation (
     conversation_id TEXT,
     sent_at TIMESTAMP,
@@ -1191,10 +1369,18 @@ CREATE TABLE conversations_by_user (
     PRIMARY KEY ((user_id), last_message_at, conversation_id)
 ) WITH CLUSTERING ORDER BY (last_message_at DESC);
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="websocket-connection-management-websocket-management">WebSocket Connection Management {#websocket-management}</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
-<pre><code class="language-python">class ConnectionManager:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class ConnectionManager:
     &quot;&quot;&quot;
     Tracks which WebSocket server handles which user.
     Enables cross-server message delivery via Redis Pub/Sub.
@@ -1263,6 +1449,8 @@ CREATE TABLE conversations_by_user (
 
         return message
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="message-delivery-guarantees-message-delivery">Message Delivery Guarantees {#message-delivery}</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
@@ -1293,7 +1481,13 @@ If recipient is offline (no WebSocket, no Redis entry), message is queued and a 
 </div>
 </div>
 </div>
-<pre><code class="language-python">async def handle_message_ack(self, user_id: str, message_ids: list, ack_type: str):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">async def handle_message_ack(self, user_id: str, message_ids: list, ack_type: str):
     &quot;&quot;&quot;
     Handle delivery/read acknowledgments from client.
     &quot;&quot;&quot;
@@ -1330,6 +1524,8 @@ If recipient is offline (no WebSocket, no Redis entry), message is queued and a 
         else:
             self.redis.publish(f&quot;user_messages:{sender_id}&quot;, json.dumps(status_update))
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="typing-indicators-typing-indicators">Typing Indicators {#typing-indicators}</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
@@ -1339,7 +1535,13 @@ If recipient is offline (no WebSocket, no Redis entry), message is queued and a 
 Typing indicators are ephemeral - we don't persist them. They flow directly through Redis Pub/Sub with short TTL. If lost, the worst case is the other person doesn't see "typing..." for a moment.
 </div>
 </div>
-<pre><code class="language-python">async def send_typing_indicator(self, sender_id: str, recipient_id: str, is_typing: bool):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">async def send_typing_indicator(self, sender_id: str, recipient_id: str, is_typing: bool):
     &quot;&quot;&quot;
     Send typing indicator. Ephemeral - not persisted.
     &quot;&quot;&quot;
@@ -1363,6 +1565,8 @@ Typing indicators are ephemeral - we don't persist them. They flow directly thro
     else:
         self.redis.delete(f&quot;typing:{sender_id}:{recipient_id}&quot;)
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="message-moderation-message-moderation">Message Moderation {#message-moderation}</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
@@ -1387,7 +1591,13 @@ Dating apps are targets for harassment, scams, and inappropriate content. All me
 <p><strong>Progressive Enforcement</strong>: Warning -&gt; Shadow-ban (messages sent but not delivered) -&gt; Account suspension.</p>
 </li>
 </ol>
-<pre><code class="language-python">class MessageModerator:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class MessageModerator:
     async def pre_send_check(self, message: dict) -&gt; tuple[bool, str]:
         &quot;&quot;&quot;
         Quick pre-send safety check.
@@ -1414,6 +1624,8 @@ Dating apps are targets for harassment, scams, and inappropriate content. All me
         # Queue for analysis pipeline
         await self.kafka.produce(&quot;messages_for_analysis&quot;, message)
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <h3 id="interview-questions-real-time-messaging-messaging-interview-questions">Interview Questions: Real-Time Messaging {#messaging-interview-questions}</h3>
@@ -1992,3 +2204,15 @@ User receives push, opens app before we can deliver via WebSocket. The app sync 
 </ul>
 </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

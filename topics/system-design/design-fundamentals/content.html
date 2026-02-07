@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="system-design-fundamentals">System Design Fundamentals</h1>
 <h2 id="overview">Overview</h2>
@@ -65,12 +125,20 @@
 <h2 id="why-this-matters">Why This Matters</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
 <div style="color: #1e293b; font-size: 15px; line-height: 1.9">
-<pre><code>**For Senior Engineering Roles:** System design interviews are the primary differentiator between L4/L5 and L6+ roles at top companies. They evaluate your ability to navigate ambiguity, reason about trade-offs, and communicate complex ideas clearly.
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**For Senior Engineering Roles:** System design interviews are the primary differentiator between L4/L5 and L6+ roles at top companies. They evaluate your ability to navigate ambiguity, reason about trade-offs, and communicate complex ideas clearly.
 
 **For Production Systems:** Every major outage traces back to a fundamental design decision. Understanding these principles prevents billion-dollar mistakes and builds systems that serve millions without human intervention.
 
 **For Your Career:** Engineers who understand system design can evaluate vendor claims, challenge architectural decisions, and propose solutions that account for operational reality rather than theoretical ideals.
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -285,7 +353,13 @@
 </div>
 <p><strong>Circuit Breakers:</strong></p>
 <p>Prevent cascade failures by detecting when a downstream service is unhealthy and failing fast rather than timing out repeatedly:</p>
-<pre><code class="language-python">from enum import Enum
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">from enum import Enum
 from threading import Lock
 import time
 from typing import Callable, TypeVar, Any
@@ -417,8 +491,16 @@ class CircuitOpenError(Exception):
     &quot;&quot;&quot;Raised when circuit breaker is open.&quot;&quot;&quot;
     pass
 </code></pre>
+    </div>
+</div>
 <p><strong>Retries with Exponential Backoff:</strong></p>
-<pre><code class="language-python">import random
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import random
 import time
 from typing import Callable, TypeVar, Type, Tuple
 from functools import wraps
@@ -490,6 +572,8 @@ def call_external_api(endpoint: str) -&gt; dict:
     # Implementation
     pass
 </code></pre>
+    </div>
+</div>
 <h3 id="24-availability-calculations">2.4 Availability Calculations</h3>
 <p>Availability is the percentage of time a system is operational. Often expressed as &quot;nines&quot;:</p>
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -551,7 +635,13 @@ def call_external_api(endpoint: str) -&gt; dict:
 </div>
 </div>
 <p><strong>Example Calculation:</strong></p>
-<pre><code>Scenario: Web service with database and cache
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>Scenario: Web service with database and cache
 
 Components:
 - Load balancer: 99.99%
@@ -567,6 +657,8 @@ The database is the bottleneck. Solutions:
 - Read replicas to reduce load on primary
 - Async replication for non-critical reads
 </code></pre>
+    </div>
+</div>
 <h3 id="25-interview-questions-reliability-3-level-deep">2.5 Interview Questions: Reliability (3-Level Deep)</h3>
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
 <h4 style="color: #166534; margin: 0 0 20px 0; font-size: 16px; font-weight: 700">LEVEL 1: Foundation</h4>
@@ -892,7 +984,13 @@ The database is the bottleneck. Solutions:
 </ol>
 <h3 id="43-worked-examples">4.3 Worked Examples</h3>
 <p><strong>Example 1: Twitter-Scale Estimation</strong></p>
-<pre><code>GIVEN:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>GIVEN:
 - 500M total users
 - 200M daily active users (DAU)
 - Average user reads 200 tweets/day
@@ -940,8 +1038,16 @@ CONCLUSIONS:
 - Write path is relatively simple
 - Fan-out on read vs write is key architecture decision
 </code></pre>
+    </div>
+</div>
 <p><strong>Example 2: URL Shortener</strong></p>
-<pre><code>GIVEN:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>GIVEN:
 - 100M URLs shortened per month
 - 10B redirects per month (100:1 read ratio)
 - URL mapping: ~500 bytes (short code, long URL, metadata)
@@ -962,6 +1068,8 @@ But: need low latency (&lt;10ms) for redirects
 Solution: Redis cache for hot URLs (80-20 rule: 20% of URLs get 80% traffic)
 Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 </code></pre>
+    </div>
+</div>
 <h3 id="44-common-estimation-patterns">4.4 Common Estimation Patterns</h3>
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
 <h4 style="color: #0f172a; margin: 0 0 24px 0; text-align: center; font-size: 18px; font-weight: 700">ESTIMATION HEURISTICS</h4>
@@ -1149,7 +1257,13 @@ Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 24px 0">
 <h4 style="color: #dc2626; margin: 0 0 16px 0">AWS S3 Outage (2017): Blast Radius and Dependencies</h4>
 <div style="color: #0f172a; font-size: 14px; line-height: 1.8">
-<pre><code>**What Happened:** During routine debugging, an engineer ran a command intending to remove a small number of servers. A typo caused removal of a larger set of servers supporting critical S3 subsystems in US-EAST-1.
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**What Happened:** During routine debugging, an engineer ran a command intending to remove a small number of servers. A typo caused removal of a larger set of servers supporting critical S3 subsystems in US-EAST-1.
 
 **Why It Cascaded:**
 - The billing system depended on S3. Without it, AWS couldn't launch new instances to recover.
@@ -1162,12 +1276,20 @@ Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 - **Human error mitigation:** Dangerous commands should have confirmation steps, blast radius limits, and gradual rollout.
 - **Recovery path independence:** Your recovery mechanism shouldn't depend on the system that's broken.
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <div style="background: #fffbeb; border-radius: 12px; padding: 24px; margin: 24px 0">
 <h4 style="color: #b45309; margin: 0 0 16px 0">GitHub Database Incident (2018): Failover Complexity</h4>
 <div style="color: #0f172a; font-size: 14px; line-height: 1.8">
-<pre><code>**What Happened:** Network partition between US East and primary database caused a 24-hour incident with data loss.
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**What Happened:** Network partition between US East and primary database caused a 24-hour incident with data loss.
 
 **The Complexity:**
 - Automated failover promoted a replica that was 40 seconds behind.
@@ -1181,12 +1303,20 @@ Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 - **Recovery procedures:** Runbooks for complex recovery scenarios need regular testing. GitHub hadn't tested this exact scenario.
 - **Multi-region architecture:** True multi-region with synchronous replication is hard. Most &quot;multi-region&quot; setups are really &quot;one region with disaster recovery.&quot;
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 24px 0">
 <h4 style="color: #16a34a; margin: 0 0 16px 0">Cloudflare Outage (2019): Configuration as Code</h4>
 <div style="color: #0f172a; font-size: 14px; line-height: 1.8">
-<pre><code>**What Happened:** A regex in a WAF rule caused CPU exhaustion on every Cloudflare edge server simultaneously.
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**What Happened:** A regex in a WAF rule caused CPU exhaustion on every Cloudflare edge server simultaneously.
 
 **The Details:**
 - Rule: `(?:(?:\&quot;|'|\]|\}|\\|\d|(?:nan|infinity|true|false|null|undefined|symbol|math)|\`|\-|\+)+[)]*;?((?:\s|-|~|!|{}|\|\||\+)*.*(?:.*=.*)))`
@@ -1201,6 +1331,8 @@ Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 - **Regex dangers:** Regex can have non-obvious O(2^n) behavior. Use static analysis tools or timeout mechanisms.
 - **Kill switches:** The ability to quickly disable a feature (in this case, the specific WAF rule) is critical.
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -1247,3 +1379,15 @@ Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 <li><a href="/topic/system-design/cap-theorem">[cap-theorem]</a> - Consistency, Availability, Partition tolerance</li>
 <li><a href="/topic/system-design/event-sourcing">[event-sourcing]</a> - Event-driven architecture pattern</li>
 </ul>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

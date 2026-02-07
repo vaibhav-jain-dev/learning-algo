@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="distributed-locking">Distributed Locking</h1>
 <h2 id="overview">Overview</h2>
@@ -473,7 +533,13 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
 <hr />
 <h2 id="implementation">Implementation</h2>
 <h3 id="redis-based-distributed-lock-with-fencing">Redis-Based Distributed Lock with Fencing</h3>
-<pre><code class="language-python">    import redis
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">    import redis
     import uuid
     import time
     from typing import Optional
@@ -643,8 +709,16 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
     class StaleFenceTokenError(Exception):
     &quot;&quot;&quot;Raised when a write is attempted with a stale fencing token.&quot;&quot;&quot;
     pass</code></pre>
+    </div>
+</div>
 <h3 id="redlock-implementation">Redlock Implementation</h3>
-<pre><code class="language-python">    import redis
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">    import redis
     import uuid
     import time
     from typing import List, Optional
@@ -745,8 +819,16 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
     return 0
     elapsed = (time.time() - self.acquired_at) * 1000
     return max(0, self.ttl_ms - elapsed)</code></pre>
+    </div>
+</div>
 <h3 id="zookeeper-lock-implementation">ZooKeeper Lock Implementation</h3>
-<pre><code class="language-python">    from kazoo.client import KazooClient
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">    from kazoo.client import KazooClient
     from kazoo.recipe.lock import Lock
     from typing import Optional
     import threading
@@ -840,8 +922,16 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
     return result
     finally:
     lock.close()</code></pre>
+    </div>
+</div>
 <h3 id="etcd-lock-with-lease-management">etcd Lock with Lease Management</h3>
-<pre><code class="language-python">    import etcd3
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">    import etcd3
     from typing import Optional
     import threading
     import time
@@ -968,6 +1058,8 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
 
     def __exit__(self, exc_type, exc_val, exc_tb):
     self.release()</code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="real-life-failure-story">Real-Life Failure Story</h2>
 <h3 id="the-github-outage-2012">The GitHub Outage (2012)</h3>
@@ -1040,10 +1132,18 @@ Redlock acquires locks on N independent Redis masters (typically 5), requiring a
 <div style="background: rgba(99, 102, 241, 0.1);padding: 12px; margin: 12px 0">
 <p><strong>Level 3 Follow-up: Given these criticisms, what's Redlock actually good for?</strong></p>
 <p>Redlock is appropriate for <span style="color: #10b981; font-weight: 600">efficiency use cases</span> where occasional duplicate processing is tolerable:</p>
-<pre><code>        - **Cron job deduplication**: Preventing a scheduled job from running on multiple servers (if it runs twice occasionally, no disaster)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>        - **Cron job deduplication**: Preventing a scheduled job from running on multiple servers (if it runs twice occasionally, no disaster)
         - **Cache warming**: Ensuring only one server rebuilds a cache entry
         - **Rate limiting**: Approximate global rate limits where occasional over-limit is acceptable
 </code></pre>
+    </div>
+</div>
 <p>For <span style="color: #10b981; font-weight: 600">correctness use cases</span> where duplicate processing causes data corruption or financial loss:<br />
 - Use <a href="/topic/system-design/consensus-algorithms">[consensus-based systems]</a>: etcd (Raft), ZooKeeper (Zab)<br />
 - Always implement fencing tokens validated by the storage layer<br />
@@ -1088,12 +1188,28 @@ ZooKeeper uses <span style="color: #10b981; font-weight: 600">ephemeral sequenti
 </div>
 </div>
 </div>
-<pre><code>---
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>---
 </code></pre>
+    </div>
+</div>
 <h3 id="q4-how-would-you-implement-leader-election-using-distributed-locks">Q4: How would you implement leader election using distributed locks?</h3>
-<pre><code>**Level 1 Answer:**
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**Level 1 Answer:**
 Leader election is a special case of distributed locking where one node holds the &quot;leader&quot; lock. The basic pattern: try to acquire a lock with TTL, if successful you're the leader. Use heartbeat renewal to extend the lock while performing leader duties. If you lose the lock, stop leader activities immediately.
 </code></pre>
+    </div>
+</div>
 <div style="background: rgba(59, 130, 246, 0.1);padding: 12px; margin: 12px 0">
 <p><strong>Level 2 Follow-up: How do you handle the case where a leader loses its lock but doesn't realize it?</strong></p>
 <p>This is the <span style="color: #10b981; font-weight: 600">split-brain problem</span>. Several strategies:</p>
@@ -1140,10 +1256,24 @@ Leader election is a special case of distributed locking where one node holds th
 <p><strong>Level 1 Answer:</strong><br />
 Avoid distributed locks when: <span style="color: #10b981; font-weight: 600">optimistic concurrency</span> works (use version numbers), operations can be made <span style="color: #10b981; font-weight: 600">idempotent</span>, data can be partitioned to avoid cross-shard coordination, or when <a href="/topic/system-design/event-sourcing">[event sourcing]</a> can eliminate conflicts entirely.</p>
 <div style="background: rgba(59, 130, 246, 0.1);padding: 12px; margin: 12px 0">
-<pre><code>**Level 2 Follow-up: Explain how optimistic concurrency control compares to distributed locking.**
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**Level 2 Follow-up: Explain how optimistic concurrency control compares to distributed locking.**
 </code></pre>
+    </div>
+</div>
 <p><span style="color: #10b981; font-weight: 600">Optimistic Concurrency Control (OCC)</span> assumes conflicts are rare and detects them at write time rather than preventing them upfront:</p>
-<pre><code>| Aspect | Distributed Locking | OCC |
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>| Aspect | Distributed Locking | OCC |
 |--------|-------------------|-----|
 | Philosophy | Pessimistic - prevent conflicts | Optimistic - detect conflicts |
 | Contention handling | Block waiting | Retry on conflict |
@@ -1157,6 +1287,8 @@ OCC works well when:
 - Low conflict rate (few retries needed)
 - Short transactions (less chance of conflict)
 </code></pre>
+    </div>
+</div>
 <div style="background: rgba(99, 102, 241, 0.1);padding: 12px; margin: 12px 0">
 <p><strong>Level 3 Follow-up: What about CRDTs? When would they replace both locking and OCC?</strong></p>
 <p><span style="color: #10b981; font-weight: 600">CRDTs (Conflict-free Replicated Data Types)</span> eliminate coordination entirely by making all operations commutative:</p>
@@ -1207,7 +1339,13 @@ TTL should be long enough to complete the protected operation, but short enough 
 </ol>
 <p>The critical insight: if your lock expires, you MUST stop working immediately. Any work after expiry is unsafe unless protected by fencing tokens.</p>
 <div style="background: rgba(99, 102, 241, 0.1);padding: 12px; margin: 12px 0">
-<pre><code>**Level 3 Follow-up: How do you handle GC pauses that can be longer than any reasonable TTL?**
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**Level 3 Follow-up: How do you handle GC pauses that can be longer than any reasonable TTL?**
 
 GC pauses (especially in Java) can be hundreds of milliseconds to seconds, making any TTL-based safety guarantee questionable. Strategies:
 
@@ -1225,6 +1363,8 @@ GC pauses (especially in Java) can be hundreds of milliseconds to seconds, makin
 
 The philosophical point: in distributed systems, you can't achieve perfect safety. You minimize risk through defense-in-depth: TTLs, fencing tokens, idempotency, and careful operation design. Assuming any single mechanism is sufficient leads to production incidents.
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 </div>
@@ -1327,3 +1467,15 @@ The philosophical point: in distributed systems, you can't achieve perfect safet
 <li><a href="/topic/system-design/database-replication">[Database Replication]</a> - Optimistic concurrency and versioning</li>
 <li><a href="/topic/system-design/rate-limiting">[Rate Limiting]</a> - Global limits using distributed coordination</li>
 </ul>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>
