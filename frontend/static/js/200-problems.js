@@ -5710,6 +5710,101 @@
                 automaticLayout: true
             });
 
+            // Force suggest widget text visibility using multiple strategies
+            (function fixSuggestWidgetColors() {
+                var styleId = 'monaco-suggest-fix';
+                if (document.getElementById(styleId)) return;
+
+                // Strategy 1: Inject <style> targeting suggest widget at all DOM levels
+                var style = document.createElement('style');
+                style.id = styleId;
+                style.textContent = [
+                    // Target by class directly (no parent scope needed)
+                    '.suggest-widget { background: #ffffff !important; color: #1e1e1e !important; border: 1px solid #c8c8c8 !important; box-shadow: 0 4px 16px rgba(0,0,0,0.15) !important; }',
+                    '.suggest-widget .monaco-list-row { color: #1e1e1e !important; }',
+                    '.suggest-widget .monaco-list-row * { color: #1e1e1e !important; }',
+                    '.suggest-widget .monaco-list-row .highlight { color: #0066bf !important; font-weight: 600 !important; }',
+                    '.suggest-widget .monaco-list-row.focused { background: #d6ebff !important; }',
+                    '.suggest-widget .monaco-list-row.focused * { color: #1e1e1e !important; }',
+                    '.suggest-widget .suggest-status-bar { background: #f3f3f3 !important; color: #1e1e1e !important; }',
+                    '.suggest-widget .details { background: #ffffff !important; color: #1e1e1e !important; }',
+                    '.suggest-widget .details * { color: #1e1e1e !important; }',
+                    // Also target with editor parent scope
+                    '.monaco-editor .suggest-widget .monaco-list-row * { color: #1e1e1e !important; }',
+                    '.monaco-editor .suggest-widget .monaco-list-row .highlight { color: #0066bf !important; font-weight: 600 !important; }',
+                    // Parameter hints
+                    '.parameter-hints-widget { background: #ffffff !important; color: #1e1e1e !important; border: 1px solid #c8c8c8 !important; }',
+                    '.parameter-hints-widget * { color: #1e1e1e !important; }',
+                    // Hover widget
+                    '.monaco-hover { background: #ffffff !important; color: #1e1e1e !important; border: 1px solid #c8c8c8 !important; }',
+                    '.monaco-hover * { color: #1e1e1e !important; }',
+                    // Override any wildcard resets that might affect widget borders
+                    '.suggest-widget, .suggest-widget * { border-color: #c8c8c8; }'
+                ].join('\n');
+                document.head.appendChild(style);
+
+                // Strategy 2: MutationObserver on editor DOM to force text colors when suggest widget renders
+                var editorDom = editor.getDomNode();
+                if (editorDom) {
+                    var fixTimer = null;
+                    var fixSuggestColors = function() {
+                        var rows = document.querySelectorAll('.suggest-widget .monaco-list-row');
+                        for (var i = 0; i < rows.length; i++) {
+                            rows[i].style.setProperty('color', '#1e1e1e', 'important');
+                            var spans = rows[i].querySelectorAll('span, a, div');
+                            for (var j = 0; j < spans.length; j++) {
+                                var cls = spans[j].className || '';
+                                if (cls.indexOf('highlight') >= 0) {
+                                    spans[j].style.setProperty('color', '#0066bf', 'important');
+                                } else {
+                                    spans[j].style.setProperty('color', '#1e1e1e', 'important');
+                                }
+                            }
+                        }
+                        var widget = document.querySelector('.suggest-widget');
+                        if (widget) {
+                            widget.style.setProperty('background', '#ffffff', 'important');
+                            widget.style.setProperty('color', '#1e1e1e', 'important');
+                            widget.style.setProperty('border', '1px solid #c8c8c8', 'important');
+                        }
+                    };
+                    // Observe the editor root and document body (for fixedOverflowWidgets)
+                    var suggestObserver = new MutationObserver(function(mutations) {
+                        var relevant = false;
+                        for (var m = 0; m < mutations.length; m++) {
+                            var target = mutations[m].target;
+                            if (target && target.className && (
+                                typeof target.className === 'string' && (
+                                    target.className.indexOf('suggest') >= 0 ||
+                                    target.className.indexOf('monaco-list') >= 0 ||
+                                    target.className.indexOf('overflow') >= 0
+                                )
+                            )) {
+                                relevant = true;
+                                break;
+                            }
+                            if (mutations[m].addedNodes.length > 0) {
+                                for (var n = 0; n < mutations[m].addedNodes.length; n++) {
+                                    var node = mutations[m].addedNodes[n];
+                                    if (node.classList && (node.classList.contains('suggest-widget') || node.classList.contains('monaco-list-row'))) {
+                                        relevant = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (relevant) break;
+                        }
+                        if (relevant) {
+                            if (fixTimer) clearTimeout(fixTimer);
+                            fixTimer = setTimeout(fixSuggestColors, 10);
+                        }
+                    });
+                    suggestObserver.observe(editorDom, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
+                    // Also observe body for overflow widgets that may render outside editor
+                    suggestObserver.observe(document.body, { childList: true, subtree: false });
+                }
+            })();
+
             // Track code changes
             editor.onDidChangeModelContent(function() {
                 currentCode[currentLanguage] = editor.getValue();
