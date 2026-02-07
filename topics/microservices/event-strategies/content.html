@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="event-driven-coordination-strategies-in-microservices">Event-Driven Coordination Strategies in Microservices</h1>
 <h2 id="overview">Overview</h2>
@@ -118,11 +178,19 @@
 <h3 id="internal-mechanisms-choreography">Internal Mechanisms: Choreography</h3>
 <p><strong>Event Publication and Subscription Model:</strong></p>
 <p>In choreography, services communicate through domain events published to a message broker. The critical internal mechanism is the <strong>event subscription topology</strong>:</p>
-<pre><code>Service A publishes to Topic X
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>Service A publishes to Topic X
     -&gt; Service B subscribes to Topic X (consumer group B)
     -&gt; Service C subscribes to Topic X (consumer group C)
     -&gt; Service D subscribes to Topic X (consumer group D)
 </code></pre>
+    </div>
+</div>
 <p>Each consumer group maintains its own offset, enabling independent processing speeds. The broker (e.g., <a href="/topics/system-design/kafka">[Kafka]</a>) maintains event ordering within partitions, while services must handle cross-partition ordering themselves.</p>
 <p><strong>Implicit Process Definition:</strong></p>
 <p>The &quot;process&quot; in choreography exists only as an emergent property of individual service behaviors. There is no explicit workflow definition - the process is encoded in:</p>
@@ -140,7 +208,13 @@ Choreography assumes services are <strong>truly autonomous</strong> and can make
 <h3 id="internal-mechanisms-orchestration">Internal Mechanisms: Orchestration</h3>
 <p><strong>State Machine Implementation:</strong></p>
 <p>Orchestrators are typically implemented as <a href="/topics/system-design/state-machines">[state machines]</a> with persistent state:</p>
-<pre><code class="language-python">class OrderSagaOrchestrator:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class OrderSagaOrchestrator:
     states = {
         'STARTED': {'on_enter': 'request_payment'},
         'AWAITING_PAYMENT': {'on_event': 'handle_payment_result'},
@@ -152,6 +226,8 @@ Choreography assumes services are <strong>truly autonomous</strong> and can make
         'FAILED': {'final': True}
     }
 </code></pre>
+    </div>
+</div>
 <p><strong>Correlation and Message Routing:</strong></p>
 <p>The orchestrator must correlate incoming messages with saga instances. This requires:</p>
 <ol>
@@ -159,13 +235,21 @@ Choreography assumes services are <strong>truly autonomous</strong> and can make
 <li><strong>Saga instance storage</strong> mapping correlation IDs to saga state</li>
 <li><strong>Idempotent message handling</strong> to handle duplicate deliveries</li>
 </ol>
-<pre><code class="language-python">def handle_message(message):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def handle_message(message):
     saga_id = message.correlation_id
     saga = saga_store.get(saga_id)  # Load persisted state
     saga.apply_event(message)        # Transition state machine
     saga_store.save(saga)            # Persist new state
     saga.execute_pending_commands()  # Send next commands
 </code></pre>
+    </div>
+</div>
 <h3 id="edge-cases-and-failure-modes">Edge Cases and Failure Modes</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
 <h4 style="color: #f85149; margin: 0 0 20px 0; font-size: 13px">CHOREOGRAPHY FAILURE MODES</h4>
@@ -349,7 +433,13 @@ A saga is a sequence of local transactions where each transaction updates a sing
 </div>
 <h3 id="saga-execution-coordinator-sec-implementation">Saga Execution Coordinator (SEC) Implementation</h3>
 <p>The SEC is the component responsible for managing saga lifecycle:</p>
-<pre><code class="language-python">class SagaExecutionCoordinator:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class SagaExecutionCoordinator:
     def __init__(self, saga_definition, saga_store):
         self.definition = saga_definition  # Steps + compensations
         self.store = saga_store            # Persistent state
@@ -397,6 +487,8 @@ A saga is a sequence of local transactions where each transaction updates a sing
         saga.status = 'COMPENSATED'
         self.store.save(saga)
 </code></pre>
+    </div>
+</div>
 <h3 id="semantic-lock-preventing-concurrent-modifications">Semantic Lock: Preventing Concurrent Modifications</h3>
 <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 20px; margin: 20px 0">
 <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 12px">CRITICAL DESIGN CONSIDERATION: SEMANTIC LOCKS</div>
@@ -552,7 +644,13 @@ A saga is a sequence of local transactions where each transaction updates a sing
 </div>
 <h3 id="schema-registry-pattern">Schema Registry Pattern</h3>
 <p>A <a href="/topics/system-design/schema-registry">[schema registry]</a> is a centralized service that stores and validates event schemas:</p>
-<pre><code class="language-python">class SchemaRegistry:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class SchemaRegistry:
     def __init__(self, store):
         self.store = store  # Persistent schema storage
 
@@ -581,8 +679,16 @@ A saga is a sequence of local transactions where each transaction updates a sing
             return (self._can_read_old_with_new(old, new) and
                     self._can_read_new_with_old(old, new))
 </code></pre>
+    </div>
+</div>
 <p><strong>Producer and Consumer Integration:</strong></p>
-<pre><code class="language-python"># Producer embeds schema ID in message
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Producer embeds schema ID in message
 def produce(event):
     schema_id = registry.get_or_register(event.schema)
     payload = serialize(event, schema_id)  # [schema_id][data]
@@ -594,6 +700,8 @@ def consume(message):
     schema = registry.get_schema_by_id(schema_id)
     return deserialize(message.data, schema)
 </code></pre>
+    </div>
+</div>
 <h3 id="versioning-strategies">Versioning Strategies</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px">EVENT VERSIONING APPROACHES</h4>
@@ -822,7 +930,13 @@ def consume(message):
 </div>
 </div>
 <h3 id="dlq-implementation-patterns">DLQ Implementation Patterns</h3>
-<pre><code class="language-python">class DeadLetterQueueHandler:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class DeadLetterQueueHandler:
     def __init__(self, main_consumer, dlq_producer, max_retries=3):
         self.main_consumer = main_consumer
         self.dlq_producer = dlq_producer
@@ -864,6 +978,8 @@ def consume(message):
                                tags={'topic': message.topic,
                                      'error_type': type(error).__name__})
 </code></pre>
+    </div>
+</div>
 <h3 id="dlq-reprocessing-strategies">DLQ Reprocessing Strategies</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px">REPROCESSING DLQ MESSAGES</h4>
@@ -1078,3 +1194,15 @@ def consume(message):
 <p><strong>Test compensation paths</strong> - saga forward paths get tested naturally, but compensation only runs during failures - test it explicitly</p>
 </li>
 </ol>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="aws-tools-for-system-design">AWS Tools for System Design</h1>
 <h2 id="overview">Overview</h2>
@@ -165,7 +225,13 @@
 <h3 id="key-sqs-concepts">Key SQS Concepts</h3>
 <h4 id="visibility-timeout">Visibility Timeout</h4>
 <p><span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px">Critical assumption: Visibility timeout must be longer than your processing time</span>. If processing takes longer than visibility timeout, another consumer may receive the same message.</p>
-<pre><code class="language-python">import boto3
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import boto3
 import json
 
 sqs = boto3.client('sqs')
@@ -209,6 +275,8 @@ for message in response.get('Messages', []):
         # Message will become visible again after timeout
         print(f&quot;Error processing: {e}&quot;)
 </code></pre>
+    </div>
+</div>
 <h4 id="dead-letter-queue-dlq">Dead Letter Queue (DLQ)</h4>
 <p><span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px">Design choice: DLQ captures messages that fail processing multiple times</span>. This prevents poison messages from blocking the queue.</p>
 <div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -233,7 +301,13 @@ for message in response.get('Messages', []):
 </div>
 </div>
 </div>
-<pre><code class="language-python"># Configure DLQ in CloudFormation/Terraform
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Configure DLQ in CloudFormation/Terraform
 dlq_config = {
     'RedrivePolicy': json.dumps({
         'deadLetterTargetArn': 'arn:aws:sqs:us-east-1:123456789:my-queue-dlq',
@@ -241,6 +315,8 @@ dlq_config = {
     })
 }
 </code></pre>
+    </div>
+</div>
 <h4 id="long-polling-vs-short-polling">Long Polling vs Short Polling</h4>
 <div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e293b; margin-top: 0">Polling Comparison</h4>
@@ -369,7 +445,13 @@ dlq_config = {
 </div>
 </div>
 </div>
-<pre><code class="language-python">import boto3
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import boto3
 import json
 
 sns = boto3.client('sns')
@@ -400,9 +482,17 @@ filter_policy = {
     'order_type': ['priority', 'express']  # Only receive priority/express orders
 }
 </code></pre>
+    </div>
+</div>
 <h3 id="message-filtering">Message Filtering</h3>
 <p><span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px">Trade-off: Message filtering reduces unnecessary processing but adds complexity</span>.</p>
-<pre><code class="language-python"># Set filter policy on subscription
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Set filter policy on subscription
 sns.set_subscription_attributes(
     SubscriptionArn='arn:aws:sns:us-east-1:123456789:orders-topic:subscription-id',
     AttributeName='FilterPolicy',
@@ -413,6 +503,8 @@ sns.set_subscription_attributes(
     })
 )
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="interview-deep-dive">Interview Deep Dive</h2>
 <h3 id="level-1-questions">Level 1 Questions</h3>
@@ -426,7 +518,13 @@ sns.set_subscription_attributes(
 <li><strong>MessageGroupId</strong>: Enables parallel processing while maintaining order within groups</li>
 <li><strong>Idempotent Processing</strong>: Design consumers to handle potential reprocessing</li>
 </ol>
-<pre><code class="language-python"># Send order with deduplication
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Send order with deduplication
 sqs.send_message(
 QueueUrl=fifo_queue_url,
 MessageBody=json.dumps(order),
@@ -434,6 +532,8 @@ MessageGroupId=f&quot;customer-{order['customer_id']}&quot;,  # Orders per custo
 MessageDeduplicationId=f&quot;order-{order['order_id']}&quot;  # Prevent duplicates
 )
 </code></pre>
+    </div>
+</div>
 <p><span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px">Key insight: Even with FIFO, design for idempotency - distributed systems can still have edge cases</span>.</p>
 <h5 id="level-2-follow-ups">Level 2 Follow-ups:</h5>
 <p><strong>Q1.1: What happens if processing takes longer than visibility timeout?</strong></p>
@@ -443,7 +543,13 @@ MessageDeduplicationId=f&quot;order-{order['order_id']}&quot;  # Prevent duplica
 <li>Use heartbeat pattern to periodically extend timeout</li>
 <li>Set conservative initial timeout based on P99 processing time</li>
 </ul>
-<pre><code class="language-python">def process_with_heartbeat(message, queue_url):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def process_with_heartbeat(message, queue_url):
 receipt_handle = message['ReceiptHandle']
 
 def extend_visibility():
@@ -464,6 +570,8 @@ processing_complete = True
 finally:
 heartbeat_thread.join()
 </code></pre>
+    </div>
+</div>
 <h6 id="level-3-follow-ups">Level 3 Follow-ups:</h6>
 <p><strong>Q1.1.1: How do you handle the case where heartbeat thread fails but processing continues?</strong></p>
 <p>Implement multiple safeguards:</p>
@@ -489,10 +597,18 @@ heartbeat_thread.join()
 <li>Different GroupIds can be processed in parallel</li>
 <li>Partition by natural keys (customer_id, tenant_id, etc.)</li>
 </ul>
-<pre><code>Group A: Consumer 1 → [msg1, msg2, msg3] (in order)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>Group A: Consumer 1 → [msg1, msg2, msg3] (in order)
 Group B: Consumer 2 → [msg4, msg5, msg6] (in order)
 Group C: Consumer 3 → [msg7, msg8, msg9] (in order)
 </code></pre>
+    </div>
+</div>
 <h6 id="level-3-follow-ups-1">Level 3 Follow-ups:</h6>
 <p><strong>Q1.2.1: What if one MessageGroup has much higher traffic than others?</strong></p>
 <p>Hot partition problem. Solutions:</p>
@@ -516,7 +632,13 @@ Group C: Consumer 3 → [msg7, msg8, msg9] (in order)
 </ul>
 <h6 id="level-3-follow-ups-2">Level 3 Follow-ups:</h6>
 <p><strong>Q1.3.1: How do you implement application-level ordering with Standard queues?</strong></p>
-<pre><code class="language-python"># Include sequence number and buffer for reordering
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Include sequence number and buffer for reordering
 message = {
 'sequence': 12345,
 'timestamp': '2024-01-15T10:30:00Z',
@@ -541,6 +663,8 @@ self.flush_buffer(entity_id)
 else:
 self.buffer[(entity_id, seq)] = message
 </code></pre>
+    </div>
+</div>
 <p><strong>Q1.3.2: What are the failure modes of application-level ordering?</strong></p>
 <ul>
 <li>Missing messages create gaps (need timeout and skip logic)</li>
@@ -584,7 +708,13 @@ self.buffer[(entity_id, seq)] = message
 </div>
 </div>
 </div>
-<pre><code class="language-python"># Publish notification with attributes for filtering
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Publish notification with attributes for filtering
 sns.publish(
 TopicArn=topic_arn,
 Message=json.dumps({
@@ -600,10 +730,18 @@ MessageAttributes={
 }
 )
 </code></pre>
+    </div>
+</div>
 <h5 id="level-2-follow-ups-1">Level 2 Follow-ups:</h5>
 <p><strong>Q2.1: How do you handle rate limiting for SMS/email providers?</strong></p>
 <p>Implement token bucket rate limiter in consumer:</p>
-<pre><code class="language-python">class RateLimitedConsumer:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class RateLimitedConsumer:
 def __init__(self, rate_per_second):
 self.rate = rate_per_second
 self.tokens = rate_per_second
@@ -623,11 +761,19 @@ self.tokens -= 1
 return True
 return False
 </code></pre>
+    </div>
+</div>
 <p>Also use SQS delay queues for backoff when rate limited.</p>
 <h6 id="level-3-follow-ups-3">Level 3 Follow-ups:</h6>
 <p><strong>Q2.1.1: How do you distribute rate limits across multiple consumers?</strong></p>
 <p>Use Redis for distributed rate limiting:</p>
-<pre><code class="language-python">def distributed_rate_limit(key, limit, window_seconds):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def distributed_rate_limit(key, limit, window_seconds):
 pipe = redis.pipeline()
 now = time.time()
 window_start = now - window_seconds
@@ -640,6 +786,8 @@ pipe.expire(key, window_seconds)
 results = pipe.execute()
 return results[2] &lt;= limit
 </code></pre>
+    </div>
+</div>
 <p><strong>Q2.1.2: What happens to messages when you hit rate limits?</strong></p>
 <p>Options:</p>
 <ol>
@@ -658,7 +806,13 @@ return results[2] &lt;= limit
 <hr />
 <p><strong>Q2.2: How do you ensure a notification is delivered to at least one channel?</strong></p>
 <p>Implement saga pattern with compensation:</p>
-<pre><code class="language-python">async def send_notification(notification):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">async def send_notification(notification):
 results = {}
 
 for channel in notification['channels']:
@@ -677,10 +831,18 @@ raise AllChannelsFailedException(results)
 
 return results
 </code></pre>
+    </div>
+</div>
 <h6 id="level-3-follow-ups-4">Level 3 Follow-ups:</h6>
 <p><strong>Q2.2.1: How do you track delivery status across channels?</strong></p>
 <p>Use DynamoDB with GSIs for querying:</p>
-<pre><code class="language-python">notification_record = {
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">notification_record = {
 'pk': f&quot;NOTIF#{notification_id}&quot;,
 'sk': f&quot;CHANNEL#{channel}&quot;,
 'user_id': user_id,
@@ -689,6 +851,8 @@ return results
 'provider_id': external_message_id
 }
 </code></pre>
+    </div>
+</div>
 <p><strong>Q2.2.2: How do you handle partial failures in multi-channel delivery?</strong></p>
 <ul>
 <li>Track each channel independently</li>
@@ -714,7 +878,13 @@ return results
 <li><strong>Event Store</strong>: Use DynamoDB Streams or Kinesis for ordered, replayable log</li>
 <li><strong>Dead Letter Replay</strong>: Process DLQ messages with modified handling</li>
 </ol>
-<pre><code class="language-python">class ReplayableMessageHandler:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class ReplayableMessageHandler:
 def __init__(self):
 self.s3 = boto3.client('s3')
 self.sqs = boto3.client('sqs')
@@ -769,10 +939,18 @@ MessageAttributes={
 }
 )
 </code></pre>
+    </div>
+</div>
 <h5 id="level-2-follow-ups-2">Level 2 Follow-ups:</h5>
 <p><strong>Q3.1: How do you handle idempotency during replay?</strong></p>
 <p>Track processed message IDs:</p>
-<pre><code class="language-python">def process_with_idempotency(message, dynamodb_table):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def process_with_idempotency(message, dynamodb_table):
 message_id = message['MessageId']
 
 try:
@@ -794,6 +972,8 @@ raise
 # Process the message
 handle_message(message)
 </code></pre>
+    </div>
+</div>
 <h6 id="level-3-follow-ups-5">Level 3 Follow-ups:</h6>
 <p><strong>Q3.1.1: What's the storage cost of tracking all processed message IDs?</strong></p>
 <p>With TTL-based cleanup:</p>
@@ -805,7 +985,13 @@ handle_message(message)
 </ul>
 <p><strong>Q3.1.2: How do you handle the case where processing succeeded but idempotency record failed to write?</strong></p>
 <p>Use transactional writes:</p>
-<pre><code class="language-python">dynamodb.transact_write_items(
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">dynamodb.transact_write_items(
 TransactItems=[
 {
 'Put': {
@@ -822,6 +1008,8 @@ TransactItems=[
 ]
 )
 </code></pre>
+    </div>
+</div>
 <p><strong>Q3.1.3: How do you handle replay for messages that modify external systems?</strong></p>
 <ul>
 <li>External systems need their own idempotency (payment providers usually have this)</li>
@@ -914,3 +1102,15 @@ TransactItems=[
 <li><a href="/topic/system-design/rate-limiting">[Rate Limiting]</a> - Throttling strategies</li>
 <li><a href="/topic/system-design/distributed-locking">[Distributed Locking]</a> - Coordination patterns</li>
 </ul>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

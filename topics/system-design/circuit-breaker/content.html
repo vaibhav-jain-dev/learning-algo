@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="circuit-breaker-pattern">Circuit Breaker Pattern</h1>
 <nav class="toc" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 24px 0">
@@ -520,7 +580,13 @@ cache: max_conn=25
 </div>
 </div>
 <h3 id="circuit-breaker-bulkhead">Circuit Breaker + Bulkhead Together</h3>
-<pre><code class="language-python"># Combining circuit breaker with bulkhead for complete protection
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Combining circuit breaker with bulkhead for complete protection
 from concurrent.futures import ThreadPoolExecutor
 from threading import Semaphore
 
@@ -569,6 +635,8 @@ class ResilientServiceClient:
         finally:
             self.semaphore.release()
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="cascading-failures">Cascading Failures: The Problem Circuit Breakers Solve</h2>
 <p><span style="color:#10b981"><strong>Cascading failures</strong></span> occur when a failure in one service causes failures in dependent services, which then cause failures in their dependents, creating a domino effect that can bring down an entire system.</p>
@@ -681,7 +749,13 @@ class ResilientServiceClient:
 <hr />
 <h2 id="code-implementation">Code Implementation</h2>
 <h3 id="python-implementation">Python - Production-Grade Circuit Breaker</h3>
-<pre><code class="language-python">import time
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import time
 import threading
 from enum import Enum
 from dataclasses import dataclass, field
@@ -920,8 +994,16 @@ def circuit_breaker(breaker: CircuitBreaker, fallback: Callable = None):
         return wrapper
     return decorator
 </code></pre>
+    </div>
+</div>
 <h3 id="go-implementation">Go - Circuit Breaker with Bulkhead</h3>
-<pre><code class="language-go">package resilience
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">package resilience
 
 import (
     &quot;context&quot;
@@ -1117,6 +1199,8 @@ func (cb *CircuitBreaker) recordFailure() {
     }
 }
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="fallback-strategies">Fallback Strategies</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -1225,7 +1309,13 @@ return backup_service.call()
 </div>
 </div>
 <h3 id="failure-mode-testing">Testing Failure Modes</h3>
-<pre><code class="language-python">import pytest
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import pytest
 from threading import Thread
 from unittest.mock import MagicMock
 
@@ -1312,6 +1402,8 @@ class TestCircuitBreakerEdgeCases:
             # Circuit breaker error blocked request - bad!
             pytest.fail(&quot;Circuit breaker should fail open&quot;)
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="common-pitfalls">Common Pitfalls</h2>
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -1417,7 +1509,13 @@ class TestCircuitBreakerEdgeCases:
 <p><strong>Global State Consideration</strong>: Should circuit state be shared across regions? Usually no - each region should make independent decisions to avoid a cascading global failure from a single region's problems</p>
 </li>
 </ol>
-<pre><code class="language-python">class RegionAwareCircuitBreaker:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class RegionAwareCircuitBreaker:
     def __init__(self):
         self.circuits = {
             'us-east-1': CircuitBreaker(slow_call_threshold=5.0),
@@ -1425,6 +1523,8 @@ class TestCircuitBreakerEdgeCases:
             'eu-west-1': CircuitBreaker(slow_call_threshold=15.0),  # Cross-region
         }
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 </div>
@@ -1454,7 +1554,13 @@ class TestCircuitBreakerEdgeCases:
 <li><strong>Provider Support</strong>: Most payment providers (Stripe, etc.) accept idempotency keys and return the same result for duplicate requests</li>
 <li><strong>Timeout Window</strong>: Stripe's idempotency keys are valid for 24 hours - handle payments older than that differently</li>
 </ol>
-<pre><code class="language-python">def queue_payment(payment_request):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def queue_payment(payment_request):
     idempotency_key = generate_idempotency_key(
         user_id=payment_request.user_id,
         amount=payment_request.amount,
@@ -1472,6 +1578,8 @@ class TestCircuitBreakerEdgeCases:
         'retry_count': 0
     })
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <div style="background: #ecfdf5; border-radius: 12px; padding: 20px; margin: 16px 0 16px 48px">
@@ -1495,7 +1603,13 @@ class TestCircuitBreakerEdgeCases:
 <li><strong>Expiration Handling</strong>: Cancel payments older than SLA with full refund notification</li>
 </ol>
 <p><strong>Monitoring &amp; Alerting</strong>:</p>
-<pre><code class="language-python"># Alert when queue depth exceeds thresholds
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Alert when queue depth exceeds thresholds
 if queue.depth &gt; 1000:
     alert_ops(&quot;Payment queue depth critical&quot;, priority=&quot;high&quot;)
 
@@ -1504,6 +1618,8 @@ oldest_item_age = time.now() - queue.peek().created_at
 if oldest_item_age &gt; timedelta(hours=2):
     alert_ops(&quot;Payment queue processing delayed&quot;, priority=&quot;medium&quot;)
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 </div>
@@ -1544,12 +1660,20 @@ if oldest_item_age &gt; timedelta(hours=2):
 <li><strong>Leave Headroom</strong>: Don't allocate 100% of resources to bulkheads</li>
 </ol>
 <p><strong>Formula approach</strong>:</p>
-<pre><code class="language-python">pool_size = min(
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">pool_size = min(
     max_expected_concurrent_requests * 1.5,  # Safety margin
     total_threads / num_dependencies * 0.8,   # Fair share
     timeout_seconds * acceptable_rejection_rate  # Queue theory
 )
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <div style="background: #ecfdf5; border-radius: 12px; padding: 20px; margin: 16px 0 16px 48px">
@@ -1557,7 +1681,13 @@ if oldest_item_age &gt; timedelta(hours=2):
 <div style="color: #475569; font-size: 14px">
 <p>Async systems don't have traditional thread pools, so bulkhead implementation differs:</p>
 <p><strong>1. Semaphore-Based Limiting</strong>:</p>
-<pre><code class="language-python"># Async semaphore limits concurrent operations
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Async semaphore limits concurrent operations
 class AsyncBulkhead:
     def __init__(self, max_concurrent: int):
         self.semaphore = asyncio.Semaphore(max_concurrent)
@@ -1566,6 +1696,8 @@ class AsyncBulkhead:
         async with self.semaphore:
             return await coro
 </code></pre>
+    </div>
+</div>
 <p><strong>2. Connection Pool Limits</strong>: Limit connections per dependency (aiohttp, httpx)</p>
 <p><strong>3. Queue Depth Limits</strong>: In <a href="/topic/system-design/message-queues">[message queue]</a> systems, limit pending messages per destination</p>
 <p><strong>4. Memory-Based Limits</strong>: Track in-flight request payload sizes, not just counts</p>
@@ -1614,7 +1746,13 @@ class AsyncBulkhead:
 <li><strong>Mixed Errors</strong>: Some calls succeed, some fail, verify correct counting</li>
 </ol>
 <p><strong>Test Example</strong>:</p>
-<pre><code class="language-python">def test_circuit_trips_at_threshold():
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def test_circuit_trips_at_threshold():
     cb = CircuitBreaker(failure_threshold=5)
 
     # 4 failures - should stay closed
@@ -1640,6 +1778,8 @@ def test_race_condition_on_threshold():
     assert cb.state == CircuitState.OPEN
     assert len(cb.metrics.state_transitions) == 1
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <div style="background: #ecfdf5; border-radius: 12px; padding: 20px; margin: 16px 0 16px 48px">
@@ -1653,7 +1793,13 @@ def test_race_condition_on_threshold():
 <li>Test during low-traffic periods first</li>
 </ul>
 <p><strong>2. Automatic Rollback</strong>:</p>
-<pre><code class="language-python">class ChaosExperiment:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class ChaosExperiment:
     def __init__(self):
         self.abort_conditions = [
             lambda: error_rate &gt; 0.1,  # 10% error rate
@@ -1671,6 +1817,8 @@ def test_race_condition_on_threshold():
         finally:
             self.cleanup()
 </code></pre>
+    </div>
+</div>
 <p><strong>3. Observability Requirements</strong>:</p>
 <ul>
 <li>Real-time dashboards for all circuit breaker states</li>
@@ -1695,7 +1843,13 @@ def test_race_condition_on_threshold():
 </div>
 <hr />
 <h2 id="monitoring-alerting">Monitoring and Alerting</h2>
-<pre><code class="language-python"># Prometheus metrics for circuit breaker monitoring
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Prometheus metrics for circuit breaker monitoring
 from prometheus_client import Gauge, Counter, Histogram
 
 CIRCUIT_STATE = Gauge(
@@ -1754,6 +1908,8 @@ groups:
       summary: &quot;High rejection rate on {{ $labels.circuit_name }}&quot;
 &quot;&quot;&quot;
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="related-patterns">Circuit Breaker vs Related Patterns</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
@@ -1852,3 +2008,15 @@ groups:
 <li><a href="/topic/system-design/api-gateway">[API Gateway]</a> - Centralized circuit breaking</li>
 <li><a href="/topic/system-design/distributed-locking">[Distributed Locking]</a> - Related resilience pattern</li>
 </ul>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="removing-bottlenecks-in-distributed-systems">Removing Bottlenecks in Distributed Systems</h1>
 <h2 id="overview">Overview</h2>
@@ -107,7 +167,13 @@
 </div>
 <h3 id="internal-mechanism-cpu-flame-graphs">Internal Mechanism: CPU Flame Graphs</h3>
 <p>Flame graphs visualize stack traces where the x-axis represents the proportion of time spent and the y-axis shows call stack depth. The <strong>key insight</strong> is that wide plateaus indicate hot paths - functions where the program spends significant time.</p>
-<pre><code class="language-go">// Enable continuous profiling in production
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// Enable continuous profiling in production
 import _ &quot;net/http/pprof&quot;
 
 func main() {
@@ -123,6 +189,8 @@ func main() {
     }()
 }
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #ffd93d; font-weight: 700; font-size: 1.1em; margin-bottom: 16px">CRITICAL INSIGHT: The USE Method</div>
 <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7">
@@ -145,7 +213,13 @@ For every resource, check: <strong>Utilization</strong> (percentage of time busy
 </div>
 <h3 id="edge-case-coordinated-omission">Edge Case: Coordinated Omission</h3>
 <p>Most load testing tools suffer from <strong>coordinated omission</strong> - when a slow response delays the next request, the tool under-reports latency. If your server takes 1 second to respond but you're sending requests every 100ms, the tool misses the 9 requests that would have been waiting.</p>
-<pre><code class="language-python"># BAD: Naive load testing (suffers from coordinated omission)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># BAD: Naive load testing (suffers from coordinated omission)
 for i in range(1000):
     start = time.time()
     response = requests.get(url)
@@ -161,6 +235,8 @@ for i in range(1000):
     total_latency = wait_time + service_time  # TRUE latency
     scheduled_time += 0.001  # Next request should have started 1ms later
 </code></pre>
+    </div>
+</div>
 <h3 id="interview-deep-dive-profiling-techniques">Interview Deep-Dive: Profiling Techniques</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
 <h4 style="color: #ff6b6b; margin: 0 0 20px 0; font-size: 1.2em">Level 1: How would you identify which microservice is the bottleneck in a request that spans 10 services?</h4>
@@ -231,7 +307,13 @@ Measure both independently. For the database: check <code>pg_stat_activity</code
 </div>
 <h3 id="internal-mechanism-the-n1-query-problem-at-scale">Internal Mechanism: The N+1 Query Problem at Scale</h3>
 <p>The N+1 problem occurs when code fetches a parent record, then makes N separate queries for related records. At small scale (N=10), this adds 50-100ms. At production scale (N=1000), this becomes 5-10 seconds and can saturate connection pools.</p>
-<pre><code class="language-go">// PROBLEMATIC: N+1 queries
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// PROBLEMATIC: N+1 queries
 func GetOrdersWithItems(userID string) ([]Order, error) {
     orders, _ := db.Query(&quot;SELECT * FROM orders WHERE user_id = $1&quot;, userID)
 
@@ -258,6 +340,8 @@ func GetOrdersWithItemsOptimized(userID string) ([]Order, error) {
     // Group items by order_id and attach
 }
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #bfdbfe 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #ff6b6b; font-weight: 700; font-size: 1.1em; margin-bottom: 16px">ASSUMPTION CHECK: Read Replicas Solve All Read Bottlenecks</div>
 <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7; margin-bottom: 16px">
@@ -274,7 +358,13 @@ func GetOrdersWithItemsOptimized(userID string) ([]Order, error) {
 </div>
 <h3 id="connection-pooling-deep-dive">Connection Pooling Deep Dive</h3>
 <p>Connection pools prevent the overhead of establishing new database connections (TCP handshake, TLS negotiation, authentication - typically 20-50ms). However, pool configuration is nuanced.</p>
-<pre><code class="language-go">// Production-grade connection pool configuration
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// Production-grade connection pool configuration
 db, err := sql.Open(&quot;postgres&quot;, connStr)
 db.SetMaxOpenConns(25)          // Maximum connections in pool
 db.SetMaxIdleConns(10)          // Connections kept idle for reuse
@@ -286,6 +376,8 @@ db.SetConnMaxIdleTime(1 * time.Minute)  // Close idle connections
 // For SSD: effective_spindle_count is typically 1 (but very fast)
 // For cloud: start with 10-25, load test to find saturation point
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #ffd93d; font-weight: 700; font-size: 1.1em; margin-bottom: 16px">TRADE-OFF: Pool Size vs. Queue Wait Time</div>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
@@ -376,7 +468,13 @@ High retry rates indicate fundamental contention that optimistic locking can't s
 </div>
 <h3 id="internal-mechanism-message-queue-delivery-guarantees">Internal Mechanism: Message Queue Delivery Guarantees</h3>
 <p>Understanding delivery semantics is crucial for correctness:</p>
-<pre><code>At-Most-Once:  Fire and forget. Fast but messages may be lost.
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>At-Most-Once:  Fire and forget. Fast but messages may be lost.
                Use for: metrics, logs, non-critical notifications
 
 At-Least-Once: Retry until acknowledged. Messages may be duplicated.
@@ -385,7 +483,15 @@ At-Least-Once: Retry until acknowledged. Messages may be duplicated.
 Exactly-Once:  Each message processed exactly once. Complex and expensive.
                Use for: financial transactions (but consider idempotency instead)
 </code></pre>
-<pre><code class="language-go">// At-least-once consumer with idempotency
+    </div>
+</div>
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// At-least-once consumer with idempotency
 func ProcessOrderEvent(ctx context.Context, event OrderEvent) error {
     // Idempotency key prevents duplicate processing
     processed, err := redis.SetNX(ctx,
@@ -412,6 +518,8 @@ func ProcessOrderEvent(ctx context.Context, event OrderEvent) error {
     return nil
 }
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #bfdbfe 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #4ecdc4; font-weight: 700; font-size: 1.1em; margin-bottom: 16px">DESIGN CHOICE: Transactional Outbox Pattern</div>
 <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7; margin-bottom: 16px">
@@ -429,7 +537,13 @@ func ProcessOrderEvent(ctx context.Context, event OrderEvent) error {
 </div>
 <h3 id="edge-case-consumer-lag-and-backpressure">Edge Case: Consumer Lag and Backpressure</h3>
 <p>When consumers can't keep up with producers, queue depth grows unbounded. This causes: increased end-to-end latency, memory pressure on brokers, potential message expiration.</p>
-<pre><code class="language-go">// Implementing backpressure with bounded concurrency
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// Implementing backpressure with bounded concurrency
 func StartConsumer(ctx context.Context, queue Queue) {
     // Semaphore limits concurrent processing
     sem := make(chan struct{}, 100) // Max 100 concurrent
@@ -457,6 +571,8 @@ func StartConsumer(ctx context.Context, queue Queue) {
 // Kafka: consumer_group_lag = log_end_offset - consumer_offset
 // Action: Alert when lag &gt; threshold, scale consumers
 </code></pre>
+    </div>
+</div>
 <h3 id="interview-deep-dive-async-processing">Interview Deep-Dive: Async Processing</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
 <h4 style="color: #ff6b6b; margin: 0 0 20px 0; font-size: 1.2em">Level 1: When should you NOT use async processing even though it would improve response time?</h4>
@@ -547,7 +663,13 @@ Several failure modes: (1) <strong>Check-then-act race condition</strong> - if u
 </div>
 <h3 id="internal-mechanism-cache-stampede-prevention">Internal Mechanism: Cache Stampede Prevention</h3>
 <p>When a popular cache entry expires, multiple concurrent requests hit the database simultaneously - a cache stampede. This can overload the database exactly when the cache is supposed to protect it.</p>
-<pre><code class="language-go">// PROBLEMATIC: Simple cache-aside allows stampede
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// PROBLEMATIC: Simple cache-aside allows stampede
 func GetProduct(ctx context.Context, id string) (*Product, error) {
     cached, err := cache.Get(ctx, &quot;product:&quot;+id)
     if err == nil {
@@ -604,6 +726,8 @@ func GetProductWithEarlyExpiry(ctx context.Context, id string) (*Product, error)
     // ... fallback to database
 }
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #bfdbfe 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #ffd93d; font-weight: 700; font-size: 1.1em; margin-bottom: 16px">TRADE-OFF: Cache Invalidation Strategies</div>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px">
@@ -631,7 +755,13 @@ func GetProductWithEarlyExpiry(ctx context.Context, id string) (*Product, error)
 </div>
 <h3 id="edge-case-cache-and-database-consistency">Edge Case: Cache and Database Consistency</h3>
 <p>The cache-aside pattern has a subtle race condition:</p>
-<pre><code>Timeline:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>Timeline:
 T1: Request A reads value=100 from database
 T2: Request B updates value=200 in database
 T3: Request B invalidates cache (cache now empty)
@@ -639,7 +769,15 @@ T4: Request A writes value=100 to cache (STALE!)
 
 Result: Cache has 100, database has 200 - indefinite inconsistency until TTL
 </code></pre>
-<pre><code class="language-go">// MITIGATION: Use versioning or compare-and-set
+    </div>
+</div>
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// MITIGATION: Use versioning or compare-and-set
 func SetCacheIfFresh(ctx context.Context, key string, value interface{}, version int64) error {
     // Only set if our version is current
     script := `
@@ -654,6 +792,8 @@ func SetCacheIfFresh(ctx context.Context, key string, value interface{}, version
     return redis.Eval(ctx, script, []string{key}, value, version, ttlSeconds)
 }
 </code></pre>
+    </div>
+</div>
 <h3 id="interview-deep-dive-caching-layers">Interview Deep-Dive: Caching Layers</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
 <h4 style="color: #ff6b6b; margin: 0 0 20px 0; font-size: 1.2em">Level 1: Your cache hit rate is 95% but p99 latency is still high. How is this possible?</h4>
@@ -715,7 +855,13 @@ Multiple strategies: (1) <strong>Local caching</strong> - each app instance cach
 </div>
 <h3 id="internal-mechanism-auto-scaling-decisions">Internal Mechanism: Auto-Scaling Decisions</h3>
 <p>Auto-scalers must balance responsiveness (scaling up before users experience degradation) with stability (avoiding oscillation from rapid scale up/down cycles).</p>
-<pre><code class="language-yaml"># Kubernetes HPA with multiple metrics and behavior controls
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Yaml</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-yaml"># Kubernetes HPA with multiple metrics and behavior controls
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -776,6 +922,8 @@ spec:
         periodSeconds: 15
       selectPolicy: Max
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #bfdbfe 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #10b981; font-weight: 700; font-size: 1.1em; margin-bottom: 16px">DESIGN CHOICE: Scaling Metrics Selection</div>
 <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7; margin-bottom: 16px">
@@ -802,7 +950,13 @@ spec:
 </div>
 <h3 id="edge-case-cold-start-and-connection-pool-exhaustion">Edge Case: Cold Start and Connection Pool Exhaustion</h3>
 <p>When new instances start, they need time to warm up: JIT compilation, cache population, connection pool establishment. During this period, they're slower than existing instances.</p>
-<pre><code class="language-go">// Implement readiness probe that checks actual readiness
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// Implement readiness probe that checks actual readiness
 func readinessHandler(w http.ResponseWriter, r *http.Request) {
     // Check database connection pool is healthy
     if err := db.Ping(); err != nil {
@@ -834,8 +988,16 @@ func warmUp() {
     warmedUp = true
 }
 </code></pre>
+    </div>
+</div>
 <p>Database connection pool exhaustion during scale-out is common: 10 instances each wanting 20 connections = 200 connections. Suddenly adding 10 more instances means 400 connections.</p>
-<pre><code class="language-go">// Calculate safe pool sizes based on expected scale
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// Calculate safe pool sizes based on expected scale
 // Rule: (instances * max_conns_per_instance) &lt; database_max_connections * 0.8
 
 // For PostgreSQL with max_connections = 500
@@ -845,6 +1007,8 @@ func warmUp() {
 // Use PgBouncer for connection multiplexing
 // 100 app connections -&gt; PgBouncer -&gt; 20 database connections
 </code></pre>
+    </div>
+</div>
 <h3 id="load-balancer-algorithms">Load Balancer Algorithms</h3>
 <p>The choice of load balancing algorithm affects latency distribution and is critical for horizontal scaling effectiveness.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -969,3 +1133,15 @@ Cross-shard queries are the fundamental challenge of sharding. Strategies: (1) <
 </div>
 </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="introduction-to-microservices-architecture">Introduction to Microservices Architecture</h1>
 <h2 id="overview">Overview</h2>
@@ -98,7 +158,13 @@
 - Circular dependencies between services<br />
 - Cannot deploy one service without deploying others<br />
 - Distributed transactions spanning multiple services</p>
-<pre><code class="language-python"># Anti-pattern: Nano-services creating tight coupling
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Anti-pattern: Nano-services creating tight coupling
 class OrderService:
     def create_order(self, order_data):
         # Orchestrating too many fine-grained services
@@ -126,6 +192,8 @@ class OrderService:
         self.event_bus.publish(OrderCreated(order))
         return order
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
 <h4 style="color: #e94560; margin: 0 0 16px 0; font-size: 16px">Interview Questions: Service Boundaries (3-Level Deep)</h4>
 <div style="margin-bottom: 20px">
@@ -176,7 +244,13 @@ class OrderService:
 </div>
 </div>
 <p><strong>The CAP Theorem Reality</strong>: With distributed data, you must choose between consistency and availability during network partitions. Most microservices choose <strong>eventual consistency</strong> with the following implications:</p>
-<pre><code class="language-python"># Eventual consistency example: Order and Inventory
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Eventual consistency example: Order and Inventory
 class OrderService:
     def place_order(self, order_request):
         # Step 1: Reserve inventory optimistically
@@ -218,6 +292,8 @@ class OrderService:
 
         self.events.publish(OrderCancelled(order_id=order.id))
 </code></pre>
+    </div>
+</div>
 <p><strong>Cross-Service Queries</strong>: When you need data from multiple services, you have several patterns:</p>
 <table>
 <thead>
@@ -317,7 +393,13 @@ class OrderService:
 </div>
 </div>
 </div>
-<pre><code class="language-python"># Production-grade resilience implementation
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Production-grade resilience implementation
 from circuitbreaker import circuit
 from tenacity import retry, stop_after_attempt, wait_exponential
 import asyncio
@@ -377,6 +459,8 @@ class ProductService:
 
         return {**product, **reviews}
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
 <h4 style="color: #e94560; margin: 0 0 16px 0; font-size: 16px">Interview Questions: Failure Handling (3-Level Deep)</h4>
 <div style="margin-bottom: 20px">
@@ -520,7 +604,13 @@ class ProductService:
 </div>
 </div>
 <h3 id="real-world-extraction-patterns">Real-World Extraction Patterns</h3>
-<pre><code class="language-python"># Phase 1: Modular Monolith - Clear internal boundaries
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Phase 1: Modular Monolith - Clear internal boundaries
 # /monolith/src/
 #   /orders/         &lt;- Future microservice
 #     __init__.py    &lt;- Public API
@@ -559,6 +649,8 @@ class OrderService:
 # Phase 2: Extract to separate service when ready
 # The interface stays the same - just implementation changes
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
 <h4 style="color: #e94560; margin: 0 0 16px 0; font-size: 16px">Interview Questions: When to Use Microservices (3-Level Deep)</h4>
 <div style="margin-bottom: 20px">
@@ -751,7 +843,13 @@ class OrderService:
 </div>
 </div>
 <h3 id="blue-green-deployment-deep-dive">Blue-Green Deployment Deep Dive</h3>
-<pre><code class="language-yaml"># Kubernetes Blue-Green with Service switch
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Yaml</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-yaml"># Kubernetes Blue-Green with Service switch
 # blue-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -823,6 +921,8 @@ spec:
   - port: 80
     targetPort: 8080
 </code></pre>
+    </div>
+</div>
 <p><strong>Blue-Green Database Challenge</strong>: The hardest part is database schema changes. Solutions:</p>
 <ol>
 <li>
@@ -839,7 +939,13 @@ spec:
 </li>
 </ol>
 <h3 id="canary-deployment-with-automated-rollback">Canary Deployment with Automated Rollback</h3>
-<pre><code class="language-python"># Canary deployment controller
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Canary deployment controller
 class CanaryController:
     def __init__(self, metrics_client, deployment_client):
         self.metrics = metrics_client
@@ -924,6 +1030,8 @@ class CanaryController:
 
         return True
 </code></pre>
+    </div>
+</div>
 <h3 id="gitops-deployment-pipeline">GitOps Deployment Pipeline</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
 <h4 style="color: #00adb5; margin: 0 0 24px 0; text-align: center; font-size: 18px">GitOps Deployment Flow</h4>
@@ -1035,7 +1143,13 @@ class CanaryController:
 </div>
 <hr />
 <h2 id="related-topics">Related Topics</h2>
-<pre><code>        - [[Service Mesh]](/microservices/patterns/service-mesh) - Infrastructure layer for service-to-service communication
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>        - [[Service Mesh]](/microservices/patterns/service-mesh) - Infrastructure layer for service-to-service communication
         - [[Saga Pattern]](/microservices/patterns/saga) - Managing distributed transactions
         - [[API Gateway]](/system-design/api-gateway) - Entry point and cross-cutting concerns
         - [[Event-Driven Architecture]](/microservices/patterns/event-driven) - Async communication patterns
@@ -1043,3 +1157,17 @@ class CanaryController:
         - [[Distributed Tracing]](/observability/distributed-tracing) - Request flow visibility
         - [[Domain-Driven Design]](/architecture/ddd) - Strategic design for service boundaries
 </code></pre>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

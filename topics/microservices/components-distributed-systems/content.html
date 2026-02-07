@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="components-used-in-microservices--distributed-systems">Components Used in Microservices &amp; Distributed Systems</h1>
 <h2 id="overview">Overview</h2>
@@ -189,7 +249,13 @@
 </tbody>
 </table>
 <h3 id="example-kong-configuration">Example: Kong Configuration</h3>
-<pre><code class="language-yaml"># Kong Service Configuration
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Yaml</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-yaml"># Kong Service Configuration
 services:
   - name: user-service
     url: http://user-service:8080
@@ -205,6 +271,8 @@ services:
         config:
           secret_is_base64: false
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="2-service-discovery">2. Service Discovery</h2>
 <p>Enables services to <strong>find and communicate</strong> with each other dynamically.</p>
@@ -279,7 +347,13 @@ services:
 </tbody>
 </table>
 <h3 id="example-consul-service-registration">Example: Consul Service Registration</h3>
-<pre><code class="language-json">{
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Json</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-json">{
   &quot;service&quot;: {
     &quot;name&quot;: &quot;user-service&quot;,
     &quot;id&quot;: &quot;user-service-1&quot;,
@@ -293,6 +367,8 @@ services:
   }
 }
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="3-load-balancer">3. Load Balancer</h2>
 <p>Distributes traffic across multiple service instances.</p>
@@ -487,7 +563,13 @@ services:
 </tbody>
 </table>
 <h3 id="example-kafka-topic-configuration">Example: Kafka Topic Configuration</h3>
-<pre><code class="language-yaml"># Kafka Topic for Order Events
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Yaml</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-yaml"># Kafka Topic for Order Events
 topics:
   - name: order-events
     partitions: 12
@@ -497,6 +579,8 @@ topics:
       cleanup.policy: delete
       min.insync.replicas: 2
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="5-cache-layer">5. Cache Layer</h2>
 <p>Reduces latency and database load through <strong>data caching</strong>.</p>
@@ -610,7 +694,13 @@ topics:
 </div>
 </div>
 <h3 id="polyglot-persistence">Polyglot Persistence</h3>
-<pre><code>| Service | Database | Reason |
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>| Service | Database | Reason |
 |---------|----------|--------|
 | User Management | PostgreSQL | ACID, relations |
 | Product Catalog | MongoDB | Flexible schema |
@@ -622,6 +712,8 @@ topics:
 
 ---
 </code></pre>
+    </div>
+</div>
 <h2 id="7-observability-stack">7. Observability Stack</h2>
 <h3 id="three-pillars-of-observability">Three Pillars of Observability</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -882,3 +974,15 @@ topics:
 <li><strong>Observability first</strong> - You can't fix what you can't see</li>
 <li><strong>Automate everything</strong> - Manual processes don't scale</li>
 </ol>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

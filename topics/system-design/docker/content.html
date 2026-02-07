@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="docker">Docker</h1>
 <h2 id="overview">Overview</h2>
@@ -102,7 +162,13 @@
 <h3 id="container-lifecycle">Container Lifecycle</h3>
 <div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e293b; margin-top: 0">Running Containers</h4>
-<pre><code class="language-bash"># Run a container (pulls image if not local)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Bash</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-bash"># Run a container (pulls image if not local)
 docker run nginx
 # What it does: Creates and starts a new container from the nginx image
 
@@ -149,11 +215,19 @@ docker run -d --restart=always nginx
 # What it does: Automatically restarts container if it crashes or host reboots
 # Options: no, on-failure, always, unless-stopped
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="managing-containers">Managing Containers</h3>
 <div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e293b; margin-top: 0">Container Management</h4>
-<pre><code class="language-bash"># List running containers
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Bash</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-bash"># List running containers
 docker ps
 # What it does: Shows all running containers with ID, image, status, ports
 
@@ -845,3 +919,17 @@ Docker uses Linux kernel features for isolation:
                                         - [[Microservices]](/topic/system-design/microservices) - Service architecture
                                         - [[CI/CD]](/topic/system-design/code-deployment) - Deployment pipelines
 </code></pre>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

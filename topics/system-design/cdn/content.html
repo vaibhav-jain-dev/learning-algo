@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="content-delivery-network-cdn">Content Delivery Network (CDN)</h1>
 <h2 id="overview">Overview</h2>
@@ -112,7 +172,13 @@
 <p>Edge caching is the foundational mechanism of CDNs, storing content copies at geographically distributed Points of Presence (PoPs). Understanding the internal mechanics is crucial for optimizing CDN behavior.</p>
 <h3 id="cache-key-construction">Cache Key Construction</h3>
 <p>The cache key uniquely identifies content in the edge cache. <span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500">Design choice: Cache key composition directly impacts hit rates and storage efficiency.</span></p>
-<pre><code class="language-python">class CacheKeyBuilder:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class CacheKeyBuilder:
     &quot;&quot;&quot;
     Demonstrates how CDNs construct cache keys.
     Understanding this is critical for debugging cache behavior.
@@ -179,6 +245,8 @@
 
         return hashlib.sha256('|'.join(header_values).encode()).hexdigest()[:16]
 </code></pre>
+    </div>
+</div>
 <h3 id="cache-storage-tiers">Cache Storage Tiers</h3>
 <p>Modern edge servers implement multi-tier storage for optimal performance:</p>
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -220,7 +288,13 @@
 </div>
 <h3 id="cache-admission-policies">Cache Admission Policies</h3>
 <p><span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500">Trade-off: Caching everything wastes storage on one-hit-wonders; being too selective reduces hit rates.</span></p>
-<pre><code class="language-python">class CacheAdmissionController:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class CacheAdmissionController:
     &quot;&quot;&quot;
     Controls which objects are admitted to cache.
     Prevents cache pollution from one-hit-wonders.
@@ -303,6 +377,8 @@
 
         return True
 </code></pre>
+    </div>
+</div>
 <h3 id="interview-questions-edge-caching-3-levels-deep">Interview Questions: Edge Caching (3 Levels Deep)</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px">Level 1: "How does an edge cache decide what to store?"</div>
@@ -337,7 +413,13 @@
 <p>Cache invalidation is one of the two hard problems in computer science. Understanding invalidation mechanisms deeply is essential for maintaining cache coherence without sacrificing performance.</p>
 <h3 id="time-based-expiration-ttl">Time-Based Expiration (TTL)</h3>
 <p><span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500">Trade-off: Short TTLs ensure freshness but reduce hit rates; long TTLs improve performance but serve stale content.</span></p>
-<pre><code class="language-python">                class TTLStrategy:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">                class TTLStrategy:
                 &quot;&quot;&quot;
                 TTL-based invalidation - the simplest approach.
                 Content automatically expires after specified duration.
@@ -397,8 +479,16 @@
                 'Cache-Control': f'public, max-age={ttl}, stale-while-revalidate={swr}',
                 's-maxage': str(ttl * 2)  # CDN can cache longer than browser
                 }</code></pre>
+    </div>
+</div>
 <h3 id="purge-based-invalidation">Purge-Based Invalidation</h3>
-<pre><code class="language-python">                class PurgeOrchestrator:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">                class PurgeOrchestrator:
                 &quot;&quot;&quot;
                 Coordinates cache purges across global CDN infrastructure.
                 Critical for instant updates when content changes.
@@ -499,9 +589,17 @@
                 'objects_purged': sum(r.get('count', 0) for r in results
                 if isinstance(r, dict))
                 }</code></pre>
+    </div>
+</div>
 <h3 id="versioned-urls-cache-busting">Versioned URLs (Cache Busting)</h3>
 <p><span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500">Design choice: Versioned URLs eliminate invalidation complexity but require updating all references when content changes.</span></p>
-<pre><code class="language-python">                class ContentVersioning:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">                class ContentVersioning:
                 &quot;&quot;&quot;
                 Version content by embedding content hash in URL.
                 Eliminates need for explicit invalidation.
@@ -579,8 +677,16 @@
                 return match.group(0)
 
                 return re.sub(r'url\(([^)]+)\)', replace_url, css_content)</code></pre>
+    </div>
+</div>
 <h3 id="stale-while-revalidate-pattern">Stale-While-Revalidate Pattern</h3>
-<pre><code class="language-python">                class StaleWhileRevalidateCache:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">                class StaleWhileRevalidateCache:
                 &quot;&quot;&quot;
                 Implements stale-while-revalidate pattern.
 
@@ -645,6 +751,8 @@
                 logger.warning(f&quot;Background revalidation failed: {cache_key}: {e}&quot;)
                 finally:
                 self.revalidation_in_progress.discard(cache_key)</code></pre>
+    </div>
+</div>
 <h3 id="interview-questions-cache-invalidation-3-levels-deep">Interview Questions: Cache Invalidation (3 Levels Deep)</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px">Level 1: "What are the main cache invalidation strategies?"</div>
@@ -734,7 +842,13 @@
 </div>
 <p><span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500">Trade-off: Origin shield adds one network hop latency (~20-50ms) but can reduce origin traffic by 70-90% during cache misses.</span></p>
 <h3 id="origin-shield-implementation">Origin Shield Implementation</h3>
-<pre><code class="language-python">class OriginShield:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class OriginShield:
 &quot;&quot;&quot;
 Mid-tier cache that sits between edge servers and origin.
 
@@ -867,8 +981,16 @@ if client_ip:
 filtered['X-Original-Client-IP'] = client_ip.split(',')[0].strip()
 
 return filtered</code></pre>
+    </div>
+</div>
 <h3 id="multi-region-shield-architecture">Multi-Region Shield Architecture</h3>
-<pre><code class="language-python">class MultiRegionShieldRouter:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class MultiRegionShieldRouter:
 &quot;&quot;&quot;
 Routes edge requests to optimal origin shield.
 
@@ -938,6 +1060,8 @@ continue
 # All shields failed - go direct to origin
 logger.error(&quot;All shields failed, falling back to direct origin&quot;)
 return await self.direct_origin_fetch(request)</code></pre>
+    </div>
+</div>
 <h3 id="interview-questions-origin-shield-3-levels-deep">Interview Questions: Origin Shield (3 Levels Deep)</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px">Level 1: "What is an origin shield and why use one?"</div>
@@ -982,7 +1106,13 @@ return await self.direct_origin_fetch(request)</code></pre>
 <p>Geographic routing directs users to the nearest or best-performing edge server. This involves <a href="/topic/system-design/dns">[DNS]</a>-based routing, Anycast networking, and performance-based selection.</p>
 <h3 id="dns-based-geographic-routing">DNS-Based Geographic Routing</h3>
 <p><span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500">Assumption: DNS resolution happens at the user's configured resolver, which may not be geographically close to the user (e.g., Google DNS 8.8.8.8).</span></p>
-<pre><code class="language-python">class GeoDNSResolver:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class GeoDNSResolver:
 &quot;&quot;&quot;
 DNS-based geographic routing for CDN.
 
@@ -1079,6 +1209,8 @@ perf_score * 0.3
 )
 
 return sorted(candidates, key=lambda x: x['score'], reverse=True)</code></pre>
+    </div>
+</div>
 <h3 id="anycast-routing">Anycast Routing</h3>
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
 <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">ANYCAST vs UNICAST ROUTING</h3>
@@ -1093,7 +1225,13 @@ return sorted(candidates, key=lambda x: x['score'], reverse=True)</code></pre>
 </div>
 </div>
 </div>
-<pre><code class="language-python">class AnycastRoutingSimulator:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class AnycastRoutingSimulator:
 &quot;&quot;&quot;
 Simulates Anycast BGP routing behavior.
 
@@ -1189,8 +1327,16 @@ new_pop = self._find_best_route(available_pops, client_asn)
 convergence_time_s = random.uniform(30, 90)
 
 return new_pop, convergence_time_s</code></pre>
+    </div>
+</div>
 <h3 id="performance-based-routing">Performance-Based Routing</h3>
-<pre><code class="language-python">class PerformanceBasedRouter:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class PerformanceBasedRouter:
 &quot;&quot;&quot;
 Route based on real-time performance measurements.
 
@@ -1289,6 +1435,8 @@ if r &lt;= cumulative:
 return server_id
 
 return list(scores.keys())[0]  # Fallback</code></pre>
+    </div>
+</div>
 <h3 id="interview-questions-geographic-routing-3-levels-deep">Interview Questions: Geographic Routing (3 Levels Deep)</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px">Level 1: "How do CDNs route users to the nearest edge server?"</div>
@@ -1335,7 +1483,13 @@ return list(scores.keys())[0]  # Fallback</code></pre>
 <p>Cache warming is the proactive population of caches before user requests arrive. This eliminates cold-cache latency penalties and ensures consistent performance from the first request.</p>
 <p><span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500">Trade-off: Warming consumes bandwidth and origin resources. Over-warming wastes resources on content that's never requested; under-warming causes cold-cache latency spikes.</span></p>
 <h3 id="cache-warming-strategies">Cache Warming Strategies</h3>
-<pre><code class="language-python">class CacheWarmingOrchestrator:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class CacheWarmingOrchestrator:
 &quot;&quot;&quot;
 Orchestrates cache warming across CDN edge servers.
 
@@ -1476,6 +1630,8 @@ logger.warning(f&quot;Warming failed for {url} at {server['id']}: {e}&quot;)
 
 # Rate limit to avoid overwhelming origin
 await asyncio.sleep(0.05)  # 20 requests/second</code></pre>
+    </div>
+</div>
 <h3 id="tiered-warming-architecture">Tiered Warming Architecture</h3>
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
 <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">TIERED CACHE WARMING</h3>
@@ -1509,7 +1665,13 @@ await asyncio.sleep(0.05)  # 20 requests/second</code></pre>
 </div>
 </div>
 </div>
-<pre><code class="language-python">class TieredWarmingStrategy:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class TieredWarmingStrategy:
 &quot;&quot;&quot;
 Implements tiered warming to balance coverage vs resource usage.
 &quot;&quot;&quot;
@@ -1596,6 +1758,8 @@ costs['full_warming']['origin_requests'])
 }
 
 return costs</code></pre>
+    </div>
+</div>
 <h3 id="interview-questions-cache-warming-3-levels-deep">Interview Questions: Cache Warming (3 Levels Deep)</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px">Level 1: "What is cache warming and when should you use it?"</div>
@@ -1667,7 +1831,13 @@ return costs</code></pre>
 </div>
 </div>
 <h3 id="edge-side-includes-esi">Edge-Side Includes (ESI)</h3>
-<pre><code class="language-python">class ESIProcessor:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class ESIProcessor:
 &quot;&quot;&quot;
 Edge-Side Includes: Compose pages from cached fragments at the edge.
 
@@ -1766,8 +1936,16 @@ r'&lt;esi:include\s+src=&quot;([^&quot;]+)&quot;(?:\s+ttl=&quot;(\d+)&quot;)?(?:
   results = await asyncio.gather(*tasks, return_exceptions=True)
 
   return dict(r for r in results if not isinstance(r, Exception))</code></pre>
+    </div>
+</div>
 <h3 id="ab-testing-at-the-edge">A/B Testing at the Edge</h3>
-<pre><code class="language-python">class EdgeABTesting:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class EdgeABTesting:
 &quot;&quot;&quot;
 Perform A/B testing at the edge for instant personalization.
 
@@ -1865,10 +2043,18 @@ return visitor_cookie
 # Generate deterministic ID from request properties
 fingerprint = f&quot;{request.client_ip}:{request.headers.get('User-Agent', '')}&quot;
 return hashlib.sha256(fingerprint.encode()).hexdigest()[:16]</code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="production-considerations">Production Considerations</h2>
 <h3 id="monitoring-and-observability">Monitoring and Observability</h3>
-<pre><code class="language-python">class CDNMetrics:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class CDNMetrics:
 &quot;&quot;&quot;
 Key metrics for CDN monitoring.
 &quot;&quot;&quot;
@@ -1959,6 +2145,8 @@ return {
 }
 ]
 }</code></pre>
+    </div>
+</div>
 <h3 id="security-considerations">Security Considerations</h3>
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #dc2626; font-weight: 700; margin-bottom: 16px">Security Checklist for CDN Configuration</div>
@@ -1985,12 +2173,20 @@ return {
 </div>
 <hr />
 <h2 id="related-topics">Related Topics</h2>
-<pre><code>- [[Caching Strategies]](/topic/system-design/caching) - Detailed caching patterns and eviction policies
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- [[Caching Strategies]](/topic/system-design/caching) - Detailed caching patterns and eviction policies
 - [[Load Balancing]](/topic/system-design/load-balancing) - Traffic distribution and health checking
 - [[DNS]](/topic/system-design/dns) - Domain resolution and geographic routing
 - [[Distributed Systems]](/topic/system-design/distributed-systems) - Consistency and partition tolerance
 - [[Rate Limiting]](/topic/system-design/rate-limiting) - Traffic control at the edge
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="summary">Summary</h2>
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
@@ -2003,3 +2199,15 @@ return {
 <strong>5. Cache Warming</strong>: Proactive for deployments and events. Tiered approach balances coverage vs resource usage. Predictive warming based on traffic patterns.
 </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

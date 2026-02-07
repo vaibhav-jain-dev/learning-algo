@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="code-deployment-systems">Code Deployment Systems</h1>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
@@ -352,11 +412,19 @@ Blue and green each have their own database. Data sync via CDC (Change Data Capt
 <p><strong>Mitigation</strong>: Run simultaneous baseline comparison (deploy identical code as &quot;baseline canary&quot;), compare canary vs. this baseline rather than historical data. If canary is significantly worse than contemporary baseline, fail.</p>
 </div>
 <p><strong>Automated Rollback Criteria</strong>:</p>
-<pre><code>IF error_rate_canary &gt; error_rate_baseline * 1.5 THEN rollback
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>IF error_rate_canary &gt; error_rate_baseline * 1.5 THEN rollback
 IF p99_latency_canary &gt; p99_latency_baseline * 1.3 THEN rollback
 IF cpu_saturation_canary &gt; 0.8 THEN rollback
 IF (conversion_rate_baseline - conversion_rate_canary) / conversion_rate_baseline &gt; 0.05 THEN rollback
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="edge-cases-and-failure-modes-2">Edge Cases and Failure Modes</h3>
 <div style="background: linear-gradient(135deg, #3d1f1f 0%, #5d3a3a 100%); border-radius: 12px; padding: 20px; margin: 20px 0">
@@ -879,3 +947,15 @@ Rules evaluated in order: user ID match, segment membership, percentage rollout,
 <li>&quot;Canary analysis requires understanding both golden signals and business metrics&quot;</li>
 </ul>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

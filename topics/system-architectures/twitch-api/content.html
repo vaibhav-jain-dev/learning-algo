@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="design-the-twitch-api">Design The Twitch API</h1>
 <h2 id="overview">Overview</h2>
@@ -103,8 +163,16 @@
 </div>
 </div>
 <div style="text-align: center; color: #9146ff; font-size: 24px">↓</div>
-<pre><code>&lt;!-- Ingest Layer --&gt;
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>&lt;!-- Ingest Layer --&gt;
 </code></pre>
+    </div>
+</div>
 <div style="background: rgba(145, 70, 255, 0.1);border-radius: 12px; padding: 20px">
 <h5 style="color: #9146ff; margin: 0 0 16px 0; text-align: center">INGEST LAYER (Edge Locations)</h5>
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px">
@@ -400,7 +468,13 @@
 </div>
 </div>
 <h3 id="chat-implementation">Chat Implementation</h3>
-<pre><code class="language-python">class ChatService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class ChatService:
 &quot;&quot;&quot;
 Production chat service with rate limiting and moderation.
 
@@ -497,8 +571,16 @@ await self.redis.sadd(f&quot;r9k:{channel_id}&quot;, message_hash)
 await self.redis.expire(f&quot;r9k:{channel_id}&quot;, 3600)
 
 return ModerationResult(blocked=False, filtered_message=message)</code></pre>
+    </div>
+</div>
 <h3 id="edge-websocket-server">Edge WebSocket Server</h3>
-<pre><code class="language-python">class EdgeChatServer:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class EdgeChatServer:
 &quot;&quot;&quot;
 Edge server holding 10K+ WebSocket connections.
 Consumes from Kafka and broadcasts to connected clients.
@@ -586,6 +668,8 @@ await asyncio.wait_for(websocket.send(payload), timeout=5.0)
 except (ConnectionClosed, asyncio.TimeoutError):
 # Connection dead - will be cleaned up
 pass</code></pre>
+    </div>
+</div>
 <h3 id="chat-interview-questions-3-levels-deep">Chat Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: How do you scale chat for 100K+ concurrent viewers in a single channel?</h4>
@@ -673,7 +757,13 @@ pass</code></pre>
 </div>
 </div>
 <h3 id="clip-creation-system">Clip Creation System</h3>
-<pre><code class="language-go">// Real-time clip extraction from live stream or VOD
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// Real-time clip extraction from live stream or VOD
 type ClipService struct {
 segmentStore  SegmentStore     // In-memory/SSD cache of recent segments
 vodStore      VODStore         // S3 for archived content
@@ -775,6 +865,8 @@ return c.metadata.UpdateClip(job.Clip.ID, map[string]interface{}{
 &quot;processed_at&quot;:  time.Now(),
 })
 }</code></pre>
+    </div>
+</div>
 <h3 id="vod-interview-questions-3-levels-deep">VOD Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: How do you efficiently store VODs when a popular streamer broadcasts 8 hours daily?</h4>
@@ -897,7 +989,13 @@ return c.metadata.UpdateClip(job.Clip.ID, map[string]interface{}{
 </div>
 </div>
 <h3 id="transcoding-implementation">Transcoding Implementation</h3>
-<pre><code class="language-python">class TranscodingPipeline:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class TranscodingPipeline:
 &quot;&quot;&quot;
 Real-time transcoding pipeline using GPU acceleration.
 
@@ -1035,6 +1133,8 @@ f&quot;{self.output_path}/{output.name}/playlist.m3u8&quot;
 ])
 
 return cmd</code></pre>
+    </div>
+</div>
 <h3 id="transcoding-interview-questions-3-levels-deep">Transcoding Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: Why does Twitch need to transcode streams? Can't viewers just watch the source quality?</h4>
@@ -1137,7 +1237,13 @@ return cmd</code></pre>
 </div>
 </div>
 <h3 id="recommendation-implementation">Recommendation Implementation</h3>
-<pre><code class="language-python">class RecommendationEngine:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class RecommendationEngine:
 &quot;&quot;&quot;
 Two-stage recommendation pipeline: Candidate Generation + Ranking.
 
@@ -1310,8 +1416,16 @@ if game:
 game_counts[game] += 1
 
 return result</code></pre>
+    </div>
+</div>
 <h3 id="real-time-features-pipeline">Real-Time Features Pipeline</h3>
-<pre><code class="language-python">class RealTimeFeatureService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class RealTimeFeatureService:
 &quot;&quot;&quot;
 Computes and serves real-time features for recommendations.
 
@@ -1382,6 +1496,8 @@ ttl_seconds=30,
 )
 
 await job.start()</code></pre>
+    </div>
+</div>
 <h3 id="recommendation-interview-questions-3-levels-deep">Recommendation Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: How does Twitch's recommendation system differ from Netflix's?</h4>
@@ -1444,7 +1560,13 @@ await job.start()</code></pre>
 </tbody>
 </table>
 </div>
-<pre><code class="language-python"># Phase 1: Simple architecture using managed services
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Phase 1: Simple architecture using managed services
 class StreamService:
 def __init__(self, ivs_client, chat_service):
 self.ivs = ivs_client  # AWS IVS handles ingest + transcode + CDN
@@ -1476,6 +1598,8 @@ channel.publish(&quot;message&quot;, {
 &quot;message&quot;: message,
 &quot;timestamp&quot;: time.time(),
 })</code></pre>
+    </div>
+</div>
 </div>
 </div>
 <h3 id="phase-2-growth-phase">Phase 2: Growth Phase</h3>
@@ -1626,23 +1750,39 @@ channel.publish(&quot;message&quot;, {
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <h3 id="red-flags-in-your-answer">Red Flags in Your Answer</h3>
 <div style="background: #3d1f1f; border-radius: 8px; padding: 16px; margin: 16px 0">
-<pre><code>- **&quot;Use WebRTC for the main broadcast stream&quot;** - Shows lack of understanding of scale requirements
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- **&quot;Use WebRTC for the main broadcast stream&quot;** - Shows lack of understanding of scale requirements
 - **&quot;Store chat messages in SQL database&quot;** - Missed the real-time/ephemeral nature of chat
 - **&quot;Build custom CDN from scratch&quot;** - Unless you're at Twitch scale, this is over-engineering
 - **&quot;Single WebSocket server for all users&quot;** - Doesn't understand connection limits (~65K per server)
 - **&quot;Transcode to all qualities for every streamer&quot;** - Ignores cost constraints
 - **&quot;Same architecture for 100 viewers and 100K viewers&quot;** - Missing scale awareness
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="impressive-statements">Impressive Statements</h3>
 <div style="background: #1f3d1f; border-radius: 8px; padding: 16px; margin: 16px 0">
-<pre><code>- **&quot;For &lt; 100 concurrent streamers, I'd use AWS IVS rather than building transcoding infrastructure&quot;** - Shows pragmatism
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- **&quot;For &lt; 100 concurrent streamers, I'd use AWS IVS rather than building transcoding infrastructure&quot;** - Shows pragmatism
 - **&quot;The median stream has very few viewers, so optimize for the common case while handling viral moments&quot;** - Demonstrates workload understanding
 - **&quot;Chat can be eventually consistent because viewers don't notice 100ms delay between edge servers&quot;** - Shows consistency trade-off awareness
 - **&quot;HLS latency comes from segment duration + encoding + CDN + buffer - each can be optimized independently&quot;** - Shows deep latency stack knowledge
 - **&quot;CDN caching converts O(n) bandwidth into O(1) for popular content&quot;** - Demonstrates CDN value understanding
 - **&quot;Transcoding is where Twitch differentiates - partners get priority access to limited GPU resources&quot;** - Shows business/technical connection
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="30-second-summary-for-interviews">30-Second Summary for Interviews</h3>
 <blockquote>
@@ -1651,7 +1791,13 @@ channel.publish(&quot;message&quot;, {
 </div>
 <hr />
 <h2 id="related-topics">Related Topics</h2>
-<pre><code>- [[cdn]](/topic/system-design/cdn) - Edge caching and delivery networks
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- [[cdn]](/topic/system-design/cdn) - Edge caching and delivery networks
 - [[message-queues]](/topic/system-design/message-queues) - Kafka for chat distribution
 - [[rate-limiting]](/topic/system-design/rate-limiting) - Chat flood protection
 - [[caching]](/topic/system-design/caching) - Segment and metadata caching
@@ -1660,3 +1806,17 @@ channel.publish(&quot;message&quot;, {
 - [[concurrency-patterns]](/topic/system-design/concurrency-patterns) - WebSocket server design
 - [[latency-throughput]](/topic/system-design/latency-throughput) - Streaming latency optimization
 </code></pre>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

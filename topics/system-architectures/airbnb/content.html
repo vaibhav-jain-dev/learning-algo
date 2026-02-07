@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="design-airbnb">Design Airbnb</h1>
 <nav class="toc" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
@@ -253,7 +313,13 @@ Ranking Score = w1 * quality_score<br/>
 <li><strong>Budget</strong>: $3,000 - $15,000/month</li>
 </ul>
 <h4 id="monolithic-architecture-phase1-architecture">Monolithic Architecture {#phase1-architecture}</h4>
-<pre><code class="language-python">class BookingService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class BookingService:
     def create_booking(self, guest_id, listing_id, check_in, check_out, guests):
         with transaction.atomic():
             listing = Listing.objects.select_for_update().get(id=listing_id)
@@ -301,6 +367,8 @@ Ranking Score = w1 * quality_score<br/>
         ).exists()
         return not blocked
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -404,7 +472,13 @@ Ranking Score = w1 * quality_score<br/>
 </div>
 </div>
 <h4 id="dynamic-pricing-dynamic-pricing">Dynamic Pricing {#dynamic-pricing}</h4>
-<pre><code class="language-python">class PricingService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class PricingService:
     def calculate_price(self, listing, check_in, check_out):
         base_price = listing.base_price
         total = 0
@@ -434,6 +508,8 @@ Ranking Score = w1 * quality_score<br/>
 
         return total
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -653,7 +729,13 @@ Ranking Score = w1 * quality_score<br/>
 </div>
 </div>
 <h3 id="idempotency-handling-idempotency-handling">Idempotency Handling {#idempotency-handling}</h3>
-<pre><code class="language-python">class BookingService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class BookingService:
     def create_booking(self, idempotency_key, guest_id, listing_id, dates):
         # Check for duplicate request
         cached = redis.get(f'booking:idempotency:{idempotency_key}')
@@ -680,8 +762,16 @@ Ranking Score = w1 * quality_score<br/>
             )
             raise
 </code></pre>
+    </div>
+</div>
 <h3 id="circuit-breaker-pattern-circuit-breaker">Circuit Breaker Pattern {#circuit-breaker}</h3>
-<pre><code class="language-python">class PaymentCircuitBreaker:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class PaymentCircuitBreaker:
     def __init__(self):
         self.failure_count = 0
         self.failure_threshold = 5
@@ -714,6 +804,8 @@ Ranking Score = w1 * quality_score<br/>
         if self.failure_count &gt;= self.failure_threshold:
             self.state = 'OPEN'
 </code></pre>
+    </div>
+</div>
 </div>
 <hr />
 <h2 id="aws-technologies--alternatives-aws-technologies-alternatives">AWS Technologies &amp; Alternatives {#aws-technologies-alternatives}</h2>
@@ -790,7 +882,13 @@ Ranking Score = w1 * quality_score<br/>
 </div>
 </div>
 <h3 id="2-overbooking-prevention-overbooking-prevention">2. Overbooking Prevention {#overbooking-prevention}</h3>
-<pre><code class="language-python"># Idempotent booking with optimistic locking
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Idempotent booking with optimistic locking
 class BookingService:
     def book(self, request_id, listing_id, dates):
         # Check for duplicate request
@@ -826,6 +924,8 @@ class BookingService:
 
             return booking
 </code></pre>
+    </div>
+</div>
 </div>
 <hr />
 <h2 id="interview-deep-dive-questions-interview-deep-dive-questions">Interview Deep Dive Questions {#interview-deep-dive-questions}</h2>
@@ -903,7 +1003,13 @@ For &lt; 100 bookings/day on a regional vacation rental site, a simple database 
 <p><strong>Custom Relevance Scoring</strong>:</p>
 <ul>
 <li>We use Elasticsearch's <code>function_score</code> to compute:
-<pre><code>base_score = BM25(query, listing_description)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>base_score = BM25(query, listing_description)
 decay_score = exp(-distance_to_center / 10km)
 quality_score = (review_count * avg_rating) / 1000
 booking_likelihood = ML_model_prediction (0-1)
@@ -911,6 +1017,8 @@ freshness = 1 / (days_since_last_booking + 1)
 
 final_score = 0.2*base_score + 0.15*decay_score + 0.25*quality_score + 0.3*booking_likelihood + 0.1*freshness
 </code></pre>
+    </div>
+</div>
 </li>
 <li>PostgreSQL has no equivalent to <code>function_score</code> - you'd need to compute in application layer</li>
 </ul>
@@ -963,7 +1071,13 @@ Vrbo's early architecture used PostgreSQL with careful indexing. For a regional 
 <p>&quot;Calendar storage is a fascinating trade-off between storage efficiency, query performance, and update complexity. Let me walk through the options with real numbers:</p>
 <p><strong>Option 1: Date-Per-Row (Simple but Storage-Heavy)</strong></p>
 <p>Schema:</p>
-<pre><code class="language-sql">CREATE TABLE calendar (
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Sql</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-sql">CREATE TABLE calendar (
     listing_id UUID,
     date DATE,
     available BOOLEAN,
@@ -973,6 +1087,8 @@ Vrbo's early architecture used PostgreSQL with careful indexing. For a regional 
     PRIMARY KEY (listing_id, date)
 );
 </code></pre>
+    </div>
+</div>
 <p>Numbers for Airbnb Scale:</p>
 <ul>
 <li>7M listings x 365 days x 2 years forward visibility = <strong>5.1 billion rows</strong></li>
@@ -982,7 +1098,13 @@ Vrbo's early architecture used PostgreSQL with careful indexing. For a regional 
 </ul>
 <p><strong>Option 2: Range-Based (Compact but Complex)</strong></p>
 <p>Schema:</p>
-<pre><code class="language-sql">CREATE TABLE calendar_blocks (
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Sql</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-sql">CREATE TABLE calendar_blocks (
     id UUID PRIMARY KEY,
     listing_id UUID,
     start_date DATE,
@@ -992,6 +1114,8 @@ Vrbo's early architecture used PostgreSQL with careful indexing. For a regional 
 );
 CREATE INDEX idx_availability ON calendar_blocks (listing_id, start_date, end_date);
 </code></pre>
+    </div>
+</div>
 <p>Numbers:</p>
 <ul>
 <li>Average listing has ~20 blocks/year (bookings + host blocks)</li>
@@ -1012,11 +1136,19 @@ CREATE INDEX idx_availability ON calendar_blocks (listing_id, start_date, end_da
 <li><strong>Redis</strong>: Availability bitmaps for fast search filtering</li>
 </ul>
 <p>Redis Bitmap Structure:</p>
-<pre><code>Key: availability:listing:L12345:2024
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>Key: availability:listing:L12345:2024
 Value: 365 bits, one per day (bit 0 = Jan 1, bit 364 = Dec 31)
 Size: 46 bytes per listing per year
 Total: 7M listings x 46 bytes = 322 MB (fits in memory!)
 </code></pre>
+    </div>
+</div>
 <p>Query 'Find available listings in Paris for Dec 15-20':</p>
 <ol>
 <li>Elasticsearch returns 50,000 listing IDs matching Paris geo-filter</li>
@@ -1053,7 +1185,13 @@ Vrbo uses simple calendar tables - no fancy availability system. For &lt; 50K li
 <blockquote>
 <p>&quot;Dynamic pricing is a multi-layered system that balances revenue optimization with host trust and guest experience. Let me walk through the complete implementation:</p>
 <p><strong>Layer 1: Rule-Based Pricing (Everyone Starts Here)</strong></p>
-<pre><code class="language-python">def calculate_base_multiplier(listing, date):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def calculate_base_multiplier(listing, date):
     multiplier = 1.0
 
     # Day of week: Fri-Sat premium
@@ -1080,6 +1218,8 @@ Vrbo uses simple calendar tables - no fancy availability system. For &lt; 50K li
 
     return multiplier
 </code></pre>
+    </div>
+</div>
 <p><strong>Layer 2: Demand-Based Adjustment</strong></p>
 <p>Real-time demand signals:</p>
 <ul>
@@ -1088,7 +1228,13 @@ Vrbo uses simple calendar tables - no fancy availability system. For &lt; 50K li
 <li><strong>Days until check-in</strong>: 60+ days out = standard price, 14-30 days = slight increase if high demand, &lt;7 days = discount if unsold</li>
 <li><strong>Competitor pricing</strong>: Similar listings in area priced $20 lower = adjust to stay competitive</li>
 </ul>
-<pre><code class="language-python">def get_demand_multiplier(listing, date):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def get_demand_multiplier(listing, date):
     days_out = (date - today()).days
     local_demand = get_demand_score(listing.location, date)  # 0-1
 
@@ -1108,6 +1254,8 @@ Vrbo uses simple calendar tables - no fancy availability system. For &lt; 50K li
         else:
             return 0.80  # Need to fill, discount
 </code></pre>
+    </div>
+</div>
 <p><strong>Layer 3: ML-Based Optimization (Airbnb Scale)</strong></p>
 <p>Model inputs:</p>
 <ul>
@@ -1118,7 +1266,13 @@ Vrbo uses simple calendar tables - no fancy availability system. For &lt; 50K li
 <li>Local demand signals</li>
 </ul>
 <p>Model output: <strong>Optimal price point that maximizes expected revenue</strong></p>
-<pre><code>Expected Revenue = Price * P(booking at Price)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>Expected Revenue = Price * P(booking at Price)
 
 Example for listing L12345 on July 4th:
 - At $150/night: 80% booking probability = $120 expected revenue
@@ -1127,6 +1281,8 @@ Example for listing L12345 on July 4th:
 
 Recommendation: $150/night (highest expected revenue)
 </code></pre>
+    </div>
+</div>
 <p><strong>Layer 4: Host Control and Trust</strong></p>
 <p>Critical design decisions:</p>
 <ul>
@@ -1137,7 +1293,13 @@ Recommendation: $150/night (highest expected revenue)
 <li><strong>Transparency</strong>: Show host why price was adjusted ('Local demand +15%')</li>
 </ul>
 <p><strong>Real Example - Paris July 4th Weekend</strong>:</p>
-<pre><code>Listing: Cozy Marais Apartment, Base price: $120/night
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>Listing: Cozy Marais Apartment, Base price: $120/night
 
 Rule-based:
   - Weekend: +20% = $144
@@ -1155,6 +1317,8 @@ ML adjustment:
 Final suggestion: $219/night (host sees breakdown)
 Host can: Accept, modify, or disable Smart Pricing
 </code></pre>
+    </div>
+</div>
 <p><strong>Failure Scenarios and Guardrails</strong>:</p>
 <ul>
 <li><strong>Price spike during tragedy</strong>: Manual override to disable surge during natural disasters</li>
@@ -1178,7 +1342,13 @@ For a small property management company, a simple seasonal pricing table (high/m
 <li>Will guest see the now-unavailable listing?</li>
 </ul>
 <p><strong>Data Flow Architecture</strong>:</p>
-<pre><code>Host Action (Block Dates)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>Host Action (Block Dates)
     |
     v
 Listing Service (PostgreSQL) -- Source of Truth
@@ -1192,9 +1362,17 @@ Kafka Event: {listing_id: L12345, event: 'availability_changed', dates: [...]}
     |
     +---&gt; Notification Service --&gt; Push to guests with wishlists
 </code></pre>
+    </div>
+</div>
 <p><strong>Layer 1: Event Publishing (The Source)</strong></p>
 <p>Every listing change publishes to Kafka:</p>
-<pre><code class="language-python">def block_dates(listing_id, start_date, end_date, reason):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def block_dates(listing_id, start_date, end_date, reason):
     # Write to PostgreSQL (source of truth)
     CalendarBlock.objects.create(
         listing_id=listing_id,
@@ -1212,9 +1390,17 @@ Kafka Event: {listing_id: L12345, event: 'availability_changed', dates: [...]}
         'version': listing.calendar_version
     })
 </code></pre>
+    </div>
+</div>
 <p><strong>Layer 2: Search Index Update (Elasticsearch)</strong></p>
 <p>Consumer processes events and updates search index:</p>
-<pre><code class="language-python">@kafka_consumer('listing-changes')
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">@kafka_consumer('listing-changes')
 def update_search_index(event):
     listing = fetch_listing_with_calendar(event['listing_id'])
 
@@ -1233,6 +1419,8 @@ def update_search_index(event):
         }
     )
 </code></pre>
+    </div>
+</div>
 <p>Latency breakdown:</p>
 <ul>
 <li>Kafka consumer lag: 10-50ms</li>
@@ -1275,7 +1463,13 @@ def update_search_index(event):
 </table>
 <p><strong>Layer 4: The Safety Net (Booking Time Re-Check)</strong></p>
 <p>Even with 60-second search staleness, bookings are safe:</p>
-<pre><code class="language-python">def create_booking(guest_id, listing_id, dates):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def create_booking(guest_id, listing_id, dates):
     # ALWAYS check source of truth, never trust cached data
     with db.transaction():
         availability = CalendarBlock.objects.filter(
@@ -1291,6 +1485,8 @@ def update_search_index(event):
 
         # Proceed with booking...
 </code></pre>
+    </div>
+</div>
 <p><strong>Real Scenario - The 'Ghost Listing' Problem</strong>:</p>
 <p>Timeline:</p>
 <ul>
@@ -1303,7 +1499,13 @@ def update_search_index(event):
 </ul>
 <p>Result: <strong>No double-booking, minor UX friction</strong> (guest sees listing in search, but detail page shows unavailable)</p>
 <p><strong>Optimization: Optimistic UI with Reconciliation</strong></p>
-<pre><code class="language-javascript">// Client-side
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Javascript</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-javascript">// Client-side
 function onSearchResults(results) {
     // Show results immediately (may be slightly stale)
     renderResults(results);
@@ -1320,6 +1522,8 @@ function onSearchResults(results) {
     });
 }
 </code></pre>
+    </div>
+</div>
 <p><strong>Monitoring and Alerting</strong>:</p>
 <ul>
 <li>Track Kafka consumer lag - alert if &gt; 5 seconds</li>
@@ -1535,7 +1739,13 @@ For &lt; 10K listings, skip Kafka entirely. Direct database queries with proper 
 </tbody>
 </table>
 <p><strong>Real example</strong>: A 5,000-listing platform queries:</p>
-<pre><code class="language-sql">SELECT * FROM listings
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Sql</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-sql">SELECT * FROM listings
 WHERE ST_DWithin(location, ST_MakePoint(-73.9, 40.7)::geography, 50000)
   AND available_dates @&gt; '[2024-12-15, 2024-12-20]'::daterange
   AND guests &gt;= 4
@@ -1544,6 +1754,8 @@ ORDER BY rating DESC
 LIMIT 20;
 -- Execution time: 45ms with proper indexes
 </code></pre>
+    </div>
+</div>
 <h3 id="when-you-dont-need-distributed-locking-when-no-distributed-locking">When You DON'T Need Distributed Locking {#when-no-distributed-locking}</h3>
 <div class="diagram-container">
 <div style="color: #f97316; font-weight: bold; font-size: 13px; margin-bottom: 16px">Question: Do I need Redis for double-booking prevention?</div>
@@ -1940,3 +2152,15 @@ LIMIT 20;
 </table>
 </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="cap-theorem">CAP Theorem</h1>
 <div class="tldr-box">
@@ -761,7 +821,13 @@
 <hr />
 <h2 id="code-examples">Code Examples</h2>
 <h3 id="python---cp-system-with-quorum">Python - CP System with Quorum</h3>
-<pre><code class="language-python">                from typing import List, Optional, Any
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">                from typing import List, Optional, Any
                 from dataclasses import dataclass
                 import time
                 import threading
@@ -850,8 +916,16 @@
                 pass  # Best effort repair
 
                 return latest[1].value</code></pre>
+    </div>
+</div>
 <h3 id="python---ap-system-with-vector-clocks">Python - AP System with Vector Clocks</h3>
-<pre><code class="language-python">                from dataclasses import dataclass, field
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">                from dataclasses import dataclass, field
                 from typing import Dict, List, Any, Optional
                 import time
                 import copy
@@ -995,8 +1069,16 @@
                 new_versions.append((value, remote_clock))
 
                 self.data[key] = new_versions</code></pre>
+    </div>
+</div>
 <h3 id="go---crdt-counter-for-ap-systems">Go - CRDT Counter for AP Systems</h3>
-<pre><code class="language-go">                package cap
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">                package cap
 
                 import (
                 &quot;sync&quot;
@@ -1085,6 +1167,8 @@
                 pn.pos.Merge(other.pos)
                 pn.neg.Merge(other.neg)
                 }</code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="common-pitfalls">Common Pitfalls</h2>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -1363,10 +1447,30 @@
 </div>
 <hr />
 <h2 id="related-topics">Related Topics</h2>
-<pre><code>                - [[Database Replication]](/topic/system-design/database-replication) - How data is copied between nodes
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>                - [[Database Replication]](/topic/system-design/database-replication) - How data is copied between nodes
                 - [[Consensus Algorithms]](/topic/system-design/consensus-algorithms) - Raft, Paxos for CP systems
                 - [[Distributed Locking]](/topic/system-design/distributed-locking) - Coordinating access across nodes
                 - [[Database Sharding]](/topic/system-design/database-sharding) - Horizontal partitioning strategies
                 - [[Event Sourcing]](/topic/system-design/event-sourcing) - Append-only logs for eventual consistency
                 - [[Rate Limiting]](/topic/system-design/rate-limiting) - Protecting systems during overload
 </code></pre>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

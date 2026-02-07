@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="microservices-standards-for-ai-agents-context--recommendations">Microservices Standards for AI Agents: Context &amp; Recommendations</h1>
 <h2 id="overview">Overview</h2>
@@ -118,7 +178,13 @@
 <h2 id="standard-1-service-manifest-files">Standard 1: Service Manifest Files</h2>
 <p>Every service should have a machine-readable manifest.</p>
 <h3 id="service-manifest-serviceyaml">Service Manifest (service.yaml)</h3>
-<pre><code class="language-yaml"># service.yaml - Standard service manifest
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Yaml</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-yaml"># service.yaml - Standard service manifest
 apiVersion: microservices/v1
 kind: ServiceManifest
 
@@ -308,6 +374,8 @@ runbooks:
   - name: incident_response
     file: ./runbooks/incident-response.md
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="standard-2-consistent-naming-conventions">Standard 2: Consistent Naming Conventions</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif">
@@ -418,7 +486,13 @@ runbooks:
 <hr />
 <h2 id="standard-3-api-documentation-with-ai-context">Standard 3: API Documentation with AI Context</h2>
 <h3 id="openapi-with-ai-extensions">OpenAPI with AI Extensions</h3>
-<pre><code class="language-yaml">openapi: 3.0.3
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Yaml</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-yaml">openapi: 3.0.3
 info:
   title: Order Service API
   version: 2.1.0
@@ -624,10 +698,18 @@ components:
             state_machine: true
             see: &quot;#/components/schemas/Order/x-ai-context/state_machine&quot;
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="standard-4-code-documentation-for-ai">Standard 4: Code Documentation for AI</h2>
 <h3 id="in-code-documentation-standards">In-Code Documentation Standards</h3>
-<pre><code class="language-go">// Package orders provides the core order management functionality.
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// Package orders provides the core order management functionality.
 //
 // AI CONTEXT:
 // This package is the primary entry point for order operations.
@@ -739,6 +821,8 @@ func (s *OrderService) CancelOrder(ctx context.Context, orderID string, reason C
     // Implementation...
 }
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="standard-5-structured-logging">Standard 5: Structured Logging</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif">
@@ -795,7 +879,13 @@ func (s *OrderService) CancelOrder(ctx context.Context, orderID string, reason C
 </div>
 <hr />
 <h2 id="standard-6-architecture-decision-records-adrs">Standard 6: Architecture Decision Records (ADRs)</h2>
-<pre><code class="language-markdown"># ADR-001: Use Saga Pattern for Order Creation
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Markdown</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-markdown"># ADR-001: Use Saga Pattern for Order Creation
 
 ## Status
 Accepted
@@ -847,9 +937,17 @@ Compensation flow:
 - [Saga Pattern](https://microservices.io/patterns/data/saga.html)
 - Related ADRs: ADR-002 (Event Sourcing)
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="standard-7-service-catalog">Standard 7: Service Catalog</h2>
-<pre><code class="language-yaml"># service-catalog.yaml
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Yaml</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-yaml"># service-catalog.yaml
 apiVersion: catalog/v1
 kind: ServiceCatalog
 
@@ -922,6 +1020,8 @@ patterns:
     trigger: user.address.updated
     documentation: ./patterns/address-sync.md
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="implementation-checklist">Implementation Checklist</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif">
@@ -1012,3 +1112,15 @@ patterns:
 <li><strong>Service catalog</strong> - Central registry of all services and relationships</li>
 <li><strong>Keep docs updated</strong> - Outdated docs are worse than no docs for AI</li>
 </ol>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

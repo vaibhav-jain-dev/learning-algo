@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="database-replication">Database Replication</h1>
 <h2 id="overview">Overview</h2>
@@ -187,7 +247,13 @@
 </div>
 </div>
 <h3 id="internal-replication-architecture">Internal Replication Architecture</h3>
-<pre><code class="language-python">class ReplicationManager:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class ReplicationManager:
     &quot;&quot;&quot;
     Production replication manager for single-primary topology.
 
@@ -292,6 +358,8 @@
             # DDL statements (CREATE TABLE, ALTER TABLE, etc.)
             await self.storage.execute_ddl(event.query)
 </code></pre>
+    </div>
+</div>
 <h3 id="edge-cases-and-failure-modes">Edge Cases and Failure Modes</h3>
 <div style="background: #fef3c7;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #92400e; margin-top: 0">Critical Edge Cases in Master-Slave Replication</h4>
@@ -419,7 +487,13 @@
 </div>
 </div>
 <h3 id="conflict-resolution-implementation">Conflict Resolution Implementation</h3>
-<pre><code class="language-python">from typing import Any, Callable, Dict, List, Optional
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">from typing import Any, Callable, Dict, List, Optional
 from dataclasses import dataclass
 from datetime import datetime
 import hashlib
@@ -654,6 +728,8 @@ class LWWRegister:
                 return result
         return self
 </code></pre>
+    </div>
+</div>
 <h3 id="multi-master-interview-questions-3-levels-deep">Multi-Master Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: What are the trade-offs between single-primary and multi-primary replication?</h4>
@@ -766,7 +842,13 @@ class LWWRegister:
 </div>
 </div>
 <h3 id="replication-mode-implementation">Replication Mode Implementation</h3>
-<pre><code class="language-python">from enum import Enum
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">from enum import Enum
 from typing import List, Optional
 import asyncio
 import time
@@ -980,6 +1062,8 @@ class ReplicationCoordinator:
             await self.ack_waiters[txn_id].wait()
             self.ack_waiters[txn_id].clear()
 </code></pre>
+    </div>
+</div>
 <h3 id="sync-vs-async-interview-questions-3-levels-deep">Sync vs Async Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: What is the difference between synchronous and asynchronous replication?</h4>
@@ -1073,7 +1157,13 @@ class ReplicationCoordinator:
 </div>
 </div>
 <h3 id="replication-lag-implementation">Replication Lag Implementation</h3>
-<pre><code class="language-python">        from dataclasses import dataclass
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">        from dataclasses import dataclass
         from typing import Dict, List, Optional
         import time
         import asyncio
@@ -1304,6 +1394,8 @@ class ReplicationCoordinator:
         return result == 0
         except Exception:
         return False</code></pre>
+    </div>
+</div>
 <h3 id="replication-lag-interview-questions-3-levels-deep">Replication Lag Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: What is replication lag and why is it problematic?</h4>
@@ -1413,7 +1505,13 @@ class ReplicationCoordinator:
 </div>
 </div>
 <h3 id="failover-implementation">Failover Implementation</h3>
-<pre><code class="language-python">        from enum import Enum
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">        from enum import Enum
         from typing import List, Optional
         import asyncio
 
@@ -1709,6 +1807,8 @@ class ReplicationCoordinator:
         f&quot;INSERT INTO replication_epoch (epoch, promoted_at) &quot;
         f&quot;VALUES ({self.current_epoch}, NOW())&quot;
         )</code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="common-pitfalls">Common Pitfalls</h2>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -1801,7 +1901,13 @@ class ReplicationCoordinator:
 </div>
 <hr />
 <h2 id="related-topics">Related Topics</h2>
-<pre><code>        - [[database-sharding]](/topic/system-design/database-sharding) - Horizontal partitioning for write scalability
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>        - [[database-sharding]](/topic/system-design/database-sharding) - Horizontal partitioning for write scalability
         - [[cap-theorem]](/topic/system-design/cap-theorem) - Understanding consistency trade-offs
         - [[consensus-algorithms]](/topic/system-design/consensus-algorithms) - Raft, Paxos for leader election
         - [[distributed-locking]](/topic/system-design/distributed-locking) - Coordinating failover operations
@@ -1809,3 +1915,17 @@ class ReplicationCoordinator:
         - [[event-sourcing]](/topic/system-design/event-sourcing) - Alternative to traditional replication
         - [[circuit-breaker]](/topic/design-patterns/circuit-breaker) - Handling replica failures gracefully
 </code></pre>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

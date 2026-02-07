@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="database-sharding">Database Sharding</h1>
 <div class="tldr-box">
@@ -88,8 +148,16 @@
 <div style="color: #3b82f6; font-size: 12px">Query: SELECT * FROM users WHERE user_id = 12345</div>
 </div>
 <div style="color: #6366f1; font-size: 24px">↓</div>
-<pre><code>&lt;!-- Shard Router --&gt;
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>&lt;!-- Shard Router --&gt;
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 20px 40px;text-align: center">
 <div style="color: #7c3aed; font-weight: 600; font-size: 15px">Shard Router / Coordinator</div>
 <div style="color: #a855f7; font-size: 12px; margin-top: 4px">hash(12345) % 4 = 1 → Route to Shard 1</div>
@@ -97,8 +165,16 @@
 <div style="display: flex; gap: 8px; color: #6366f1; font-size: 18px">
 <span>↙</span><span>↓</span><span>↓</span><span>↘</span>
 </div>
-<pre><code>&lt;!-- Shards --&gt;
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>&lt;!-- Shards --&gt;
 </code></pre>
+    </div>
+</div>
 <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap">
 <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 10px; padding: 16px; min-width: 120px; text-align: center">
 <div style="color: #475569; font-weight: 600">Shard 0</div>
@@ -161,8 +237,16 @@
 <div style="color: #dc2626">✗ Cross-shard queries expensive</div>
 </div>
 </div>
-<pre><code>&lt;!-- Vertical Sharding --&gt;
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>&lt;!-- Vertical Sharding --&gt;
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 20px">
 <div style="color: #7c3aed; font-weight: 600; margin-bottom: 16px; text-align: center; font-size: 15px">VERTICAL SHARDING</div>
 <div style="text-align: center; color: #64748b; font-size: 12px; margin-bottom: 12px">Split by COLUMNS</div>
@@ -329,7 +413,13 @@
 </div>
 <h3 id="compound-shard-keys">Compound Shard Keys</h3>
 <p>For complex access patterns, use <span style="color: #22c55e; font-weight: 600">compound shard keys</span> that combine multiple fields:</p>
-<pre><code class="language-python">def compute_compound_shard_key(tenant_id: str, user_id: str) -&gt; str:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def compute_compound_shard_key(tenant_id: str, user_id: str) -&gt; str:
     &quot;&quot;&quot;
     Compound shard key for multi-tenant SaaS.
 
@@ -349,6 +439,8 @@
 # Workspace ID determines shard cluster (data isolation)
 # User ID determines partition within cluster (performance)
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="sharding-strategies-deep-dive">Sharding Strategies Deep Dive</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
@@ -456,7 +548,13 @@
 </div>
 </div>
 <h3 id="2-hash-based-sharding">2. Hash-Based Sharding</h3>
-<pre><code class="language-python">import hashlib
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import hashlib
 
 def get_shard_by_hash(key: str, num_shards: int) -&gt; int:
     &quot;&quot;&quot;
@@ -473,6 +571,8 @@ def get_shard_by_hash(key: str, num_shards: int) -&gt; int:
 # With 5 shards: hash(&quot;user_123&quot;) % 5 = 3  &lt;- Different shard!
 # Adding one shard moves ~80% of data (N-1/N)
 </code></pre>
+    </div>
+</div>
 <h3 id="3-consistent-hashing-recommended">3. Consistent Hashing (Recommended)</h3>
 <p><span style="color: #22c55e; font-weight: 600">Consistent hashing</span> is the industry standard for dynamic sharding because it minimizes data movement when adding or removing shards.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
@@ -529,7 +629,13 @@ Walk clockwise → first node is <span style="color: #16a34a; font-weight: 600">
 </div>
 </div>
 </div>
-<pre><code class="language-python">import hashlib
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import hashlib
 from bisect import bisect_right
 from typing import Optional, List
 
@@ -623,6 +729,8 @@ replicas = ring.get_nodes_for_key(&quot;user:12345&quot;, replicas=3)  # -&gt; [
 
 ---
 </code></pre>
+    </div>
+</div>
 <h2 id="cross-shard-queries">Cross-Shard Queries</h2>
 <p>Cross-shard queries are one of the biggest challenges in sharded databases. When a query cannot be routed to a single shard, you need <span style="color: #22c55e; font-weight: 600">scatter-gather</span> or other strategies.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
@@ -705,7 +813,13 @@ replicas = ring.get_nodes_for_key(&quot;user:12345&quot;, replicas=3)  # -&gt; [
 - Use for: Complex joins that can't be avoided<br />
 - Cost: Application complexity, memory usage</p>
 </div>
-<pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor, as_completed
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, Dict, Any
 
 class CrossShardQueryExecutor:
@@ -811,6 +925,8 @@ order_count = executor.aggregate_count(&quot;orders&quot;, &quot;created_at &gt;
 
 ---
 </code></pre>
+    </div>
+</div>
 <h2 id="resharding-strategies">Resharding Strategies</h2>
 <p><span style="color: #22c55e; font-weight: 600">Resharding</span> is the process of redistributing data when adding or removing shards. It's one of the most complex operations in a sharded database.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
@@ -867,7 +983,13 @@ order_count = executor.aggregate_count(&quot;orders&quot;, &quot;created_at &gt;
 </div>
 </div>
 <h3 id="resharding-without-downtime">Resharding Without Downtime</h3>
-<pre><code class="language-python">from enum import Enum
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">from enum import Enum
 from typing import Dict, List, Optional
 import threading
 import time
@@ -1001,6 +1123,8 @@ return old_checksum == new_checksum
 
 ---
 </code></pre>
+    </div>
+</div>
 <h2 id="real-life-failure-story">Real-Life Failure Story</h2>
 <h3 id="the-notion-sharding-incident-2021">The Notion Sharding Incident (2021)</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -1031,8 +1155,16 @@ return old_checksum == new_checksum
 </div>
 </div>
 </div>
-<pre><code>---
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>---
 </code></pre>
+    </div>
+</div>
 <h2 id="interview-questions---3-level-deep-dive">Interview Questions - 3-Level Deep Dive</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <h3 id="q1-how-do-you-choose-a-shard-key-for-a-social-media-application">Q1: How do you choose a shard key for a social media application?</h3>
@@ -1174,7 +1306,13 @@ steps = [<br />
 (process_payment, refund_payment),<br />
 (confirm_order, cancel_order),<br />
 ]</p>
-<pre><code>    def execute(self, order):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>    def execute(self, order):
     completed = []
     for action, compensation in self.steps:
     try:
@@ -1188,6 +1326,8 @@ steps = [<br />
     - Easier to reason about and monitor
     - Coordinator is SPOF (need to persist saga state)
 </code></pre>
+    </div>
+</div>
 <p><strong>3. Outbox Pattern (for reliable messaging):</strong><br />
 - Write event to local outbox table in same transaction as data change<br />
 - Separate process reads outbox and publishes to message queue<br />
@@ -1217,11 +1357,19 @@ Zero-downtime resharding requires careful orchestration:</p>
 def write(key, data):<br />
 old_shard = old_router.get_shard(key)<br />
 new_shard = new_router.get_shard(key)</p>
-<pre><code>    # Write to both (old is source of truth)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>    # Write to both (old is source of truth)
     write_to_shard(old_shard, key, data)
     write_to_shard(new_shard, key, data)  # Async is OK
     ```
 </code></pre>
+    </div>
+</div>
 <p><strong>Phase 3 - Backfill:</strong><br />
 - Scan old shards chronologically (or by key range)<br />
 - Copy to new shards (skip if newer version exists from double-write)<br />
@@ -1249,13 +1397,21 @@ I've done this at scale. Here are the hard parts people don't mention:</p>
 # T2: write to old_shard (version 2)<br />
 # T2: write to new_shard (version 2)<br />
 # T1: write to new_shard (version 1) &lt;- STALE!</p>
-<pre><code>    # Solution: Include version/timestamp, use conditional writes
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>    # Solution: Include version/timestamp, use conditional writes
     def write_with_version(shard, key, data, version):
     # Only write if version is newer
     UPDATE table SET data = ?, version = ?
     WHERE key = ? AND version &lt; ?
     ```
 </code></pre>
+    </div>
+</div>
 <p><strong>Challenge 2: Backfill with high write volume</strong><br />
 - Backfill takes days for TB-scale data<br />
 - Writes during backfill create moving target<br />
@@ -1271,11 +1427,19 @@ I've done this at scale. Here are the hard parts people don't mention:</p>
 def write_to_new(key, old_format_data):<br />
 new_format = transform_v1_to_v2(old_format_data)<br />
 write(new_shard, key, new_format)</p>
-<pre><code>    def read_from_new_for_old_client(key):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>    def read_from_new_for_old_client(key):
     new_format = read(new_shard, key)
     return transform_v2_to_v1(new_format)
     ```
 </code></pre>
+    </div>
+</div>
 <p><strong>Challenge 4: Rollback capability</strong><br />
 - Keep old shards intact until fully verified<br />
 - Maintain reverse routing capability<br />
@@ -1415,7 +1579,13 @@ This is a fundamental architecture decision. Let me share production experience 
 ```<br />
 if (p99_latency_requirement &lt; 10ms):<br />
 manual_sharding()  # Consensus is too slow</p>
-<pre><code>    elif (cross_shard_queries &gt; 20%):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>    elif (cross_shard_queries &gt; 20%):
     distributed_db()  # Manual scatter-gather is too complex
 
     elif (team.size &lt; 5 and team.db_expertise &lt; &quot;expert&quot;):
@@ -1425,10 +1595,20 @@ manual_sharding()  # Consensus is too slow</p>
     evaluate_based_on_cost_and_specific_patterns()
     ```
 </code></pre>
+    </div>
 </div>
 </div>
-<pre><code>---
+</div>
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>---
 </code></pre>
+    </div>
+</div>
 <h2 id="common-pitfalls">Common Pitfalls</h2>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <h3 id="1-wrong-shard-key-selection">1. Wrong Shard Key Selection</h3>
@@ -1450,8 +1630,16 @@ manual_sharding()  # Consensus is too slow</p>
 <p><strong>Problem</strong>: Aggregate metrics hide individual shard problems until cascade failure.<br />
 <strong>Solution</strong>: Dashboard per shard: CPU, memory, connections, query latency, replication lag.</p>
 </div>
-<pre><code>---
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>---
 </code></pre>
+    </div>
+</div>
 <h2 id="best-practices">Best Practices</h2>
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <ol>
@@ -1487,8 +1675,16 @@ manual_sharding()  # Consensus is too slow</p>
 </li>
 </ol>
 </div>
-<pre><code>---
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>---
 </code></pre>
+    </div>
+</div>
 <h2 id="quick-reference-card">Quick Reference Card</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e293b; margin-top: 0">Database Sharding Cheat Sheet</h4>
@@ -2091,10 +2287,30 @@ manual_sharding()  # Consensus is too slow</p>
 
 <hr />
 <h2 id="related-topics">Related Topics</h2>
-<pre><code>- [[database-replication]](/topic/system-design/database-replication) - Each shard needs replicas for HA
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- [[database-replication]](/topic/system-design/database-replication) - Each shard needs replicas for HA
 - [[load-balancing]](/topic/system-design/load-balancing) - Consistent hashing algorithms
 - [[cap-theorem]](/topic/system-design/cap-theorem) - Understanding consistency trade-offs
 - [[distributed-locking]](/topic/system-design/distributed-locking) - Cross-shard coordination
 - [[caching]](/topic/system-design/caching) - Reducing load on shards
 - [[rate-limiting]](/topic/system-design/rate-limiting) - Protecting shards from overload
 </code></pre>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

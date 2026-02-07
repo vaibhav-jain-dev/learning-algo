@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="rate-limiting">Rate Limiting</h1>
 <nav class="toc" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
@@ -538,7 +598,13 @@
 </div>
 <div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e293b; margin-top: 0">Hybrid Approach: Best of Both Worlds</h4>
-<pre><code class="language-python">class HybridRateLimiter:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class HybridRateLimiter:
     &quot;&quot;&quot;
     Combines local caching with Redis for optimal performance.
 
@@ -575,6 +641,8 @@
         # Allow some headroom for distributed counter lag
         return count &gt;= self.limit * 0.9
 </code></pre>
+    </div>
+</div>
 </div>
 <hr />
 <h2 id="real-life-failure-story">Real-Life Failure Story</h2>
@@ -609,7 +677,13 @@
 <hr />
 <h2 id="implementation">Implementation</h2>
 <h3 id="token-bucket-implementation">Token Bucket Algorithm</h3>
-<pre><code class="language-python">import time
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import time
 from threading import Lock
 from dataclasses import dataclass
 from typing import Tuple, Dict, Optional
@@ -709,8 +783,16 @@ class TokenBucketRateLimiter:
             for cid in expired:
                 del self.buckets[cid]
 </code></pre>
+    </div>
+</div>
 <h3 id="sliding-window-counter-implementation">Sliding Window Counter</h3>
-<pre><code class="language-python">import time
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import time
 from threading import Lock
 from typing import Tuple, Dict
 
@@ -781,8 +863,16 @@ class SlidingWindowCounter:
                 'reset': reset_time
             }
 </code></pre>
+    </div>
+</div>
 <h3 id="distributed-rate-limiter-with-redis">Distributed Rate Limiter with Redis</h3>
-<pre><code class="language-python">import redis
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import redis
 import time
 from typing import Tuple
 
@@ -927,8 +1017,16 @@ class RedisTokenBucket:
 
         return allowed, metadata
 </code></pre>
+    </div>
+</div>
 <h3 id="http-middleware">HTTP Middleware</h3>
-<pre><code class="language-python">from functools import wraps
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">from functools import wraps
 from flask import Flask, request, jsonify, Response
 
 
@@ -1011,6 +1109,8 @@ expensive_limiter = SlidingWindowCounter(limit=10, window_seconds=60)
 def expensive_operation():
     return {'result': 'expensive computation'}
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="interview-questions">Interview Questions</h2>
 <div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -1023,7 +1123,13 @@ def expensive_operation():
 <li><strong>Failover strategy</strong>: Decide between &quot;fail open&quot; (allow on Redis failure) or &quot;fail closed&quot;</li>
 <li><strong>Local caching</strong>: Cache rate limit state locally for performance, sync periodically</li>
 </ol>
-<pre><code class="language-python"># Hybrid approach: local + Redis
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Hybrid approach: local + Redis
 class HybridRateLimiter:
     def allow(self, client_id):
         # Fast path: check local cache
@@ -1033,6 +1139,8 @@ class HybridRateLimiter:
         # Slow path: check Redis for accurate count
         return self.redis_limiter.allow(client_id)
 </code></pre>
+    </div>
+</div>
 <h3 id="q2-token-bucket-vs-sliding-window">Q2: Token bucket vs sliding window - when to use each?</h3>
 <p><strong>Answer:</strong></p>
 <p><strong>Token Bucket:</strong></p>
@@ -1056,7 +1164,13 @@ class HybridRateLimiter:
 <li><strong>Secondary</strong>: IP address + User-Agent hash</li>
 <li><strong>Behavioral</strong>: Request patterns, endpoints accessed</li>
 </ol>
-<pre><code class="language-python">def get_client_id(request):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">def get_client_id(request):
     if request.headers.get('X-API-Key'):
         return f&quot;api:{request.headers['X-API-Key']}&quot;
 
@@ -1067,6 +1181,8 @@ class HybridRateLimiter:
 
     return f&quot;anon:{request.remote_addr}:{ua_hash}&quot;
 </code></pre>
+    </div>
+</div>
 <p>Also consider higher limits for known shared IPs (corporate proxies, cloud providers).</p>
 <h3 id="q4-rate-limiter-failure">Q4: What happens when your rate limiter fails?</h3>
 <p><strong>Answer:</strong> Design for failure with a clear strategy:</p>
@@ -1087,7 +1203,13 @@ class HybridRateLimiter:
 <p><strong>Best Practice:</strong> Implement circuit breaker pattern with fallback to local rate limiting.</p>
 <h3 id="q5-pricing-tier-rate-limiting">Q5: How would you design rate limiting for different pricing tiers?</h3>
 <p><strong>Answer:</strong></p>
-<pre><code class="language-python">TIER_LIMITS = {
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">TIER_LIMITS = {
     'free': {'requests_per_minute': 60, 'burst': 10},
     'pro': {'requests_per_minute': 600, 'burst': 100},
     'enterprise': {'requests_per_minute': 6000, 'burst': 1000}
@@ -1113,6 +1235,8 @@ class TieredRateLimiter:
         limiter = self.get_limiter(user)
         return limiter.allow()
 </code></pre>
+    </div>
+</div>
 <p>Also consider: endpoint-specific limits, daily/monthly quotas, and overage billing.</p>
 </div>
 <hr />
@@ -1197,3 +1321,15 @@ class TieredRateLimiter:
 <li><a href="/topic/system-design/caching">Caching</a> - Reducing backend load</li>
 <li><a href="/topic/design-patterns/circuit-breaker">Circuit Breaker</a> - Failure handling</li>
 </ul>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

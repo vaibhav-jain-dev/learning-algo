@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="design-slack">Design Slack</h1>
 <nav class="toc" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
@@ -198,13 +258,27 @@
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px">
 <h3 id="assumptions-phase-1-assumptions">Assumptions {#phase-1-assumptions}</h3>
-<pre><code>- **Workspaces**: 100 - 1,000
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- **Workspaces**: 100 - 1,000
 - **Users**: 5,000 - 50,000
 - **Messages**: 100K - 1M/day
 - **Budget**: $2,000 - $10,000/month
 </code></pre>
+    </div>
+</div>
 <h3 id="monolithic-architecture-monolithic-architecture">Monolithic Architecture {#monolithic-architecture}</h3>
-<pre><code class="language-python"># Simple messaging service
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Simple messaging service
 class MessageService:
 def __init__(self, db, redis, ws_manager):
 self.db = db
@@ -275,6 +349,8 @@ for user_id in user_ids:
 ws = self.connections.get(user_id)
 if ws:
 await ws.send(json.dumps(message))</code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -324,7 +400,13 @@ await ws.send(json.dumps(message))</code></pre>
 </div>
 </div>
 <h3 id="message-storage-schema-message-storage-schema">Message Storage Schema {#message-storage-schema}</h3>
-<pre><code class="language-sql">-- Partitioned by workspace and time
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Sql</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-sql">-- Partitioned by workspace and time
 CREATE TABLE messages (
 id UUID PRIMARY KEY,
 workspace_id UUID NOT NULL,
@@ -352,8 +434,16 @@ ON messages (channel_id, ts DESC);
 CREATE INDEX idx_messages_thread
 ON messages (channel_id, thread_ts, ts)
 WHERE thread_ts IS NOT NULL;</code></pre>
+    </div>
+</div>
 <h3 id="handling-presence-at-scale-handling-presence-scale">Handling Presence at Scale {#handling-presence-scale}</h3>
-<pre><code class="language-python">class PresenceService:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class PresenceService:
 &quot;&quot;&quot;
 Track user online status efficiently.
 &quot;&quot;&quot;
@@ -396,6 +486,8 @@ self.redis.publish(f'presence:{ws_id}', json.dumps({
 'user_id': user_id,
 'status': status  # 'online', 'away', 'offline'
 }))</code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -403,11 +495,19 @@ self.redis.publish(f'presence:{ws_id}', json.dumps({
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px">
 <h3 id="assumptions-phase-3-assumptions">Assumptions {#phase-3-assumptions}</h3>
-<pre><code>- **Workspaces**: 750K+ paid
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- **Workspaces**: 750K+ paid
 - **Users**: 20M+ daily active
 - **Messages**: 1B+/day
 - **Connections**: 10M+ concurrent WebSockets
 </code></pre>
+    </div>
+</div>
 <h3 id="global-architecture-global-architecture">Global Architecture {#global-architecture}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
@@ -457,7 +557,13 @@ self.redis.publish(f'presence:{ws_id}', json.dumps({
 </div>
 </div>
 <h3 id="channel-fanout-optimization-channel-fanout-optimization">Channel Fanout Optimization {#channel-fanout-optimization}</h3>
-<pre><code class="language-go">// Slack's channel member routing
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// Slack's channel member routing
 type ChannelRouter struct {
 memberIndex map[string][]string  // channel_id -&gt; user_ids
 userConns   map[string][]string  // user_id -&gt; websocket_server_ids
@@ -488,6 +594,8 @@ Recipients: users,
 
 // Result: Instead of N messages for N members,
 // send M messages where M = number of unique servers</code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -579,7 +687,13 @@ Recipients: users,
 </div>
 </div>
 <h3 id="2-typing-indicators-typing-indicators">2. Typing Indicators {#typing-indicators}</h3>
-<pre><code class="language-python"># Efficient typing indicator with debouncing
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Efficient typing indicator with debouncing
 class TypingService:
 def __init__(self, redis):
 self.redis = redis
@@ -610,6 +724,8 @@ self.redis.zremrangebyscore(key, 0, threshold)
 # Return current typers
 return self.redis.zrange(key, 0, -1)
 </code></pre>
+    </div>
+</div>
 <h3 id="3-search-indexing-search-indexing">3. Search Indexing {#search-indexing}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
@@ -788,23 +904,47 @@ return self.redis.zrange(key, 0, -1)
 </div>
 <div style="background: #ffffff; border-radius: 12px; padding: 20px; margin: 16px 0">
 <p><strong>Strategy 1: Vertical Scaling (Up to 50K connections)</strong></p>
-<pre><code>- Single server with epoll/kqueue can handle 50K+ WebSockets
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- Single server with epoll/kqueue can handle 50K+ WebSockets
 - Memory: ~2-4KB per connection = 200MB for 50K connections
 - CPU: Mostly I/O bound, 4-8 cores sufficient
 - Cost: $100-300/month for a beefy instance
 </code></pre>
+    </div>
+</div>
 <p><strong>Strategy 2: Horizontal Scaling (50K - 1M connections)</strong></p>
-<pre><code>- Multiple WebSocket servers behind load balancer
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- Multiple WebSocket servers behind load balancer
 - Sticky sessions OR connection-aware routing
 - Redis Pub/Sub for cross-server message delivery
 - Connection registry: user_id -&gt; server_id mapping
 </code></pre>
+    </div>
+</div>
 <p><strong>Strategy 3: Edge Scaling (1M+ connections)</strong></p>
-<pre><code>- WebSocket termination at edge (CloudFront, Fastly)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>- WebSocket termination at edge (CloudFront, Fastly)
 - Reduce latency by 50-200ms for distant users
 - Edge servers forward to regional backends
 - Kafka for reliable cross-region message delivery
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="message-throughput-scaling-message-throughput-scaling">Message Throughput Scaling {#message-throughput-scaling}</h3>
 <div style="background: #ffffff; border-radius: 12px; padding: 20px; margin: 16px 0">
@@ -907,7 +1047,13 @@ return self.redis.zrange(key, 0, -1)
 <li><strong>TTL-based cleanup</strong>: Sorted sets with automatic expiration</li>
 <li><strong>Workspace-level aggregation</strong>: &quot;47 online&quot; instead of individual status</li>
 </ol>
-<pre><code class="language-python"># Efficient presence at scale
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Efficient presence at scale
 def get_channel_presence(channel_id):
     member_count = get_member_count(channel_id)
 
@@ -919,6 +1065,8 @@ def get_channel_presence(channel_id):
         online_count = count_online_members(channel_id)
         return {&quot;online_count&quot;: online_count, &quot;members&quot;: []}
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -926,12 +1074,20 @@ def get_channel_presence(channel_id):
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h3 id="1-why-websocket-over-long-polling-why-websocket">1. &quot;Why WebSocket over Long Polling?&quot; {#why-websocket}</h3>
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
-<pre><code>**What They're Probing**: Understanding of real-time protocol trade-offs and when complexity is justified.
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**What They're Probing**: Understanding of real-time protocol trade-offs and when complexity is justified.
 
 **Strong Answer**:
 
 WebSockets provide true bidirectional communication with significantly lower latency and overhead compared to alternatives. Here's the detailed breakdown:
 </code></pre>
+    </div>
+</div>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px">Step-by-Step Connection Comparison</div>
 <p><strong>Long Polling Flow (when user sends message to #general):</strong></p>
@@ -954,12 +1110,20 @@ WebSockets provide true bidirectional communication with significantly lower lat
 </div>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
 <div style="color: #16a34a; font-weight: bold; margin-bottom: 12px">Real Numbers from Production Systems</div>
-<pre><code>  - **Slack's WebSocket**: Maintains ~10 million concurrent connections across their fleet
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>  - **Slack's WebSocket**: Maintains ~10 million concurrent connections across their fleet
   - **Connection overhead**: Each WebSocket uses ~2-4KB of memory server-side vs ~10-20KB for HTTP keep-alive connections
   - **Message throughput**: Single WebSocket server can handle 50,000+ connections with proper tuning (epoll/kqueue)
   - **Heartbeat interval**: Slack sends ping every 30 seconds to detect dead connections
   - **Reconnection**: On average, 2-5% of connections reconnect per minute due to network changes
 </code></pre>
+    </div>
+</div>
 </div>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px">WebSocket Connection Handling Details</div>
@@ -995,21 +1159,37 @@ WebSockets provide true bidirectional communication with significantly lower lat
 - Long-poll endpoint: <code>GET /rtm.poll?ts=last_seen_ts</code><br />
 - Latency degrades to 1-3 seconds but functionality preserved</p>
 </div>
-<pre><code>**When Simpler Works**:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**When Simpler Works**:
 - Long polling is fine for notifications (email-style, seconds-tolerance acceptable)
 - Server-Sent Events (SSE) work for one-way real-time (dashboards, live feeds)
 - For &lt; 100 concurrent users, long polling simplicity may win over WebSocket complexity
 - Firebase/Pusher handle WebSocket complexity for you under 10K concurrent users
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="2-how-do-you-handle-message-ordering-across-distributed-servers-message-ordering-question">2. &quot;How do you handle message ordering across distributed servers?&quot; {#message-ordering-question}</h3>
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
-<pre><code>**What They're Probing**: Distributed systems fundamentals - can you reason about consistency?
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**What They're Probing**: Distributed systems fundamentals - can you reason about consistency?
 
 **Strong Answer**:
 
 Message ordering in a distributed chat system is solved through careful timestamp generation and channel-level partitioning. Here's how Slack approaches this:
 </code></pre>
+    </div>
+</div>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px">Slack Timestamp Format Deep Dive</div>
 <p><strong>Format</strong>: <code>{unix_seconds}.{microseconds}</code> e.g., <code>1705619234.847293</code></p>
@@ -1078,20 +1258,36 @@ Message ordering in a distributed chat system is solved through careful timestam
 - <strong>Mitigation</strong>: NTP synchronization with &lt; 10ms tolerance<br />
 - Use Hybrid Logical Clocks (HLC) for stronger guarantees</p>
 </div>
-<pre><code>**When Simpler Works**:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**When Simpler Works**:
 - Single server? Auto-increment IDs are perfectly fine
 - &lt; 10K messages/day? Database timestamp + sequence is sufficient
 - Discord uses Snowflake IDs (Twitter-style) - simpler 64-bit integers with embedded timestamp
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="3-why-cell-architecture-for-multi-tenancy-cell-architecture-question">3. &quot;Why cell architecture for multi-tenancy?&quot; {#cell-architecture-question}</h3>
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
-<pre><code>**What They're Probing**: Do you understand isolation, blast radius, and operational complexity trade-offs?
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**What They're Probing**: Do you understand isolation, blast radius, and operational complexity trade-offs?
 
 **Strong Answer**:
 
 Cell architecture is Slack's approach to achieving fault isolation and operational flexibility at massive scale. Let me break down how it works and when you actually need it.
 </code></pre>
+    </div>
+</div>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px">What is a Cell?</div>
 <p>A &quot;cell&quot; is a complete, independent deployment of all services needed to run workspaces:</p>
@@ -1196,20 +1392,36 @@ Cell architecture is Slack's approach to achieving fault isolation and operation
 - Need to offer different SLAs to different customers<br />
 - Blast radius of any outage must be &lt; 20% of users</p>
 </div>
-<pre><code>**When Simpler Works**:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**When Simpler Works**:
 - &lt; 1000 workspaces: Single tenant database with workspace_id column
 - &lt; 10K workspaces: Schema-per-tenant in shared database
 - Cell architecture typically needed at 100K+ tenants or strict compliance requirements
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="4-how-would-you-handle-a-channel-with-50000-members-large-channel-question">4. &quot;How would you handle a channel with 50,000 members?&quot; {#large-channel-question}</h3>
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
-<pre><code>**What They're Probing**: Fanout problem understanding and creative solutions.
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**What They're Probing**: Fanout problem understanding and creative solutions.
 
 **Strong Answer**:
 
 Large channels represent one of the hardest problems in chat systems - the fanout problem. Here's how to think about it systematically:
 </code></pre>
+    </div>
+</div>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px">The Math Problem</div>
 <p><strong>Scenario: CEO posts &quot;Happy Friday!&quot; to #all-hands (50,000 members)</strong></p>
@@ -1240,7 +1452,13 @@ Large channels represent one of the hardest problems in chat systems - the fanou
 <li>Each WS server locally fans out to its connected users</li>
 </ol>
 <p><strong>Result</strong>: 20 inter-service messages instead of 50,000!</p>
-<pre><code class="language-python">  # Server-side routing
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">  # Server-side routing
   def route_to_channel(channel_id, message):
   members = get_channel_members(channel_id)  # From cache
 
@@ -1257,6 +1475,8 @@ Large channels represent one of the hardest problems in chat systems - the fanou
   'message': message,
   'recipients': users  # Server handles local fanout
   })</code></pre>
+    </div>
+</div>
 </div>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px">Solution 2: Lazy Delivery</div>
@@ -1327,20 +1547,36 @@ Large channels represent one of the hardest problems in chat systems - the fanou
 <li>Client renders animation, fetches full reaction list on demand</li>
 </ol>
 </div>
-<pre><code>**When Simpler Works**:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**When Simpler Works**:
 - &lt; 1,000 members: Direct fanout is fine, no batching needed
 - Pub/Sub (Redis) handles moderate fanout well up to 10K recipients
 - Consider whether you really need 50K-member channels or if broadcast/announcement model works
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="5-how-do-you-ensure-message-delivery-when-a-user-is-temporarily-offline-offline-delivery-question">5. &quot;How do you ensure message delivery when a user is temporarily offline?&quot; {#offline-delivery-question}</h3>
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
-<pre><code>**What They're Probing**: At-least-once delivery, sync protocols, and state reconciliation.
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**What They're Probing**: At-least-once delivery, sync protocols, and state reconciliation.
 
 **Strong Answer**:
 
 Offline message handling requires distinguishing between &quot;guaranteed message persistence&quot; and &quot;real-time delivery.&quot; Here's the comprehensive approach:
 </code></pre>
+    </div>
+</div>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px">The Two Guarantees</div>
 <p><strong>Guarantee 1: Message Persistence (Strong)</strong><br />
@@ -1357,7 +1593,13 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
 <div style="color: #16a34a; font-weight: bold; margin-bottom: 12px">Sync Protocol: How Catch-Up Works</div>
 <p><strong>When user reconnects to WebSocket:</strong></p>
-<pre><code class="language-python">  # Client sends on reconnect
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">  # Client sends on reconnect
   {
   &quot;type&quot;: &quot;sync_request&quot;,
   &quot;channels&quot;: {
@@ -1383,6 +1625,8 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
   }
   }
   }</code></pre>
+    </div>
+</div>
 <p><strong>Optimization: Prioritized sync</strong></p>
 <ol>
 <li>First: Channels with mentions (@user)</li>
@@ -1395,7 +1639,13 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px">Unread Count Management</div>
 <p><strong>Challenge</strong>: Computing &quot;47 unread messages&quot; requires counting DB rows - expensive at scale.</p>
 <p><strong>Solution: Maintained counter in Redis</strong></p>
-<pre><code class="language-python">  # When message posted to channel
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">  # When message posted to channel
   def on_message_posted(channel_id, message_ts):
   members = get_channel_members(channel_id)
 
@@ -1413,6 +1663,8 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
   redis.hset(f&quot;unreads:{user_id}&quot;, channel_id, 0)
   # Update read position
   redis.hset(f&quot;read_pos:{user_id}&quot;, channel_id, read_ts)</code></pre>
+    </div>
+</div>
 <p><strong>Numbers</strong>:<br />
 - Redis HINCRBY: ~0.1ms per operation<br />
 - 50,000 member channel: ~5 seconds to update all counters (pipelined)<br />
@@ -1464,12 +1716,20 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 - Email fallback after 1 hour for mentions<br />
 - User can configure email digest frequency</p>
 </div>
-<pre><code>**When Simpler Works**:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**When Simpler Works**:
 - For MVP: Just refetch last N messages on reconnect (no counters)
 - Mobile apps can use simple pull-to-refresh
 - Firebase handles offline sync automatically including conflict resolution
 - Under 10K users: Full message history sync on connect is feasible
 </code></pre>
+    </div>
+</div>
 </div>
 </div>
 <hr />
@@ -1696,13 +1956,21 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 <div style="background: linear-gradient(135deg, #f0883e 0%, #f9826c 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px">
 <h3 id="critical-trade-offs-critical-tradeoffs">Critical Trade-offs {#critical-tradeoffs}</h3>
-<pre><code>| Trade-off | Option A | Option B | Mitigation |
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>| Trade-off | Option A | Option B | Mitigation |
 |-----------|----------|----------|------------|
 | **Consistency vs Latency** | Strong consistency (all replicas) | Eventual consistency (single write) | Use eventual for messages, strong for auth/permissions |
 | **Storage vs Query Speed** | Normalized schema | Denormalized/materialized | Denormalize read-heavy paths (channel list, unreads) |
 | **Reliability vs Cost** | Multi-region active-active | Single region + DR | Start single region, add DR, then active-active |
 | **Features vs Complexity** | Full Slack clone | MVP subset | Ship DMs + channels first, add threads/reactions later |
 </code></pre>
+    </div>
+</div>
 <h3 id="detailed-trade-off-real-time-consistency-realtime-consistency-tradeoff">Detailed Trade-off: Real-time Consistency {#realtime-consistency-tradeoff}</h3>
 <div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0">
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 16px">Problem: User A sends message, User B should see it immediately</div>
@@ -1823,7 +2091,13 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 </ol>
 <h3 id="what-makes-a-strong-answer-strong-answer">What Makes a Strong Answer {#strong-answer}</h3>
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
-<pre><code>**Demonstrate judgment, not just knowledge**:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>**Demonstrate judgment, not just knowledge**:
 - &quot;At this scale, I would... but if we grow to X, we'd need to...&quot;
 - &quot;The trade-off here is... so I'd choose... because...&quot;
 - &quot;This is actually simpler than it seems because...&quot;
@@ -1833,10 +2107,18 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 - &quot;Firebase would work until about 10K concurrent users&quot;
 - &quot;For &lt; 1000 users, Socket.io on one server is totally fine&quot;
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="red-flags-what-not-to-say-red-flags">Red Flags (What NOT to Say) {#red-flags}</h3>
 <div style="background: linear-gradient(135deg, #d73a49 0%, #cb2431 100%); border-radius: 8px; padding: 20px; margin: 16px 0">
-<pre><code>| Red Flag | Why It's Bad | Better Alternative |
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>| Red Flag | Why It's Bad | Better Alternative |
 |----------|--------------|-------------------|
 | &quot;We need microservices from day one&quot; | Over-engineering; shows lack of pragmatism | &quot;Start monolith, extract services as needed&quot; |
 | &quot;We'll use Kafka for everything&quot; | Cargo culting; Kafka is overkill for small scale | &quot;Redis pub/sub until we need replay/durability&quot; |
@@ -1845,10 +2127,18 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 | &quot;Real-time is easy, just use WebSockets&quot; | Underestimates complexity | &quot;WebSockets plus reconnection, ordering, and sync&quot; |
 | &quot;We need exactly-once delivery&quot; | Usually unnecessary and very expensive | &quot;At-least-once with idempotency is usually sufficient&quot; |
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="impressive-statements-what-to-say-impressive-statements">Impressive Statements (What TO Say) {#impressive-statements}</h3>
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 20px; margin: 16px 0">
-<pre><code>| Statement | Why It Impresses |
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>| Statement | Why It Impresses |
 |-----------|------------------|
 | &quot;For &lt; 1000 concurrent users, Socket.io on a single server handles this fine&quot; | Shows pragmatism and scale awareness |
 | &quot;Discord uses a single process per guild - simpler than distributed transactions&quot; | Demonstrates knowledge of real-world patterns |
@@ -1858,10 +2148,18 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 | &quot;I'd start with PostgreSQL ILIKE, add pg_trgm extension, and only move to Elasticsearch at 10M+ messages&quot; | Progressive complexity approach |
 | &quot;The real challenge isn't sending messages - it's the presence/typing fanout for large channels&quot; | Identifies the actual hard problem |
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="common-follow-up-questions-common-followup-questions">Common Follow-up Questions {#common-followup-questions}</h3>
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
-<pre><code>| Question | Key Points to Cover |
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>| Question | Key Points to Cover |
 |----------|-------------------|
 | &quot;How do you handle message editing/deletion?&quot; | Soft delete flag, propagate update event, handle in-flight messages |
 | &quot;How do you implement threads?&quot; | thread_ts reference, separate query path, reply broadcast to thread subscribers |
@@ -1871,6 +2169,8 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 | &quot;What happens when a WebSocket server crashes?&quot; | Clients reconnect to different server, sync missed messages via last-seen pointer |
 | &quot;How do you handle mobile push notifications?&quot; | Aggregate notifications, respect DND settings, badge counts via separate counter |
 </code></pre>
+    </div>
+</div>
 </div>
 <h3 id="interview-framework-the-4-phase-approach-interview-framework">Interview Framework: The 4-Phase Approach {#interview-framework}</h3>
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
@@ -1911,3 +2211,15 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 </div>
 </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

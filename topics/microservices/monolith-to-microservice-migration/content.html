@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="monolith-to-microservices-migration-deep-dive-for-system-design-interviews">Monolith to Microservices Migration: Deep Dive for System Design Interviews</h1>
 <h2 id="overview">Overview</h2>
@@ -116,7 +176,13 @@
 </div>
 <h4 id="the-intercept-layer-implementation">The Intercept Layer Implementation</h4>
 <p>The <strong>intercept layer</strong> (also called the strangler facade) is the critical infrastructure that enables incremental migration. It operates at one of three levels:</p>
-<pre><code class="language-go">// Level 1: HTTP/API Gateway Level (Most Common)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// Level 1: HTTP/API Gateway Level (Most Common)
 type StranglerProxy struct {
     monolithURL    string
     microserviceURL string
@@ -164,6 +230,8 @@ type EventInterceptor struct {
     routingConfig  *DynamicConfig
 }
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);border-radius: 12px; padding: 20px; margin: 20px 0">
 <h4 style="color: #f97316; margin: 0 0 12px 0">CRITICAL ASSUMPTION</h4>
 <p style="color: #e2e8f0; margin: 0; line-height: 1.6">
@@ -172,7 +240,13 @@ The Strangler Fig pattern assumes you have a <strong>well-defined entry point</s
 </div>
 <h3 id="12-shadow-mode-the-verification-mechanism">1.2 Shadow Mode: The Verification Mechanism</h3>
 <p>Shadow mode (also called &quot;dark launching&quot;) is where the new microservice processes <strong>real production traffic</strong> without affecting responses. This is essential for validating correctness before cutover.</p>
-<pre><code class="language-go">type ShadowModeComparator struct {
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">type ShadowModeComparator struct {
     monolithClient    *http.Client
     microserviceClient *http.Client
     diffStore         *DiffRepository
@@ -246,6 +320,8 @@ func (s *ShadowModeComparator) compareAndRecord(
     }
 }
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 style="color: #f85149; margin: 0 0 16px 0">EDGE CASES IN SHADOW MODE</h4>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
@@ -336,7 +412,13 @@ func (s *ShadowModeComparator) compareAndRecord(
 </div>
 <h4 id="analyzing-coupling-patterns">Analyzing Coupling Patterns</h4>
 <p>Before decomposition, analyze your codebase to understand actual coupling:</p>
-<pre><code class="language-python"># Static analysis to identify coupling patterns
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Static analysis to identify coupling patterns
 class CouplingAnalyzer:
     def __init__(self, codebase_path: str):
         self.call_graph = self._build_call_graph(codebase_path)
@@ -405,6 +487,8 @@ class CouplingAnalyzer:
 
         return boundaries
 </code></pre>
+    </div>
+</div>
 <h3 id="22-the-bounded-context-mapping">2.2 The Bounded Context Mapping</h3>
 <p><a href="/topics/ddd/bounded-contexts">[Bounded Contexts]</a> from Domain-Driven Design provide the theoretical framework for service boundaries. Each microservice should align with exactly one bounded context.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
@@ -442,7 +526,13 @@ class CouplingAnalyzer:
 </div>
 <h4 id="anti-corruption-layer-implementation">Anti-Corruption Layer Implementation</h4>
 <p>The <strong>Anti-Corruption Layer (ACL)</strong> prevents legacy models from &quot;leaking&quot; into your clean domain model. This is essential during migration when services must interact with unreformed monolith components.</p>
-<pre><code class="language-go">// Anti-Corruption Layer for Order Service consuming legacy User data
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// Anti-Corruption Layer for Order Service consuming legacy User data
 package acl
 
 // Legacy monolith user representation (what the monolith returns)
@@ -552,6 +642,8 @@ func (acl *UserServiceACL) translateToDomain(legacy *LegacyUserDTO) (*Customer, 
     }, nil
 }
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);border-radius: 12px; padding: 20px; margin: 20px 0">
 <h4 style="color: #a371f7; margin: 0 0 12px 0">DESIGN CHOICE: ACL Placement</h4>
 <p style="color: #e2e8f0; margin: 0 0 12px 0; line-height: 1.6">
@@ -642,7 +734,13 @@ The ACL should live in the <strong>consuming service</strong>, not the producing
 </div>
 <h3 id="32-change-data-capture-implementation">3.2 Change Data Capture Implementation</h3>
 <p>CDC is the most robust approach for zero-downtime migration. It captures row-level changes from the source database's transaction log (WAL/binlog) and streams them to consumers.</p>
-<pre><code class="language-yaml"># Debezium connector configuration for PostgreSQL
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Yaml</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-yaml"># Debezium connector configuration for PostgreSQL
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaConnector
 metadata:
@@ -680,7 +778,15 @@ spec:
     snapshot.mode: initial  # Full snapshot then streaming
     snapshot.locking.mode: none  # No locks during snapshot
 </code></pre>
-<pre><code class="language-go">// CDC consumer that populates the new User Service database
+    </div>
+</div>
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// CDC consumer that populates the new User Service database
 type CDCConsumer struct {
     consumer     *kafka.Consumer
     userRepo     *UserRepository
@@ -747,6 +853,8 @@ type CDCSource struct {
     TxID    int64  `json:&quot;txId&quot;`     // Transaction ID
 }
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);border-radius: 12px; padding: 20px; margin: 20px 0">
 <h4 style="color: #f85149; margin: 0 0 12px 0">CDC EDGE CASES AND PITFALLS</h4>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
@@ -770,7 +878,13 @@ type CDCSource struct {
 </div>
 <h3 id="33-dual-write-pattern-with-reconciliation">3.3 Dual-Write Pattern with Reconciliation</h3>
 <p>For critical data where CDC lag is unacceptable, dual-write ensures both databases are updated synchronously. However, this pattern has significant complexity.</p>
-<pre><code class="language-go">// Dual-write service with reconciliation
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// Dual-write service with reconciliation
 type DualWriteUserService struct {
     monolithRepo   *MonolithUserRepository  // Old database
     microserviceRepo *UserRepository         // New database
@@ -895,6 +1009,8 @@ func (c *ConflictResolver) Resolve(monolith, micro *User) *User {
     return monolith
 }
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);border-radius: 12px; padding: 20px; margin: 20px 0">
 <h4 style="color: #f97316; margin: 0 0 12px 0">TRADE-OFF: Dual-Write Consistency</h4>
 <p style="color: #e2e8f0; margin: 0; line-height: 1.6">
@@ -962,7 +1078,13 @@ Can't use the best database for each service's needs. Order Service needs transa
 </div>
 </div>
 </div>
-<pre><code class="language-sql">-- Anti-pattern: Multiple services querying the same tables
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Sql</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-sql">-- Anti-pattern: Multiple services querying the same tables
 -- This creates implicit coupling and prevents independent evolution
 
 -- Order Service does this:
@@ -988,6 +1110,8 @@ GROUP BY DATE(o.created_at);
 -- or change 'notification_preferences' from JSON to a separate table,
 -- ALL THREE services must change simultaneously.
 </code></pre>
+    </div>
+</div>
 <h3 id="42-gradual-decoupling-from-shared-database">4.2 Gradual Decoupling from Shared Database</h3>
 <p>Decoupling from a shared database requires a systematic approach. You cannot simply &quot;stop using&quot; the shared database.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
@@ -1033,7 +1157,13 @@ GROUP BY DATE(o.created_at);
 </div>
 <h4 id="implementing-local-read-replicas">Implementing Local Read Replicas</h4>
 <p>When a service needs data from another service for read-heavy operations (e.g., Order Service displaying customer name), maintaining a local projection avoids runtime API calls.</p>
-<pre><code class="language-go">// Order Service maintains a projection of user data it needs
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// Order Service maintains a projection of user data it needs
 // Updated via events from User Service
 
 type UserProjection struct {
@@ -1104,6 +1234,8 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *CreateOrderRequest)
     return s.orderRepo.Create(ctx, order)
 }
 </code></pre>
+    </div>
+</div>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);border-radius: 12px; padding: 20px; margin: 20px 0">
 <h4 style="color: #58a6ff; margin: 0 0 12px 0">ASSUMPTION: Eventual Consistency Acceptable</h4>
 <p style="color: #e2e8f0; margin: 0; line-height: 1.6">
@@ -1112,7 +1244,13 @@ Local projections introduce <strong>eventual consistency</strong>. User changes 
 </div>
 <h3 id="43-when-shared-database-is-temporarily-acceptable">4.3 When Shared Database Is (Temporarily) Acceptable</h3>
 <p>Despite being an anti-pattern, there are legitimate transitional scenarios:</p>
-<pre><code class="language-go">// Acceptable temporary patterns during migration
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// Acceptable temporary patterns during migration
 
 // 1. Read-only access to legacy tables
 // New microservice reads from legacy table but never writes
@@ -1141,6 +1279,8 @@ CREATE SCHEMA order_service;
 -- Services cannot query other schemas
 */
 </code></pre>
+    </div>
+</div>
 <h3 id="44-interview-questions-shared-database-anti-pattern">4.4 Interview Questions: Shared Database Anti-Pattern</h3>
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 style="color: #fff; margin: 0 0 16px 0">LEVEL 1: Conceptual Understanding</h4>
@@ -1242,7 +1382,13 @@ CREATE SCHEMA order_service;
 </div>
 </div>
 <h3 id="52-rollback-strategies-at-each-phase">5.2 Rollback Strategies at Each Phase</h3>
-<pre><code class="language-go">// Rollback controller for migration phases
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">// Rollback controller for migration phases
 type MigrationRollbackController struct {
     featureFlags  *FeatureFlagService
     routingConfig *RoutingConfigService
@@ -1329,6 +1475,8 @@ func (c *MigrationRollbackController) executeRollback(
     return nil
 }
 </code></pre>
+    </div>
+</div>
 <h3 id="53-success-metrics-and-validation">5.3 Success Metrics and Validation</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
 <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center;padding-bottom: 12px">MIGRATION SUCCESS CRITERIA</h3>
@@ -1415,3 +1563,15 @@ func (c *MigrationRollbackController) executeRollback(
 <li><a href="/topics/microservices/outbox-pattern">[Outbox Pattern]</a> - Reliable event publishing</li>
 <li><a href="/topics/microservices/database-per-service">[Database Per Service]</a> - Data sovereignty patterns</li>
 </ul>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

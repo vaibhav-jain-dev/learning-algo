@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="microservices-architecture">Microservices Architecture</h1>
 <h2 id="the-restaurant-kitchen-analogy">The Restaurant Kitchen Analogy</h2>
@@ -273,7 +333,13 @@
 </div>
 <p>See <a href="/topic/system-design/api-gateway">[API Gateway]</a> for routing patterns and <a href="/topic/system-design/message-queues">[Message Queues]</a> for async communication details.</p>
 <h3 id="python-implementation-event-driven-communication">Python Implementation: Event-Driven Communication</h3>
-<pre><code class="language-python">import json
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import json
 import redis
 from dataclasses import dataclass, asdict
 from typing import Callable, Dict, List
@@ -394,6 +460,8 @@ order = order_service.create_order(
     total=99.99
 )
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="the-circuit-breaker-pattern">The Circuit Breaker Pattern</h2>
 <p><strong>The Analogy</strong>: Electrical circuit breakers trip when there's too much current, preventing house fires. Software circuit breakers &quot;trip&quot; when a service is failing, preventing cascade failures.</p>
@@ -423,7 +491,13 @@ order = order_service.create_order(
 </div>
 </div>
 <h3 id="python-implementation-production-circuit-breaker">Python Implementation: Production Circuit Breaker</h3>
-<pre><code class="language-python">import time
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import time
 from enum import Enum
 from threading import Lock
 from typing import Callable, Any, Optional
@@ -555,6 +629,8 @@ def get_user_with_fallback(user_id: str) -&gt; dict:
     except Exception:
         return {&quot;id&quot;: user_id, &quot;name&quot;: &quot;Unknown&quot;, &quot;cached&quot;: True}
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="data-consistency-patterns">Data Consistency Patterns</h2>
 <div style="background: linear-gradient(135deg, #fff9db 0%, #fff3bf 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -606,7 +682,13 @@ def get_user_with_fallback(user_id: str) -&gt; dict:
 </div>
 </div>
 </div>
-<pre><code class="language-python">from datetime import datetime
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">from datetime import datetime
 from typing import Optional
 import json
 
@@ -697,6 +779,8 @@ class OutboxPublisher:
                 print(f&quot;Failed to publish event {event['id']}: {e}&quot;)
                 self.db.rollback()
 </code></pre>
+    </div>
+</div>
 <p>See <a href="/topic/system-design/event-sourcing">[Event Sourcing]</a> for event-based data storage and <a href="/topic/system-design/cqrs">[CQRS]</a> for read/write separation.</p>
 <hr />
 <h2 id="the-saga-pattern-distributed-transactions">The Saga Pattern: Distributed Transactions</h2>
@@ -768,7 +852,13 @@ class OutboxPublisher:
 </div>
 </div>
 <h3 id="python-implementation-saga-orchestrator">Python Implementation: Saga Orchestrator</h3>
-<pre><code class="language-python">from abc import ABC, abstractmethod
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 from enum import Enum
@@ -892,6 +982,8 @@ class OrderSaga:
             'address': address
         })
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="deployment-strategies">Deployment Strategies</h2>
 <div style="background: linear-gradient(135deg, #e7f5ff 0%, #d0ebff 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -935,7 +1027,13 @@ class OrderSaga:
 </div>
 <h3 id="deployment-pipeline-best-practices">Deployment Pipeline Best Practices</h3>
 <p><span style="color: #2f9e44; font-weight: 600">Immutable infrastructure</span> means you never modify running servers - you replace them. Combined with <span style="color: #2f9e44; font-weight: 600">containerization</span> via Docker and orchestration with <a href="/topic/system-design/kubernetes">[Kubernetes]</a>, this enables reliable, repeatable deployments.</p>
-<pre><code class="language-yaml"># Example: Kubernetes Rolling Update Configuration
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Yaml</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-yaml"># Example: Kubernetes Rolling Update Configuration
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -965,6 +1063,8 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 10
 </code></pre>
+    </div>
+</div>
 <p>See <a href="/topic/system-architectures/code-deployment">[Code Deployment]</a> for comprehensive CI/CD patterns.</p>
 <hr />
 <h2 id="monitoring--observability">Monitoring &amp; Observability</h2>
@@ -1043,7 +1143,13 @@ spec:
 </div>
 </div>
 </div>
-<pre><code class="language-python">import uuid
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">import uuid
 from functools import wraps
 from typing import Optional, Dict, Any
 from datetime import datetime
@@ -1188,6 +1294,8 @@ def get_user(user_id: str) -&gt; dict:
     response = requests.get(f'http://user-service/users/{user_id}', headers=headers)
     return response.json()
 </code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="failure-stories-and-lessons">Failure Stories and Lessons</h2>
 <h3 id="amazons-2017-s3-outage">Amazon's 2017 S3 Outage</h3>
@@ -1417,3 +1525,15 @@ def get_user(user_id: str) -&gt; dict:
 <li><a href="/topic/system-architectures/code-deployment">[Code Deployment]</a> - CI/CD and deployment strategies</li>
 <li><a href="/topic/system-design/kubernetes">[Kubernetes]</a> - Container orchestration</li>
 </ul>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

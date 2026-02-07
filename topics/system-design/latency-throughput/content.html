@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="latency-and-throughput">Latency and Throughput</h1>
 <h2 id="overview">Overview</h2>
@@ -1019,7 +1079,13 @@ A single regular expression in Cloudflare's WAF caused catastrophic CPU exhausti
 - Client-side P99 is what users actually experience</p>
 <h2 id="code-implementation">Code Implementation</h2>
 <h3 id="python---production-latency-tracking-with-t-digest">Python - Production Latency Tracking with T-Digest</h3>
-<pre><code class="language-python">    import time
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">    import time
     import threading
     from dataclasses import dataclass
     from typing import Optional, Dict, Any
@@ -1326,8 +1392,16 @@ A single regular expression in Cloudflare's WAF caused catastrophic CPU exhausti
 
     pool_size = calc.connection_pool_size(target_rps, expected_latency_ms)
     print(f&quot;  Recommended DB pool size: {pool_size}&quot;)</code></pre>
+    </div>
+</div>
 <h3 id="go---high-performance-latency-tracking">Go - High-Performance Latency Tracking</h3>
-<pre><code class="language-go">    package main
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">    package main
 
     import (
     &quot;fmt&quot;
@@ -1654,6 +1728,8 @@ A single regular expression in Cloudflare's WAF caused catastrophic CPU exhausti
     poolSize := ll.ConnectionPoolSize(targetRPS, expectedP99, 1.5)
     fmt.Printf(&quot;  Recommended DB pool size: %d\n&quot;, poolSize)
     }</code></pre>
+    </div>
+</div>
 <h2 id="quick-reference-card">Quick Reference Card</h2>
 <h3 id="key-formulas">Key Formulas</h3>
 <table>
@@ -1778,7 +1854,13 @@ A single regular expression in Cloudflare's WAF caused catastrophic CPU exhausti
 </tbody>
 </table>
 <h3 id="cross-references">Cross-References</h3>
-<pre><code>    - [[caching]](/topics/system-design/caching) - Reduce latency through data locality
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>    - [[caching]](/topics/system-design/caching) - Reduce latency through data locality
     - [[load-balancing]](/topics/system-design/load-balancing) - Distribute load for throughput
     - [[circuit-breaker]](/topics/system-design/circuit-breaker) - Fail fast to protect latency
     - [[rate-limiting]](/topics/system-design/rate-limiting) - Protect throughput capacity
@@ -1787,3 +1869,17 @@ A single regular expression in Cloudflare's WAF caused catastrophic CPU exhausti
     - [[consistent-hashing]](/topics/system-design/consistent-hashing) - Distributed caching
     - [[observability]](/topics/observability/metrics) - Measure and alert on both metrics
 </code></pre>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

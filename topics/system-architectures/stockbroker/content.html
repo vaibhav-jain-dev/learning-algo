@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="design-a-stockbroker-system">Design a Stockbroker System</h1>
 <nav class="toc-container" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
@@ -187,7 +247,13 @@
 We need <strong>sorted iteration</strong> to find best bid/ask and to match across multiple price levels. Hash maps are O(n) for finding minimum/maximum.</p>
 <p><strong>Why not a sorted array?</strong><br />
 Insert/delete is O(n) due to shifting elements. With 10,000 price levels and 100,000 operations/second, this becomes a bottleneck.</p>
-<pre><code class="language-python"># Conceptual structure (not production code)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python"># Conceptual structure (not production code)
 class OrderBook:
     def __init__(self):
         self.bids = RedBlackTree()  # Key: -price (negative for DESC sort)
@@ -207,6 +273,8 @@ class OrderBook:
             else:
                 break  # No crossing orders
 </code></pre>
+    </div>
+</div>
 </div>
 <div style="background: rgba(240, 136, 62, 0.1);border-radius: 12px; padding: 20px; margin: 20px 0">
 <h4 id="design-choice-in-memory-vs-persistent-order-book">Design Choice: In-Memory vs Persistent Order Book</h4>
@@ -407,7 +475,13 @@ class OrderBook:
 <h3 id="handling-packet-loss">Handling Packet Loss in UDP Feeds</h3>
 <p>UDP is unreliable by design. Market data systems implement their own reliability layer:</p>
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
-<pre><code class="language-python">class MarketDataReceiver:
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">class MarketDataReceiver:
     def __init__(self):
         self.expected_seq = 0
         self.buffer = {}  # Out-of-order buffer
@@ -433,6 +507,8 @@ class OrderBook:
         if not self.buffer:
             self.gap_start = None
 </code></pre>
+    </div>
+</div>
 <p><strong>Gap recovery</strong>: Subscriber sends unicast request to exchange for missing sequence numbers. Exchange maintains a <strong>retransmission buffer</strong> (typically 30-60 seconds of messages).</p>
 </div>
 <h3 id="market-data-interview-questions">3-Level Recursive Interview Questions: Market Data</h3>
@@ -802,8 +878,16 @@ class OrderBook:
 <li><strong>Statistical sampling</strong>: Measure every Nth event to reduce overhead</li>
 </ol>
 <p><strong>Attribution methodology</strong>:</p>
-<pre><code>Total latency = T_network_in + T_deserialize + T_validate + T_match + T_serialize + T_network_out
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>Total latency = T_network_in + T_deserialize + T_validate + T_match + T_serialize + T_network_out
 </code></pre>
+    </div>
+</div>
 <p>Measure each segment independently. The segment with highest variance is often more important than the one with highest mean (variance indicates contention or resource starvation).</p>
 <p><strong>The &quot;coordinated omission&quot; trap</strong>: If your load generator pauses during slow responses, you undercount those responses in percentile calculations. Use <a href="/topics/observability/metrics">[HDR Histogram]</a> or similar to capture full latency distribution accurately.</p>
 </div>
@@ -955,7 +1039,13 @@ class OrderBook:
 </div>
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
 <p><strong>Audit Record Schema (simplified)</strong>:</p>
-<pre><code class="language-json">{
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Json</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-json">{
   &quot;event_id&quot;: &quot;uuid-v7-with-embedded-timestamp&quot;,
   &quot;event_type&quot;: &quot;ORDER_PLACED&quot;,
   &quot;timestamp_received&quot;: &quot;2024-01-15T14:30:00.123456Z&quot;,
@@ -981,6 +1071,8 @@ class OrderBook:
   }
 }
 </code></pre>
+    </div>
+</div>
 <p><strong>Key design decisions</strong>:</p>
 <ul>
 <li>UUID v7 includes timestamp, enabling chronological sorting without secondary index</li>
@@ -1082,10 +1174,18 @@ class OrderBook:
 <h6 id="level-3-how-do-you-build-a-real-time-surveillance-system-that-processes-millions-of-orders-to-detect-manipulation-patterns">Level 3: &quot;How do you build a real-time surveillance system that processes millions of orders to detect manipulation patterns?&quot;</h6>
 <p><strong>Expected Answer</strong>: Stream processing architecture using <a href="/topics/system-design/kafka-streams">[Kafka Streams]</a> or <a href="/topics/system-design/apache-flink">[Flink]</a>:</p>
 <p><strong>Architecture</strong>:</p>
-<pre><code>Orders -&gt; Kafka -&gt; Flink Jobs -&gt; Alerts -&gt; Investigation Queue
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>Orders -&gt; Kafka -&gt; Flink Jobs -&gt; Alerts -&gt; Investigation Queue
                     |
               State Store (per-account metrics)
 </code></pre>
+    </div>
+</div>
 <p><strong>Per-account state maintained</strong>:</p>
 <ul>
 <li>Rolling 1-minute order/cancel/fill counts</li>
@@ -1341,12 +1441,20 @@ class OrderBook:
 <h3 id="capacity-planning">Capacity Planning Guidelines</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
 <p><strong>Traffic Estimation Formula:</strong></p>
-<pre><code>Peak Orders/Second = (Daily Volume * Peak Multiplier) / Trading Seconds
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>Peak Orders/Second = (Daily Volume * Peak Multiplier) / Trading Seconds
                    = (10M orders * 5x) / 23,400 seconds
                    = ~2,140 orders/second
 
 With 10x headroom for spikes: Target capacity = 21,400 orders/second
 </code></pre>
+    </div>
+</div>
 <p><strong>Resource Sizing:</strong></p>
 <table>
 <thead>
@@ -1570,3 +1678,15 @@ External dependencies (exchange connections, payment gateways) wrapped in circui
 <li><a href="/topics/system-design/kafka">[kafka]</a> - Distributed event streaming</li>
 <li><a href="/topics/databases/redis">[redis]</a> - In-memory data structures</li>
 </ul>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>

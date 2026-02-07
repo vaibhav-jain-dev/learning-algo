@@ -56,6 +56,66 @@
         font-size: 12px !important;
     }
 }
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
 </style>
 <h1 id="client-server-model">Client-Server Model</h1>
 <h2 id="overview">Overview</h2>
@@ -395,7 +455,13 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </div>
 <h3 id="externalizing-state">Externalizing State</h3>
-<pre><code class="language-python">    # STATEFUL (Hard to scale)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">    # STATEFUL (Hard to scale)
     class StatefulServer:
     def __init__(self):
     self.sessions = {}  # State stored in memory
@@ -418,6 +484,8 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
     session = self.redis.get(f&quot;session:{user.id}&quot;)
 
     return process_request(user, session, data)</code></pre>
+    </div>
+</div>
 <div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #166534; margin-top: 0">State Externalization Strategies</h4>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 12px">
@@ -506,7 +574,13 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </div>
 <h3 id="rest-api-example">REST API Example</h3>
-<pre><code class="language-python">    from flask import Flask, request, jsonify
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">    from flask import Flask, request, jsonify
     from functools import wraps
     import jwt
 
@@ -598,6 +672,8 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
           db.session.commit()
 
           return '', 204  # No content</code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="websockets-deep-dive">WebSockets Deep Dive</h2>
 <p><span style="color: #22c55e; font-weight: 600">WebSockets</span> provide full-duplex communication channels over a single TCP connection. Unlike HTTP's request-response model, WebSockets allow both client and server to send messages independently at any time.</p>
@@ -637,7 +713,13 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </div>
 <h3 id="websocket-handshake">WebSocket Handshake</h3>
-<pre><code class="language-http">          # Client Request (HTTP Upgrade)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Http</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-http">          # Client Request (HTTP Upgrade)
           GET /chat HTTP/1.1
           Host: server.example.com
           Upgrade: websocket
@@ -651,6 +733,8 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
           Upgrade: websocket
           Connection: Upgrade
           Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=</code></pre>
+    </div>
+</div>
 <h3 id="websocket-vs-http-comparison">WebSocket vs HTTP Comparison</h3>
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0">HTTP vs WebSocket</h4>
@@ -686,7 +770,13 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </div>
 <h3 id="websocket-server-implementation">WebSocket Server Implementation</h3>
-<pre><code class="language-python">          import asyncio
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">          import asyncio
           import websockets
           import json
           import redis.asyncio as redis
@@ -776,8 +866,16 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
           # Broadcast to all local connections
           for ws in self.connections.values():
           await ws.send(json.dumps(data))</code></pre>
+    </div>
+</div>
 <h3 id="javascript-websocket-client">JavaScript WebSocket Client</h3>
-<pre><code class="language-javascript">          class WebSocketClient {
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Javascript</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-javascript">          class WebSocketClient {
           constructor(url) {
           this.url = url;
           this.ws = null;
@@ -867,6 +965,8 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
           });
 
           ws.send({ type: 'direct', recipient_id: '456', content: 'Hello!' });</code></pre>
+    </div>
+</div>
 <h3 id="scaling-websockets">Scaling WebSockets</h3>
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0">WebSocket Scaling Architecture</h4>
@@ -1006,7 +1106,13 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </div>
 <h3 id="sse-server-implementation">SSE Server Implementation</h3>
-<pre><code class="language-python">          from flask import Flask, Response, request
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">          from flask import Flask, Response, request
           import json
           import time
           import queue
@@ -1078,8 +1184,16 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
           })
           return {'status': 'sent'}
           return {'status': 'user_offline'}, 404</code></pre>
+    </div>
+</div>
 <h3 id="sse-client-implementation">SSE Client Implementation</h3>
-<pre><code class="language-javascript">          class SSEClient {
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Javascript</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-javascript">          class SSEClient {
           constructor(url) {
           this.url = url;
           this.eventSource = null;
@@ -1144,6 +1258,8 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
           sse.on('notification', (data) =&gt; {
           showNotification(data.title, data.body);
           });</code></pre>
+    </div>
+</div>
 <hr />
 <h2 id="communication-patterns-summary">Communication Patterns Summary</h2>
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -1234,7 +1350,15 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 <summary style="color: #166534; cursor: pointer; font-weight: 600">Follow-up L1.1: How do stateless servers handle user authentication?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #f0fdf4; border-radius: 8px">
 <p><strong>A:</strong> Stateless servers use <span style="color: #22c55e; font-weight: 600">self-contained tokens</span> (JWT) that include user identity and claims. The token is signed by the server, so any server can validate it without querying a central session store. Each request includes the token in the Authorization header.</p>
-<pre><code>                Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>                Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+    </div>
+</div>
 <details>
 <summary style="color: #166534; cursor: pointer; font-weight: 600">Follow-up L1.1.1: What are the security trade-offs of JWT vs server-side sessions?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #ecfdf5; border-radius: 8px">
@@ -1288,7 +1412,13 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 <summary style="color: #166534; cursor: pointer; font-weight: 600">Follow-up L1.1: What is HATEOAS and why is it rarely implemented?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #f0fdf4; border-radius: 8px">
 <p><strong>A:</strong> <span style="color: #22c55e; font-weight: 600">HATEOAS</span> (Hypermedia as the Engine of Application State) means responses include links to related actions, making APIs self-documenting and discoverable.</p>
-<pre><code class="language-json">                {
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Json</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-json">                {
                 &quot;order_id&quot;: 123,
                 &quot;status&quot;: &quot;pending&quot;,
                 &quot;_links&quot;: {
@@ -1297,6 +1427,8 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
                 &quot;pay&quot;: {&quot;href&quot;: &quot;/orders/123/payment&quot;, &quot;method&quot;: &quot;POST&quot;}
                 }
                 }</code></pre>
+    </div>
+</div>
 <p><strong>Why rarely implemented:</strong><br />
 - Adds response size and complexity<br />
 - Most clients are tightly coupled anyway (mobile apps)<br />
@@ -1342,7 +1474,13 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </li>
 <li>
 <p><strong>Server resumes</strong>: Server queries stored events after that ID and resends</p>
-<pre><code class="language-python">           def format_sse(data, event_id):
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">           def format_sse(data, event_id):
            return f&quot;id: {event_id}\ndata: {json.dumps(data)}\n\n&quot;
 
            # On reconnect, client sends: Last-Event-ID: 12345
@@ -1351,6 +1489,8 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
            missed = Event.query.filter(Event.id &gt; last_id).all()
            for event in missed:
            yield format_sse(event.data, event.id)</code></pre>
+    </div>
+</div>
 </li>
 </ol>
 <details>
@@ -1451,7 +1591,13 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </li>
 <li>
 <p><strong>Outbox pattern</strong>: Write notification + outbox entry in same transaction, separate process publishes</p>
-<pre><code class="language-python">           # Outbox pattern
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Python</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-python">           # Outbox pattern
            with db.transaction():
            notification = Notification.create(user_id, content)
            OutboxEvent.create(
@@ -1461,6 +1607,8 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
            )
 
            # Separate publisher reads outbox, publishes, marks processed</code></pre>
+    </div>
+</div>
 </li>
 </ol>
 <details>
@@ -1479,13 +1627,21 @@ def handle_notification(event):<br />
 # Idempotent check<br />
 if Delivery.exists(event.id):<br />
 return  # Already processed</p>
-<pre><code># Process
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code># Process
 deliver_to_user(event)
 
 # Mark processed (last, so crash causes redelivery)
 Delivery.create(event.id)
 ```
 </code></pre>
+    </div>
+</div>
 <p><strong>Ordering guarantee</strong>: Single partition per user ensures order within user's notifications.</p>
 </div>
 </details>
@@ -1584,7 +1740,13 @@ Delivery.create(event.id)
 </li>
 <li>
 <p><strong>Conflict resolution</strong>: Transform queued ops against received ops</p>
-<pre><code class="language-javascript">           class OfflineManager {
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Javascript</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-javascript">           class OfflineManager {
            async queueOperation(op) {
            await this.operationQueue.add(op);
            this.applyLocally(op);  // Optimistic local update
@@ -1602,6 +1764,8 @@ Delivery.create(event.id)
            await this.operationQueue.clear();
            }
            }</code></pre>
+    </div>
+</div>
 </li>
 </ol>
 <details>
@@ -1620,12 +1784,20 @@ Delivery.create(event.id)
 - Result may be weird but no data lost<br />
 - Show &quot;concurrent edit&quot; notification<br />
 - Keep undo history for recovery</p>
-<pre><code>User A (offline): &quot;Hello World&quot; -&gt; &quot;Hello Beautiful World&quot;
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>User A (offline): &quot;Hello World&quot; -&gt; &quot;Hello Beautiful World&quot;
 User B (offline): &quot;Hello World&quot; -&gt; &quot;Hello Big World&quot;
 
 After sync (character-level merge):
 &quot;Hello Beautiful Big World&quot; or &quot;Hello Big Beautiful World&quot;
 (depends on operation ordering)</code></pre>
+    </div>
+</div>
 </div>
 </details>
 </div>
@@ -1673,7 +1845,13 @@ After sync (character-level merge):
 </li>
 <li>
 <p><strong>Health checks</strong>: Load balancer detects draining status</p>
-<pre><code class="language-go">               func gracefulShutdown(server *WebSocketServer) {
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Go</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code class="language-go">               func gracefulShutdown(server *WebSocketServer) {
                // 1. Stop accepting new
                server.StopAccepting()
 
@@ -1693,6 +1871,8 @@ After sync (character-level merge):
                }
                }
                }</code></pre>
+    </div>
+</div>
 </li>
 </ol>
 <p><strong>Client-side</strong>: Clients should handle reconnect messages gracefully, reconnecting with backoff.</p>
@@ -1708,22 +1888,38 @@ After sync (character-level merge):
 ```python<br />
 # On connect<br />
 redis.set(f&quot;user:{user_id}:server&quot;, server_id, ex=connection_timeout)</p>
-<pre><code>                # To send message
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>                # To send message
                 server_id = redis.get(f&quot;user:{user_id}:server&quot;)
                 if server_id:
                 redis.publish(f&quot;server:{server_id}&quot;, message)
                 ```
 </code></pre>
+    </div>
+</div>
 <p><strong>2. Pub/Sub Per-User Channel</strong><br />
 ```python<br />
 # Each server subscribes to its user channels<br />
 async def on_connect(user_id, websocket):<br />
 await redis.subscribe(f&quot;user:{user_id}&quot;)</p>
-<pre><code>                # To send message (no lookup needed)
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>                # To send message (no lookup needed)
                 await redis.publish(f&quot;user:{user_id}&quot;, message)
                 # Server subscribed to that user's channel receives and delivers
                 ```
 </code></pre>
+    </div>
+</div>
 <details>
 <summary style="color: #6b21a8; cursor: pointer; font-weight: 600">Follow-up L3.2.1: What are the trade-offs of Redis Pub/Sub vs Kafka for this use case?</summary>
 <div style="margin-top: 12px; padding: 12px; background: #f3e8ff; border-radius: 8px">
@@ -1819,7 +2015,13 @@ await redis.subscribe(f&quot;user:{user_id}&quot;)</p>
 </table>
 <hr />
 <h2 id="related-topics">Related Topics</h2>
-<pre><code>          - [[Load Balancing]](/topics/system-design/load-balancing) - Distributing requests across servers
+<div class="collapsible-code collapsed">
+    <div class="code-header">
+        <span>Code</span>
+        <span class="code-toggle-icon">▶</span>
+    </div>
+    <div class="code-content">
+        <pre><code>          - [[Load Balancing]](/topics/system-design/load-balancing) - Distributing requests across servers
           - [[API Design]](/topics/system-design/api-design) - REST, GraphQL, and API patterns
           - [[API Gateway]](/topics/system-design/api-gateway) - Central entry point for microservices
           - [[Caching]](/topics/system-design/caching) - Reducing server load and latency
@@ -1829,3 +2031,17 @@ await redis.subscribe(f&quot;user:{user_id}&quot;)</p>
           - [[Rate Limiting]](/topics/system-design/rate-limiting) - Protecting servers from overload
           - [[Connection Pooling]](/topics/system-design/connection-pooling) - Efficient resource management
 </code></pre>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('.code-header');
+    headers.forEach(header => {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.collapsible-code');
+            container.classList.toggle('collapsed');
+        });
+    });
+});
+</script>
