@@ -585,10 +585,9 @@
             }
         }
 
-        if (!hasPackage && lines.length > 1) {
-            markers.push(marker(firstNonEmpty || 1, 1, firstNonEmpty || 1, 2,
-                "Missing 'package' declaration (Go files must start with a package clause)", 'Error'));
-        }
+        // Note: we don't check for 'package' declaration because the backend
+        // wraps user code with 'package main' and imports before execution.
+        // Similarly, we skip unused-import checks since the backend manages imports.
 
         // ---- Unused imports (basic): check if the package name appears in non-import lines ----
         var codeWithoutImports = [];
@@ -607,16 +606,7 @@
         }
         var codeBody = codeWithoutImports.join('\n');
 
-        var pkgNames = Object.keys(importedPackages);
-        for (var pk = 0; pk < pkgNames.length; pk++) {
-            var pName = pkgNames[pk];
-            // Check if package name appears as identifier in code body (word boundary)
-            var usageRe = new RegExp('\\b' + pName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b');
-            if (!usageRe.test(codeBody)) {
-                markers.push(lineMarker(importedPackages[pName], lines[importedPackages[pName] - 1],
-                    "Imported package '" + pName + "' is not used (Go does not allow unused imports)", 'Error'));
-            }
-        }
+        // Unused import check skipped - backend manages imports for user code
 
         // ---- Per-line checks ----
         var braceStack = []; // [{char, line, col}]
