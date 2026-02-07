@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="/static/css/responsive-enhancements.css">
     <link rel="stylesheet" href="/static/css/smart-widescreen.css">
     <link rel="stylesheet" href="/static/css/adhd-friendly-layout.css">
+    <link rel="stylesheet" href="/static/css/collapsible-code.css">
 </head>
 <body hx-boost="true">
     <header class="header">
@@ -149,8 +150,29 @@
             else setTimeout(function() { onLazyLoaderReady(cb); }, 10);
         }
 
+        // Initialize collapsible code blocks
+        function initCollapsibleCode() {
+            var headers = document.querySelectorAll('.code-header');
+            headers.forEach(function(header) {
+                // Remove existing listeners by cloning
+                var newHeader = header.cloneNode(true);
+                header.parentNode.replaceChild(newHeader, header);
+
+                newHeader.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var container = this.closest('.collapsible-code');
+                    if (container) {
+                        container.classList.toggle('collapsed');
+                    }
+                });
+            });
+        }
+
         // Code highlighting after HTMX swaps
         document.body.addEventListener('htmx:afterSwap', function() {
+            // Initialize collapsible code
+            initCollapsibleCode();
+
             onLazyLoaderReady(function() {
                 LazyLoader.loadHighlight().then(function() {
                     document.querySelectorAll('pre code:not(.hljs)').forEach(function(block) {
@@ -160,11 +182,12 @@
             });
         });
 
-        // Initial highlight
+        // Initial highlight and collapsible setup
         onLazyLoaderReady(function() {
             LazyLoader.loadHighlight().then(function() {
                 if (typeof hljs !== 'undefined') hljs.highlightAll();
             });
+            initCollapsibleCode();
         });
     </script>
 </body>

@@ -45,6 +45,20 @@
     var content = document.getElementById('topic-content');
     if (!content) return;
 
+    // ===== Collapsible Code Blocks =====
+    function initCollapsibleCode() {
+        var headers = content.querySelectorAll('.code-header');
+        headers.forEach(function(header) {
+            header.addEventListener('click', function(e) {
+                e.preventDefault();
+                var container = this.closest('.collapsible-code');
+                if (container) {
+                    container.classList.toggle('collapsed');
+                }
+            });
+        });
+    }
+
     // Build navigation from headings
     var headings = content.querySelectorAll('h2, h3');
     var tocNav = document.getElementById('toc-nav');
@@ -118,6 +132,9 @@
             hljs.highlightElement(block);
         });
     }
+
+    // Initialize collapsible code blocks
+    initCollapsibleCode();
 })();
 </script>
 {{end}}
