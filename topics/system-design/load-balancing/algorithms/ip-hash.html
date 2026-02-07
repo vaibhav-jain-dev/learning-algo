@@ -1,0 +1,542 @@
+<h1>IP Hash Load Balancing</h1>
+
+<div class="tldr-box">
+    <div class="tldr-header">TL;DR</div>
+    <ul class="tldr-list">
+        <li>Uses client IP address hashing to consistently route to the same server</li>
+        <li>Time Complexity: O(1) - constant time hash calculation and lookup</li>
+        <li>Perfect for session affinity without storing session state in load balancer</li>
+        <li>Same client always hits the same server (as long as server pool is stable)</li>
+    </ul>
+</div>
+
+<h2>How IP Hash Works</h2>
+
+<p>IP Hash load balancing uses a hash function on the client's IP address to determine which backend server should handle the request. The same client IP will always hash to the same server, providing natural session persistence without requiring sticky session cookies or shared session storage.</p>
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
+    <h3 style="text-align: center; color: #1e293b; margin-bottom: 24px">IP Hash Distribution Pattern</h3>
+
+    <div style="text-align: center; margin-bottom: 24px">
+        <svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+            <!-- Title -->
+            <text x="400" y="25" text-anchor="middle" font-size="13" fill="#64748b" font-weight="bold">Consistent IP-to-Server Mapping via Hash Function</text>
+
+            <!-- Clients on left with IP addresses -->
+            <text x="40" y="60" font-size="14" font-weight="bold" fill="#1e293b">Clients (IP Addresses)</text>
+
+            <!-- Client 1 -->
+            <rect x="30" y="80" width="140" height="55" rx="8" fill="#3b82f6" opacity="0.8"/>
+            <text x="100" y="100" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Client A</text>
+            <text x="100" y="118" text-anchor="middle" fill="#dbeafe" font-size="11" font-family="monospace">192.168.1.10</text>
+
+            <!-- Client 2 -->
+            <rect x="30" y="150" width="140" height="55" rx="8" fill="#3b82f6" opacity="0.8"/>
+            <text x="100" y="170" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Client B</text>
+            <text x="100" y="188" text-anchor="middle" fill="#dbeafe" font-size="11" font-family="monospace">10.0.0.25</text>
+
+            <!-- Client 3 -->
+            <rect x="30" y="220" width="140" height="55" rx="8" fill="#3b82f6" opacity="0.8"/>
+            <text x="100" y="240" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Client C</text>
+            <text x="100" y="258" text-anchor="middle" fill="#dbeafe" font-size="11" font-family="monospace">172.16.0.100</text>
+
+            <!-- Client 4 -->
+            <rect x="30" y="290" width="140" height="55" rx="8" fill="#3b82f6" opacity="0.8"/>
+            <text x="100" y="310" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Client D</text>
+            <text x="100" y="328" text-anchor="middle" fill="#dbeafe" font-size="11" font-family="monospace">203.0.113.45</text>
+
+            <!-- Client 5 -->
+            <rect x="30" y="360" width="140" height="55" rx="8" fill="#3b82f6" opacity="0.8"/>
+            <text x="100" y="380" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Client E</text>
+            <text x="100" y="398" text-anchor="middle" fill="#dbeafe" font-size="11" font-family="monospace">198.51.100.8</text>
+
+            <!-- Load Balancer in center -->
+            <rect x="280" y="180" width="240" height="140" rx="12" fill="#8b5cf6" opacity="0.9"/>
+            <text x="400" y="210" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Load Balancer</text>
+            <text x="400" y="235" text-anchor="middle" fill="white" font-size="13">(IP Hash)</text>
+
+            <!-- Hash function visualization -->
+            <rect x="300" y="250" width="200" height="50" rx="6" fill="#7c3aed" opacity="0.7"/>
+            <text x="400" y="270" text-anchor="middle" fill="#e9d5ff" font-size="10" font-family="monospace">hash_function(client_ip)</text>
+            <text x="400" y="285" text-anchor="middle" fill="#e9d5ff" font-size="10" font-family="monospace">↓</text>
+            <text x="400" y="295" text-anchor="middle" fill="#e9d5ff" font-size="10" font-family="monospace">server_index % num_servers</text>
+
+            <!-- Servers on right -->
+            <text x="650" y="60" font-size="14" font-weight="bold" fill="#1e293b">Backend Servers</text>
+
+            <!-- Server 1 -->
+            <rect x="590" y="80" width="180" height="80" rx="8" fill="#10b981" opacity="0.8"/>
+            <text x="680" y="105" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Server 1</text>
+            <text x="680" y="125" text-anchor="middle" fill="#d1fae5" font-size="11">Clients: A, D</text>
+            <text x="680" y="142" text-anchor="middle" fill="#d1fae5" font-size="10" font-family="monospace">hash(...10) % 3 = 0</text>
+            <text x="680" y="155" text-anchor="middle" fill="#d1fae5" font-size="10" font-family="monospace">hash(...45) % 3 = 0</text>
+
+            <!-- Server 2 -->
+            <rect x="590" y="180" width="180" height="80" rx="8" fill="#10b981" opacity="0.8"/>
+            <text x="680" y="205" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Server 2</text>
+            <text x="680" y="225" text-anchor="middle" fill="#d1fae5" font-size="11">Clients: B, E</text>
+            <text x="680" y="242" text-anchor="middle" fill="#d1fae5" font-size="10" font-family="monospace">hash(...25) % 3 = 1</text>
+            <text x="680" y="255" text-anchor="middle" fill="#d1fae5" font-size="10" font-family="monospace">hash(...8) % 3 = 1</text>
+
+            <!-- Server 3 -->
+            <rect x="590" y="280" width="180" height="80" rx="8" fill="#10b981" opacity="0.8"/>
+            <text x="680" y="305" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Server 3</text>
+            <text x="680" y="325" text-anchor="middle" fill="#d1fae5" font-size="11">Clients: C</text>
+            <text x="680" y="342" text-anchor="middle" fill="#d1fae5" font-size="10" font-family="monospace">hash(...100) % 3 = 2</text>
+
+            <!-- Arrows from clients to load balancer -->
+            <path d="M 170 107 L 280 250" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowblue)"/>
+            <path d="M 170 177 L 280 250" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowblue)"/>
+            <path d="M 170 247 L 280 250" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowblue)"/>
+            <path d="M 170 317 L 280 250" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowblue)"/>
+            <path d="M 170 387 L 280 250" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowblue)"/>
+
+            <!-- Arrows from load balancer to servers (color-coded and animated) -->
+            <!-- To Server 1 (Clients A & D) -->
+            <path d="M 520 230 L 590 120" stroke="#10b981" stroke-width="3" fill="none" marker-end="url(#arrowgreen)" stroke-dasharray="5,5">
+                <animate attributeName="stroke-dashoffset" from="10" to="0" dur="1s" repeatCount="indefinite"/>
+            </path>
+
+            <!-- To Server 2 (Clients B & E) -->
+            <path d="M 520 250 L 590 220" stroke="#10b981" stroke-width="3" fill="none" marker-end="url(#arrowgreen)" stroke-dasharray="5,5">
+                <animate attributeName="stroke-dashoffset" from="10" to="0" dur="1s" repeatCount="indefinite"/>
+            </path>
+
+            <!-- To Server 3 (Client C) -->
+            <path d="M 520 270 L 590 320" stroke="#10b981" stroke-width="3" fill="none" marker-end="url(#arrowgreen)" stroke-dasharray="5,5">
+                <animate attributeName="stroke-dashoffset" from="10" to="0" dur="1s" repeatCount="indefinite"/>
+            </path>
+
+            <!-- Arrow markers -->
+            <defs>
+                <marker id="arrowblue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#3b82f6"/>
+                </marker>
+                <marker id="arrowgreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#10b981"/>
+                </marker>
+            </defs>
+
+            <!-- Session persistence indicator -->
+            <g transform="translate(30, 440)">
+                <rect x="0" y="0" width="740" height="40" rx="8" fill="#fef3c7" opacity="0.8"/>
+                <text x="370" y="15" text-anchor="middle" fill="#92400e" font-size="12" font-weight="bold">Session Persistence</text>
+                <text x="370" y="30" text-anchor="middle" fill="#78350f" font-size="10">Client A always routes to Server 1, Client B always to Server 2, etc.</text>
+            </g>
+        </svg>
+    </div>
+
+    <div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin-top: 24px">
+        <h4 style="color: #1e40af; margin-top: 0">Hash-Based Routing Pattern</h4>
+        <div style="font-family: monospace; font-size: 13px; color: #1e293b; line-height: 1.8">
+            Client A (192.168.1.10) → hash → Server 1<br/>
+            Client B (10.0.0.25) → hash → Server 2<br/>
+            Client C (172.16.0.100) → hash → Server 3<br/>
+            Client D (203.0.113.45) → hash → Server 1<br/>
+            Client E (198.51.100.8) → hash → Server 2<br/>
+            <br/>
+            <span style="color: #166534; font-weight: bold">All subsequent requests from Client A will go to Server 1!</span>
+        </div>
+    </div>
+</div>
+
+<h2>Diagram Breakdown</h2>
+
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #166534; margin-top: 0">Component Analysis</h3>
+
+    <div style="display: grid; gap: 16px">
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #1e40af; margin: 0 0 12px 0">1. Client IP Addresses (Left Side)</h4>
+            <p style="color: #1e293b; margin: 0; line-height: 1.6">
+                Five clients with different IP addresses make requests. Unlike Round Robin which treats all clients the same, IP Hash uses the client's unique IP address as the routing key. This ensures request affinity - all requests from the same client go to the same server.
+            </p>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #7c3aed; margin: 0 0 12px 0">2. Hash Function (Load Balancer Center)</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0; line-height: 1.6">
+                The load balancer applies a hash function to the client IP address:
+            </p>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b">
+                hash_value = hash(client_ip)  # e.g., CRC32, MD5, or simple modulo<br/>
+                server_index = hash_value % num_servers<br/>
+                selected_server = servers[server_index]
+            </div>
+            <p style="color: #64748b; margin: 8px 0 0 0; font-size: 13px">
+                The hash function must be deterministic - same input always produces the same output. The modulo operation maps the hash to a valid server index.
+            </p>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #10b981; margin: 0 0 12px 0">3. Consistent Server Mapping (Right Side)</h4>
+            <p style="color: #1e293b; margin: 0; line-height: 1.6">
+                Each server shows which clients are consistently routed to it. Server 1 handles Clients A and D, Server 2 handles B and E, Server 3 handles only C. As long as the server pool doesn't change, these mappings remain constant. This enables stateful sessions without shared storage.
+            </p>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #ea580c; margin: 0 0 12px 0">4. Session Persistence (Bottom Banner)</h4>
+            <p style="color: #1e293b; margin: 0; line-height: 1.6">
+                The key benefit: Client A's shopping cart, authentication session, or WebSocket connection will always land on Server 1. No need for sticky cookies, session replication, or external session stores. The client IP itself is the session identifier.
+            </p>
+        </div>
+    </div>
+</div>
+
+<h2>Python Implementation</h2>
+
+<div style="background: #1e293b; border-radius: 12px; padding: 24px; margin: 20px 0">
+<pre style="margin: 0; color: #e2e8f0; font-size: 13px; line-height: 1.6"><code class="language-python">import hashlib
+from threading import Lock
+from typing import List
+
+class Server:
+    def __init__(self, url: str):
+        self.url = url
+        self.is_alive = True
+        self.sessions = {}  # Can store session data per client
+
+    def handle_request(self, client_ip: str, request):
+        """Process request with session affinity"""
+        if client_ip not in self.sessions:
+            self.sessions[client_ip] = {"request_count": 0}
+
+        self.sessions[client_ip]["request_count"] += 1
+        return f"Handled by {self.url} (session #{self.sessions[client_ip]['request_count']})"
+
+class IPHashLoadBalancer:
+    def __init__(self, servers: List[Server], hash_method: str = "crc32"):
+        self.servers = servers
+        self.hash_method = hash_method
+        self.lock = Lock()
+
+    def _hash_ip(self, ip_address: str) -&gt; int:
+        """
+        Hash the IP address to an integer.
+        Multiple hash methods available for different use cases.
+        """
+        if self.hash_method == "crc32":
+            # Fast, simple hash - good for most cases
+            import zlib
+            return zlib.crc32(ip_address.encode())
+
+        elif self.hash_method == "md5":
+            # Cryptographic hash - better distribution
+            hash_obj = hashlib.md5(ip_address.encode())
+            return int(hash_obj.hexdigest()[:8], 16)
+
+        else:  # simple modulo on IP last octet
+            # Simplest approach - only use for testing
+            last_octet = int(ip_address.split('.')[-1])
+            return last_octet
+
+    def get_server_for_ip(self, client_ip: str) -&gt; Server:
+        """
+        Get the server assigned to this client IP.
+        Always returns the same server for the same IP.
+        """
+        with self.lock:
+            if not self.servers:
+                return None
+
+            # Get available servers only
+            available_servers = [s for s in self.servers if s.is_alive]
+
+            if not available_servers:
+                return None
+
+            # Hash the IP and map to server index
+            hash_value = self._hash_ip(client_ip)
+            server_index = hash_value % len(available_servers)
+
+            return available_servers[server_index]
+
+    def handle_request(self, client_ip: str, request):
+        """Route request based on client IP"""
+        server = self.get_server_for_ip(client_ip)
+
+        if server is None:
+            raise Exception("No healthy servers available")
+
+        return server.handle_request(client_ip, request)
+
+# Usage Example
+servers = [
+    Server("http://server1:8080"),
+    Server("http://server2:8080"),
+    Server("http://server3:8080")
+]
+
+lb = IPHashLoadBalancer(servers, hash_method="crc32")
+
+# Simulate requests from different clients
+client_ips = [
+    "192.168.1.10",   # Client A
+    "10.0.0.25",      # Client B
+    "172.16.0.100",   # Client C
+    "203.0.113.45",   # Client D
+    "198.51.100.8",   # Client E
+]
+
+# Each client makes 3 requests
+for round_num in range(1, 4):
+    print(f"\n=== Round {round_num} ===")
+    for ip in client_ips:
+        result = lb.handle_request(ip, f"Request from {ip}")
+        print(f"{ip} -&gt; {result}")
+
+# Output shows session persistence:
+# === Round 1 ===
+# 192.168.1.10 -&gt; Handled by http://server1:8080 (session #1)
+# 10.0.0.25 -&gt; Handled by http://server2:8080 (session #1)
+# 172.16.0.100 -&gt; Handled by http://server3:8080 (session #1)
+# 203.0.113.45 -&gt; Handled by http://server1:8080 (session #1)
+# 198.51.100.8 -&gt; Handled by http://server2:8080 (session #1)
+#
+# === Round 2 ===
+# 192.168.1.10 -&gt; Handled by http://server1:8080 (session #2)  ← Same server!
+# 10.0.0.25 -&gt; Handled by http://server2:8080 (session #2)
+# ...
+
+# Verify consistency
+print("\n=== Consistency Check ===")
+for ip in client_ips:
+    server = lb.get_server_for_ip(ip)
+    print(f"{ip} always maps to {server.url}")
+</code></pre>
+</div>
+
+<h2>Session Persistence Benefits</h2>
+
+<div style="background: #dbeafe; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #1e40af; margin-top: 0">Why IP Hash Enables Natural Session Affinity</h3>
+
+    <div style="display: grid; gap: 12px">
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 8px 0">✓ No Shared Session Store Required</h4>
+            <p style="color: #1e293b; margin: 0">Traditional load balancing requires Redis, Memcached, or database to share sessions across servers. With IP Hash, each server stores its own client sessions because the same client always returns.</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 8px 0">✓ In-Memory Session Caching</h4>
+            <p style="color: #1e293b; margin: 0">Servers can cache user data, authentication tokens, and application state in local memory. No network round-trip to external session store on every request.</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 8px 0">✓ WebSocket Connection Stability</h4>
+            <p style="color: #1e293b; margin: 0">WebSocket connections require the same server throughout the session lifetime. IP Hash naturally provides this without additional sticky session mechanisms.</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 8px 0">✓ Reduced Database Load</h4>
+            <p style="color: #1e293b; margin: 0">With session affinity, servers can cache database queries and user preferences. The same user hitting the same server means higher cache hit rates.</p>
+        </div>
+    </div>
+</div>
+
+<h2>Algorithm Characteristics</h2>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0">
+    <div style="background: #dcfce7; border-radius: 12px; padding: 20px">
+        <h3 style="color: #166534; margin: 0 0 16px 0">Advantages</h3>
+        <ul style="color: #1e293b; line-height: 1.8; margin: 0">
+            <li><strong>O(1) complexity:</strong> Constant time hash calculation</li>
+            <li><strong>Session affinity:</strong> Same client → same server</li>
+            <li><strong>No sticky cookies:</strong> Client IP is the session ID</li>
+            <li><strong>Stateless balancer:</strong> No session state in load balancer</li>
+            <li><strong>Simple implementation:</strong> Just hash function + modulo</li>
+            <li><strong>Cache friendly:</strong> High cache hit rates per server</li>
+        </ul>
+    </div>
+
+    <div style="background: #fee2e2; border-radius: 12px; padding: 20px">
+        <h3 style="color: #991b1b; margin: 0 0 16px 0">Disadvantages</h3>
+        <ul style="color: #1e293b; line-height: 1.8; margin: 0">
+            <li><strong>Uneven distribution:</strong> Hash collisions cause imbalance</li>
+            <li><strong>Server changes break sessions:</strong> Adding/removing servers rehashes all IPs</li>
+            <li><strong>Proxy/NAT issues:</strong> Many users behind same proxy IP</li>
+            <li><strong>No load awareness:</strong> Ignores server capacity</li>
+            <li><strong>Mobile users:</strong> IP changes when switching networks</li>
+            <li><strong>IPv6 complexity:</strong> Larger address space to hash</li>
+        </ul>
+    </div>
+</div>
+
+<h2>When to Use IP Hash</h2>
+
+<div style="background: #fef3c7; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #92400e; margin-top: 0">Best Use Cases</h3>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+        <h4 style="color: #166534; margin: 0 0 8px 0">✓ Session-Heavy Applications</h4>
+        <p style="color: #1e293b; margin: 0">Applications that store significant session state (shopping carts, multi-step forms, user preferences). IP Hash eliminates the need for session replication or external session stores.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+        <h4 style="color: #166534; margin: 0 0 8px 0">✓ WebSocket/Long-Polling Applications</h4>
+        <p style="color: #1e293b; margin: 0">Real-time applications (chat, live dashboards, gaming) that maintain long-lived connections. IP Hash ensures connection stability without complex sticky session management.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+        <h4 style="color: #166534; margin: 0 0 8px 0">✓ Server-Side Caching</h4>
+        <p style="color: #1e293b; margin: 0">Applications with expensive computations that benefit from per-server caching. User hitting same server means their cached data is always available in memory.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px">
+        <h4 style="color: #166534; margin: 0 0 8px 0">✓ Legacy Stateful Applications</h4>
+        <p style="color: #1e293b; margin: 0">Migrating legacy apps that weren't designed for distributed systems. IP Hash provides session stickiness without refactoring the application to be stateless.</p>
+    </div>
+</div>
+
+<div style="background: #fee2e2; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #991b1b; margin-top: 0">Avoid IP Hash When</h3>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 12px">
+        <h4 style="color: #dc2626; margin: 0 0 8px 0">✗ Behind Corporate Proxies/NAT</h4>
+        <p style="color: #1e293b; margin: 0">Thousands of users behind a single corporate proxy appear as one IP. They all hash to the same server, causing severe overload.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 12px">
+        <h4 style="color: #dc2626; margin: 0 0 8px 0">✗ Frequent Server Scaling</h4>
+        <p style="color: #1e293b; margin: 0">Auto-scaling environments that frequently add/remove servers. Each change rehashes all IPs, breaking all existing sessions. Use Consistent Hashing instead.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 12px">
+        <h4 style="color: #dc2626; margin: 0 0 8px 0">✗ Mobile-Heavy User Base</h4>
+        <p style="color: #1e293b; margin: 0">Mobile users frequently change IPs (WiFi to cellular, roaming). Each IP change sends them to a different server, losing session state.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px">
+        <h4 style="color: #dc2626; margin: 0 0 8px 0">✗ Truly Stateless Applications</h4>
+        <p style="color: #1e293b; margin: 0">If your app is already stateless (sessions in Redis, JWT tokens), IP Hash provides no benefit. Use Round Robin or Least Connections for better load distribution.</p>
+    </div>
+</div>
+
+<h2>Common Pitfalls</h2>
+
+<div style="background: #fef9c3; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <div style="display: grid; gap: 12px">
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Server Removal Causes Mass Session Loss</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">When a server is removed, all clients rehash. Example: With 3 servers, removing Server 2 causes ~2/3 of users to rehash to different servers, losing their sessions.</p>
+            <div style="background: #fee2e2; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #1e293b; margin: 8px 0">
+                Before: hash("192.168.1.10") % 3 = 1 → Server 2<br/>
+                After removal: hash("192.168.1.10") % 2 = 1 → Server 2 (which is now old Server 3!)
+            </div>
+            <p style="color: #166534; margin: 8px 0 0 0; font-weight: 600">Solution: Use Consistent Hashing which minimizes rehashing impact (only ~1/n users affected)</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Ignoring X-Forwarded-For Header</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">If using IP Hash behind a reverse proxy (Nginx, CloudFlare), all requests appear to come from the proxy IP, sending everyone to the same server.</p>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #dc2626">
+                # BAD: Using proxy IP<br/>
+                client_ip = request.remote_addr  # Always proxy IP!
+            </div>
+            <div style="background: #dcfce7; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #166534; margin-top: 8px">
+                # GOOD: Extract real client IP<br/>
+                client_ip = request.headers.get('X-Forwarded-For', request.remote_addr).split(',')[0]
+            </div>
+            <p style="color: #991b1b; margin: 8px 0 0 0; font-size: 12px">Security note: X-Forwarded-For can be spoofed. Only use if proxy is trusted.</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Poor Hash Function Distribution</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">Using simple hash like "last octet modulo" creates terrible distribution. IPs ending in 1-10 overload first server, 11-20 overload second, etc.</p>
+            <p style="color: #166534; margin: 8px 0 0 0; font-weight: 600">Solution: Use CRC32 or MD5 for good uniform distribution across hash space</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Not Handling IPv6 Prefix Changes</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">IPv6 addresses can change frequently (privacy extensions rotate address every few hours). Same user gets different IPv6, breaks session affinity.</p>
+            <p style="color: #166534; margin: 8px 0 0 0; font-weight: 600">Solution: Hash only the /64 prefix instead of full IPv6 address to maintain affinity within subnet</p>
+        </div>
+    </div>
+</div>
+
+<h2>IP Hash vs Consistent Hashing</h2>
+
+<div style="background: #eff6ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #1e40af; margin-top: 0">Understanding the Key Difference</h3>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #ea580c; margin: 0 0 12px 0">Simple IP Hash (Modulo)</h4>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #1e293b; margin-bottom: 12px">
+                server = hash(ip) % num_servers
+            </div>
+            <p style="color: #475569; margin: 0 0 8px 0; font-size: 13px"><strong>Impact of server change:</strong></p>
+            <ul style="color: #1e293b; margin: 0; font-size: 13px; line-height: 1.6">
+                <li>Adding 1 server (3→4): ~75% of sessions rehash</li>
+                <li>Removing 1 server (3→2): ~67% of sessions rehash</li>
+            </ul>
+            <p style="color: #dc2626; margin: 12px 0 0 0; font-size: 13px; font-weight: 600">Result: Mass session loss on any server change</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 12px 0">Consistent Hashing</h4>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #1e293b; margin-bottom: 12px">
+                # Virtual nodes on hash ring<br/>
+                server = find_closest_on_ring(hash(ip))
+            </div>
+            <p style="color: #475569; margin: 0 0 8px 0; font-size: 13px"><strong>Impact of server change:</strong></p>
+            <ul style="color: #1e293b; margin: 0; font-size: 13px; line-height: 1.6">
+                <li>Adding 1 server (3→4): ~25% of sessions rehash</li>
+                <li>Removing 1 server (3→2): ~33% of sessions rehash</li>
+            </ul>
+            <p style="color: #166534; margin: 12px 0 0 0; font-size: 13px; font-weight: 600">Result: Minimal disruption, only affected users rehash</p>
+        </div>
+    </div>
+
+    <div style="background: #fef3c7; border-radius: 8px; padding: 16px; margin-top: 16px">
+        <p style="color: #78350f; margin: 0; font-size: 13px">
+            <strong>Recommendation:</strong> Use simple IP Hash for static server pools. Use Consistent Hashing for dynamic environments with auto-scaling, frequent deployments, or regular server maintenance.
+        </p>
+    </div>
+</div>
+
+<h2>Real-World Example: Nginx Configuration</h2>
+
+<div style="background: #1e293b; border-radius: 12px; padding: 24px; margin: 20px 0">
+<pre style="margin: 0; color: #e2e8f0; font-size: 13px; line-height: 1.6"><code># Nginx IP Hash configuration
+upstream backend_servers {
+    ip_hash;  # Enable IP-based hashing
+
+    server 192.168.1.101:8080;
+    server 192.168.1.102:8080;
+    server 192.168.1.103:8080;
+}
+
+server {
+    listen 80;
+    server_name example.com;
+
+    location / {
+        proxy_pass http://backend_servers;
+
+        # Important: Preserve real client IP for hash calculation
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        # Session timeout
+        proxy_read_timeout 300s;
+        proxy_connect_timeout 75s;
+    }
+}
+
+# Note: Nginx ip_hash uses the first three octets of IPv4 address
+# IPv4: 192.168.1.100 → hashes "192.168.1"
+# IPv6: Uses full address
+</code></pre>
+</div>
+
+<div style="background: #e0e7ff; border-radius: 12px; padding: 24px; margin: 24px 0">
+    <h3 style="color: #1e40af; margin-top: 0">Related Algorithms</h3>
+    <ul style="color: #1e293b; line-height: 2">
+        <li><strong>Consistent Hashing:</strong> Improved IP Hash that minimizes rehashing when servers change</li>
+        <li><strong>URL Hash:</strong> Similar concept but hashes request URL instead of client IP (for caching)</li>
+        <li><strong>Cookie-Based Sticky Sessions:</strong> Alternative to IP Hash using cookies to track client-server affinity</li>
+        <li><strong>Least Connections:</strong> Better for load distribution when session affinity isn't required</li>
+    </ul>
+</div>

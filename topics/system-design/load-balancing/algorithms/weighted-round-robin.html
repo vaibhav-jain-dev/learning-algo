@@ -1,0 +1,474 @@
+<h1>Weighted Round Robin Load Balancing</h1>
+
+<div class="tldr-box">
+    <div class="tldr-header">TL;DR</div>
+    <ul class="tldr-list">
+        <li>Distributes requests based on server capacity weights</li>
+        <li>Time Complexity: O(1) with smooth weighted algorithm</li>
+        <li>Ideal for heterogeneous servers with different capacities</li>
+        <li>More powerful servers receive proportionally more traffic</li>
+    </ul>
+</div>
+
+<h2>How Weighted Round Robin Works</h2>
+
+<p>Weighted Round Robin extends the basic Round Robin algorithm by assigning each server a weight that represents its relative capacity. Servers with higher weights receive more requests proportionally.</p>
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
+    <h3 style="text-align: center; color: #1e293b; margin-bottom: 24px">Weighted Distribution Pattern</h3>
+
+    <div style="text-align: center; margin-bottom: 24px">
+        <svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+            <!-- Title -->
+            <text x="400" y="25" text-anchor="middle" font-size="13" fill="#64748b" font-weight="bold">Server Weights: S1=5, S2=3, S3=2 (Total=10)</text>
+
+            <!-- Request stream on left -->
+            <text x="40" y="60" font-size="14" font-weight="bold" fill="#1e293b">10 Requests</text>
+
+            <!-- Requests R1-R10 -->
+            <g id="requests">
+                <circle cx="80" cy="90" r="18" fill="#3b82f6" opacity="0.8"/>
+                <text x="80" y="95" text-anchor="middle" fill="white" font-size="11" font-weight="bold">R1</text>
+
+                <circle cx="80" cy="130" r="18" fill="#3b82f6" opacity="0.8"/>
+                <text x="80" y="135" text-anchor="middle" fill="white" font-size="11" font-weight="bold">R2</text>
+
+                <circle cx="80" cy="170" r="18" fill="#3b82f6" opacity="0.8"/>
+                <text x="80" y="175" text-anchor="middle" fill="white" font-size="11" font-weight="bold">R3</text>
+
+                <circle cx="80" cy="210" r="18" fill="#3b82f6" opacity="0.8"/>
+                <text x="80" y="215" text-anchor="middle" fill="white" font-size="11" font-weight="bold">R4</text>
+
+                <circle cx="80" cy="250" r="18" fill="#3b82f6" opacity="0.8"/>
+                <text x="80" y="255" text-anchor="middle" fill="white" font-size="11" font-weight="bold">R5</text>
+
+                <circle cx="80" cy="290" r="18" fill="#3b82f6" opacity="0.8"/>
+                <text x="80" y="295" text-anchor="middle" fill="white" font-size="11" font-weight="bold">R6</text>
+
+                <circle cx="80" cy="330" r="18" fill="#3b82f6" opacity="0.8"/>
+                <text x="80" y="335" text-anchor="middle" fill="white" font-size="11" font-weight="bold">R7</text>
+
+                <circle cx="80" cy="370" r="18" fill="#3b82f6" opacity="0.8"/>
+                <text x="80" y="375" text-anchor="middle" fill="white" font-size="11" font-weight="bold">R8</text>
+
+                <circle cx="150" cy="250" r="18" fill="#3b82f6" opacity="0.8"/>
+                <text x="150" y="255" text-anchor="middle" fill="white" font-size="11" font-weight="bold">R9</text>
+
+                <circle cx="150" cy="290" r="18" fill="#3b82f6" opacity="0.8"/>
+                <text x="150" y="295" text-anchor="middle" fill="white" font-size="11" font-weight="bold">R10</text>
+            </g>
+
+            <!-- Load Balancer -->
+            <rect x="300" y="170" width="200" height="110" rx="12" fill="#8b5cf6" opacity="0.9"/>
+            <text x="400" y="200" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Load Balancer</text>
+            <text x="400" y="220" text-anchor="middle" fill="white" font-size="13">(Weighted Round Robin)</text>
+            <text x="400" y="245" text-anchor="middle" fill="#e9d5ff" font-size="10" font-family="monospace">Distributes by weight ratio:</text>
+            <text x="400" y="265" text-anchor="middle" fill="#e9d5ff" font-size="10" font-family="monospace">50% | 30% | 20%</text>
+
+            <!-- Servers with different sizes representing weights -->
+            <text x="650" y="40" font-size="14" font-weight="bold" fill="#1e293b">Backend Servers</text>
+
+            <!-- Server 1 - Weight 5 (largest) -->
+            <rect x="600" y="60" width="160" height="90" rx="8" fill="#10b981" opacity="0.8"/>
+            <text x="680" y="85" text-anchor="middle" fill="white" font-size="15" font-weight="bold">Server 1</text>
+            <text x="680" y="105" text-anchor="middle" fill="#d1fae5" font-size="12">Weight: 5 (50%)</text>
+            <text x="680" y="125" text-anchor="middle" fill="#d1fae5" font-size="11">Gets: R1,R2,R4,R7,R8</text>
+            <text x="680" y="140" text-anchor="middle" fill="white" font-size="13" font-weight="bold">5 requests</text>
+
+            <!-- Server 2 - Weight 3 (medium) -->
+            <rect x="620" y="170" width="120" height="75" rx="8" fill="#10b981" opacity="0.8"/>
+            <text x="680" y="195" text-anchor="middle" fill="white" font-size="15" font-weight="bold">Server 2</text>
+            <text x="680" y="213" text-anchor="middle" fill="#d1fae5" font-size="12">Weight: 3 (30%)</text>
+            <text x="680" y="228" text-anchor="middle" fill="#d1fae5" font-size="11">Gets: R3,R5,R9</text>
+            <text x="680" y="240" text-anchor="middle" fill="white" font-size="13" font-weight="bold">3 requests</text>
+
+            <!-- Server 3 - Weight 2 (smallest) -->
+            <rect x="630" y="265" width="100" height="65" rx="8" fill="#10b981" opacity="0.8"/>
+            <text x="680" y="287" text-anchor="middle" fill="white" font-size="15" font-weight="bold">Server 3</text>
+            <text x="680" y="303" text-anchor="middle" fill="#d1fae5" font-size="12">Weight: 2 (20%)</text>
+            <text x="680" y="318" text-anchor="middle" fill="#d1fae5" font-size="11">Gets: R6,R10</text>
+            <text x="680" y="326" text-anchor="middle" fill="white" font-size="13" font-weight="bold">2 requests</text>
+
+            <!-- Arrows from LB to servers with different thicknesses -->
+            <path d="M 500 210 L 600 105" stroke="#10b981" stroke-width="5" fill="none" marker-end="url(#arrowgreen2)" opacity="0.8">
+                <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+            </path>
+            <path d="M 500 230 L 620 207" stroke="#10b981" stroke-width="3.5" fill="none" marker-end="url(#arrowgreen2)" opacity="0.7">
+                <animate attributeName="opacity" values="0.4;0.9;0.4" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+            </path>
+            <path d="M 500 250 L 630 297" stroke="#10b981" stroke-width="2.5" fill="none" marker-end="url(#arrowgreen2)" opacity="0.6">
+                <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+            </path>
+
+            <!-- Arrow marker -->
+            <defs>
+                <marker id="arrowgreen2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#10b981"/>
+                </marker>
+            </defs>
+
+            <!-- Weight distribution visualization -->
+            <g transform="translate(280, 350)">
+                <text x="0" y="0" font-size="12" font-weight="bold" fill="#1e293b">Traffic Distribution:</text>
+                <rect x="0" y="10" width="100" height="30" fill="#10b981" opacity="0.8"/>
+                <text x="50" y="30" text-anchor="middle" fill="white" font-size="11" font-weight="bold">S1: 50%</text>
+
+                <rect x="105" y="10" width="60" height="30" fill="#10b981" opacity="0.7"/>
+                <text x="135" y="30" text-anchor="middle" fill="white" font-size="11" font-weight="bold">S2: 30%</text>
+
+                <rect x="170" y="10" width="40" height="30" fill="#10b981" opacity="0.6"/>
+                <text x="190" y="30" text-anchor="middle" fill="white" font-size="11" font-weight="bold">S3: 20%</text>
+            </g>
+        </svg>
+    </div>
+
+    <div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin-top: 24px">
+        <h4 style="color: #1e40af; margin-top: 0">Distribution Pattern (Smooth Weighted)</h4>
+        <div style="font-family: monospace; font-size: 13px; color: #1e293b; line-height: 1.8">
+            R1 → Server 1 (highest effective weight)<br/>
+            R2 → Server 1 (still highest after adjustment)<br/>
+            R3 → Server 2 (now has highest effective weight)<br/>
+            R4 → Server 1 (highest again)<br/>
+            R5 → Server 2<br/>
+            R6 → Server 3 (finally selected)<br/>
+            R7 → Server 1<br/>
+            R8 → Server 1<br/>
+            R9 → Server 2<br/>
+            R10 → Server 3<br/>
+            <br/>
+            <span style="color: #166534; font-weight: bold">Result: S1=5, S2=3, S3=2 (exactly as weighted!)</span>
+        </div>
+    </div>
+</div>
+
+<h2>Diagram Breakdown</h2>
+
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #166534; margin-top: 0">Component Analysis</h3>
+
+    <div style="display: grid; gap: 16px">
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #1e40af; margin: 0 0 12px 0">1. Server Weights (Visual Size)</h4>
+            <p style="color: #1e293b; margin: 0; line-height: 1.6">
+                Notice that Server 1 is drawn largest (weight 5), Server 2 medium (weight 3), and Server 3 smallest (weight 2). The visual size represents processing capacity. This could represent:
+            </p>
+            <ul style="color: #475569; margin: 8px 0 0 0; line-height: 1.6">
+                <li>Server 1: 16 CPU cores</li>
+                <li>Server 2: 8 CPU cores</li>
+                <li>Server 3: 4 CPU cores</li>
+            </ul>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #7c3aed; margin: 0 0 12px 0">2. Load Balancer Weight Algorithm</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0; line-height: 1.6">
+                The load balancer calculates proportions: Total weight = 5 + 3 + 2 = 10
+            </p>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b">
+                Server 1 gets: 5/10 = 50% of traffic<br/>
+                Server 2 gets: 3/10 = 30% of traffic<br/>
+                Server 3 gets: 2/10 = 20% of traffic
+            </div>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #10b981; margin: 0 0 12px 0">3. Arrow Thickness Shows Weight</h4>
+            <p style="color: #1e293b; margin: 0; line-height: 1.6">
+                The arrows from the load balancer to each server have different thicknesses and animation patterns:
+            </p>
+            <ul style="color: #475569; margin: 8px 0 0 0; line-height: 1.6">
+                <li><strong>Thickest arrow → Server 1:</strong> Represents highest traffic flow (50%)</li>
+                <li><strong>Medium arrow → Server 2:</strong> Moderate traffic (30%)</li>
+                <li><strong>Thinnest arrow → Server 3:</strong> Lowest traffic (20%)</li>
+            </ul>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #ea580c; margin: 0 0 12px 0">4. Traffic Distribution Bar (Bottom)</h4>
+            <p style="color: #1e293b; margin: 0; line-height: 1.6">
+                The horizontal bar chart at the bottom visually shows the exact proportion each server receives. Server 1's bar is 5x larger than Server 3's bar, matching the weight ratio.
+            </p>
+        </div>
+    </div>
+</div>
+
+<h2>Python Implementation (Smooth Weighted Round Robin)</h2>
+
+<div style="background: #1e293b; border-radius: 12px; padding: 24px; margin: 20px 0">
+<pre style="margin: 0; color: #e2e8f0; font-size: 13px; line-height: 1.6"><code class="language-python">from threading import Lock
+from typing import List
+
+class WeightedServer:
+    def __init__(self, url: str, weight: int):
+        self.url = url
+        self.weight = weight  # Static weight (capacity)
+        self.effective_weight = weight  # Dynamic weight (changes per selection)
+        self.current_weight = 0  # Running weight counter
+        self.is_alive = True
+
+    def handle_request(self, request):
+        return f"Handled by {self.url}"
+
+class SmoothWeightedRoundRobin:
+    """
+    Smooth Weighted Round Robin (Nginx algorithm)
+
+    Ensures even distribution over time without bursts.
+    Unlike naive weighted RR which might select S1 5 times in a row,
+    this interleaves selections smoothly.
+    """
+
+    def __init__(self, servers: List[WeightedServer]):
+        self.servers = servers
+        self.lock = Lock()
+        self.total_weight = sum(s.weight for s in servers)
+
+    def get_next_server(self) -&gt; WeightedServer:
+        """
+        Smooth weighted selection algorithm:
+        1. Add each server's effective_weight to its current_weight
+        2. Select server with highest current_weight
+        3. Subtract total_weight from selected server's current_weight
+        """
+        with self.lock:
+            if not self.servers:
+                return None
+
+            # Step 1: Increase current_weight by effective_weight
+            for server in self.servers:
+                if server.is_alive:
+                    server.current_weight += server.effective_weight
+
+            # Step 2: Find server with maximum current_weight
+            selected = max(
+                (s for s in self.servers if s.is_alive),
+                key=lambda s: s.current_weight,
+                default=None
+            )
+
+            if selected is None:
+                return None
+
+            # Step 3: Decrease selected server's current_weight
+            selected.current_weight -= self.total_weight
+
+            return selected
+
+    def handle_request(self, request):
+        server = self.get_next_server()
+        if server is None:
+            raise Exception("No healthy servers available")
+        return server.handle_request(request)
+
+# Usage Example
+servers = [
+    WeightedServer("http://server1:8080", weight=5),  # Most powerful
+    WeightedServer("http://server2:8080", weight=3),  # Medium
+    WeightedServer("http://server3:8080", weight=2),  # Least powerful
+]
+
+lb = SmoothWeightedRoundRobin(servers)
+
+# Track distribution
+distribution = {s.url: 0 for s in servers}
+
+# Simulate 100 requests
+for i in range(1, 101):
+    result = lb.handle_request(f"Request {i}")
+    for server in servers:
+        if server.url in result:
+            distribution[server.url] += 1
+
+# Print distribution
+print("Distribution after 100 requests:")
+for url, count in distribution.items():
+    percentage = (count / 100) * 100
+    print(f"{url}: {count} requests ({percentage:.0f}%)")
+
+# Output:
+# http://server1:8080: 50 requests (50%)
+# http://server2:8080: 30 requests (30%)
+# http://server3:8080: 20 requests (20%)
+</code></pre>
+</div>
+
+<h2>Smooth vs Naive Weighted Round Robin</h2>
+
+<div style="background: #fef3c7; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #92400e; margin-top: 0">Algorithm Comparison</h3>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 12px 0">Naive Weighted RR</h4>
+            <p style="color: #475569; margin: 0 0 12px 0; font-size: 13px">Generates sequence upfront: [S1,S1,S1,S1,S1,S2,S2,S2,S3,S3]</p>
+            <div style="background: #fee2e2; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #1e293b; line-height: 1.8">
+                R1 → S1<br/>
+                R2 → S1<br/>
+                R3 → S1<br/>
+                R4 → S1<br/>
+                R5 → S1 <span style="color: #dc2626">← Burst!</span><br/>
+                R6 → S2<br/>
+                R7 → S2<br/>
+                R8 → S2<br/>
+                R9 → S3<br/>
+                R10 → S3
+            </div>
+            <p style="color: #dc2626; margin: 12px 0 0 0; font-size: 13px; font-weight: 600">Problem: Bursts of requests to one server</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 12px 0">Smooth Weighted RR (Nginx)</h4>
+            <p style="color: #475569; margin: 0 0 12px 0; font-size: 13px">Dynamic effective weight calculation per request</p>
+            <div style="background: #dcfce7; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #1e293b; line-height: 1.8">
+                R1 → S1<br/>
+                R2 → S1<br/>
+                R3 → S2 <span style="color: #166534">← Interleaved</span><br/>
+                R4 → S1<br/>
+                R5 → S2<br/>
+                R6 → S3<br/>
+                R7 → S1<br/>
+                R8 → S1<br/>
+                R9 → S2<br/>
+                R10 → S3
+            </div>
+            <p style="color: #166534; margin: 12px 0 0 0; font-size: 13px; font-weight: 600">Benefit: Smooth distribution over time</p>
+        </div>
+    </div>
+</div>
+
+<h2>Algorithm Visualization Step-by-Step</h2>
+
+<div style="background: #eff6ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #1e40af; margin-top: 0">How Smooth Weighted RR Works Internally</h3>
+
+    <p style="color: #1e293b; margin: 0 0 16px 0">Let's trace the first 5 requests with servers S1(w=5), S2(w=3), S3(w=2):</p>
+
+    <div style="overflow-x: auto">
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px; font-family: monospace">
+            <tr style="background: #1e40af; color: white">
+                <th style="padding: 10px; text-align: center">Request</th>
+                <th style="padding: 10px; text-align: center">S1 current</th>
+                <th style="padding: 10px; text-align: center">S2 current</th>
+                <th style="padding: 10px; text-align: center">S3 current</th>
+                <th style="padding: 10px; text-align: center">Selected</th>
+                <th style="padding: 10px; text-align: left">After Selection</th>
+            </tr>
+            <tr style="background: #f8fafc">
+                <td style="padding: 10px; text-align: center; font-weight: bold">Initial</td>
+                <td style="padding: 10px; text-align: center">0</td>
+                <td style="padding: 10px; text-align: center">0</td>
+                <td style="padding: 10px; text-align: center">0</td>
+                <td style="padding: 10px; text-align: center">-</td>
+                <td style="padding: 10px">-</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; text-align: center; font-weight: bold; border-top: 1px solid #cbd5e1">R1</td>
+                <td style="padding: 10px; text-align: center; border-top: 1px solid #cbd5e1">0+5=<strong>5</strong></td>
+                <td style="padding: 10px; text-align: center; border-top: 1px solid #cbd5e1">0+3=3</td>
+                <td style="padding: 10px; text-align: center; border-top: 1px solid #cbd5e1">0+2=2</td>
+                <td style="padding: 10px; text-align: center; background: #dcfce7; border-top: 1px solid #cbd5e1"><strong>S1</strong></td>
+                <td style="padding: 10px; border-top: 1px solid #cbd5e1">S1: 5-10=<strong>-5</strong></td>
+            </tr>
+            <tr style="background: #f8fafc">
+                <td style="padding: 10px; text-align: center; font-weight: bold">R2</td>
+                <td style="padding: 10px; text-align: center">-5+5=0</td>
+                <td style="padding: 10px; text-align: center">3+3=<strong>6</strong></td>
+                <td style="padding: 10px; text-align: center">2+2=4</td>
+                <td style="padding: 10px; text-align: center; background: #dcfce7"><strong>S2</strong></td>
+                <td style="padding: 10px">S2: 6-10=<strong>-4</strong></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; text-align: center; font-weight: bold; border-top: 1px solid #cbd5e1">R3</td>
+                <td style="padding: 10px; text-align: center; border-top: 1px solid #cbd5e1">0+5=<strong>5</strong></td>
+                <td style="padding: 10px; text-align: center; border-top: 1px solid #cbd5e1">-4+3=-1</td>
+                <td style="padding: 10px; text-align: center; border-top: 1px solid #cbd5e1">4+2=6 → wait...</td>
+                <td style="padding: 10px; text-align: center; background: #dcfce7; border-top: 1px solid #cbd5e1"><strong>S3</strong></td>
+                <td style="padding: 10px; border-top: 1px solid #cbd5e1">Actually S3 had 6! S3: 6-10=<strong>-4</strong></td>
+            </tr>
+            <tr style="background: #f8fafc">
+                <td style="padding: 10px; text-align: center; font-weight: bold">R4</td>
+                <td style="padding: 10px; text-align: center">5+5=<strong>10</strong></td>
+                <td style="padding: 10px; text-align: center">-1+3=2</td>
+                <td style="padding: 10px; text-align: center">-4+2=-2</td>
+                <td style="padding: 10px; text-align: center; background: #dcfce7"><strong>S1</strong></td>
+                <td style="padding: 10px">S1: 10-10=<strong>0</strong></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; text-align: center; font-weight: bold; border-top: 1px solid #cbd5e1">R5</td>
+                <td style="padding: 10px; text-align: center; border-top: 1px solid #cbd5e1">0+5=<strong>5</strong></td>
+                <td style="padding: 10px; text-align: center; border-top: 1px solid #cbd5e1">2+3=5</td>
+                <td style="padding: 10px; text-align: center; border-top: 1px solid #cbd5e1">-2+2=0</td>
+                <td style="padding: 10px; text-align: center; background: #dcfce7; border-top: 1px solid #cbd5e1"><strong>S1</strong></td>
+                <td style="padding: 10px; border-top: 1px solid #cbd5e1">S1: 5-10=<strong>-5</strong></td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="background: #dbeafe; padding: 16px; border-radius: 8px; margin-top: 20px">
+        <h4 style="color: #1e40af; margin: 0 0 8px 0">Key Insight</h4>
+        <p style="color: #1e293b; margin: 0; font-size: 14px; line-height: 1.6">
+            The <code>current_weight</code> acts as a "credit" system. Each server accumulates credits (+effective_weight) every round. The server with the most credit wins and pays the total cost (-total_weight). This ensures smooth distribution matching the weight ratios.
+        </p>
+    </div>
+</div>
+
+<h2>When to Use Weighted Round Robin</h2>
+
+<div style="background: #dcfce7; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #166534; margin-top: 0">Perfect Use Cases</h3>
+
+    <div style="display: grid; gap: 12px">
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 8px 0">✓ Heterogeneous Server Fleet</h4>
+            <p style="color: #1e293b; margin: 0">Mixed server specifications (e.g., 4-core, 8-core, 16-core machines in same pool). Weight by CPU cores or memory.</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 8px 0">✓ Gradual Server Rollout</h4>
+            <p style="color: #1e293b; margin: 0">Testing new server version: Give new server weight=1, old servers weight=9. Gradually increase new server weight as confidence grows.</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 8px 0">✓ Multi-Region Deployment</h4>
+            <p style="color: #1e293b; margin: 0">3 servers in US-East (weight=5 each), 2 in US-West (weight=3 each). Balances across regions based on capacity.</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 8px 0">✓ Cost-Based Distribution</h4>
+            <p style="color: #1e293b; margin: 0">Reserved instances (weight=5, cheaper per request) vs on-demand instances (weight=2, only for overflow). Maximizes reserved instance usage.</p>
+        </div>
+    </div>
+</div>
+
+<h2>Common Pitfalls</h2>
+
+<div style="background: #fee2e2; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <div style="display: grid; gap: 12px">
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Incorrect Weight Calibration</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">Setting weight=10 for 16-core and weight=9 for 4-core server. Weights should reflect actual capacity differences.</p>
+            <p style="color: #166534; margin: 0; font-weight: 600">Solution: Benchmark servers and set weights proportionally (16-core=4, 4-core=1)</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Forgetting to Update Weights</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">Server upgrade (4→16 cores) but weight stays the same. Server gets underutilized.</p>
+            <p style="color: #166534; margin: 0; font-weight: 600">Solution: Automate weight updates based on server metrics or config management</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Using WRR for Variable Request Durations</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">If requests vary widely (10ms to 30s), weighted RR still sends heavy requests to same server.</p>
+            <p style="color: #166534; margin: 0; font-weight: 600">Solution: Use Least Connections or Least Response Time for variable workloads</p>
+        </div>
+    </div>
+</div>
+
+<div style="background: #e0e7ff; border-radius: 12px; padding: 24px; margin: 24px 0">
+    <h3 style="color: #1e40af; margin-top: 0">Related Algorithms</h3>
+    <ul style="color: #1e293b; line-height: 2">
+        <li><strong>Round Robin:</strong> Simplified version assuming all servers have equal capacity (all weights = 1)</li>
+        <li><strong>Weighted Least Connections:</strong> Combines WRR with connection tracking for even better load distribution</li>
+        <li><strong>Adaptive Load Balancing:</strong> Dynamically adjusts weights based on real-time server metrics</li>
+    </ul>
+</div>

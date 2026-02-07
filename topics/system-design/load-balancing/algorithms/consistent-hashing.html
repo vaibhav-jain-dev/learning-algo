@@ -1,0 +1,642 @@
+<h1>Consistent Hashing Load Balancing</h1>
+
+<div class="tldr-box">
+    <div class="tldr-header">TL;DR</div>
+    <ul class="tldr-list">
+        <li>Maps both servers and requests to a hash ring (0 to 2^32-1)</li>
+        <li>Time Complexity: O(log n) with binary search, O(1) with jump table</li>
+        <li>Minimal disruption when adding/removing servers (only K/n keys remapped)</li>
+        <li>Virtual nodes ensure uniform distribution across heterogeneous servers</li>
+    </ul>
+</div>
+
+<h2>How Consistent Hashing Works</h2>
+
+<p>Consistent Hashing distributes requests across servers by mapping both servers and requests onto a circular hash ring. Each request is routed to the next server clockwise on the ring. This approach minimizes key redistribution when servers are added or removed, unlike traditional hash-based methods that require remapping most keys.</p>
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
+    <h3 style="text-align: center; color: #1e293b; margin-bottom: 24px">Consistent Hash Ring with Virtual Nodes</h3>
+
+    <div style="text-align: center; margin-bottom: 24px">
+        <svg width="800" height="700" viewBox="0 0 800 700" xmlns="http://www.w3.org/2000/svg">
+            <!-- Title -->
+            <text x="400" y="25" text-anchor="middle" font-size="14" fill="#64748b" font-weight="bold">Hash Space: 0 to 2³²-1 (4,294,967,295)</text>
+
+            <!-- Main hash ring circle -->
+            <circle cx="400" cy="350" r="220" fill="none" stroke="#94a3b8" stroke-width="3" stroke-dasharray="8,4"/>
+
+            <!-- Ring gradient for visual effect -->
+            <circle cx="400" cy="350" r="220" fill="none" stroke="url(#ringGradient)" stroke-width="2" opacity="0.5"/>
+
+            <defs>
+                <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.3" />
+                    <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.3" />
+                </linearGradient>
+
+                <!-- Arrow markers -->
+                <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L7,3 z" fill="#3b82f6"/>
+                </marker>
+                <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L7,3 z" fill="#10b981"/>
+                </marker>
+                <marker id="arrowOrange" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L7,3 z" fill="#f59e0b"/>
+                </marker>
+            </defs>
+
+            <!-- Hash values at cardinal points -->
+            <text x="400" y="110" text-anchor="middle" font-size="11" fill="#475569" font-weight="bold">0 / 2³²</text>
+            <text x="650" y="360" text-anchor="start" font-size="11" fill="#475569" font-weight="bold">2³¹</text>
+            <text x="400" y="600" text-anchor="middle" font-size="11" fill="#475569" font-weight="bold">3×2³⁰</text>
+            <text x="140" y="360" text-anchor="end" font-size="11" fill="#475569" font-weight="bold">2³⁰</text>
+
+            <!-- Server 1 (Green) with virtual nodes -->
+            <!-- Virtual Node 1A -->
+            <circle cx="480" cy="160" r="16" fill="#10b981" opacity="0.7"/>
+            <text x="480" y="145" text-anchor="middle" font-size="10" fill="#166534" font-weight="bold">S1-V1</text>
+            <text x="480" y="165" text-anchor="middle" font-size="9" fill="white" font-weight="bold">S1</text>
+
+            <!-- Virtual Node 1B -->
+            <circle cx="590" cy="280" r="16" fill="#10b981" opacity="0.7"/>
+            <text x="590" y="265" text-anchor="middle" font-size="10" fill="#166534" font-weight="bold">S1-V2</text>
+            <text x="590" y="285" text-anchor="middle" font-size="9" fill="white" font-weight="bold">S1</text>
+
+            <!-- Virtual Node 1C -->
+            <circle cx="350" cy="540" r="16" fill="#10b981" opacity="0.7"/>
+            <text x="350" y="560" text-anchor="middle" font-size="10" fill="#166534" font-weight="bold">S1-V3</text>
+            <text x="350" y="545" text-anchor="middle" font-size="9" fill="white" font-weight="bold">S1</text>
+
+            <!-- Server 2 (Blue) with virtual nodes -->
+            <!-- Virtual Node 2A -->
+            <circle cx="540" cy="220" r="16" fill="#3b82f6" opacity="0.7"/>
+            <text x="540" y="205" text-anchor="middle" font-size="10" fill="#1e40af" font-weight="bold">S2-V1</text>
+            <text x="540" y="225" text-anchor="middle" font-size="9" fill="white" font-weight="bold">S2</text>
+
+            <!-- Virtual Node 2B -->
+            <circle cx="320" cy="450" r="16" fill="#3b82f6" opacity="0.7"/>
+            <text x="320" y="470" text-anchor="middle" font-size="10" fill="#1e40af" font-weight="bold">S2-V2</text>
+            <text x="320" y="455" text-anchor="middle" font-size="9" fill="white" font-weight="bold">S2</text>
+
+            <!-- Virtual Node 2C -->
+            <circle cx="220" cy="280" r="16" fill="#3b82f6" opacity="0.7"/>
+            <text x="220" y="265" text-anchor="middle" font-size="10" fill="#1e40af" font-weight="bold">S2-V3</text>
+            <text x="220" y="285" text-anchor="middle" font-size="9" fill="white" font-weight="bold">S2</text>
+
+            <!-- Server 3 (Orange) with virtual nodes -->
+            <!-- Virtual Node 3A -->
+            <circle cx="430" cy="520" r="16" fill="#f59e0b" opacity="0.7"/>
+            <text x="430" y="540" text-anchor="middle" font-size="10" fill="#92400e" font-weight="bold">S3-V1</text>
+            <text x="430" y="525" text-anchor="middle" font-size="9" fill="white" font-weight="bold">S3</text>
+
+            <!-- Virtual Node 3B -->
+            <circle cx="260" cy="380" r="16" fill="#f59e0b" opacity="0.7"/>
+            <text x="260" y="400" text-anchor="middle" font-size="10" fill="#92400e" font-weight="bold">S3-V2</text>
+            <text x="260" y="385" text-anchor="middle" font-size="9" fill="white" font-weight="bold">S3</text>
+
+            <!-- Virtual Node 3C -->
+            <circle cx="380" cy="150" r="16" fill="#f59e0b" opacity="0.7"/>
+            <text x="380" y="135" text-anchor="middle" font-size="10" fill="#92400e" font-weight="bold">S3-V3</text>
+            <text x="380" y="155" text-anchor="middle" font-size="9" fill="white" font-weight="bold">S3</text>
+
+            <!-- Client Requests -->
+            <!-- Request 1 (maps to S1) -->
+            <circle cx="450" cy="180" r="12" fill="#ec4899" opacity="0.9"/>
+            <text x="450" y="185" text-anchor="middle" font-size="9" fill="white" font-weight="bold">R1</text>
+            <path d="M 462 180 Q 470 170 480 165" stroke="#ec4899" stroke-width="2" fill="none" marker-end="url(#arrowGreen)" stroke-dasharray="3,2"/>
+
+            <!-- Request 2 (maps to S2) -->
+            <circle cx="500" cy="240" r="12" fill="#ec4899" opacity="0.9"/>
+            <text x="500" y="245" text-anchor="middle" font-size="9" fill="white" font-weight="bold">R2</text>
+            <path d="M 510 235 Q 525 228 532 225" stroke="#ec4899" stroke-width="2" fill="none" marker-end="url(#arrowBlue)" stroke-dasharray="3,2"/>
+
+            <!-- Request 3 (maps to S3) -->
+            <circle cx="280" cy="340" r="12" fill="#ec4899" opacity="0.9"/>
+            <text x="280" y="345" text-anchor="middle" font-size="9" fill="white" font-weight="bold">R3</text>
+            <path d="M 278 352 Q 270 365 265 375" stroke="#ec4899" stroke-width="2" fill="none" marker-end="url(#arrowOrange)" stroke-dasharray="3,2"/>
+
+            <!-- Request 4 (maps to S1) -->
+            <circle cx="520" cy="300" r="12" fill="#ec4899" opacity="0.9"/>
+            <text x="520" y="305" text-anchor="middle" font-size="9" fill="white" font-weight="bold">R4</text>
+            <path d="M 530 295 Q 560 290 578 285" stroke="#ec4899" stroke-width="2" fill="none" marker-end="url(#arrowGreen)" stroke-dasharray="3,2"/>
+
+            <!-- Clockwise direction indicator -->
+            <path d="M 600 350 Q 610 320 595 300" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowGray)" opacity="0.6"/>
+            <text x="625" y="325" font-size="11" fill="#64748b" font-weight="bold">Clockwise</text>
+            <text x="625" y="340" font-size="11" fill="#64748b" font-weight="bold">Lookup</text>
+
+            <defs>
+                <marker id="arrowGray" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L7,3 z" fill="#64748b"/>
+                </marker>
+            </defs>
+
+            <!-- Legend -->
+            <g transform="translate(50, 630)">
+                <text x="0" y="0" font-size="12" font-weight="bold" fill="#1e293b">Legend:</text>
+
+                <circle cx="10" cy="20" r="8" fill="#10b981" opacity="0.7"/>
+                <text x="25" y="24" font-size="11" fill="#1e293b">Server 1 Virtual Nodes (3)</text>
+
+                <circle cx="180" cy="20" r="8" fill="#3b82f6" opacity="0.7"/>
+                <text x="195" y="24" font-size="11" fill="#1e293b">Server 2 Virtual Nodes (3)</text>
+
+                <circle cx="350" cy="20" r="8" fill="#f59e0b" opacity="0.7"/>
+                <text x="365" y="24" font-size="11" fill="#1e293b">Server 3 Virtual Nodes (3)</text>
+
+                <circle cx="520" cy="20" r="8" fill="#ec4899" opacity="0.9"/>
+                <text x="535" y="24" font-size="11" fill="#1e293b">Client Requests</text>
+            </g>
+
+            <!-- Center label -->
+            <text x="400" y="345" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">Hash Ring</text>
+            <text x="400" y="365" text-anchor="middle" font-size="11" fill="#64748b">(9 Virtual Nodes Total)</text>
+        </svg>
+    </div>
+
+    <div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin-top: 24px">
+        <h4 style="color: #1e40af; margin-top: 0">Request Routing Example</h4>
+        <div style="font-family: monospace; font-size: 13px; color: #1e293b; line-height: 1.8">
+            R1 (hash=12345) → Clockwise to S1-V1 → <span style="color: #10b981; font-weight: bold">Server 1</span><br/>
+            R2 (hash=45678) → Clockwise to S2-V1 → <span style="color: #3b82f6; font-weight: bold">Server 2</span><br/>
+            R3 (hash=78901) → Clockwise to S3-V2 → <span style="color: #f59e0b; font-weight: bold">Server 3</span><br/>
+            R4 (hash=123456) → Clockwise to S1-V2 → <span style="color: #10b981; font-weight: bold">Server 1</span><br/>
+            <br/>
+            <span style="color: #166534; font-weight: bold">Key: Requests distributed across all servers via virtual nodes</span>
+        </div>
+    </div>
+</div>
+
+<h2>Diagram Breakdown</h2>
+
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #166534; margin-top: 0">Component Analysis</h3>
+
+    <div style="display: grid; gap: 16px">
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #1e40af; margin: 0 0 12px 0">1. Hash Ring (Circle)</h4>
+            <p style="color: #1e293b; margin: 0; line-height: 1.6">
+                The circular ring represents the entire hash space from 0 to 2³²-1 (4.29 billion positions). This circular structure ensures continuity - after the maximum value, it wraps back to 0, making it truly circular.
+            </p>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #10b981; margin: 0 0 12px 0">2. Virtual Nodes (Server Replicas)</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0; line-height: 1.6">
+                Each physical server has multiple virtual nodes (replicas) distributed around the ring:
+            </p>
+            <ul style="color: #475569; margin: 8px 0 0 0; line-height: 1.6">
+                <li><strong>Server 1 (Green):</strong> S1-V1, S1-V2, S1-V3 at different hash positions</li>
+                <li><strong>Server 2 (Blue):</strong> S2-V1, S2-V2, S2-V3 scattered around ring</li>
+                <li><strong>Server 3 (Orange):</strong> S3-V1, S3-V2, S3-V3 distributed evenly</li>
+            </ul>
+            <p style="color: #1e293b; margin: 8px 0 0 0; line-height: 1.6">
+                Virtual nodes are created by hashing: <code>hash(server_id + virtual_node_id)</code>
+            </p>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #ec4899; margin: 0 0 12px 0">3. Request Mapping</h4>
+            <p style="color: #1e293b; margin: 0; line-height: 1.6">
+                Each client request is hashed to a position on the ring (pink circles). The request is then routed to the <strong>next virtual node clockwise</strong>. For example, if R1 hashes to position 12345, it travels clockwise until hitting S1-V1, so it routes to Server 1.
+            </p>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #7c3aed; margin: 0 0 12px 0">4. Clockwise Lookup Direction</h4>
+            <p style="color: #1e293b; margin: 0; line-height: 1.6">
+                The algorithm always searches clockwise from the request's hash position to find the next server node. This deterministic direction ensures consistent routing - the same request hash always finds the same server (unless the ring topology changes).
+            </p>
+        </div>
+    </div>
+</div>
+
+<h2>Python Implementation with Virtual Nodes</h2>
+
+<div style="background: #1e293b; border-radius: 12px; padding: 24px; margin: 20px 0">
+<pre style="margin: 0; color: #e2e8f0; font-size: 13px; line-height: 1.6"><code class="language-python">import hashlib
+import bisect
+from typing import List, Dict
+
+class ConsistentHashRing:
+    """
+    Consistent Hashing with Virtual Nodes
+
+    Virtual nodes ensure better distribution and handle heterogeneous servers.
+    Each physical server gets multiple virtual node positions on the ring.
+    """
+
+    def __init__(self, nodes: List[str] = None, virtual_nodes: int = 150):
+        """
+        Args:
+            nodes: List of server identifiers (e.g., ["server1:8080", "server2:8080"])
+            virtual_nodes: Number of virtual nodes per physical server (default: 150)
+        """
+        self.virtual_nodes = virtual_nodes
+        self.ring: Dict[int, str] = {}  # hash_value -> server_id
+        self.sorted_keys: List[int] = []  # Sorted hash positions
+        self.nodes: set = set()
+
+        if nodes:
+            for node in nodes:
+                self.add_node(node)
+
+    def _hash(self, key: str) -> int:
+        """Hash function using MD5, returns 32-bit integer"""
+        return int(hashlib.md5(key.encode('utf-8')).hexdigest(), 16)
+
+    def add_node(self, node: str):
+        """Add a server with its virtual nodes to the ring"""
+        self.nodes.add(node)
+
+        # Create virtual nodes for better distribution
+        for i in range(self.virtual_nodes):
+            virtual_key = f"{node}:vnode{i}"
+            hash_value = self._hash(virtual_key)
+            self.ring[hash_value] = node
+            # Insert into sorted position for binary search
+            bisect.insort(self.sorted_keys, hash_value)
+
+        print(f"Added {node} with {self.virtual_nodes} virtual nodes")
+
+    def remove_node(self, node: str):
+        """Remove a server and all its virtual nodes"""
+        if node not in self.nodes:
+            return
+
+        self.nodes.remove(node)
+
+        # Remove all virtual nodes
+        for i in range(self.virtual_nodes):
+            virtual_key = f"{node}:vnode{i}"
+            hash_value = self._hash(virtual_key)
+
+            # Remove from ring
+            if hash_value in self.ring:
+                del self.ring[hash_value]
+
+            # Remove from sorted keys
+            index = bisect.bisect_left(self.sorted_keys, hash_value)
+            if index < len(self.sorted_keys) and self.sorted_keys[index] == hash_value:
+                self.sorted_keys.pop(index)
+
+        print(f"Removed {node} and its {self.virtual_nodes} virtual nodes")
+
+    def get_node(self, request_key: str) -> str:
+        """
+        Find the server responsible for this request.
+
+        Algorithm:
+        1. Hash the request key to get a position on the ring
+        2. Find the next server (clockwise) using binary search
+        3. If no server found after the position, wrap around to first server
+        """
+        if not self.ring:
+            return None
+
+        # Hash the request to get ring position
+        hash_value = self._hash(request_key)
+
+        # Binary search for the next server clockwise
+        # bisect_right finds the insertion point (next position clockwise)
+        index = bisect.bisect_right(self.sorted_keys, hash_value)
+
+        # Wrap around if we're past the last key
+        if index == len(self.sorted_keys):
+            index = 0
+
+        # Return the server at that position
+        return self.ring[self.sorted_keys[index]]
+
+    def get_distribution(self, num_requests: int = 10000) -> Dict[str, int]:
+        """Simulate distribution of requests across servers"""
+        distribution = {node: 0 for node in self.nodes}
+
+        for i in range(num_requests):
+            request_key = f"request_{i}"
+            node = self.get_node(request_key)
+            distribution[node] += 1
+
+        return distribution
+
+# Usage Example
+print("=== Consistent Hashing Demo ===\n")
+
+# Create hash ring with 3 servers
+ring = ConsistentHashRing(virtual_nodes=150)
+servers = ["server1:8080", "server2:8080", "server3:8080"]
+
+for server in servers:
+    ring.add_node(server)
+
+print("\n--- Initial Request Distribution ---")
+distribution = ring.get_distribution(10000)
+for server, count in sorted(distribution.items()):
+    percentage = (count / 10000) * 100
+    print(f"{server}: {count:4d} requests ({percentage:.1f}%)")
+
+# Simulate specific requests
+print("\n--- Specific Request Routing ---")
+test_requests = ["user:1001", "session:abc123", "cache:key1", "user:2050"]
+for req in test_requests:
+    server = ring.get_node(req)
+    print(f"{req:20s} → {server}")
+
+# Add a new server (minimal disruption)
+print("\n--- Adding server4 ---")
+ring.add_node("server4:8080")
+
+print("\n--- Distribution After Adding Server ---")
+distribution_after = ring.get_distribution(10000)
+for server, count in sorted(distribution_after.items()):
+    percentage = (count / 10000) * 100
+    print(f"{server}: {count:4d} requests ({percentage:.1f}%)")
+
+# Check which requests got remapped
+print("\n--- Request Remapping Check ---")
+for req in test_requests:
+    new_server = ring.get_node(req)
+    print(f"{req:20s} → {new_server}")
+
+# Remove a server
+print("\n--- Removing server2 ---")
+ring.remove_node("server2:8080")
+
+print("\n--- Final Distribution ---")
+final_distribution = ring.get_distribution(10000)
+for server, count in sorted(final_distribution.items()):
+    percentage = (count / 10000) * 100
+    print(f"{server}: {count:4d} requests ({percentage:.1f}%)")
+
+# Output Example:
+# server1:8080: 2501 requests (25.0%)
+# server2:8080: 2486 requests (24.9%)
+# server3:8080: 2513 requests (25.1%)
+# server4:8080: 2500 requests (25.0%)
+# (Nearly perfect distribution with virtual nodes!)
+</code></pre>
+</div>
+
+<h2>Advantages Over Simple IP Hash</h2>
+
+<div style="background: #fef3c7; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #92400e; margin-top: 0">Consistent Hash vs Simple Modulo Hash</h3>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 12px 0">Simple Hash (Modulo)</h4>
+            <div style="background: #fee2e2; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b; line-height: 1.8">
+                server = hash(request) % num_servers
+            </div>
+
+            <h5 style="color: #dc2626; margin: 16px 0 8px 0">Problem with 3 servers:</h5>
+            <div style="font-family: monospace; font-size: 11px; color: #1e293b; line-height: 1.6; background: #f8fafc; padding: 10px; border-radius: 4px">
+                user:1001 → hash=12345 → 12345%3=0 → S0<br/>
+                user:1002 → hash=67890 → 67890%3=0 → S0<br/>
+                user:1003 → hash=24680 → 24680%3=2 → S2
+            </div>
+
+            <h5 style="color: #dc2626; margin: 16px 0 8px 0">After adding 4th server:</h5>
+            <div style="font-family: monospace; font-size: 11px; color: #1e293b; line-height: 1.6; background: #f8fafc; padding: 10px; border-radius: 4px">
+                user:1001 → 12345%4=1 → S1 <span style="color: #dc2626">❌ Changed!</span><br/>
+                user:1002 → 67890%4=2 → S2 <span style="color: #dc2626">❌ Changed!</span><br/>
+                user:1003 → 24680%4=0 → S0 <span style="color: #dc2626">❌ Changed!</span>
+            </div>
+
+            <p style="color: #dc2626; margin: 12px 0 0 0; font-size: 13px; font-weight: 600">
+                Impact: ~75% of keys remapped (cache invalidation storm!)
+            </p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 12px 0">Consistent Hash</h4>
+            <div style="background: #dcfce7; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b; line-height: 1.8">
+                server = ring.get_node(request)
+            </div>
+
+            <h5 style="color: #166534; margin: 16px 0 8px 0">With 3 servers:</h5>
+            <div style="font-family: monospace; font-size: 11px; color: #1e293b; line-height: 1.6; background: #f8fafc; padding: 10px; border-radius: 4px">
+                user:1001 → ring position 12345 → S1<br/>
+                user:1002 → ring position 67890 → S2<br/>
+                user:1003 → ring position 24680 → S1
+            </div>
+
+            <h5 style="color: #166534; margin: 16px 0 8px 0">After adding 4th server:</h5>
+            <div style="font-family: monospace; font-size: 11px; color: #1e293b; line-height: 1.6; background: #f8fafc; padding: 10px; border-radius: 4px">
+                user:1001 → ring position 12345 → S1 <span style="color: #166534">✓ Same</span><br/>
+                user:1002 → ring position 67890 → S4 <span style="color: #f59e0b">⚠ Remapped</span><br/>
+                user:1003 → ring position 24680 → S1 <span style="color: #166534">✓ Same</span>
+            </div>
+
+            <p style="color: #166534; margin: 12px 0 0 0; font-size: 13px; font-weight: 600">
+                Impact: Only ~25% of keys remapped (K/n where n=servers)
+            </p>
+        </div>
+    </div>
+
+    <div style="background: #dbeafe; padding: 16px; border-radius: 8px; margin-top: 20px">
+        <h4 style="color: #1e40af; margin: 0 0 8px 0">Mathematical Guarantee</h4>
+        <p style="color: #1e293b; margin: 0; font-size: 14px; line-height: 1.6">
+            With <code>n</code> servers and <code>K</code> total keys, adding or removing one server only remaps approximately <code>K/n</code> keys, rather than <code>K × (n-1)/n</code> keys with simple hashing.
+        </p>
+    </div>
+</div>
+
+<h2>Virtual Nodes: The Secret to Even Distribution</h2>
+
+<div style="background: #eff6ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #1e40af; margin-top: 0">Why Virtual Nodes Are Essential</h3>
+
+    <p style="color: #1e293b; margin: 0 0 16px 0">Without virtual nodes, a small number of servers can create very uneven distribution on the ring. Virtual nodes solve this by giving each server multiple positions.</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 12px 0">Without Virtual Nodes (Bad)</h4>
+            <div style="background: #fee2e2; padding: 12px; border-radius: 6px">
+                <p style="margin: 0 0 8px 0; font-size: 13px; color: #1e293b">Each server has 1 position on ring:</p>
+                <div style="font-family: monospace; font-size: 11px; color: #1e293b; line-height: 1.8">
+                    Ring: [S1, -----------------, S2, --, S3]<br/>
+                    <br/>
+                    S1 handles 70% of hash space<br/>
+                    S2 handles 20% of hash space<br/>
+                    S3 handles 10% of hash space
+                </div>
+                <p style="margin: 12px 0 0 0; color: #dc2626; font-size: 12px; font-weight: 600">
+                    Severe load imbalance!
+                </p>
+            </div>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 12px 0">With Virtual Nodes (Good)</h4>
+            <div style="background: #dcfce7; padding: 12px; border-radius: 6px">
+                <p style="margin: 0 0 8px 0; font-size: 13px; color: #1e293b">Each server has 150 positions on ring:</p>
+                <div style="font-family: monospace; font-size: 11px; color: #1e293b; line-height: 1.8">
+                    Ring: [S1,S2,S1,S3,S2,S1,S3,S1,S2...]<br/>
+                    <br/>
+                    S1 handles ~33.3% of hash space<br/>
+                    S2 handles ~33.4% of hash space<br/>
+                    S3 handles ~33.3% of hash space
+                </div>
+                <p style="margin: 12px 0 0 0; color: #166534; font-size: 12px; font-weight: 600">
+                    Nearly perfect distribution!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="background: #e0e7ff; padding: 16px; border-radius: 8px; margin-top: 20px">
+        <h4 style="color: #1e40af; margin: 0 0 12px 0">Virtual Node Count Recommendations</h4>
+        <ul style="color: #1e293b; margin: 0; line-height: 2">
+            <li><strong>Small clusters (3-10 servers):</strong> 150-200 virtual nodes per server</li>
+            <li><strong>Medium clusters (10-100 servers):</strong> 100-150 virtual nodes per server</li>
+            <li><strong>Large clusters (100+ servers):</strong> 50-100 virtual nodes per server</li>
+            <li><strong>Heterogeneous servers:</strong> Adjust virtual node count by capacity (powerful server gets more vnodes)</li>
+        </ul>
+    </div>
+</div>
+
+<h2>Advantages and Disadvantages</h2>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0">
+    <div style="background: #dcfce7; border-radius: 12px; padding: 24px">
+        <h3 style="color: #166534; margin-top: 0">Advantages ✓</h3>
+        <ul style="color: #1e293b; line-height: 2; margin: 0">
+            <li><strong>Minimal Disruption:</strong> Only K/n keys remapped when adding/removing servers</li>
+            <li><strong>Scalability:</strong> Easy to add/remove servers without full rehash</li>
+            <li><strong>Even Distribution:</strong> Virtual nodes ensure balanced load</li>
+            <li><strong>Heterogeneous Servers:</strong> Assign more vnodes to powerful servers</li>
+            <li><strong>Fault Tolerance:</strong> Failed server's load distributed to others</li>
+            <li><strong>Deterministic:</strong> Same input always routes to same server</li>
+        </ul>
+    </div>
+
+    <div style="background: #fee2e2; border-radius: 12px; padding: 24px">
+        <h3 style="color: #dc2626; margin-top: 0">Disadvantages ✗</h3>
+        <ul style="color: #1e293b; line-height: 2; margin: 0">
+            <li><strong>Memory Overhead:</strong> Storing virtual nodes (150 vnodes × n servers)</li>
+            <li><strong>Complexity:</strong> More complex than simple modulo hashing</li>
+            <li><strong>Cascading Failures:</strong> Server failure increases load on neighbors</li>
+            <li><strong>Hotspot Risk:</strong> Popular keys can overload one server</li>
+            <li><strong>Rebalancing Cost:</strong> Data migration when adding servers</li>
+            <li><strong>No Request Awareness:</strong> Doesn't consider actual server load</li>
+        </ul>
+    </div>
+</div>
+
+<h2>When to Use Consistent Hashing</h2>
+
+<div style="background: #dcfce7; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #166534; margin-top: 0">Perfect Use Cases</h3>
+
+    <div style="display: grid; gap: 12px">
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 8px 0">✓ Distributed Caching (Redis, Memcached)</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">Cache cluster with 20 servers. User sessions must hit same cache server for session data.</p>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b">
+                hash(session_id) → Server 7<br/>
+                Same session_id always → Server 7<br/>
+                Add Server 21 → Only 5% of sessions remapped
+            </div>
+            <p style="color: #166534; margin: 8px 0 0 0; font-weight: 600; font-size: 13px">Benefit: Minimal cache invalidation during scaling</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 8px 0">✓ Session Persistence (Sticky Sessions)</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">Web application requires user to hit same server for in-memory session state.</p>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b">
+                hash(cookie_id) → Server 3<br/>
+                All requests with same cookie → Server 3<br/>
+                Server 3 fails → Rehash to Server 5 (new session)
+            </div>
+            <p style="color: #166534; margin: 8px 0 0 0; font-weight: 600; font-size: 13px">Benefit: Session affinity maintained across requests</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 8px 0">✓ Distributed Database Sharding</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">NoSQL database (Cassandra, DynamoDB) partitions data across nodes by key.</p>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b">
+                hash(user_id) → Node 4 (stores this user's data)<br/>
+                Add Node 5 → Only 1/n of data migrates<br/>
+                Query user_id → Always finds data on Node 4
+            </div>
+            <p style="color: #166534; margin: 8px 0 0 0; font-weight: 600; font-size: 13px">Benefit: Efficient data partitioning with minimal rebalancing</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 8px 0">✓ Content Delivery Networks (CDN)</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">Route requests for specific content to edge servers that have cached it.</p>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b">
+                hash(image_url) → Edge Server 12<br/>
+                All requests for that image → Server 12 (cache hit)<br/>
+                Add Edge Server 13 → Some content redistributed
+            </div>
+            <p style="color: #166534; margin: 8px 0 0 0; font-weight: 600; font-size: 13px">Benefit: Maximizes cache hit rate while allowing server changes</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #166534; margin: 0 0 8px 0">✓ Distributed Message Queues</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">Kafka-like systems partition topics across brokers consistently.</p>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b">
+                hash(partition_key) → Broker 2<br/>
+                Messages with same key → Same broker (ordering preserved)<br/>
+                Add Broker 4 → Only some partitions rebalance
+            </div>
+            <p style="color: #166534; margin: 8px 0 0 0; font-weight: 600; font-size: 13px">Benefit: Message ordering guarantee with dynamic broker scaling</p>
+        </div>
+    </div>
+</div>
+
+<h2>Common Pitfalls</h2>
+
+<div style="background: #fee2e2; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <div style="display: grid; gap: 12px">
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Too Few Virtual Nodes</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">Using 10-20 virtual nodes per server leads to poor distribution. Some servers get 45% of load, others get 12%.</p>
+            <p style="color: #166534; margin: 0; font-weight: 600">Solution: Use at least 100-150 virtual nodes per server (more for small clusters)</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Ignoring Hotspots</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">One key (e.g., celebrity user) generates 80% of traffic. Consistent hashing still sends all of it to one server.</p>
+            <p style="color: #166534; margin: 0; font-weight: 600">Solution: Implement additional sharding for hot keys, or use bounded loads algorithm</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Not Handling Server Failures Gracefully</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">When a server fails, its load shifts to the next server clockwise, which might overload that neighbor.</p>
+            <p style="color: #166534; margin: 0; font-weight: 600">Solution: Use replicas (primary + 2 backups) or implement health checks with gradual failover</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Forgetting Data Migration</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">Adding a new cache server without migrating affected keys. Requests go to new server but data is still on old server (cache miss storm).</p>
+            <p style="color: #166534; margin: 0; font-weight: 600">Solution: Implement background migration process to transfer keys from old to new server</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Poor Hash Function Choice</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">Using non-uniform hash function (e.g., simple string length) creates clustering on the ring.</p>
+            <p style="color: #166534; margin: 0; font-weight: 600">Solution: Use cryptographic hash (MD5, SHA-1) or MurmurHash for uniform distribution</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Not Considering Weighted Nodes</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">Treating all servers equally when they have different capacities (8-core vs 32-core servers).</p>
+            <p style="color: #166534; margin: 0; font-weight: 600">Solution: Assign more virtual nodes to powerful servers (e.g., 32-core gets 4x vnodes as 8-core)</p>
+        </div>
+    </div>
+</div>
+
+<div style="background: #e0e7ff; border-radius: 12px; padding: 24px; margin: 24px 0">
+    <h3 style="color: #1e40af; margin-top: 0">Related Concepts</h3>
+    <ul style="color: #1e293b; line-height: 2">
+        <li><strong>Rendezvous Hashing (HRW):</strong> Alternative to consistent hashing with different mathematical properties</li>
+        <li><strong>Jump Hash:</strong> Google's minimal memory consistent hash (no virtual nodes needed)</li>
+        <li><strong>Bounded Loads:</strong> Extension that prevents overloading any single server</li>
+        <li><strong>Maglev Hashing:</strong> Google's fast consistent hashing for network load balancers</li>
+        <li><strong>Ring Pop:</strong> Uber's consistent hash ring implementation for service discovery</li>
+    </ul>
+</div>
