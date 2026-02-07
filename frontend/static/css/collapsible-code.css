@@ -1,0 +1,97 @@
+/* Collapsible Code Blocks */
+
+.collapsible-code {
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+    background: white;
+}
+
+.code-header {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    user-select: none;
+    font-weight: 500;
+    color: #334155;
+    transition: background-color 0.15s ease;
+}
+
+.code-header:hover {
+    background-color: #f1f5f9;
+}
+
+.code-toggle-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    font-size: 14px;
+    line-height: 20px;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.collapsible-code.collapsed .code-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.code-content {
+    max-height: 10000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, visibility 0.3s ease;
+    visibility: visible;
+}
+
+.collapsible-code.collapsed .code-content {
+    max-height: 0;
+    visibility: hidden;
+}
+
+.code-content pre {
+    margin: 0;
+    border-radius: 0;
+    background-color: #f5f5f5;
+}
+
+.code-content pre code {
+    display: block;
+    overflow-x: auto;
+}
+
+/* Ensure code highlighting still works */
+.code-content pre code.hljs {
+    padding: 12px 16px;
+}
+
+/* Mobile responsive adjustments */
+@media screen and (max-width: 480px) {
+    .collapsible-code {
+        margin: 12px 0;
+    }
+
+    .code-header {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .code-toggle-icon {
+        width: 18px;
+        height: 18px;
+        font-size: 12px;
+    }
+
+    .code-content pre {
+        font-size: 12px;
+        padding: 10px 12px;
+    }
+
+    .code-content pre code {
+        padding: 0;
+    }
+}
