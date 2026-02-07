@@ -287,42 +287,42 @@ experiment=variant  --> Experiment Servers (10%)</pre>
 <th style="padding: 12px; text-align: left; color: #1e293b">Drawback</th>
 </tr>
 <tr>
-<td style="padding: 12px; color: #1e293b"><strong>Round Robin</strong></td>
+<td style="padding: 12px; color: #1e293b"><strong><a href="algorithms/round-robin.html" style="color: #2563eb; text-decoration: none">Round Robin</a></strong></td>
 <td style="padding: 12px; color: #475569">Sequential rotation through servers</td>
 <td style="padding: 12px; color: #475569">O(1)</td>
 <td style="padding: 12px; color: #475569">Homogeneous servers, short requests</td>
 <td style="padding: 12px; color: #dc2626">Ignores server load completely</td>
 </tr>
 <tr>
-<td style="padding: 12px; color: #1e293b"><strong>Weighted Round Robin</strong></td>
+<td style="padding: 12px; color: #1e293b"><strong><a href="algorithms/weighted-round-robin.html" style="color: #2563eb; text-decoration: none">Weighted Round Robin</a></strong></td>
 <td style="padding: 12px; color: #475569">RR with capacity-based weights</td>
 <td style="padding: 12px; color: #475569">O(1)</td>
 <td style="padding: 12px; color: #475569">Heterogeneous server capacities</td>
 <td style="padding: 12px; color: #dc2626">Static weights don't adapt</td>
 </tr>
 <tr>
-<td style="padding: 12px; color: #1e293b"><strong>Least Connections</strong></td>
+<td style="padding: 12px; color: #1e293b"><strong><a href="algorithms/least-connections.html" style="color: #2563eb; text-decoration: none">Least Connections</a></strong></td>
 <td style="padding: 12px; color: #475569">Route to server with fewest active connections</td>
 <td style="padding: 12px; color: #475569">O(n) or O(log n) with heap</td>
 <td style="padding: 12px; color: #475569">Long-lived connections (WebSocket, DB)</td>
 <td style="padding: 12px; color: #dc2626">Doesn't account for request complexity</td>
 </tr>
 <tr>
-<td style="padding: 12px; color: #1e293b"><strong>Least Response Time</strong></td>
+<td style="padding: 12px; color: #1e293b"><strong><a href="algorithms/least-response-time.html" style="color: #2563eb; text-decoration: none">Least Response Time</a></strong></td>
 <td style="padding: 12px; color: #475569">Combine connections + response latency</td>
 <td style="padding: 12px; color: #475569">O(n)</td>
 <td style="padding: 12px; color: #475569">Latency-sensitive applications</td>
 <td style="padding: 12px; color: #dc2626">Requires latency tracking</td>
 </tr>
 <tr>
-<td style="padding: 12px; color: #1e293b"><strong>IP Hash</strong></td>
+<td style="padding: 12px; color: #1e293b"><strong><a href="algorithms/ip-hash.html" style="color: #2563eb; text-decoration: none">IP Hash</a></strong></td>
 <td style="padding: 12px; color: #475569">Hash client IP to determine server</td>
 <td style="padding: 12px; color: #475569">O(1)</td>
 <td style="padding: 12px; color: #475569">Basic session persistence</td>
 <td style="padding: 12px; color: #dc2626">Uneven if IPs cluster (NAT)</td>
 </tr>
 <tr>
-<td style="padding: 12px; color: #1e293b"><strong>Consistent Hashing</strong></td>
+<td style="padding: 12px; color: #1e293b"><strong><a href="algorithms/consistent-hashing.html" style="color: #2563eb; text-decoration: none">Consistent Hashing</a></strong></td>
 <td style="padding: 12px; color: #475569">Minimal key redistribution on changes</td>
 <td style="padding: 12px; color: #475569">O(log n)</td>
 <td style="padding: 12px; color: #475569">Distributed caches, stateful services</td>
@@ -331,349 +331,9 @@ experiment=variant  --> Experiment Servers (10%)</pre>
 </table>
 </div>
 </div>
-<h3 id="round-robin-deep-dive">Round Robin Deep Dive</h3>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 20px 0">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0">Round Robin Distribution Pattern</h4>
-<div style="display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #dbeafe;padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center">
-<span style="color: #1e40af; font-weight: 600">Request 1</span>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p style="color: #1e293b; line-height: 1.7">Each algorithm has been documented in detail on its own dedicated page with diagrams and Python implementations. Click on any algorithm name in the table above to learn more.</p>
 </div>
-<div style="flex: 1; height: 3px; background: linear-gradient(90deg, #3b82f6, #22c55e); border-radius: 2px"></div>
-<div style="background: #dcfce7; padding: 12px 24px; border-radius: 8px">
-<span style="color: #166534; font-weight: 600">Server A</span>
-</div>
-</div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #dbeafe;padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center">
-<span style="color: #1e40af; font-weight: 600">Request 2</span>
-</div>
-<div style="flex: 1; height: 3px; background: linear-gradient(90deg, #3b82f6, #3b82f6); border-radius: 2px"></div>
-<div style="background: #dbeafe; padding: 12px 24px; border-radius: 8px">
-<span style="color: #1e40af; font-weight: 600">Server B</span>
-</div>
-</div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #dbeafe;padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center">
-<span style="color: #1e40af; font-weight: 600">Request 3</span>
-</div>
-<div style="flex: 1; height: 3px; background: linear-gradient(90deg, #3b82f6, #a855f7); border-radius: 2px"></div>
-<div style="background: #f3e8ff; padding: 12px 24px; border-radius: 8px">
-<span style="color: #7c3aed; font-weight: 600">Server C</span>
-</div>
-</div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #fef3c7;padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center">
-<span style="color: #92400e; font-weight: 600">Request 4</span>
-</div>
-<div style="flex: 1; height: 3px; background: linear-gradient(90deg, #f59e0b, #22c55e); border-radius: 2px"></div>
-<div style="background: #dcfce7; padding: 12px 24px; border-radius: 8px">
-<span style="color: #166534; font-weight: 600">Server A</span>
-</div>
-<span style="color: #64748b; font-size: 12px; font-style: italic">(cycle repeats)</span>
-</div>
-</div>
-<div style="margin-top: 24px; padding: 16px; background: #fef3c7; border-radius: 8px">
-<span style="color: #166534; font-weight: 600">**Assumption:**</span> Round robin assumes all requests have similar processing cost and all servers have equal capacity. If Server A is processing a 10-second report while Server B just finished instantly, the next request still goes to Server B, leaving Server A potentially overloaded.
-</div>
-</div>
-<h3 id="least-connections-implementation">Least Connections Implementation</h3>
-<pre><code class="language-python">import heapq
-from dataclasses import dataclass, field
-from typing import List, Optional
-import threading
-
-@dataclass(order=True)
-class Server:
-    &quot;&quot;&quot;Server with connection tracking for least-connections algorithm.&quot;&quot;&quot;
-    connections: int = field(compare=True)
-    server_id: str = field(compare=False)
-    address: str = field(compare=False)
-    weight: int = field(default=1, compare=False)
-
-    @property
-    def weighted_connections(self) -&gt; float:
-        &quot;&quot;&quot;Connections normalized by weight for weighted least connections.&quot;&quot;&quot;
-        return self.connections / self.weight
-
-
-class LeastConnectionsBalancer:
-    &quot;&quot;&quot;
-    Least Connections Load Balancer with O(log n) selection.
-
-    Why heap-based:
-    - Finding minimum is O(1)
-    - Updating after selection is O(log n)
-    - Better than O(n) linear scan for large server pools
-
-    Thread Safety:
-    - Lock protects heap integrity during concurrent access
-    - Consider lock-free structures for ultra-high throughput
-    &quot;&quot;&quot;
-
-    def __init__(self):
-        self._heap: List[Server] = []
-        self._server_map: dict = {}  # server_id -&gt; Server
-        self._lock = threading.Lock()
-
-    def add_server(self, server_id: str, address: str, weight: int = 1):
-        &quot;&quot;&quot;Add server to the pool.&quot;&quot;&quot;
-        with self._lock:
-            server = Server(
-                connections=0,
-                server_id=server_id,
-                address=address,
-                weight=weight
-            )
-            heapq.heappush(self._heap, server)
-            self._server_map[server_id] = server
-
-    def get_server(self) -&gt; Optional[Server]:
-        &quot;&quot;&quot;
-        Select server with least connections.
-
-        Edge Cases:
-        - Empty pool: Return None, caller must handle
-        - All servers at max: Still returns least loaded
-        - Server removed during selection: Handled by lock
-        &quot;&quot;&quot;
-        with self._lock:
-            if not self._heap:
-                return None
-
-            # Get server with minimum connections
-            server = heapq.heappop(self._heap)
-
-            # Increment connection count
-            server.connections += 1
-
-            # Re-insert with updated count
-            heapq.heappush(self._heap, server)
-
-            return server
-
-    def release_connection(self, server_id: str):
-        &quot;&quot;&quot;
-        Called when request completes.
-
-        Critical: Must be called for every get_server() call,
-        otherwise connection counts drift and balancing fails.
-        &quot;&quot;&quot;
-        with self._lock:
-            if server_id in self._server_map:
-                server = self._server_map[server_id]
-                server.connections = max(0, server.connections - 1)
-                # Heap property may be violated - reheapify
-                heapq.heapify(self._heap)
-
-    def remove_server(self, server_id: str):
-        &quot;&quot;&quot;Remove unhealthy server from pool.&quot;&quot;&quot;
-        with self._lock:
-            if server_id in self._server_map:
-                server = self._server_map.pop(server_id)
-                self._heap.remove(server)
-                heapq.heapify(self._heap)
-</code></pre>
-<h3 id="consistent-hashing-deep-dive">Consistent Hashing Deep Dive</h3>
-<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0">Consistent Hashing Ring with Virtual Nodes</h4>
-<div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap; justify-content: center">
-<div style="position: relative; width: 280px; height: 280px">
-<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;border-radius: 50%"></div>
-  <!-- Hash positions -->
-<div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); color: #64748b; font-size: 11px; font-weight: 600">0</div>
-<div style="position: absolute; top: 50%; right: -20px; transform: translateY(-50%); color: #64748b; font-size: 11px; font-weight: 600">2^31</div>
-<div style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); color: #64748b; font-size: 11px; font-weight: 600">2^32</div>
-<div style="position: absolute; top: 50%; left: -25px; transform: translateY(-50%); color: #64748b; font-size: 11px; font-weight: 600">3*2^31</div>
-  <!-- Server A virtual nodes (green) -->
-<div style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); background: #22c55e; width: 16px; height: 16px; border-radius: 50%"></div>
-<div style="position: absolute; top: 80px; right: 25px; background: #22c55e; width: 16px; height: 16px; border-radius: 50%"></div>
-<div style="position: absolute; bottom: 60px; left: 20px; background: #22c55e; width: 16px; height: 16px; border-radius: 50%"></div>
-  <!-- Server B virtual nodes (blue) -->
-<div style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); background: #3b82f6; width: 16px; height: 16px; border-radius: 50%"></div>
-<div style="position: absolute; top: 40px; left: 35px; background: #3b82f6; width: 16px; height: 16px; border-radius: 50%"></div>
-<div style="position: absolute; bottom: 25px; right: 60px; background: #3b82f6; width: 16px; height: 16px; border-radius: 50%"></div>
-  <!-- Server C virtual nodes (purple) -->
-<div style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: #a855f7; width: 16px; height: 16px; border-radius: 50%"></div>
-<div style="position: absolute; top: 50%; left: 15px; transform: translateY(-50%); background: #a855f7; width: 16px; height: 16px; border-radius: 50%"></div>
-<div style="position: absolute; top: 60px; right: 70px; background: #a855f7; width: 16px; height: 16px; border-radius: 50%"></div>
-  <!-- Key point -->
-<div style="position: absolute; top: 30px; right: 55px; background: #ef4444; width: 10px; height: 10px; border-radius: 50%"></div>
-</div>
-<div style="display: flex; flex-direction: column; gap: 16px; max-width: 320px">
-<div style="display: flex; gap: 12px; align-items: center">
-<div style="background: #22c55e; width: 16px; height: 16px; border-radius: 50%"></div>
-<span style="color: #166534; font-size: 13px">Server A (3 virtual nodes)</span>
-</div>
-<div style="display: flex; gap: 12px; align-items: center">
-<div style="background: #3b82f6; width: 16px; height: 16px; border-radius: 50%"></div>
-<span style="color: #1e40af; font-size: 13px">Server B (3 virtual nodes)</span>
-</div>
-<div style="display: flex; gap: 12px; align-items: center">
-<div style="background: #a855f7; width: 16px; height: 16px; border-radius: 50%"></div>
-<span style="color: #7c3aed; font-size: 13px">Server C (3 virtual nodes)</span>
-</div>
-<div style="display: flex; gap: 12px; align-items: center">
-<div style="background: #ef4444; width: 10px; height: 10px; border-radius: 50%"></div>
-<span style="color: #dc2626; font-size: 13px">Key "user:123" (hash position)</span>
-</div>
-<div style="background: #eff6ff;border-radius: 8px; padding: 12px; margin-top: 8px">
-<div style="color: #1e293b; font-size: 13px"><strong>Routing:</strong> Key hashes to position</div>
-<div style="color: #1e40af; font-size: 13px; margin-top: 4px">Walk clockwise to find nearest server node</div>
-<div style="color: #1e40af; font-size: 13px">Key "user:123" --> Server A</div>
-</div>
-<div style="background: #f0fdf4;border-radius: 8px; padding: 12px">
-<div style="color: #166534; font-weight: 600; font-size: 13px">When Server B removed:</div>
-<div style="color: #1e293b; font-size: 12px; margin-top: 4px">Only keys between B's nodes and next clockwise node move</div>
-<div style="color: #1e293b; font-size: 12px">~1/N keys remapped (not all keys!)</div>
-</div>
-</div>
-</div>
-</div>
-<h3 id="consistent-hashing-implementation">Consistent Hashing Implementation</h3>
-<pre><code class="language-python">import hashlib
-import bisect
-from typing import Dict, List, Optional, Any
-
-class ConsistentHashRing:
-    &quot;&quot;&quot;
-    Consistent hashing with virtual nodes for even distribution.
-
-    Why Virtual Nodes:
-    - Physical nodes may hash to adjacent positions (clustering)
-    - Virtual nodes spread each server across the ring
-    - More virtual nodes = more even distribution
-    - Trade-off: More memory, slower lookups (O(log(n*v)))
-
-    Production Considerations:
-    - Use 100-200 virtual nodes per server for good distribution
-    - xxhash is faster than MD5/SHA for non-cryptographic hashing
-    - Consider jump consistent hash for better performance
-    &quot;&quot;&quot;
-
-    def __init__(self, virtual_nodes: int = 150):
-        self.virtual_nodes = virtual_nodes
-        self.ring: Dict[int, str] = {}  # hash -&gt; server_id
-        self.sorted_keys: List[int] = []
-        self.servers: Dict[str, Any] = {}  # server_id -&gt; metadata
-
-    def _hash(self, key: str) -&gt; int:
-        &quot;&quot;&quot;
-        Generate hash for key.
-
-        Using MD5 for consistent cross-platform hashing.
-        In production, consider xxhash for 10x speed improvement.
-        &quot;&quot;&quot;
-        return int(hashlib.md5(key.encode()).hexdigest(), 16)
-
-    def add_server(self, server_id: str, metadata: Any = None):
-        &quot;&quot;&quot;
-        Add server with virtual nodes to the ring.
-
-        Virtual node naming: &quot;server_id:vnode_index&quot;
-        This ensures deterministic placement across restarts.
-        &quot;&quot;&quot;
-        self.servers[server_id] = metadata
-
-        for i in range(self.virtual_nodes):
-            virtual_key = f&quot;{server_id}:vnode:{i}&quot;
-            hash_value = self._hash(virtual_key)
-
-            self.ring[hash_value] = server_id
-            bisect.insort(self.sorted_keys, hash_value)
-
-    def remove_server(self, server_id: str):
-        &quot;&quot;&quot;
-        Remove server and all its virtual nodes.
-
-        Keys previously mapped to this server will automatically
-        route to the next clockwise server.
-        &quot;&quot;&quot;
-        if server_id not in self.servers:
-            return
-
-        del self.servers[server_id]
-
-        for i in range(self.virtual_nodes):
-            virtual_key = f&quot;{server_id}:vnode:{i}&quot;
-            hash_value = self._hash(virtual_key)
-
-            if hash_value in self.ring:
-                del self.ring[hash_value]
-                self.sorted_keys.remove(hash_value)
-
-    def get_server(self, key: str) -&gt; Optional[str]:
-        &quot;&quot;&quot;
-        Get server for given key using consistent hashing.
-
-        Algorithm:
-        1. Hash the key
-        2. Binary search for position in sorted ring
-        3. Return server at that position (or wrap to first)
-
-        Time Complexity: O(log(n * virtual_nodes))
-        &quot;&quot;&quot;
-        if not self.ring:
-            return None
-
-        hash_value = self._hash(key)
-
-        # Binary search for first hash &gt;= key_hash
-        idx = bisect.bisect_left(self.sorted_keys, hash_value)
-
-        # Wrap around if past the end
-        if idx &gt;= len(self.sorted_keys):
-            idx = 0
-
-        server_hash = self.sorted_keys[idx]
-        return self.ring[server_hash]
-
-    def get_n_servers(self, key: str, n: int) -&gt; List[str]:
-        &quot;&quot;&quot;
-        Get N distinct servers for replication.
-
-        Use case: Store data on primary + N-1 replicas.
-        Walks clockwise collecting distinct server IDs.
-        &quot;&quot;&quot;
-        if not self.ring or n &lt;= 0:
-            return []
-
-        hash_value = self._hash(key)
-        idx = bisect.bisect_left(self.sorted_keys, hash_value)
-
-        servers = []
-        seen = set()
-
-        for _ in range(len(self.sorted_keys)):
-            if idx &gt;= len(self.sorted_keys):
-                idx = 0
-
-            server_id = self.ring[self.sorted_keys[idx]]
-
-            if server_id not in seen:
-                servers.append(server_id)
-                seen.add(server_id)
-
-                if len(servers) &gt;= n:
-                    break
-
-            idx += 1
-
-        return servers
-
-
-# Usage example
-ring = ConsistentHashRing(virtual_nodes=150)
-
-# Add servers
-ring.add_server(&quot;server-1&quot;, {&quot;address&quot;: &quot;10.0.0.1:8080&quot;})
-ring.add_server(&quot;server-2&quot;, {&quot;address&quot;: &quot;10.0.0.2:8080&quot;})
-ring.add_server(&quot;server-3&quot;, {&quot;address&quot;: &quot;10.0.0.3:8080&quot;})
-
-# Route requests
-server = ring.get_server(&quot;user:12345&quot;)  # Consistent mapping
-replicas = ring.get_n_servers(&quot;user:12345&quot;, n=3)  # For replication
-</code></pre>
 <h3 id="algorithm-selection-interview-questions-3-levels-deep">Algorithm Selection Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: When would you choose Least Connections over Round Robin?</h4>
@@ -1078,228 +738,66 @@ replicas = ring.get_n_servers(&quot;user:12345&quot;, n=3)  # For replication
 </div>
 <hr />
 <h2 id="code-examples">Code Examples</h2>
-<h3 id="go---complete-load-balancer-with-health-checks">Go - Complete Load Balancer with Health Checks</h3>
-<pre><code class="language-go">package main
+<h3 id="python---load-balancer-framework">Python - Load Balancer Framework</h3>
+<p style="color: #64748b; font-style: italic; margin-bottom: 16px">For specific algorithm implementations (Round Robin, Weighted Round Robin, Least Connections, etc.), see the dedicated algorithm pages linked in the table above.</p>
+<pre><code class="language-python">from abc import ABC, abstractmethod
+from typing import List
+import time
 
-import (
-    &quot;context&quot;
-    &quot;net/http&quot;
-    &quot;net/http/httputil&quot;
-    &quot;net/url&quot;
-    &quot;sync&quot;
-    &quot;sync/atomic&quot;
-    &quot;time&quot;
-)
+class Server:
+    """Represents a backend server"""
+    def __init__(self, url: str):
+        self.url = url
+        self.is_alive = True
+        self.last_health_check = time.time()
 
-// Server represents a backend server with health tracking
-type Server struct {
-    URL              *url.URL
-    Alive            int32  // atomic bool: 1 = alive, 0 = dead
-    ActiveConns      int64  // atomic counter
-    ReverseProxy     *httputil.ReverseProxy
-    Weight           int
-    ConsecutiveFails int32  // atomic counter for health check failures
-}
+    def handle_request(self, request):
+        """Process incoming request"""
+        return f"Response from {self.url}"
 
-// IsAlive returns server health status atomically
-func (s *Server) IsAlive() bool {
-    return atomic.LoadInt32(&amp;s.Alive) == 1
-}
+class LoadBalancerStrategy(ABC):
+    """Abstract strategy for server selection"""
 
-// SetAlive updates server health status atomically
-func (s *Server) SetAlive(alive bool) {
-    if alive {
-        atomic.StoreInt32(&amp;s.Alive, 1)
-    } else {
-        atomic.StoreInt32(&amp;s.Alive, 0)
-    }
-}
+    @abstractmethod
+    def select_server(self, servers: List[Server]) -> Server:
+        """Select next server based on algorithm"""
+        pass
 
-// LoadBalancer implements various load balancing strategies
-type LoadBalancer struct {
-    servers         []*Server
-    current         uint64  // for round robin
-    mu              sync.RWMutex
-    healthCheckURL  string
-    strategy        string
-}
+class LoadBalancer:
+    """Generic load balancer framework"""
 
-// NewLoadBalancer creates a load balancer with the specified strategy
-func NewLoadBalancer(serverURLs []string, strategy string) *LoadBalancer {
-    lb := &amp;LoadBalancer{
-        healthCheckURL: &quot;/health&quot;,
-        strategy:       strategy,
-    }
+    def __init__(self, servers: List[Server], strategy: LoadBalancerStrategy):
+        self.servers = servers
+        self.strategy = strategy
 
-    for _, serverURL := range serverURLs {
-        u, err := url.Parse(serverURL)
-        if err != nil {
-            continue
-        }
+    def route_request(self, request):
+        """Route request to selected server"""
+        # Get healthy servers only
+        healthy_servers = [s for s in self.servers if s.is_alive]
 
-        proxy := httputil.NewSingleHostReverseProxy(u)
+        if not healthy_servers:
+            raise Exception("No healthy servers available")
 
-        // Custom error handler for failover
-        proxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, err error) {
-            // Find and mark server as unhealthy
-            for _, s := range lb.servers {
-                if s.URL.String() == u.String() {
-                    s.SetAlive(false)
-                    break
-                }
-            }
-            // Retry on another server
-            lb.ServeHTTP(w, r)
-        }
+        # Use strategy to select server
+        server = self.strategy.select_server(healthy_servers)
 
-        lb.servers = append(lb.servers, &amp;Server{
-            URL:          u,
-            Alive:        1,
-            ReverseProxy: proxy,
-            Weight:       1,
-        })
-    }
+        # Forward request
+        return server.handle_request(request)
 
-    return lb
-}
+    def health_check(self):
+        """Perform health checks on all servers"""
+        for server in self.servers:
+            try:
+                # Check server health (simplified)
+                server.is_alive = self.check_server_health(server)
+                server.last_health_check = time.time()
+            except Exception:
+                server.is_alive = False
 
-// GetNextServer selects a server based on configured strategy
-func (lb *LoadBalancer) GetNextServer() *Server {
-    switch lb.strategy {
-    case &quot;least_connections&quot;:
-        return lb.leastConnections()
-    case &quot;weighted_round_robin&quot;:
-        return lb.weightedRoundRobin()
-    default:
-        return lb.roundRobin()
-    }
-}
-
-// roundRobin cycles through servers sequentially
-func (lb *LoadBalancer) roundRobin() *Server {
-    serverCount := uint64(len(lb.servers))
-
-    // Try all servers to find a healthy one
-    for i := uint64(0); i &lt; serverCount; i++ {
-        next := atomic.AddUint64(&amp;lb.current, 1)
-        idx := next % serverCount
-
-        if lb.servers[idx].IsAlive() {
-            return lb.servers[idx]
-        }
-    }
-
-    return nil
-}
-
-// leastConnections returns server with minimum active connections
-func (lb *LoadBalancer) leastConnections() *Server {
-    lb.mu.RLock()
-    defer lb.mu.RUnlock()
-
-    var selected *Server
-    minConns := int64(^uint64(0) &gt;&gt; 1) // Max int64
-
-    for _, server := range lb.servers {
-        if server.IsAlive() {
-            conns := atomic.LoadInt64(&amp;server.ActiveConns)
-            if conns &lt; minConns {
-                minConns = conns
-                selected = server
-            }
-        }
-    }
-
-    return selected
-}
-
-// weightedRoundRobin implements smooth weighted round robin
-func (lb *LoadBalancer) weightedRoundRobin() *Server {
-    // Simplified: uses standard round robin with weight consideration
-    // Full implementation would track effective weights
-    return lb.roundRobin()
-}
-
-// ServeHTTP handles incoming requests
-func (lb *LoadBalancer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    server := lb.GetNextServer()
-
-    if server == nil {
-        http.Error(w, &quot;Service Unavailable&quot;, http.StatusServiceUnavailable)
-        return
-    }
-
-    // Track connection count for least connections algorithm
-    atomic.AddInt64(&amp;server.ActiveConns, 1)
-    defer atomic.AddInt64(&amp;server.ActiveConns, -1)
-
-    server.ReverseProxy.ServeHTTP(w, r)
-}
-
-// HealthCheck performs periodic health checks on all servers
-func (lb *LoadBalancer) HealthCheck(ctx context.Context, interval time.Duration) {
-    ticker := time.NewTicker(interval)
-    defer ticker.Stop()
-
-    for {
-        select {
-        case &lt;-ctx.Done():
-            return
-        case &lt;-ticker.C:
-            lb.checkAllServers()
-        }
-    }
-}
-
-func (lb *LoadBalancer) checkAllServers() {
-    for _, server := range lb.servers {
-        go lb.checkServer(server)
-    }
-}
-
-func (lb *LoadBalancer) checkServer(server *Server) {
-    healthURL := server.URL.String() + lb.healthCheckURL
-
-    client := &amp;http.Client{
-        Timeout: 2 * time.Second,
-    }
-
-    resp, err := client.Get(healthURL)
-
-    if err != nil || resp.StatusCode != http.StatusOK {
-        // Increment failure counter
-        fails := atomic.AddInt32(&amp;server.ConsecutiveFails, 1)
-
-        // Mark unhealthy after 3 consecutive failures
-        if fails &gt;= 3 {
-            server.SetAlive(false)
-        }
-    } else {
-        // Reset failures and mark healthy
-        atomic.StoreInt32(&amp;server.ConsecutiveFails, 0)
-        server.SetAlive(true)
-    }
-
-    if resp != nil {
-        resp.Body.Close()
-    }
-}
-
-func main() {
-    lb := NewLoadBalancer([]string{
-        &quot;http://localhost:8081&quot;,
-        &quot;http://localhost:8082&quot;,
-        &quot;http://localhost:8083&quot;,
-    }, &quot;least_connections&quot;)
-
-    // Start health checking
-    ctx, cancel := context.WithCancel(context.Background())
-    defer cancel()
-    go lb.HealthCheck(ctx, 5*time.Second)
-
-    // Start load balancer
-    http.ListenAndServe(&quot;:8080&quot;, lb)
-}
+    def check_server_health(self, server: Server) -> bool:
+        """Check if server is healthy"""
+        # Implementation would make actual health check request
+        return True
 </code></pre>
 <h3 id="nginx-configuration---production-load-balancing">Nginx Configuration - Production Load Balancing</h3>
 <pre><code class="language-nginx"># Upstream configuration with health checks and load balancing

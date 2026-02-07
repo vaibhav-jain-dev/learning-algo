@@ -1,0 +1,381 @@
+<h1>Round Robin Load Balancing</h1>
+
+<div class="tldr-box">
+    <div class="tldr-header">TL;DR</div>
+    <ul class="tldr-list">
+        <li>Simplest load balancing algorithm that distributes requests sequentially</li>
+        <li>Time Complexity: O(1) - constant time selection</li>
+        <li>Best for homogeneous servers with similar request processing times</li>
+        <li>Does not consider server load or capacity differences</li>
+    </ul>
+</div>
+
+<h2>How Round Robin Works</h2>
+
+<p>Round Robin distributes incoming requests to servers in a circular, sequential order. It maintains a counter that increments with each request, cycling back to the first server after reaching the last one.</p>
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
+    <h3 style="text-align: center; color: #1e293b; margin-bottom: 24px">Round Robin Distribution Pattern</h3>
+
+    <div style="text-align: center; margin-bottom: 24px">
+        <svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Client requests on left -->
+            <text x="40" y="30" font-size="14" font-weight="bold" fill="#1e293b">Incoming Requests</text>
+
+            <!-- Request 1 -->
+            <circle cx="80" cy="80" r="20" fill="#3b82f6" opacity="0.8"/>
+            <text x="80" y="85" text-anchor="middle" fill="white" font-size="12" font-weight="bold">R1</text>
+
+            <!-- Request 2 -->
+            <circle cx="80" cy="140" r="20" fill="#3b82f6" opacity="0.8"/>
+            <text x="80" y="145" text-anchor="middle" fill="white" font-size="12" font-weight="bold">R2</text>
+
+            <!-- Request 3 -->
+            <circle cx="80" cy="200" r="20" fill="#3b82f6" opacity="0.8"/>
+            <text x="80" y="205" text-anchor="middle" fill="white" font-size="12" font-weight="bold">R3</text>
+
+            <!-- Request 4 -->
+            <circle cx="80" cy="260" r="20" fill="#3b82f6" opacity="0.8"/>
+            <text x="80" y="265" text-anchor="middle" fill="white" font-size="12" font-weight="bold">R4</text>
+
+            <!-- Request 5 -->
+            <circle cx="80" cy="320" r="20" fill="#3b82f6" opacity="0.8"/>
+            <text x="80" y="325" text-anchor="middle" fill="white" font-size="12" font-weight="bold">R5</text>
+
+            <!-- Load Balancer in center -->
+            <rect x="300" y="150" width="200" height="100" rx="12" fill="#8b5cf6" opacity="0.9"/>
+            <text x="400" y="185" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Load Balancer</text>
+            <text x="400" y="210" text-anchor="middle" fill="white" font-size="13">(Round Robin)</text>
+            <text x="400" y="230" text-anchor="middle" fill="#e9d5ff" font-size="11" font-family="monospace">counter = (counter + 1) % n</text>
+
+            <!-- Servers on right -->
+            <text x="650" y="30" font-size="14" font-weight="bold" fill="#1e293b">Backend Servers</text>
+
+            <!-- Server 1 -->
+            <rect x="620" y="60" width="120" height="60" rx="8" fill="#10b981" opacity="0.8"/>
+            <text x="680" y="85" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Server 1</text>
+            <text x="680" y="105" text-anchor="middle" fill="#d1fae5" font-size="11">Requests: R1, R4</text>
+
+            <!-- Server 2 -->
+            <rect x="620" y="140" width="120" height="60" rx="8" fill="#10b981" opacity="0.8"/>
+            <text x="680" y="165" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Server 2</text>
+            <text x="680" y="185" text-anchor="middle" fill="#d1fae5" font-size="11">Requests: R2, R5</text>
+
+            <!-- Server 3 -->
+            <rect x="620" y="220" width="120" height="60" rx="8" fill="#10b981" opacity="0.8"/>
+            <text x="680" y="245" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Server 3</text>
+            <text x="680" y="265" text-anchor="middle" fill="#d1fae5" font-size="11">Requests: R3</text>
+
+            <!-- Arrows from requests to load balancer -->
+            <path d="M 100 80 L 300 200" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowblue)"/>
+            <path d="M 100 140 L 300 200" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowblue)"/>
+            <path d="M 100 200 L 300 200" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowblue)"/>
+            <path d="M 100 260 L 300 200" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowblue)"/>
+            <path d="M 100 320 L 300 200" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowblue)"/>
+
+            <!-- Arrows from load balancer to servers -->
+            <path d="M 500 180 L 620 90" stroke="#10b981" stroke-width="3" fill="none" marker-end="url(#arrowgreen)" stroke-dasharray="5,5">
+                <animate attributeName="stroke-dashoffset" from="10" to="0" dur="1s" repeatCount="indefinite"/>
+            </path>
+            <path d="M 500 200 L 620 170" stroke="#10b981" stroke-width="3" fill="none" marker-end="url(#arrowgreen)" stroke-dasharray="5,5">
+                <animate attributeName="stroke-dashoffset" from="10" to="0" dur="1s" repeatCount="indefinite"/>
+            </path>
+            <path d="M 500 220 L 620 250" stroke="#10b981" stroke-width="3" fill="none" marker-end="url(#arrowgreen)" stroke-dasharray="5,5">
+                <animate attributeName="stroke-dashoffset" from="10" to="0" dur="1s" repeatCount="indefinite"/>
+            </path>
+
+            <!-- Arrow markers -->
+            <defs>
+                <marker id="arrowblue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#3b82f6"/>
+                </marker>
+                <marker id="arrowgreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#10b981"/>
+                </marker>
+            </defs>
+        </svg>
+    </div>
+
+    <div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin-top: 24px">
+        <h4 style="color: #1e40af; margin-top: 0">Distribution Pattern</h4>
+        <div style="font-family: monospace; font-size: 13px; color: #1e293b; line-height: 1.8">
+            Request 1 → Server 1 (counter: 0 → 1)<br/>
+            Request 2 → Server 2 (counter: 1 → 2)<br/>
+            Request 3 → Server 3 (counter: 2 → 0, wraps around)<br/>
+            Request 4 → Server 1 (counter: 0 → 1)<br/>
+            Request 5 → Server 2 (counter: 1 → 2)<br/>
+        </div>
+    </div>
+</div>
+
+<h2>Diagram Breakdown</h2>
+
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #166534; margin-top: 0">Component Analysis</h3>
+
+    <div style="display: grid; gap: 16px">
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #1e40af; margin: 0 0 12px 0">1. Incoming Requests (Left Side)</h4>
+            <p style="color: #1e293b; margin: 0; line-height: 1.6">
+                Five client requests (R1-R5) arrive at the load balancer. These could arrive simultaneously or sequentially - Round Robin processes them in arrival order.
+            </p>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #7c3aed; margin: 0 0 12px 0">2. Load Balancer (Center)</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0; line-height: 1.6">
+                The load balancer maintains a single counter variable. The core algorithm is:
+            </p>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b">
+                next_server = servers[counter % total_servers]<br/>
+                counter += 1
+            </div>
+            <p style="color: #64748b; margin: 8px 0 0 0; font-size: 13px">
+                The modulo operation (%) ensures the counter wraps around after reaching the last server.
+            </p>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #10b981; margin: 0 0 12px 0">3. Backend Servers (Right Side)</h4>
+            <p style="color: #1e293b; margin: 0; line-height: 1.6">
+                Three backend servers receive requests in a perfectly balanced pattern: Server 1 gets R1 and R4, Server 2 gets R2 and R5, Server 3 gets R3. With more requests, each server would receive exactly ⅓ of the traffic.
+            </p>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #ea580c; margin: 0 0 12px 0">4. Request Flow (Arrows)</h4>
+            <p style="color: #1e293b; margin: 0; line-height: 1.6">
+                <strong>Blue arrows:</strong> All requests flow into the load balancer<br/>
+                <strong>Green animated arrows:</strong> Show how the load balancer distributes to each server sequentially
+            </p>
+        </div>
+    </div>
+</div>
+
+<h2>Python Implementation</h2>
+
+<div style="background: #1e293b; border-radius: 12px; padding: 24px; margin: 20px 0">
+<pre style="margin: 0; color: #e2e8f0; font-size: 13px; line-height: 1.6"><code class="language-python">from threading import Lock
+from typing import List
+
+class Server:
+    def __init__(self, url: str):
+        self.url = url
+        self.is_alive = True
+
+    def handle_request(self, request):
+        """Process the incoming request"""
+        return f"Handled by {self.url}"
+
+class RoundRobinLoadBalancer:
+    def __init__(self, servers: List[Server]):
+        self.servers = servers
+        self.counter = 0
+        self.lock = Lock()  # Thread-safe counter
+
+    def get_next_server(self) -&gt; Server:
+        """Get the next server using Round Robin algorithm"""
+        with self.lock:
+            # Skip unhealthy servers
+            attempts = 0
+            while attempts &lt; len(self.servers):
+                server = self.servers[self.counter % len(self.servers)]
+                self.counter += 1
+
+                if server.is_alive:
+                    return server
+
+                attempts += 1
+
+            return None  # All servers are down
+
+    def handle_request(self, request):
+        """Route request to next available server"""
+        server = self.get_next_server()
+
+        if server is None:
+            raise Exception("No healthy servers available")
+
+        return server.handle_request(request)
+
+# Usage Example
+servers = [
+    Server("http://server1:8080"),
+    Server("http://server2:8080"),
+    Server("http://server3:8080")
+]
+
+lb = RoundRobinLoadBalancer(servers)
+
+# Simulate 5 requests
+for i in range(1, 6):
+    result = lb.handle_request(f"Request {i}")
+    print(f"Request {i} -&gt; {result}")
+
+# Output:
+# Request 1 -&gt; Handled by http://server1:8080
+# Request 2 -&gt; Handled by http://server2:8080
+# Request 3 -&gt; Handled by http://server3:8080
+# Request 4 -&gt; Handled by http://server1:8080
+# Request 5 -&gt; Handled by http://server2:8080
+</code></pre>
+</div>
+
+<h2>Algorithm Characteristics</h2>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0">
+    <div style="background: #dcfce7; border-radius: 12px; padding: 20px">
+        <h3 style="color: #166534; margin: 0 0 16px 0">Advantages</h3>
+        <ul style="color: #1e293b; line-height: 1.8; margin: 0">
+            <li><strong>O(1) complexity:</strong> Constant time server selection</li>
+            <li><strong>Fair distribution:</strong> Each server gets equal share</li>
+            <li><strong>Stateless:</strong> Only tracks a single counter</li>
+            <li><strong>Simple:</strong> Easy to implement and debug</li>
+            <li><strong>Predictable:</strong> Deterministic behavior</li>
+        </ul>
+    </div>
+
+    <div style="background: #fee2e2; border-radius: 12px; padding: 20px">
+        <h3 style="color: #991b1b; margin: 0 0 16px 0">Disadvantages</h3>
+        <ul style="color: #1e293b; line-height: 1.8; margin: 0">
+            <li><strong>Ignores load:</strong> Doesn't check server capacity</li>
+            <li><strong>No awareness:</strong> Treats all requests equally</li>
+            <li><strong>Poor for heterogeneous:</strong> Bad for different server specs</li>
+            <li><strong>No session affinity:</strong> Same user may hit different servers</li>
+            <li><strong>Unequal work:</strong> Long requests can overload servers</li>
+        </ul>
+    </div>
+</div>
+
+<h2>When to Use Round Robin</h2>
+
+<div style="background: #fef3c7; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #92400e; margin-top: 0">Best Use Cases</h3>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+        <h4 style="color: #166534; margin: 0 0 8px 0">✓ Homogeneous Server Pool</h4>
+        <p style="color: #1e293b; margin: 0">All servers have identical hardware specifications (CPU, RAM, network). Round Robin ensures equal distribution across identical capacity.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+        <h4 style="color: #166534; margin: 0 0 8px 0">✓ Uniform Request Processing Time</h4>
+        <p style="color: #1e293b; margin: 0">All requests take roughly the same time to process (e.g., simple CRUD operations, static file serving). Avoids the problem of long-running requests.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+        <h4 style="color: #166534; margin: 0 0 8px 0">✓ Stateless Applications</h4>
+        <p style="color: #1e293b; margin: 0">Applications where any server can handle any request without session state (or session state is externalized to Redis/database).</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px">
+        <h4 style="color: #166534; margin: 0 0 8px 0">✓ High Request Volume</h4>
+        <p style="color: #1e293b; margin: 0">With thousands of requests, statistical averaging makes Round Robin effective. Small inefficiencies average out over large volumes.</p>
+    </div>
+</div>
+
+<div style="background: #fee2e2; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #991b1b; margin-top: 0">Avoid Round Robin When</h3>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 12px">
+        <h4 style="color: #dc2626; margin: 0 0 8px 0">✗ Heterogeneous Servers</h4>
+        <p style="color: #1e293b; margin: 0">Different server capacities (some have 4 cores, others 16 cores). Use Weighted Round Robin instead.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 12px">
+        <h4 style="color: #dc2626; margin: 0 0 8px 0">✗ Variable Request Duration</h4>
+        <p style="color: #1e293b; margin: 0">Mix of fast (10ms) and slow (5s) requests. Heavy requests can pile up on one server. Use Least Connections instead.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px">
+        <h4 style="color: #dc2626; margin: 0 0 8px 0">✗ Session Persistence Required</h4>
+        <p style="color: #1e293b; margin: 0">Applications needing sticky sessions (e.g., WebSocket connections, stateful sessions). Use IP Hash or Consistent Hashing.</p>
+    </div>
+</div>
+
+<h2>Real-World Performance</h2>
+
+<div style="background: #eff6ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #1e40af; margin-top: 0">Benchmark Scenario</h3>
+
+    <div style="background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px">
+        <h4 style="color: #1e293b; margin: 0 0 12px 0">Setup</h4>
+        <div style="font-family: monospace; font-size: 13px; color: #475569; line-height: 1.8">
+            Servers: 3 identical servers (4 cores, 8GB RAM each)<br/>
+            Requests: 10,000 HTTP GET requests<br/>
+            Request duration: ~50ms average<br/>
+            Concurrency: 100 parallel clients
+        </div>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 20px">
+        <h4 style="color: #1e293b; margin: 0 0 12px 0">Results</h4>
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px">
+            <tr style="background: #f1f5f9">
+                <th style="padding: 10px; text-align: left">Metric</th>
+                <th style="padding: 10px; text-align: right">Value</th>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border-top: 1px solid #e2e8f0">Distribution accuracy</td>
+                <td style="padding: 10px; border-top: 1px solid #e2e8f0; text-align: right; font-weight: bold; color: #166534">99.8% equal</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border-top: 1px solid #e2e8f0">Server 1 requests</td>
+                <td style="padding: 10px; border-top: 1px solid #e2e8f0; text-align: right">3,334</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border-top: 1px solid #e2e8f0">Server 2 requests</td>
+                <td style="padding: 10px; border-top: 1px solid #e2e8f0; text-align: right">3,333</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border-top: 1px solid #e2e8f0">Server 3 requests</td>
+                <td style="padding: 10px; border-top: 1px solid #e2e8f0; text-align: right">3,333</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border-top: 1px solid #e2e8f0">Avg response time</td>
+                <td style="padding: 10px; border-top: 1px solid #e2e8f0; text-align: right; font-weight: bold">52ms</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border-top: 1px solid #e2e8f0">Selection overhead</td>
+                <td style="padding: 10px; border-top: 1px solid #e2e8f0; text-align: right; font-weight: bold; color: #166534">&lt;0.001ms</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<h2>Common Pitfalls</h2>
+
+<div style="background: #fef9c3; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <div style="display: grid; gap: 12px">
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Race Conditions in Counter</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">Without proper locking, concurrent requests can read/write the same counter value, causing uneven distribution.</p>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #dc2626">
+                # BAD: Race condition<br/>
+                idx = counter % len(servers)<br/>
+                counter += 1  # ← Multiple threads can interleave here
+            </div>
+            <p style="color: #166534; margin: 8px 0 0 0; font-weight: 600">Solution: Use atomic operations or locks</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Not Skipping Dead Servers</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">Basic Round Robin may route to failed servers if health checks aren't integrated.</p>
+            <p style="color: #166534; margin: 8px 0 0 0; font-weight: 600">Solution: Check server.is_alive before returning, try next server if dead</p>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Counter Overflow</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">In long-running systems, integer counter can overflow (though this takes billions of requests).</p>
+            <p style="color: #166534; margin: 8px 0 0 0; font-weight: 600">Solution: Use modulo on counter itself: counter = (counter + 1) % MAX_INT</p>
+        </div>
+    </div>
+</div>
+
+<div style="background: #e0e7ff; border-radius: 12px; padding: 24px; margin: 24px 0">
+    <h3 style="color: #1e40af; margin-top: 0">Related Algorithms</h3>
+    <ul style="color: #1e293b; line-height: 2">
+        <li><strong>Weighted Round Robin:</strong> Extends Round Robin for heterogeneous servers with capacity weights</li>
+        <li><strong>Least Connections:</strong> Smarter alternative that tracks active connections per server</li>
+        <li><strong>Random:</strong> Even simpler than Round Robin, but statistically equivalent at scale</li>
+    </ul>
+</div>

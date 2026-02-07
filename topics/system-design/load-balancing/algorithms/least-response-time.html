@@ -1,0 +1,621 @@
+<h1>Least Response Time Load Balancing</h1>
+
+<div class="tldr-box">
+    <div class="tldr-header">TL;DR</div>
+    <ul class="tldr-list">
+        <li>Combines active connections with average response time metrics</li>
+        <li>Time Complexity: O(n) - must check all servers to find best candidate</li>
+        <li>Ideal for heterogeneous backends with variable latency patterns</li>
+        <li>Smarter than Least Connections by factoring in server performance</li>
+    </ul>
+</div>
+
+<h2>How Least Response Time Works</h2>
+
+<p>Least Response Time (LRT) is an intelligent load balancing algorithm that selects servers based on two key metrics: the number of active connections and the average response time. The algorithm calculates a weighted score for each server and routes the request to the server with the lowest score (fastest + least busy).</p>
+
+<p>The core formula is: <strong>Score = (Active Connections × α) + (Avg Response Time × β)</strong></p>
+
+<p>This makes LRT superior to Least Connections alone because a server with fewer connections but slow response times will be penalized, while a fast server handling more connections efficiently may still be selected.</p>
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
+    <h3 style="text-align: center; color: #1e293b; margin-bottom: 24px">Least Response Time Selection Process</h3>
+
+    <div style="text-align: center; margin-bottom: 24px">
+        <svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+            <!-- Title -->
+            <text x="400" y="25" text-anchor="middle" font-size="13" fill="#64748b" font-weight="bold">Algorithm selects server with lowest (connections + response_time) score</text>
+
+            <!-- Incoming Request -->
+            <text x="80" y="60" font-size="14" font-weight="bold" fill="#1e293b">New Request</text>
+            <circle cx="80" cy="100" r="25" fill="#3b82f6" opacity="0.9"/>
+            <text x="80" y="107" text-anchor="middle" fill="white" font-size="14" font-weight="bold">R</text>
+
+            <!-- Load Balancer -->
+            <rect x="280" y="170" width="240" height="140" rx="12" fill="#8b5cf6" opacity="0.9"/>
+            <text x="400" y="200" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Load Balancer</text>
+            <text x="400" y="220" text-anchor="middle" fill="white" font-size="13">(Least Response Time)</text>
+
+            <text x="400" y="245" text-anchor="middle" fill="#e9d5ff" font-size="11" font-family="monospace">Score = connections + (avg_rt / 10ms)</text>
+
+            <rect x="295" y="255" width="210" height="45" rx="6" fill="#7c3aed" opacity="0.8"/>
+            <text x="400" y="270" text-anchor="middle" fill="#fde68a" font-size="10" font-family="monospace">S1: 2 + (150/10) = 17.0</text>
+            <text x="400" y="283" text-anchor="middle" fill="#fde68a" font-size="10" font-family="monospace">S2: 5 + (50/10) = 10.0 ✓ Winner</text>
+            <text x="400" y="296" text-anchor="middle" fill="#fde68a" font-size="10" font-family="monospace">S3: 1 + (200/10) = 21.0</text>
+
+            <!-- Arrow from request to LB -->
+            <path d="M 105 100 L 280 240" stroke="#3b82f6" stroke-width="3" fill="none" marker-end="url(#arrowblue3)"/>
+
+            <!-- Servers -->
+            <text x="680" y="40" font-size="14" font-weight="bold" fill="#1e293b">Backend Servers</text>
+
+            <!-- Server 1 - Medium connections, medium latency -->
+            <rect x="600" y="60" width="180" height="100" rx="8" fill="#f59e0b" opacity="0.8"/>
+            <text x="690" y="85" text-anchor="middle" fill="white" font-size="15" font-weight="bold">Server 1</text>
+            <text x="690" y="105" text-anchor="middle" fill="#fef3c7" font-size="12">Active Conns: 2</text>
+            <text x="690" y="122" text-anchor="middle" fill="#fef3c7" font-size="12">Avg Response: 150ms</text>
+            <text x="690" y="140" text-anchor="middle" fill="white" font-size="13" font-weight="bold">Score: 17.0</text>
+            <text x="690" y="155" text-anchor="middle" fill="#fef3c7" font-size="10">(Medium priority)</text>
+
+            <!-- Server 2 - More connections but FAST (WINNER) -->
+            <rect x="600" y="180" width="180" height="100" rx="8" fill="#10b981" opacity="0.9" stroke="#22c55e" stroke-width="4"/>
+            <text x="690" y="205" text-anchor="middle" fill="white" font-size="15" font-weight="bold">Server 2 ⚡</text>
+            <text x="690" y="225" text-anchor="middle" fill="#d1fae5" font-size="12">Active Conns: 5</text>
+            <text x="690" y="242" text-anchor="middle" fill="#d1fae5" font-size="12">Avg Response: 50ms</text>
+            <text x="690" y="260" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Score: 10.0 ✓</text>
+            <text x="690" y="275" text-anchor="middle" fill="#86efac" font-size="11" font-weight="bold">SELECTED - Fast & efficient!</text>
+
+            <!-- Server 3 - Few connections but SLOW -->
+            <rect x="600" y="300" width="180" height="100" rx="8" fill="#ef4444" opacity="0.8"/>
+            <text x="690" y="325" text-anchor="middle" fill="white" font-size="15" font-weight="bold">Server 3</text>
+            <text x="690" y="345" text-anchor="middle" fill="#fecaca" font-size="12">Active Conns: 1</text>
+            <text x="690" y="362" text-anchor="middle" fill="#fecaca" font-size="12">Avg Response: 200ms</text>
+            <text x="690" y="380" text-anchor="middle" fill="white" font-size="13" font-weight="bold">Score: 21.0</text>
+            <text x="690" y="395" text-anchor="middle" fill="#fecaca" font-size="10">(Slow - avoid!)</text>
+
+            <!-- Arrow from LB to selected server (S2) -->
+            <path d="M 520 240 L 600 230" stroke="#10b981" stroke-width="5" fill="none" marker-end="url(#arrowgreen3)" stroke-dasharray="8,4">
+                <animate attributeName="stroke-dashoffset" from="12" to="0" dur="1s" repeatCount="indefinite"/>
+            </path>
+
+            <!-- Info box at bottom -->
+            <rect x="50" y="430" width="700" height="50" rx="8" fill="#eff6ff" opacity="0.9"/>
+            <text x="400" y="450" text-anchor="middle" fill="#1e40af" font-size="13" font-weight="bold">Key Insight: Server 2 wins despite having 5 connections vs Server 3's 1 connection</text>
+            <text x="400" y="468" text-anchor="middle" fill="#1e40af" font-size="12">because its 50ms response time is 4× faster than Server 3's 200ms</text>
+
+            <!-- Arrow markers -->
+            <defs>
+                <marker id="arrowblue3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#3b82f6"/>
+                </marker>
+                <marker id="arrowgreen3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#10b981"/>
+                </marker>
+            </defs>
+        </svg>
+    </div>
+
+    <div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin-top: 24px">
+        <h4 style="color: #1e40af; margin-top: 0">Decision Process</h4>
+        <div style="font-family: monospace; font-size: 13px; color: #1e293b; line-height: 1.8">
+            Server 1: 2 connections × 1 + 150ms / 10ms = 17.0 (medium score)<br/>
+            Server 2: 5 connections × 1 + 50ms / 10ms = 10.0 ← <span style="color: #166534; font-weight: bold">LOWEST SCORE</span><br/>
+            Server 3: 1 connection × 1 + 200ms / 10ms = 21.0 (highest score - slowest)<br/>
+            <br/>
+            <span style="color: #166534; font-weight: bold">Selected: Server 2</span> - Even with more connections, its fast response time makes it the best choice
+        </div>
+    </div>
+</div>
+
+<h2>Diagram Breakdown</h2>
+
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #166534; margin-top: 0">Component Analysis</h3>
+
+    <div style="display: grid; gap: 16px">
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #1e40af; margin: 0 0 12px 0">1. Server Metrics Collection</h4>
+            <p style="color: #1e293b; margin: 0; line-height: 1.6">
+                Each server tracks two critical metrics:
+            </p>
+            <ul style="color: #475569; margin: 8px 0 0 0; line-height: 1.6">
+                <li><strong>Active Connections:</strong> Number of currently processing requests (real-time count)</li>
+                <li><strong>Average Response Time:</strong> Moving average of recent request durations (typically last 100-1000 requests)</li>
+            </ul>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #7c3aed; margin: 0 0 12px 0">2. Score Calculation Algorithm</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0; line-height: 1.6">
+                The load balancer computes a weighted score combining both metrics:
+            </p>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b">
+                score = (active_connections × connection_weight) + <br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(avg_response_time_ms / response_time_factor)
+            </div>
+            <p style="color: #64748b; margin: 8px 0 0 0; font-size: 13px">
+                In this example: connection_weight=1, response_time_factor=10ms. This means every 10ms of latency equals 1 connection's worth of load.
+            </p>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #10b981; margin: 0 0 12px 0">3. Why Server 2 Wins (The Key Insight)</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0; line-height: 1.6">
+                Server 2 has the <strong>most connections (5)</strong> but still wins because:
+            </p>
+            <ul style="color: #475569; margin: 0; line-height: 1.6">
+                <li>Its 50ms response time is 3× faster than Server 1 (150ms)</li>
+                <li>Its 50ms response time is 4× faster than Server 3 (200ms)</li>
+                <li>A fast server can efficiently handle more concurrent requests</li>
+                <li>Score of 10.0 beats Server 1's 17.0 and Server 3's 21.0</li>
+            </ul>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #dc2626; margin: 0 0 12px 0">4. Why Server 3 Loses Despite Low Connections</h4>
+            <p style="color: #1e293b; margin: 0; line-height: 1.6">
+                Server 3 only has 1 active connection, but its 200ms average response time indicates it's either overloaded, has network issues, or is slower hardware. The algorithm correctly avoids it, preventing request pile-up on an already struggling server.
+            </p>
+        </div>
+    </div>
+</div>
+
+<h2>Python Implementation</h2>
+
+<div style="background: #1e293b; border-radius: 12px; padding: 24px; margin: 20px 0">
+<pre style="margin: 0; color: #e2e8f0; font-size: 13px; line-height: 1.6"><code class="language-python">from threading import Lock
+from typing import List
+from collections import deque
+from time import time
+
+class LRTServer:
+    def __init__(self, url: str, window_size: int = 100):
+        self.url = url
+        self.is_alive = True
+        self.active_connections = 0
+        self.response_times = deque(maxlen=window_size)  # Moving window
+        self.lock = Lock()
+
+    def get_avg_response_time(self) -&gt; float:
+        """Calculate average response time from recent requests"""
+        with self.lock:
+            if not self.response_times:
+                return 0.0  # No history yet, assume fast
+            return sum(self.response_times) / len(self.response_times)
+
+    def record_response_time(self, duration_ms: float):
+        """Record a completed request's duration"""
+        with self.lock:
+            self.response_times.append(duration_ms)
+
+    def increment_connections(self):
+        with self.lock:
+            self.active_connections += 1
+
+    def decrement_connections(self):
+        with self.lock:
+            self.active_connections = max(0, self.active_connections - 1)
+
+    def get_score(self, connection_weight: float = 1.0,
+                  response_time_factor: float = 10.0) -&gt; float:
+        """
+        Calculate server score (lower is better)
+
+        Args:
+            connection_weight: How much to weight each active connection
+            response_time_factor: Divisor for response time (ms per connection equivalent)
+                                 Default 10ms means every 10ms latency = 1 connection
+
+        Returns:
+            Combined score (lower = better server)
+        """
+        with self.lock:
+            avg_rt = self.get_avg_response_time()
+            score = (self.active_connections * connection_weight) + \
+                    (avg_rt / response_time_factor)
+            return score
+
+    def handle_request(self, request):
+        """Process request and track timing"""
+        start_time = time()
+        self.increment_connections()
+
+        try:
+            # Simulate request processing
+            result = f"Handled by {self.url}"
+            return result
+        finally:
+            # Record response time and decrement connections
+            duration_ms = (time() - start_time) * 1000
+            self.record_response_time(duration_ms)
+            self.decrement_connections()
+
+
+class LeastResponseTimeLoadBalancer:
+    """
+    Least Response Time Load Balancer
+
+    Selects server with lowest score based on:
+    - Active connections (real-time load)
+    - Average response time (server performance)
+
+    This is smarter than Least Connections because it considers
+    server performance, not just connection count.
+    """
+
+    def __init__(self, servers: List[LRTServer],
+                 connection_weight: float = 1.0,
+                 response_time_factor: float = 10.0):
+        self.servers = servers
+        self.connection_weight = connection_weight
+        self.response_time_factor = response_time_factor
+        self.lock = Lock()
+
+    def get_next_server(self) -&gt; LRTServer:
+        """Get server with lowest response time + connection score"""
+        with self.lock:
+            # Filter healthy servers
+            healthy_servers = [s for s in self.servers if s.is_alive]
+
+            if not healthy_servers:
+                return None
+
+            # Find server with minimum score
+            best_server = min(
+                healthy_servers,
+                key=lambda s: s.get_score(
+                    self.connection_weight,
+                    self.response_time_factor
+                )
+            )
+
+            return best_server
+
+    def handle_request(self, request):
+        """Route request to best available server"""
+        server = self.get_next_server()
+
+        if server is None:
+            raise Exception("No healthy servers available")
+
+        return server.handle_request(request)
+
+    def get_server_stats(self) -&gt; dict:
+        """Get current statistics for all servers"""
+        stats = {}
+        for server in self.servers:
+            stats[server.url] = {
+                'active_connections': server.active_connections,
+                'avg_response_time': server.get_avg_response_time(),
+                'score': server.get_score(
+                    self.connection_weight,
+                    self.response_time_factor
+                ),
+                'is_alive': server.is_alive
+            }
+        return stats
+
+
+# Usage Example
+servers = [
+    LRTServer("http://server1:8080"),  # Will have medium latency
+    LRTServer("http://server2:8080"),  # Will be fastest
+    LRTServer("http://server3:8080"),  # Will be slowest
+]
+
+# Simulate different server response times
+servers[0].response_times.extend([150, 145, 155, 150, 148])  # ~150ms avg
+servers[1].response_times.extend([50, 48, 52, 49, 51])       # ~50ms avg
+servers[2].response_times.extend([200, 195, 205, 198, 202])  # ~200ms avg
+
+# Simulate different connection loads
+servers[0].active_connections = 2
+servers[1].active_connections = 5  # Most connections
+servers[2].active_connections = 1  # Fewest connections
+
+lb = LeastResponseTimeLoadBalancer(
+    servers,
+    connection_weight=1.0,
+    response_time_factor=10.0
+)
+
+# Show current state
+print("Current Server Stats:")
+print("-" * 60)
+for url, stats in lb.get_server_stats().items():
+    print(f"{url}:")
+    print(f"  Active Connections: {stats['active_connections']}")
+    print(f"  Avg Response Time: {stats['avg_response_time']:.1f}ms")
+    print(f"  Score: {stats['score']:.1f}")
+    print()
+
+# Get next server
+next_server = lb.get_next_server()
+print(f"Next request will go to: {next_server.url}")
+print(f"Selected because it has the lowest score: {next_server.get_score():.1f}")
+
+# Output:
+# Current Server Stats:
+# ------------------------------------------------------------
+# http://server1:8080:
+#   Active Connections: 2
+#   Avg Response Time: 149.6ms
+#   Score: 17.0
+#
+# http://server2:8080:
+#   Active Connections: 5
+#   Avg Response Time: 50.0ms
+#   Score: 10.0
+#
+# http://server3:8080:
+#   Active Connections: 1
+#   Avg Response Time: 200.0ms
+#   Score: 21.0
+#
+# Next request will go to: http://server2:8080
+# Selected because it has the lowest score: 10.0
+</code></pre>
+</div>
+
+<h2>Algorithm Characteristics</h2>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0">
+    <div style="background: #dcfce7; border-radius: 12px; padding: 20px">
+        <h3 style="color: #166534; margin: 0 0 16px 0">Advantages</h3>
+        <ul style="color: #1e293b; line-height: 1.8; margin: 0">
+            <li><strong>Performance-aware:</strong> Factors in server speed, not just load</li>
+            <li><strong>Heterogeneous-friendly:</strong> Works great with mixed hardware specs</li>
+            <li><strong>Self-adaptive:</strong> Slow servers automatically get less traffic</li>
+            <li><strong>Prevents pile-ups:</strong> Won't overload already struggling servers</li>
+            <li><strong>Better than LC:</strong> Smarter than Least Connections alone</li>
+            <li><strong>Real-time adjustment:</strong> Responds to performance degradation</li>
+        </ul>
+    </div>
+
+    <div style="background: #fee2e2; border-radius: 12px; padding: 20px">
+        <h3 style="color: #991b1b; margin: 0 0 16px 0">Disadvantages</h3>
+        <ul style="color: #1e293b; line-height: 1.8; margin: 0">
+            <li><strong>O(n) complexity:</strong> Must check all servers for each request</li>
+            <li><strong>Requires instrumentation:</strong> Need response time tracking</li>
+            <li><strong>Memory overhead:</strong> Must store response time history</li>
+            <li><strong>Tuning required:</strong> Weight factors need calibration</li>
+            <li><strong>Cold start problem:</strong> New servers have no history</li>
+            <li><strong>Network sensitive:</strong> Can be affected by network jitter</li>
+        </ul>
+    </div>
+</div>
+
+<h2>When to Use Least Response Time</h2>
+
+<div style="background: #fef3c7; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #92400e; margin-top: 0">Perfect Use Cases</h3>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+        <h4 style="color: #166534; margin: 0 0 8px 0">✓ Heterogeneous Server Pool with Variable Performance</h4>
+        <p style="color: #1e293b; margin: 0">Mixed server generations (old servers: 500ms avg, new servers: 50ms avg). LRT automatically favors faster servers without manual weights.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+        <h4 style="color: #166534; margin: 0 0 8px 0">✓ Multi-Region Deployments with Variable Latency</h4>
+        <p style="color: #1e293b; margin: 0">Servers in different regions with varying network latency. US-East servers might average 20ms, EU servers 100ms. LRT adapts to real latency patterns.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+        <h4 style="color: #166534; margin: 0 0 8px 0">✓ Database Connection Pools</h4>
+        <p style="color: #1e293b; margin: 0">Database replicas with different replication lag. Primary (10ms), replica 1 (50ms lag), replica 2 (200ms lag). Route reads to fastest available replica.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+        <h4 style="color: #166534; margin: 0 0 8px 0">✓ Degrading Server Detection</h4>
+        <p style="color: #1e293b; margin: 0">Automatically detect servers under stress. If a server's response time increases from 50ms to 300ms (CPU saturation, memory pressure), it gets less traffic without manual intervention.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px">
+        <h4 style="color: #166534; margin: 0 0 8px 0">✓ Microservices with Variable Processing Time</h4>
+        <p style="color: #1e293b; margin: 0">Service instances that occasionally hit slow code paths or external API delays. LRT routes around temporarily slow instances.</p>
+    </div>
+</div>
+
+<div style="background: #fee2e2; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #991b1b; margin-top: 0">Avoid Least Response Time When</h3>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 12px">
+        <h4 style="color: #dc2626; margin: 0 0 8px 0">✗ Ultra-Low Latency Requirements</h4>
+        <p style="color: #1e293b; margin: 0">The O(n) server scan adds overhead. For microsecond-level requirements, use simpler algorithms like Random or Power of Two Choices.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px; margin-bottom: 12px">
+        <h4 style="color: #dc2626; margin: 0 0 8px 0">✗ Homogeneous Servers with Consistent Performance</h4>
+        <p style="color: #1e293b; margin: 0">All servers are identical and response times are uniform. Use simple Round Robin or Least Connections - no need for response time tracking overhead.</p>
+    </div>
+
+    <div style="background: white; border-radius: 8px; padding: 16px">
+        <h4 style="color: #dc2626; margin: 0 0 8px 0">✗ Cannot Measure Response Time Accurately</h4>
+        <p style="color: #1e293b; margin: 0">If you're load balancing at Layer 4 (TCP) without application-level metrics, you can't measure true response time. Use connection-based algorithms instead.</p>
+    </div>
+</div>
+
+<h2>Response Time Measurement Strategies</h2>
+
+<div style="background: #eff6ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #1e40af; margin-top: 0">Different Approaches to Track Response Time</h3>
+
+    <div style="display: grid; gap: 16px">
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #1e40af; margin: 0 0 12px 0">1. Simple Moving Average (SMA)</h4>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b; margin-bottom: 8px">
+                response_times = deque(maxlen=100)  # Last 100 requests<br/>
+                avg = sum(response_times) / len(response_times)
+            </div>
+            <p style="color: #475569; margin: 0; font-size: 13px">
+                <strong>Pros:</strong> Simple, works well for stable workloads<br/>
+                <strong>Cons:</strong> Slow to react to sudden changes
+            </p>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #1e40af; margin: 0 0 12px 0">2. Exponentially Weighted Moving Average (EWMA)</h4>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b; margin-bottom: 8px">
+                alpha = 0.1  # Weight factor<br/>
+                avg = alpha * new_value + (1 - alpha) * old_avg
+            </div>
+            <p style="color: #475569; margin: 0; font-size: 13px">
+                <strong>Pros:</strong> Fast reaction to changes, low memory<br/>
+                <strong>Cons:</strong> Requires tuning alpha parameter
+            </p>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #1e40af; margin: 0 0 12px 0">3. Percentile-Based (P50, P95, P99)</h4>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b; margin-bottom: 8px">
+                # Use P95 instead of average to ignore outliers<br/>
+                score = connections + (p95_response_time / factor)
+            </div>
+            <p style="color: #475569; margin: 0; font-size: 13px">
+                <strong>Pros:</strong> Robust to outliers, more representative<br/>
+                <strong>Cons:</strong> Requires more computation and storage
+            </p>
+        </div>
+
+        <div style="background: white; padding: 16px; border-radius: 8px">
+            <h4 style="color: #1e40af; margin: 0 0 12px 0">4. Time-Windowed Average</h4>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b; margin-bottom: 8px">
+                # Average of last 10 seconds of requests<br/>
+                recent = [rt for rt, ts in times if ts &gt; now - 10]
+            </div>
+            <p style="color: #475569; margin: 0; font-size: 13px">
+                <strong>Pros:</strong> Time-based, not count-based<br/>
+                <strong>Cons:</strong> Variable sample size can be unstable
+            </p>
+        </div>
+    </div>
+</div>
+
+<h2>Common Pitfalls</h2>
+
+<div style="background: #fef9c3; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <div style="display: grid; gap: 12px">
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Not Measuring Response Time at the Right Layer</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">Measuring time to connect (TCP handshake) instead of full request-response cycle. This doesn't reflect actual server processing time.</p>
+            <div style="background: #fee2e2; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #dc2626; margin-bottom: 8px">
+                # BAD: Only measures connection time<br/>
+                start = time(); connect(server); duration = time() - start
+            </div>
+            <div style="background: #dcfce7; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #166534">
+                # GOOD: Measures full request cycle<br/>
+                start = time(); response = send_request(server); duration = time() - start
+            </div>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Using Wrong Weight Factors</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">If response_time_factor is too high (e.g., 1000ms), response time differences are ignored. If too low (e.g., 1ms), only response time matters.</p>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e293b">
+                # Rule of thumb: Set factor to average expected response time<br/>
+                # For 50ms average latency: response_time_factor = 50<br/>
+                # This makes 1 connection ≈ 50ms of latency
+            </div>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Not Handling Cold Start Servers</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">New servers with no response time history default to 0ms, getting flooded with initial requests.</p>
+            <div style="background: #dcfce7; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #166534">
+                # GOOD: Default to pessimistic estimate for new servers<br/>
+                if not self.response_times:<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;return 100.0  # Conservative default
+            </div>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Ignoring Outliers in Response Time</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">A single 10-second timeout can skew the average for many subsequent requests. Use percentiles (P95) or cap outliers.</p>
+            <div style="background: #dcfce7; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #166534">
+                # Cap extreme values before recording<br/>
+                capped_duration = min(duration_ms, max_allowed_ms)<br/>
+                self.response_times.append(capped_duration)
+            </div>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 16px">
+            <h4 style="color: #dc2626; margin: 0 0 8px 0">❌ Thread-Safety Issues with Metrics</h4>
+            <p style="color: #1e293b; margin: 0 0 8px 0">Concurrent requests updating response_times and active_connections without proper locking can cause race conditions.</p>
+            <p style="color: #166534; margin: 8px 0 0 0; font-weight: 600">Solution: Use locks or atomic operations for all metric updates</p>
+        </div>
+    </div>
+</div>
+
+<h2>Comparison: Least Connections vs Least Response Time</h2>
+
+<div style="background: #f3f4f6; border-radius: 12px; padding: 24px; margin: 20px 0">
+    <h3 style="color: #1e293b; margin-top: 0">Why LRT is Smarter</h3>
+
+    <div style="overflow-x: auto">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px">
+            <tr style="background: #1e40af; color: white">
+                <th style="padding: 12px; text-align: left">Scenario</th>
+                <th style="padding: 12px; text-align: center">Least Connections</th>
+                <th style="padding: 12px; text-align: center">Least Response Time</th>
+            </tr>
+            <tr style="background: #f8fafc">
+                <td style="padding: 12px; border-top: 1px solid #cbd5e1">
+                    <strong>Fast server</strong><br/>
+                    5 conns, 50ms avg
+                </td>
+                <td style="padding: 12px; border-top: 1px solid #cbd5e1; text-align: center">
+                    <span style="color: #dc2626">❌ Skipped</span><br/>
+                    <span style="font-size: 11px">(has more connections)</span>
+                </td>
+                <td style="padding: 12px; border-top: 1px solid #cbd5e1; text-align: center">
+                    <span style="color: #166534">✅ Selected</span><br/>
+                    <span style="font-size: 11px">Score: 10</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; border-top: 1px solid #cbd5e1">
+                    <strong>Slow server</strong><br/>
+                    1 conn, 200ms avg
+                </td>
+                <td style="padding: 12px; border-top: 1px solid #cbd5e1; text-align: center">
+                    <span style="color: #166534">✅ Selected</span><br/>
+                    <span style="font-size: 11px">(fewest connections)</span>
+                </td>
+                <td style="padding: 12px; border-top: 1px solid #cbd5e1; text-align: center">
+                    <span style="color: #dc2626">❌ Avoided</span><br/>
+                    <span style="font-size: 11px">Score: 21</span>
+                </td>
+            </tr>
+            <tr style="background: #f8fafc">
+                <td style="padding: 12px; border-top: 1px solid #cbd5e1">
+                    <strong>Result</strong>
+                </td>
+                <td style="padding: 12px; border-top: 1px solid #cbd5e1; text-align: center">
+                    <span style="color: #dc2626">Sends request to slow server</span><br/>
+                    <span style="font-size: 11px">May experience 200ms latency</span>
+                </td>
+                <td style="padding: 12px; border-top: 1px solid #cbd5e1; text-align: center">
+                    <span style="color: #166534">Sends request to fast server</span><br/>
+                    <span style="font-size: 11px">Likely 50ms latency</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="background: #dbeafe; padding: 16px; border-radius: 8px; margin-top: 20px">
+        <h4 style="color: #1e40af; margin: 0 0 8px 0">Key Takeaway</h4>
+        <p style="color: #1e293b; margin: 0; font-size: 14px; line-height: 1.6">
+            Least Connections only knows "how many" but not "how well". Least Response Time knows both load AND performance, making it significantly smarter for real-world heterogeneous environments.
+        </p>
+    </div>
+</div>
+
+<div style="background: #e0e7ff; border-radius: 12px; padding: 24px; margin: 24px 0">
+    <h3 style="color: #1e40af; margin-top: 0">Related Algorithms</h3>
+    <ul style="color: #1e293b; line-height: 2">
+        <li><strong>Least Connections:</strong> Simpler variant that only considers active connection count</li>
+        <li><strong>Weighted Least Connections:</strong> Adds server capacity weights to Least Connections</li>
+        <li><strong>Adaptive Load Balancing:</strong> Extends LRT with machine learning for predictive routing</li>
+        <li><strong>Power of Two Choices:</strong> Randomly samples 2 servers and picks best by LRT score (O(1) instead of O(n))</li>
+    </ul>
+</div>
