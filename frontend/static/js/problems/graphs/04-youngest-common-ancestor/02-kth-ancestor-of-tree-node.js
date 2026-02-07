@@ -12,7 +12,7 @@
         difficulty: 'Hard',
         algorithm: 'graph-ancestor',
         parent: '04-youngest-common-ancestor',
-        description: 'You are given a tree with n nodes numbered from 0 to n - 1 in the form of a parent array parent where parent[i] is the parent of ith node. The root of the tree is node 0. Find the kth ancestor of a given node. The kth ancestor of a tree node is the kth node in the path from that node to the root node. Implement the TreeAncestor class: - TreeAncestor(int n, int[] parent) Initializes the object with the number of nodes in the tree and the parent array. - int getKthAncestor(int node, int k) Return ',
+        description: 'You are given a tree with n nodes numbered from 0 to n - 1 in the form of a parent array parent where parent[i] is the parent of ith node. The root of the tree is node 0. Find the kth ancestor of a given node. The kth ancestor of a tree node is the kth node in the path from that node to the root node. Implement the TreeAncestor class: - TreeAncestor(int n, int[] parent) Initializes the object with the number of nodes in the tree and the parent array. - int getKthAncestor(int node, int k) Return .',
         problem: 'Use flood fill (DFS/BFS) to explore connected components. Start from each unvisited cell, mark visited cells, and track the property you need (size, count, etc.). The key insight is that connected cells form a single component.',
         complexity: {
             time: 'O(N log N) preprocessing, O(log K) query',
@@ -54,7 +54,7 @@
         ]
 },
         output: [1, 0, -1],
-        explanation: 'Exploring the graph structure, we find the required path or value. For input n=7, parent=[-1, 0, ..., 2] (length 7), queries=[[3, 1], [5, 2], [6, 3]], the result is [1, 0, -1].'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     }
         ],
         solutions: {

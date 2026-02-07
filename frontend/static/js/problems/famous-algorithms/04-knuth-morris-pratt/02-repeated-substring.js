@@ -31,14 +31,14 @@
         "s": "abab"
 },
         output: true,
-        explanation: 'Processing the input data produces the output. For input s=abab, the result is true.'
+        explanation: 'The prefix function tells us the longest suffix of the matched portion that is also a prefix of the pattern. This allows intelligent backtracking during the text scan.'
     },
     {
         input: {
         "s": "abcabcabcabc"
 },
         output: true,
-        explanation: 'Processing the input data produces the output. For input s=abcabcabcabc, the result is true.'
+        explanation: 'Precompute the failure function from the pattern. During matching, when a mismatch occurs, use the failure function to skip ahead without re-examining characters already matched.'
     }
         ],
         solutions: {

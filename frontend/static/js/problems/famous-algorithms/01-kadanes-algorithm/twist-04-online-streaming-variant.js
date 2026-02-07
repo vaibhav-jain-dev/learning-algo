@@ -14,7 +14,7 @@
         algorithm: 'kadanes-algorithm',
         parent: '01-kadanes-algorithm',
         description: 'Numbers arrive one at a time in a stream. At any point, you may be asked for the maximum subarray sum of all numbers seen so far. You cannot store the entire array. Design an O(1) per-element update.',
-        problem: 'This is the online version of Kadane\',
+        problem: 'This is the online version of Kadane.',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
@@ -30,13 +30,13 @@
             {
                 input: {"nums":[-2,1,-3,4,-1,2,1,-5,4]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the online streaming variant criteria.'
+                explanation: 'The running maximum at each index represents the best subarray ending at that position. A negative running sum is never worth carrying forward.'
             },
             // Edge case
             {
                 input: {"nums":[-2]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Maintain a running sum as you scan. At each position, choose to either extend the current subarray or start fresh. Track the global maximum across all positions.'
             }
         ],
         solutions: {

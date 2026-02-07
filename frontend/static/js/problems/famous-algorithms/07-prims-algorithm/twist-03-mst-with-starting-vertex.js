@@ -13,7 +13,7 @@
         difficulty: 'Easy',
         algorithm: 'prims-algorithm',
         parent: '07-prims-algorithm',
-        description: 'Run Prim\',
+        description: 'Run Prim.',
         problem: 'Tests understanding that MST weight is invariant to the starting vertex (though the actual edges may differ), which is a key property to prove.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -36,7 +36,7 @@
             {
                 input: {"V":0,"edges":[[0,1,2]]},
                 output: false,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
             }
         ],
         solutions: {

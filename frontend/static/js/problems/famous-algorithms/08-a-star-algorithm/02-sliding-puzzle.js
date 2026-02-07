@@ -42,7 +42,7 @@
         ]
 },
         output: 1,
-        explanation: 'Using breadth-first search, we explore level by level to find the optimal solution. For input board=[[1, 2, 3], [4, 0, 5]], the result is 1.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     }
         ],
         solutions: {

@@ -12,6 +12,14 @@
         difficulty: 'Hard',
         algorithm: 'bst-comparison',
         description: 'Given two arrays of integers, determine if they would produce the same Binary Search Tree when elements are inserted in order. You must do this without actually constructing the BSTs. When constructing a BST by inserting elements one at a time from left to right, the first element becomes the root, and subsequent elements are inserted according to BST rules (smaller values go left, equal or larger values go right).',
+        problem: 'Leverage the BST property (left < root < right) to guide your decisions. At each node, the ordering property tells you which subtree to explore or how to restructure. This achieves O(n^2) time with O(n^2) for subarrays, or O(d) with index approach space.',
+        hints: [
+            'The BST property means left < root < right. Use this to guide your search direction.',
+            'Think about which traversal order (inorder, preorder, postorder) best suits this problem.',
+            'Consider how the height of the tree affects your algorithm\'s complexity.',
+            'For balanced BSTs, operations are O(log n). What happens with skewed trees?'
+        ],
+
         complexity: {
             time: 'O(n^2)',
             space: 'O(n^2) for subarrays, or O(d) with index approach'
@@ -43,7 +51,7 @@
         ]
 },
         output: true,
-        explanation: 'Processing the input data produces the output. For input arrayOne=[10, 15, ..., 11] (length 9), arrayTwo=[10, 8, ..., 81] (length 9), the result is true.'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     },
     {
         input: {
@@ -71,7 +79,7 @@
         ]
 },
         output: false,
-        explanation: 'Processing the input data produces the output. For input arrayOne=[10, 15, ..., 11] (length 9), arrayTwo=[10, 8, ..., 11] (length 9), the result is false.'
+        explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
     }
         ],
         twists: [

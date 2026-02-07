@@ -30,13 +30,13 @@
             {
                 input: {"points":[[0,0],[2,2],[3,10],[5,2],[7,0]]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the steiner tree problem criteria.'
+                explanation: 'The greedy selection of minimum-weight edges, combined with cycle detection, ensures the resulting tree has the minimum total edge weight.'
             },
             // Edge case
             {
                 input: {"points":[[0,0]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
             }
         ],
         solutions: {

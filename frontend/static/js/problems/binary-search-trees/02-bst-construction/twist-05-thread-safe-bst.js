@@ -27,13 +27,13 @@
             {
                 input: {"tree":[10,5,15,2,5,null,22,1],"operations":["insert(12)","remove(10)","contains(15)"]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the thread safe bst criteria.'
+                explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
             },
             // Edge case
             {
                 input: {"tree":[10],"operations":["insert(12)"]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
             }
         ],
         solutions: {

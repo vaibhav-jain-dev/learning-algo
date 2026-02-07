@@ -13,10 +13,10 @@
         difficulty: 'Hard',
         algorithm: 'll-construction',
         parent: '03-linked-list-construction/01-copy-list-random-pointer',
-        description: 'Implement the O(1) space approach by interleaving copied nodes (A->A\',
+        description: 'Implement the O(1) space approach by interleaving copied nodes (A->A.',
         problem: 'The hash map approach is straightforward but uses O(n) space. The interleaving method requires three distinct passes with tricky pointer manipulation. One wrong pointer assignment corrupts both the original and the copy.',
         hints: [
-            'Implement the O(1) space approach by interleaving copied nodes (A->A\',
+            'Implement the O(1) space approach by interleaving copied nodes (A->A.',
             '->...), setting random pointers via the interleaved structure, then separating the lists',
             'The hash map approach is straightforward but uses O(n) space',
             'Consider edge cases with empty lists or single-node lists.',
@@ -31,7 +31,7 @@
             {
                 input: {"list":[1,2,3,4,5]},
                 output: [1,2,3,4,5],
-                explanation: ''
+                explanation: 'Interleave cloned nodes into the original list, set random pointers using the interleaved structure, then separate the two lists.'
             }
         ],
         solutions: {

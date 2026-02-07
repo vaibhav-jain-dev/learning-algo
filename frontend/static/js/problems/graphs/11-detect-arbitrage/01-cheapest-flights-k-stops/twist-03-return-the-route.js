@@ -36,7 +36,7 @@
             {
                 input: {"n":0,"flights":[[0,1,100]],"src":0,"dst":0,"k":0},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
             }
         ],
         solutions: {

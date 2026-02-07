@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'tree-flatten',
         description: 'Write a function that takes in a Binary Tree, flattens it, and returns its leftmost node. A flattened Binary Tree is a structure that\'s nearly identical to a Doubly Linked List (except that nodes have left and right pointers instead of prev and next pointers), where nodes follow the original tree\'s left-to-right order. After flattening, each node\'s left pointer should point to the previous node in the flattened structure, and its right pointer should point to the next node.',
+        problem: 'Use recursion to solve the problem for each subtree, then combine results at each node. The base case handles null nodes. Each node is visited once, giving O(n) time with O(h) space for the recursion stack.',
+        hints: [
+            'Think recursively: solve the problem for the left and right subtrees, then combine results.',
+            'What information does each node need from its children to compute its result?',
+            'Consider whether you need a top-down (preorder) or bottom-up (postorder) approach.',
+            'Base case: what should happen when you reach a null/empty node?'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(h)'
@@ -39,7 +47,7 @@
         }
 },
         output: "4 <-> 2 <-> 5 <-> 1 <-> 6 <-> 3",
-        explanation: 'Traversing the tree structure, we process nodes to compute the result. For input tree={\'value\': 1, \'left\': {\'value\': 2, \'left\': {\'value\': 4}, \'right\': {\'value\': 5}}, \'right\': {\'value\': 3, \'left\': {\'value\': 6}}}, the result is 4 <-> 2 <-> 5 <-> 1 <-> 6 <-> 3.'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     }
         ],
         twists: [

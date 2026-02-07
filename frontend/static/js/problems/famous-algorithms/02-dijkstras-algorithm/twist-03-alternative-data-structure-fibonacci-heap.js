@@ -13,7 +13,7 @@
         difficulty: 'Very Hard',
         algorithm: 'dijkstras-algorithm',
         parent: '02-dijkstras-algorithm',
-        description: 'Dijkstra\',
+        description: 'Dijkstra.',
         problem: 'Binary heaps do O(log n) decrease-key operations. Fibonacci heaps do O(1) amortized decrease-key. For dense graphs (E = V^2), the difference between O(V^2 log V) and O(V^2 + V log V) is significant.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -36,7 +36,7 @@
             {
                 input: {"vertices":0,"edges":[[0,1,4]],"source":0},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
             }
         ],
         solutions: {

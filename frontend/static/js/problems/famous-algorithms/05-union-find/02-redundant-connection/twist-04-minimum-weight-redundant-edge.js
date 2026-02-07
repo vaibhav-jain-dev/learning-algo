@@ -30,13 +30,13 @@
             {
                 input: {"edges":[[1,2],[1,3],[2,3]]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the minimum weight redundant edge criteria.'
+                explanation: 'After processing all edges, the number of distinct roots equals the number of connected components. Each find operation is nearly O(1) with path compression.'
             },
             // Edge case
             {
                 input: {"edges":[[1,2]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process each connection/edge. For each pair, find their root representatives. If different, merge the smaller tree into the larger one (union by rank). Path compression flattens the tree on each find.'
             }
         ],
         solutions: {

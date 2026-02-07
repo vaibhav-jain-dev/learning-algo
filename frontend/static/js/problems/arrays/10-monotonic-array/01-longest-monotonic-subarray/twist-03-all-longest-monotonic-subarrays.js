@@ -31,18 +31,18 @@
             {
                 input: {"array":[1,2,3,2,1]},
                 output: 3,
-                explanation: ''
+                explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
             },
             {
                 input: {"array":[5,4,3,2,1]},
                 output: 5,
-                explanation: ''
+                explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
             },
             // Edge case
             {
                 input: {"array":[1]},
                 output: 1,
-                explanation: ''
+                explanation: 'The single-pass traversal examines each node once. By the time we reach the relevant position, we have enough information to produce the correct result.'
             }
         ],
         solutions: {

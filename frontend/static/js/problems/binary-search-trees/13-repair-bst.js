@@ -12,6 +12,14 @@
         difficulty: 'Hard',
         algorithm: 'bst-repair',
         description: 'You are given the root of a Binary Search Tree (BST), where the values of **exactly two nodes** of the tree were swapped by mistake. Your task is to recover the tree without changing its structure. In other words, find the two nodes that were swapped and swap their values back to restore the valid BST property.',
+        problem: 'Leverage the BST property (left < root < right) to guide your decisions. At each node, the ordering property tells you which subtree to explore or how to restructure. This achieves O(n) time with O(1) with Morris, O(h) otherwise space.',
+        hints: [
+            'The BST property means left < root < right. Use this to guide your search direction.',
+            'Think about which traversal order (inorder, preorder, postorder) best suits this problem.',
+            'Consider how the height of the tree affects your algorithm\'s complexity.',
+            'For balanced BSTs, operations are O(log n). What happens with skewed trees?'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(1) with Morris, O(h) otherwise'
@@ -28,7 +36,7 @@
         ]
 },
         output: [3, 1, null, null, 2],
-        explanation: 'Processing the input data produces the output. For input tree=[1, 3, None, None, 2], the result is [3, 1, None, None, 2].'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     },
     {
         input: {
@@ -42,7 +50,7 @@
         ]
 },
         output: [2, 1, 4, null, null, 3],
-        explanation: 'Processing the input data produces the output. For input tree=[3, 1, ..., 2] (length 6), the result is [2, ..., 3] (length 6).'
+        explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
     }
         ],
         twists: [

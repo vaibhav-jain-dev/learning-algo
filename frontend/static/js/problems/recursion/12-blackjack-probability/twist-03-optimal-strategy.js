@@ -36,7 +36,7 @@
             {
                 input: {"target":0,"startingHand":0},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'The recursive structure breaks this into subproblems. The base case handles the smallest input directly. Each recursive step makes progress toward the base case while combining partial results.'
             }
         ],
         solutions: {

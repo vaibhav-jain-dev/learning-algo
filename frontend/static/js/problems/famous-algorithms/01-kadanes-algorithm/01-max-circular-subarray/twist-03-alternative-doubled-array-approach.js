@@ -13,7 +13,7 @@
         difficulty: 'Medium',
         algorithm: 'kadanes-algorithm',
         parent: '01-kadanes-algorithm/01-max-circular-subarray',
-        description: 'Instead of the min-subarray trick, solve circular max subarray by concatenating the array with itself and running Kadane\',
+        description: 'Instead of the min-subarray trick, solve circular max subarray by concatenating the array with itself and running Kadane.',
         problem: 'This uses a completely different data structure concept (deque for sliding window max prefix sum) rather than the elegant complement trick. Forces thinking about window constraints.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -41,7 +41,7 @@
             {
                 input: {"nums":[1]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Scan through maintaining a running value. At each position, decide to extend or start fresh.'
             }
         ],
         solutions: {

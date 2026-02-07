@@ -39,7 +39,7 @@
         }
 },
         output: 25,
-        explanation: 'Using depth-first search, we explore all paths to find the solution. For input tree={\'value\': 1, \'left\': {\'value\': 2}, \'right\': {\'value\': 3}}, the result is 25.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -60,7 +60,7 @@
         }
 },
         output: 1026,
-        explanation: 'Using depth-first search, we explore all paths to find the solution. For input tree={\'value\': 4, \'left\': {\'value\': 9, \'left\': {\'value\': 5}, \'right\': {\'value\': 1}}, \'right\': {\'value\': 0}}, the result is 1026.'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         solutions: {

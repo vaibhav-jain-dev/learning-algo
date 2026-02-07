@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'recursion-powerset',
         description: 'Write a function that takes in an array of unique integers and returns its powerset. The powerset P(X) of a set X is the set of all subsets of X. For example, the powerset of [1, 2] is [[], [1], [2], [1, 2]]. Note that the sets in the powerset do not need to be in any particular order.',
+        problem: 'Break the problem into smaller subproblems recursively. Define clear base cases and recursive cases. At each step, assume the recursive call returns the correct result for smaller inputs, and combine them. This achieves O(n * 2^n) time with O(n) space.',
+        hints: [
+            'Define your base case clearly. When should the recursion stop?',
+            'For the recursive case, assume the function works for smaller inputs. How do you use that?',
+            'Think about whether you need to pass additional state through parameters.',
+            'Consider memoization if the same subproblems are being computed multiple times.'
+        ],
+
         complexity: {
             time: 'O(n * 2^n)',
             space: 'O(n)'

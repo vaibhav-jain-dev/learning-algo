@@ -30,23 +30,23 @@
             {
                 input: {"prices":[5,11,3,50,60,90],"k":2,"target":10},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the minimum transactions for target profit criteria.'
+                explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
             },
             {
                 input: {"prices":[3,2,5,7,1,3],"k":1,"target":10},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the minimum transactions for target profit criteria.'
+                explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
             },
             {
                 input: {"prices":[1,2,3,4,5],"k":2,"target":10},
                 output: 0,
-                explanation: 'For this input, there are 0 valid positions that satisfy the minimum transactions for target profit criteria.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             },
             // Edge case
             {
                 input: {"prices":[5],"k":0,"target":10},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             }
         ],
         solutions: {

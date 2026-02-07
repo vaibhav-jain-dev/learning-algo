@@ -14,7 +14,7 @@
         algorithm: 'prims-algorithm',
         parent: '07-prims-algorithm/02-network-delay-mst',
         description: 'Edge costs change over time (e.g., network congestion). Find the MST at each time step as edges are added or removed.',
-        problem: 'Dynamic MST maintenance requires techniques beyond standard Prim\',
+        problem: 'Dynamic MST maintenance requires techniques beyond standard Prim.',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
@@ -36,7 +36,7 @@
             {
                 input: {"n":0,"connections":[[0,1,1]]},
                 output: false,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
             }
         ],
         solutions: {

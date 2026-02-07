@@ -9,12 +9,12 @@
     'use strict';
 
     const problem = {
-        name: 'Iterative Generation (Heap\',
+        name: 'Iterative Generation (Heap.',
         difficulty: 'Hard',
         algorithm: 'recursion-permutations',
         parent: '03-permutations',
-        description: 'Generate all permutations iteratively using Heap\',
-        problem: 'Heap\',
+        description: 'Generate all permutations iteratively using Heap.',
+        problem: 'Heap.',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
@@ -36,7 +36,7 @@
             {
                 input: {"array":[1]},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'The recursive structure breaks this into subproblems with clear base cases.'
             }
         ],
         solutions: {

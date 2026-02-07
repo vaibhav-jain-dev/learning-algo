@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'll-remove-kth',
         description: 'Write a function that takes in the head of a singly linked list and an integer k, and removes the kth node from the end of the list. The removal should be done in place, meaning that the original data structure should be mutated. The function doesn\'t need to return anything. Each LinkedList node has an integer value and a next node pointer. You can assume that the input linked list will always have at least two nodes and, more specifically, at least k nodes.',
+        problem: 'Traverse the linked list with appropriate pointer management. Keep track of previous, current, and next nodes as needed. Be careful to update pointers in the correct order to avoid losing references. This achieves O(n) time with O(1) space.',
+        hints: [
+            'Think about what pointers you need to maintain as you traverse the list.',
+            'The runner technique (slow and fast pointers) solves many linked list problems.',
+            'Be careful about edge cases: empty list, single node, and the head/tail nodes.',
+            'Draw out the pointer changes step by step before coding to avoid losing references.'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(1)'
@@ -34,7 +42,7 @@
         "k": 4
 },
         output: [0, 1, 2, 3, 4, 5, 7, 8, 9],
-        explanation: 'Processing the input data produces the output. For input list=[0, 1, ..., 9] (length 10), k=4, the result is [0, ..., 9] (length 9).'
+        explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
     },
     {
         input: {
@@ -46,7 +54,7 @@
         "k": 3
 },
         output: [2, 3],
-        explanation: 'Processing the input data produces the output. For input list=[1, 2, 3], k=3, the result is [2, 3].'
+        explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
     }
         ],
         twists: [

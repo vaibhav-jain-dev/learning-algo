@@ -13,6 +13,7 @@
         algorithm: 'll-construction',
         parent: '03-linked-list-construction',
         description: 'Given a reference to a node in a connected undirected graph, return a **deep copy** (clone) of the graph. Each node in the graph contains: - A value (val) - A list of its neighbors (neighbors) The graph is represented using an adjacency list where each node\'s neighbors list describes connections between nodes.',
+        problem: 'Traverse the linked list with appropriate pointer management. Keep track of previous, current, and next nodes as needed. Be careful to update pointers in the correct order to avoid losing references. This achieves O(N+E) time with O(N) space.',
         complexity: {
             time: 'O(N+E)',
             space: 'O(N)'
@@ -47,7 +48,7 @@
         ]
 },
         output: [[2, 4], [1, 3], [2, 4], [1, 3]],
-        explanation: 'Processing the input data produces the output. For input adjList=[[2, 4], [1, 3], [2, 4], [1, 3]], the result is [[2, 4], [1, 3], [2, 4], [1, 3]].'
+        explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
     },
     {
         input: {
@@ -56,14 +57,14 @@
         ]
 },
         output: [[]],
-        explanation: 'Processing the input data produces the output. For input adjList=[[]], the result is [[]].'
+        explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
     },
     {
         input: {
         "adjList": []
 },
         output: [],
-        explanation: 'Processing the input data produces the output. For input adjList=[], the result is [].'
+        explanation: 'The single-pass traversal examines each node once. By the time we reach the relevant position, we have enough information to produce the correct result.'
     }
         ],
         solutions: {

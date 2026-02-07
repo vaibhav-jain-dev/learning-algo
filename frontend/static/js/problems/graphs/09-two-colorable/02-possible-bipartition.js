@@ -13,6 +13,7 @@
         algorithm: 'graph-coloring',
         parent: '09-two-colorable',
         description: 'We want to split a group of n people into two groups. Given dislikes[i] = [ai, bi] where person ai dislikes person bi, return true if it\'s possible to split everyone into two groups such that no two people who dislike each other are in the same group.',
+        problem: 'Model the problem as a graph traversal. Choose the appropriate traversal strategy (DFS/BFS) based on whether you need depth exploration or shortest paths. Track visited nodes to handle cycles. This achieves O(V + E) time with O(V + E) space.',
         complexity: {
             time: 'O(V + E)',
             space: 'O(V + E)'
@@ -44,7 +45,7 @@
         ]
 },
         output: true,
-        explanation: 'Exploring the graph structure, we find the required path or value. For input n=4, dislikes=[[1, 2], [1, 3], [2, 4]], the result is true.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -65,7 +66,7 @@
         ]
 },
         output: false,
-        explanation: 'Exploring the graph structure, we find the required path or value. For input n=3, dislikes=[[1, 2], [1, 3], [2, 3]], the result is false.'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         solutions: {

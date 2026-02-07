@@ -16,7 +16,7 @@
         description: 'The sequence is valid if it can be found going left-to-right OR right-to-left in the array. You must consider two traversal directions, potentially doubling the search space but also the solution space.',
         problem: 'You must consider two traversal directions, potentially doubling the search space but also the solution space.',
         hints: [
-            'Think about how this twist differs from the standard version: The sequence is valid if it can be found going left-to-right OR right-to-left in.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'You must consider two traversal directions, potentially doubling the search space but also the solution space.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"array":[5,1,22,25,6,-1,8,10],"sequence":[1,6,-1,10]},
                 output: true,
-                explanation: ''
+                explanation: 'Position the two pointers at the strategic starting locations. Advance each based on the comparison with the target. The pointers converge on the solution without revisiting elements.'
             },
             {
                 input: {"array":[1,2,3,4,5],"sequence":[5,3,1]},
                 output: false,
-                explanation: ''
+                explanation: 'Each pointer moves in one direction only (or at most n steps total). The invariant ensures that no valid solution is skipped, while the single-pass approach gives O(n) time.'
             },
             // Edge case
             {
                 input: {"array":[1,1,1,1,1],"sequence":[1,1,1]},
                 output: true,
-                explanation: ''
+                explanation: 'The pointer movement rules ensure systematic coverage. When pointers meet or cross, the traversal is complete and all candidates have been considered.'
             }
         ],
         solutions: {

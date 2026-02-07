@@ -37,7 +37,7 @@
         ]
 },
         output: [0, -3, 9, -10, null, 5],
-        explanation: 'Processing the input data produces the output. For input nums=[-10, -3, 0, 5, 9], the result is [0, ..., 5] (length 6).'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     },
     {
         input: {
@@ -52,7 +52,7 @@
         ]
 },
         output: [4, 2, 6, 1, 3, 5, 7],
-        explanation: 'Processing the input data produces the output. For input nums=[1, 2, ..., 7] (length 7), the result is [4, ..., 7] (length 7).'
+        explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
     }
         ],
         solutions: {

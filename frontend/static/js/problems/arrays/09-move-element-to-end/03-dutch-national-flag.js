@@ -13,6 +13,7 @@
         algorithm: 'two-pointer-move',
         parent: '09-move-element-to-end',
         description: 'Given an array of integers and a pivot value, partition the array into three sections: 1. All elements **less than** the pivot 2. All elements **equal to** the pivot 3. All elements **greater than** the pivot This is known as the "Dutch National Flag" problem, named after the Dutch flag which has three horizontal stripes.',
+        problem: 'Use two pointers to efficiently traverse the input. Position them strategically and move them based on comparisons with the target condition. This achieves O(n) time with O(1) space by avoiding nested iterations.',
         complexity: {
             time: 'O(n)',
             space: 'O(1)'

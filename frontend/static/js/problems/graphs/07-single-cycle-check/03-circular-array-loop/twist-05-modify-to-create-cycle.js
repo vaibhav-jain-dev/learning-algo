@@ -30,13 +30,13 @@
             {
                 input: {"nums":[2,-1,1,2,2]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the modify to create cycle criteria.'
+                explanation: 'Each pointer moves in one direction only (or at most n steps total). The invariant ensures that no valid solution is skipped, while the single-pass approach gives O(n) time.'
             },
             // Edge case
             {
                 input: {"nums":[2]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Position the two pointers at the strategic starting locations. Advance each based on the comparison with the target. The pointers converge on the solution without revisiting elements.'
             }
         ],
         solutions: {

@@ -30,23 +30,23 @@
             {
                 input: {"grid":[[1,0],[0,1]]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the remove one cell criteria.'
+                explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
             },
             {
                 input: {"grid":[[1,1],[1,0]]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the remove one cell criteria.'
+                explanation: 'Process nodes systematically using the chosen traversal strategy. The visited set prevents infinite loops in cyclic graphs. Aggregate results across all components for the final answer.'
             },
             {
                 input: {"grid":[[1,1],[1,1]]},
                 output: 0,
-                explanation: 'For this input, there are 0 valid positions that satisfy the remove one cell criteria.'
+                explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
             },
             // Edge case
             {
                 input: {"grid":[[1,0]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
             }
         ],
         solutions: {

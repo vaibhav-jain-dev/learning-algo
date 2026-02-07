@@ -12,6 +12,14 @@
         difficulty: 'Hard',
         algorithm: 'recursion-count-bst',
         description: 'Write a function that takes in a positive integer n and returns the number of structurally unique Binary Search Trees (BSTs) that can store values 1 to n. Two BSTs are structurally different if they have different structures regardless of their node values.',
+        problem: 'Leverage the BST property (left < root < right) to guide your decisions. At each node, the ordering property tells you which subtree to explore or how to restructure. This achieves O(n^2) time with O(n) space.',
+        hints: [
+            'The BST property means left < root < right. Use this to guide your search direction.',
+            'Think about which traversal order (inorder, preorder, postorder) best suits this problem.',
+            'Consider how the height of the tree affects your algorithm\'s complexity.',
+            'For balanced BSTs, operations are O(log n). What happens with skewed trees?'
+        ],
+
         complexity: {
             time: 'O(n^2)',
             space: 'O(n)'

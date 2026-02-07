@@ -13,6 +13,7 @@
         algorithm: 'graph-bfs',
         parent: '08-minimum-passes',
         description: 'You are given an m x n grid grid where: - \'.\' is an empty cell - \'#\' is a wall - \'@\' is the starting point - Lowercase letters represent keys - Uppercase letters are locks that require the matching key Return the minimum number of moves to get all keys. If impossible, return -1.',
+        problem: 'Use breadth-first search to explore nodes level by level. This ensures the shortest path is found first in unweighted scenarios. Use a queue to manage the frontier. This achieves O(M * N * 2^K) time with O(M * N * 2^K) space.',
         complexity: {
             time: 'O(M * N * 2^K)',
             space: 'O(M * N * 2^K)'
@@ -34,7 +35,7 @@
         ]
 },
         output: 8,
-        explanation: 'Using breadth-first search, we explore level by level to find the optimal solution. For input grid=[@.a.., ###.#, b.A.B], the result is 8.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     }
         ],
         solutions: {

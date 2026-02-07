@@ -16,7 +16,7 @@
         description: 'Among all pairs with the closest sum to target, return the one where the two chosen indices (original positions) are farthest apart. Adds a secondary optimization criterion, requiring you to track not just the closest sum but also index positions from the original arrays.',
         problem: 'Adds a secondary optimization criterion, requiring you to track not just the closest sum but also index positions from the original arrays.',
         hints: [
-            'Think about how this twist differs from the standard version: Among all pairs with the closest sum to target, return the one where the two cho.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Adds a secondary optimization criterion, requiring you to track not just the closest sum but also index positions from the original arrays.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"arr1":[1,3,5,7],"arr2":[2,4,6,8],"target":10},
                 output: [3,7],
-                explanation: ''
+                explanation: 'Process the input according to the core logic. Each element is examined and contributes to building the final result.'
             },
             {
                 input: {"arr1":[-1,3,8],"arr2":[2,4,9],"target":7},
                 output: [3,4],
-                explanation: ''
+                explanation: 'The algorithm handles this case by applying the key operation to each element. The accumulated result after processing all elements gives the answer.'
             },
             // Edge case
             {
                 input: {"arr1":[1,4],"arr2":[10,20],"target":15},
                 output: [4,10],
-                explanation: ''
+                explanation: 'This test case validates the algorithm behavior. The step-by-step processing of input elements produces the expected output.'
             }
         ],
         solutions: {

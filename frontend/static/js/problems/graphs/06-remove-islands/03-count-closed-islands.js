@@ -13,6 +13,7 @@
         algorithm: 'graph-flood-fill',
         parent: '06-remove-islands',
         description: 'Given a 2D grid consisting of 0s (land) and 1s (water), count the number of closed islands. A closed island is an island totally surrounded by water (0s surrounded by 1s that don\'t touch the boundary).',
+        problem: 'Model the problem as a graph traversal. Choose the appropriate traversal strategy (DFS/BFS) based on whether you need depth exploration or shortest paths. Track visited nodes to handle cycles. This achieves O(M * N) time with O(M * N) space.',
         complexity: {
             time: 'O(M * N)',
             space: 'O(M * N)'
@@ -81,7 +82,7 @@
         ]
 },
         output: 2,
-        explanation: 'Exploring the graph structure, we find the required path or value. For input grid=[[1, 1, 1, 1, 1, 1, 1, 0], [1, 0, 0, 0, 0, 1, 1, 0], [1, 0, 1, 0, 1, 1, 1, 0], [1, 0, 0, 0, 0, 1, 0, 1], [1, 1, 1, 1, 1, 1, 1, 0]], the result is 2.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     }
         ],
         solutions: {

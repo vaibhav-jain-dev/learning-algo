@@ -31,14 +31,14 @@
         "n": 12
 },
         output: 3,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input n=12, the result is 3.'
+        explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
     },
     {
         input: {
         "n": 13
 },
         output: 2,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input n=13, the result is 2.'
+        explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
     }
         ],
         solutions: {
@@ -119,11 +119,11 @@ func main() {
 }`
         },
         twists: [
-            { id: '03-min-coins/01-perfect-squares/twist-01-recognize-this-as-coin-change', title: 'Recognize This as Coin Change', difficulty: 'Easy' },
-            { id: '03-min-coins/01-perfect-squares/twist-02-bfs-shortest-path-alternative', title: 'BFS Shortest Path Alternative', difficulty: 'Hard' },
-            { id: '03-min-coins/01-perfect-squares/twist-03-greedy-fails-largest-square-first', title: 'Greedy Fails: Largest Square First', difficulty: 'Medium' },
-            { id: '03-min-coins/01-perfect-squares/twist-04-print-which-squares-were-used', title: 'Print Which Squares Were Used', difficulty: 'Medium' },
-            { id: '03-min-coins/01-perfect-squares/twist-05-lagranges-four-square-theorem', title: 'Lagrange\'s Four-Square Theorem', difficulty: 'Very Hard' }
+            { id: '03-min-coins/01-perfect-squares/twist-01-recognize-this-as-coin-change', name: 'Recognize This as Coin Change', difficulty: 'Easy' },
+            { id: '03-min-coins/01-perfect-squares/twist-02-bfs-shortest-path-alternative', name: 'BFS Shortest Path Alternative', difficulty: 'Hard' },
+            { id: '03-min-coins/01-perfect-squares/twist-03-greedy-fails-largest-square-first', name: 'Greedy Fails: Largest Square First', difficulty: 'Medium' },
+            { id: '03-min-coins/01-perfect-squares/twist-04-print-which-squares-were-used', name: 'Print Which Squares Were Used', difficulty: 'Medium' },
+            { id: '03-min-coins/01-perfect-squares/twist-05-lagranges-four-square-theorem', name: 'Lagrange\'s Four-Square Theorem', difficulty: 'Very Hard' }
         ],
         similar: [
 

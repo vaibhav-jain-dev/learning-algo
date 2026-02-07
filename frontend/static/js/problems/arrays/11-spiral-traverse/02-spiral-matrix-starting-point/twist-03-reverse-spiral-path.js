@@ -43,7 +43,7 @@
             {
                 input: {"coords":[[0,0]]},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process the matrix following the required traversal pattern. Track the current boundaries (top, bottom, left, right) and adjust them after completing each direction.'
             }
         ],
         solutions: {

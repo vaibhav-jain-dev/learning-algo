@@ -14,7 +14,7 @@
         algorithm: 'll-middle',
         parent: '02-middle-node',
         description: 'Given only a pointer to the middle node (not the head), delete it from the singly linked list. You do not have access to the head or any node before the middle.',
-        problem: 'Without access to the previous node, you cannot rewire pointers normally. The classic trick is to copy the next node\',
+        problem: 'Without access to the previous node, you cannot rewire pointers normally. The classic trick is to copy the next node.',
         hints: [
             'Given only a pointer to the middle node (not the head), delete it from the singly linked list',
             'Without access to the previous node, you cannot rewire pointers normally',
@@ -30,7 +30,7 @@
             {
                 input: {"list":[1,2,3,4,5]},
                 output: [1,2,3,4,5],
-                explanation: ''
+                explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
             }
         ],
         solutions: {

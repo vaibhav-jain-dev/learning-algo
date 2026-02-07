@@ -12,6 +12,14 @@
         difficulty: 'Easy',
         algorithm: 'tree-expression',
         description: 'Write a function that takes in a binary expression tree and evaluates it. The tree represents a mathematical expression where: - **Leaf nodes** contain integer operands (positive or negative numbers) - **Internal nodes** contain operators: +, -, *, / (represented as -1, -2, -3, -4 respectively) The function should return the result of evaluating the expression. For division, use integer division that truncates toward zero.',
+        problem: 'Use recursion to solve the problem for each subtree, then combine results at each node. The base case handles null nodes. Each node is visited once, giving O(n) time with O(h) space for the recursion stack.',
+        hints: [
+            'Think recursively: solve the problem for the left and right subtrees, then combine results.',
+            'What information does each node need from its children to compute its result?',
+            'Consider whether you need a top-down (preorder) or bottom-up (postorder) approach.',
+            'Base case: what should happen when you reach a null/empty node?'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(h)'
@@ -42,7 +50,7 @@
         }
 },
         output: 19,
-        explanation: 'Traversing the tree structure, we process nodes to compute the result. For input tree={\'value\': -1, \'left\': {\'value\': -2, \'left\': {\'value\': 2}, \'right\': {\'value\': 3}}, \'right\': {\'value\': -3, \'left\': {\'value\': 4}, \'right\': {\'value\': 5}}}, the result is 19.'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     },
     {
         input: {
@@ -57,7 +65,7 @@
         }
 },
         output: 12,
-        explanation: 'Traversing the tree structure, we process nodes to compute the result. For input tree={\'value\': -1, \'left\': {\'value\': 5}, \'right\': {\'value\': 7}}, the result is 12.'
+        explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
     }
         ],
         twists: [

@@ -13,16 +13,13 @@
         difficulty: 'Medium',
         algorithm: 'tree-sibling',
         parent: '09-right-sibling-tree',
-        description: 'Transform the tree so each node\',
+        description: 'Transform the tree so each node.',
         problem: 'The mirror transformation requires connecting nodes to their left sibling, meaning you process right-to-left at each level. The original right pointers must remain, so you lose left children instead of right children.',
         hints: [
-            'Consider: Transform the tree so each node\',
-            ',
-            ',
-            ',
-            ',
-            ',
-            '
+            'Think about how a BFS level-order traversal processes nodes from left to right, and how you might reverse this.',
+            'Instead of connecting each node to its right sibling, connect each node to its left sibling at the same level.',
+            'Process children right-to-left at each level so that you always have the left sibling available when visiting a node.',
+            'Use a queue-based traversal but track the previous node at each level to set left sibling pointers.'
         ],
         complexity: {
             time: 'O(n)',
@@ -39,7 +36,7 @@
             {
                 input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5,"right":{"value":10}}},"right":{"value":3,"left":{"value":6,"left":{"value":11},"right":{"value":12}},"right":{"value":7}}}},
                 output: "",
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Small tree edge case verifying left sibling assignment for minimal input.'
             }
         ],
         solutions: {

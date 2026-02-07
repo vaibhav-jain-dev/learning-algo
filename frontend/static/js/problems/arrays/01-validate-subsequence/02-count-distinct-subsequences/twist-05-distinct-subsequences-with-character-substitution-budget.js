@@ -16,7 +16,7 @@
         description: 'Count subsequences of s that equal t, but you are allowed to substitute up to m characters in s before counting. Combines edit distance thinking with subsequence counting, requiring an additional DP dimension for substitution budget.',
         problem: 'Combines edit distance thinking with subsequence counting, requiring an additional DP dimension for substitution budget.',
         hints: [
-            'Think about how this twist differs from the standard version: Count subsequences of s that equal t, but you are allowed to substitute up to m .',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Combines edit distance thinking with subsequence counting, requiring an additional DP dimension for substitution budget.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"s":"rabbbit","t":"rabbit"},
                 output: 3,
-                explanation: ''
+                explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
             },
             {
                 input: {"s":"aabb","t":"ab"},
                 output: 4,
-                explanation: ''
+                explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
             },
             // Edge case
             {
                 input: {"s":"abc","t":"xyz"},
                 output: 0,
-                explanation: ''
+                explanation: 'Traverse the tree in the appropriate order. At each node, apply the problem logic and combine with the recursive results from child nodes.'
             }
         ],
         solutions: {

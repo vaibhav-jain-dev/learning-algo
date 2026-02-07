@@ -47,7 +47,7 @@
             {
                 input: {"array":[1]},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Maintain a running sum as you scan. At each position, choose to either extend the current subarray or start fresh. Track the global maximum across all positions.'
             }
         ],
         solutions: {

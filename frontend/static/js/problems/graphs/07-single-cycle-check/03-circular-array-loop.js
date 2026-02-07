@@ -12,7 +12,7 @@
         difficulty: 'Medium',
         algorithm: 'fast-slow-pointer',
         parent: '07-single-cycle-check',
-        description: 'You are playing a game involving a circular array of non-zero integers nums. Each nums[i] denotes the number of indices forward/backward you must move if you are located at index i: - If nums[i] is positive, move nums[i] steps forward - If nums[i] is negative, move |nums[i]| steps backward Since the array is circular, you may assume that moving forward from the last element puts you on the first element, and moving backwards from the first element puts you on the last element. A cycle in the arr',
+        description: 'You are playing a game involving a circular array of non-zero integers nums. Each nums[i] denotes the number of indices forward/backward you must move if you are located at index i: - If nums[i] is positive, move nums[i] steps forward - If nums[i] is negative, move |nums[i]| steps backward Since the array is circular, you may assume that moving forward from the last element puts you on the first element, and moving backwards from the first element puts you on the last element. A cycle in the arr.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
         complexity: {
             time: 'O(n)',
@@ -37,7 +37,7 @@
         ]
 },
         output: true,
-        explanation: 'Processing the input data produces the output. For input nums=[2, -1, 1, 2, 2], the result is true.'
+        explanation: 'Position the two pointers at the strategic starting locations. Advance each based on the comparison with the target. The pointers converge on the solution without revisiting elements.'
     }
         ],
         solutions: {

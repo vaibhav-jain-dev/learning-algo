@@ -12,6 +12,14 @@
         difficulty: 'Easy',
         algorithm: 'll-middle',
         description: 'Given the head of a singly linked list, return the middle node of the linked list. If there are two middle nodes (i.e., the list has an even number of nodes), return the second middle node.',
+        problem: 'Traverse the linked list with appropriate pointer management. Keep track of previous, current, and next nodes as needed. Be careful to update pointers in the correct order to avoid losing references. This achieves O(n) time with O(1) space.',
+        hints: [
+            'Think about what pointers you need to maintain as you traverse the list.',
+            'The runner technique (slow and fast pointers) solves many linked list problems.',
+            'Be careful about edge cases: empty list, single node, and the head/tail nodes.',
+            'Draw out the pointer changes step by step before coding to avoid losing references.'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(1)'
@@ -28,7 +36,7 @@
         ]
 },
         output: 3,
-        explanation: 'Processing the input data produces the output. For input list=[1, 2, 3, 4, 5], the result is 3.'
+        explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
     },
     {
         input: {
@@ -42,7 +50,7 @@
         ]
 },
         output: 4,
-        explanation: 'Processing the input data produces the output. For input list=[1, 2, ..., 6] (length 6), the result is 4.'
+        explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
     },
     {
         input: {
@@ -51,7 +59,7 @@
         ]
 },
         output: 1,
-        explanation: 'Processing the input data produces the output. For input list=[1], the result is 1.'
+        explanation: 'The single-pass traversal examines each node once. By the time we reach the relevant position, we have enough information to produce the correct result.'
     }
         ],
         twists: [

@@ -61,7 +61,7 @@
         "k": 1
 },
         output: 700,
-        explanation: 'Processing the input data produces the output. For input n=4, flights=[[0, 1, 100], [1, 2, 100], [2, 0, 100], [1, 3, 600], [2, 3, 200]], src=0, dst=3, k=1, the result is 700.'
+        explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
     }
         ],
         solutions: {

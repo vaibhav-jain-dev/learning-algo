@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'graph-ancestor',
         description: 'You\'re given three inputs, all of which are instances of an AncestralTree class that have an ancestor property pointing to their youngest ancestor. The first input is the top ancestor in an ancestral tree (i.e., the only instance that doesn\'t have an ancestor), and the other two inputs are descendants in the ancestral tree. Write a function that returns the youngest common ancestor to the two descendants. Note: A descendant is considered its own ancestor.',
+        problem: 'Model the problem as a graph traversal. Choose the appropriate traversal strategy (DFS/BFS) based on whether you need depth exploration or shortest paths. Track visited nodes to handle cycles. This achieves O(D) time with O(1) space.',
+        hints: [
+            'Choose the right graph representation: adjacency list vs adjacency matrix.',
+            'Consider whether the graph is directed or undirected, weighted or unweighted.',
+            'Track visited nodes to handle cycles and avoid infinite loops.',
+            'Think about which graph traversal algorithm best fits this problem: DFS, BFS, or something else.'
+        ],
+
         complexity: {
             time: 'O(D)',
             space: 'O(1)'
@@ -24,7 +32,7 @@
         "descendant2": "I"
 },
         output: "B",
-        explanation: 'Exploring the graph structure, we find the required path or value. For input tree=A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G, descendant1=E, descendant2=I, the result is B.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -33,7 +41,7 @@
         "descendant2": "G"
 },
         output: "A",
-        explanation: 'Exploring the graph structure, we find the required path or value. For input tree=A-B-D-H,A-B-D-I,A-B-E,A-C-F,A-C-G, descendant1=H, descendant2=G, the result is A.'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         twists: [

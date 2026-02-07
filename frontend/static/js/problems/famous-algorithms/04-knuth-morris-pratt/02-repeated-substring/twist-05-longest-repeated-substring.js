@@ -30,18 +30,18 @@
             {
                 input: {"s":"abab"},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the longest repeated substring criteria.'
+                explanation: 'The prefix function tells us the longest suffix of the matched portion that is also a prefix of the pattern. This allows intelligent backtracking during the text scan.'
             },
             {
                 input: {"s":"abcabcabcabc"},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the longest repeated substring criteria.'
+                explanation: 'The combined preprocessing and matching phases ensure each character in the text is examined at most twice, achieving linear time complexity.'
             },
             // Edge case
             {
                 input: {"s":""},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Precompute the failure function from the pattern. During matching, when a mismatch occurs, use the failure function to skip ahead without re-examining characters already matched.'
             }
         ],
         solutions: {

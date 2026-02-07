@@ -11,7 +11,15 @@
         name: 'A* Algorithm',
         difficulty: 'Hard',
         algorithm: 'a-star',
-        description: 'Implement the A* (A-Star) search algorithm to find the shortest path between two nodes in a weighted graph or grid. A* is an informed search algorithm that uses a heuristic function to guide its search, making it more efficient than Dijkstra\'s algorithm for many problems. Given a 2D grid where: - 0 represents a walkable cell - 1 represents an obstacle Find the shortest path from the start position to the end position. You can move in 4 directions (up, down, left, right). Return the length of the',
+        description: 'Implement the A* (A-Star) search algorithm to find the shortest path between two nodes in a weighted graph or grid. A* is an informed search algorithm that uses a heuristic function to guide its search, making it more efficient than Dijkstra\'s algorithm for many problems. Given a 2D grid where: - 0 represents a walkable cell - 1 represents an obstacle Find the shortest path from the start position to the end position. You can move in 4 directions (up, down, left, right). Return the length of the.',
+        problem: 'Apply a shortest path algorithm. Use a priority queue to always process the closest unvisited node first. Relax edges to update shortest distances. This achieves O(E log V) time with O(V) space.',
+        hints: [
+            'Choose the right algorithm: Dijkstra for non-negative weights, Bellman-Ford for negative weights.',
+            'Think about what the "distance" or "cost" represents in this problem.',
+            'Consider whether you need the shortest path itself or just the shortest distance.',
+            'A priority queue (min-heap) is essential for efficient shortest path algorithms.'
+        ],
+
         complexity: {
             time: 'O(E log V)',
             space: 'O(V)'
@@ -55,7 +63,7 @@
         ]
 },
         output: 6,
-        explanation: 'Processing the input data produces the output. For input grid=[[0, 0, 0, 0], [0, 1, 1, 0], [0, 0, 0, 0], [0, 1, 0, 0]], start=[0, 0], end=[3, 3], the result is 6.'
+        explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
     }
         ],
         twists: [

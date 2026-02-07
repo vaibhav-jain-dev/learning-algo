@@ -35,7 +35,7 @@
         ]
 },
         output: 6,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input nums=[3, 4, 2], the result is 6.'
+        explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
     },
     {
         input: {
@@ -49,7 +49,7 @@
         ]
 },
         output: 9,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input nums=[2, 2, ..., 4] (length 6), the result is 9.'
+        explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
     }
         ],
         solutions: {
@@ -142,11 +142,11 @@ func main() {
 }`
         },
         twists: [
-            { id: '01-max-subset-sum/02-delete-and-earn/twist-01-recognize-the-reduction-to-house-robber', title: 'Recognize the Reduction to House Robber', difficulty: 'Medium' },
-            { id: '01-max-subset-sum/02-delete-and-earn/twist-02-write-the-recurrence-without-the-reduction', title: 'Write the Recurrence Without the Reduction', difficulty: 'Hard' },
-            { id: '01-max-subset-sum/02-delete-and-earn/twist-03-count-the-number-of-optimal-strategies', title: 'Count the Number of Optimal Strategies', difficulty: 'Hard' },
-            { id: '01-max-subset-sum/02-delete-and-earn/twist-04-print-which-numbers-were-deleted', title: 'Print Which Numbers Were Deleted', difficulty: 'Medium' },
-            { id: '01-max-subset-sum/02-delete-and-earn/twist-05-space-optimization-to-o1', title: 'Space Optimization to O(1)', difficulty: 'Easy' }
+            { id: '01-max-subset-sum/02-delete-and-earn/twist-01-recognize-the-reduction-to-house-robber', name: 'Recognize the Reduction to House Robber', difficulty: 'Medium' },
+            { id: '01-max-subset-sum/02-delete-and-earn/twist-02-write-the-recurrence-without-the-reduction', name: 'Write the Recurrence Without the Reduction', difficulty: 'Hard' },
+            { id: '01-max-subset-sum/02-delete-and-earn/twist-03-count-the-number-of-optimal-strategies', name: 'Count the Number of Optimal Strategies', difficulty: 'Hard' },
+            { id: '01-max-subset-sum/02-delete-and-earn/twist-04-print-which-numbers-were-deleted', name: 'Print Which Numbers Were Deleted', difficulty: 'Medium' },
+            { id: '01-max-subset-sum/02-delete-and-earn/twist-05-space-optimization-to-o1', name: 'Space Optimization to O(1)', difficulty: 'Easy' }
         ],
         similar: [
 

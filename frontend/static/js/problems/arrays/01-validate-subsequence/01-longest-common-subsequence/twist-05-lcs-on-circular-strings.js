@@ -16,7 +16,7 @@
         description: 'Both strings are circular (the end wraps to the beginning). Find the LCS considering all rotations. You must consider all rotational alignments, turning a single DP computation into potentially O(n) DP computations or requiring a clever concatenation trick.',
         problem: 'You must consider all rotational alignments, turning a single DP computation into potentially O(n) DP computations or requiring a clever concatenation trick.',
         hints: [
-            'Think about how this twist differs from the standard version: Both strings are circular (the end wraps to the beginning). Find the LCS conside.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'You must consider all rotational alignments, turning a single DP computation into potentially O(n) DP computations or requiring a clever concatenation trick.',
             'For circular structures, consider concatenating the data with itself or using modular arithmetic.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"text1":"abcde","text2":"ace"},
                 output: 3,
-                explanation: ''
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             },
             {
                 input: {"text1":"abc","text2":"def"},
                 output: 0,
-                explanation: ''
+                explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
             },
             // Edge case
             {
                 input: {"text1":"abcba","text2":"abcba"},
                 output: 5,
-                explanation: ''
+                explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
             }
         ],
         solutions: {

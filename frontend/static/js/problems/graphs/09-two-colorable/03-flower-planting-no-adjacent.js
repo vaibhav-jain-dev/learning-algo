@@ -45,7 +45,7 @@
         ]
 },
         output: [1, 2, 3],
-        explanation: 'Exploring the graph structure, we find the required path or value. For input n=3, paths=[[1, 2], [2, 3], [3, 1]], the result is [1, 2, 3].'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -62,7 +62,7 @@
         ]
 },
         output: [1, 2, 1, 2],
-        explanation: 'Exploring the graph structure, we find the required path or value. For input n=4, paths=[[1, 2], [3, 4]], the result is [1, 2, 1, 2].'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         solutions: {

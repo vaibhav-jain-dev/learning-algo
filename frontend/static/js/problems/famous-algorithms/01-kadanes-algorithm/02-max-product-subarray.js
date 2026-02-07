@@ -36,7 +36,7 @@
         ]
 },
         output: 6,
-        explanation: 'Processing the input data produces the output. For input nums=[2, 3, -2, 4], the result is 6.'
+        explanation: 'The running maximum at each index represents the best subarray ending at that position. A negative running sum is never worth carrying forward.'
     },
     {
         input: {
@@ -47,7 +47,7 @@
         ]
 },
         output: 0,
-        explanation: 'Processing the input data produces the output. For input nums=[-2, 0, -1], the result is 0.'
+        explanation: 'Maintain a running sum as you scan. At each position, choose to either extend the current subarray or start fresh. Track the global maximum across all positions.'
     }
         ],
         solutions: {

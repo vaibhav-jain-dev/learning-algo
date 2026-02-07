@@ -11,7 +11,15 @@
         name: 'Reveal Minesweeper',
         difficulty: 'Hard',
         algorithm: 'recursion-minesweeper',
-        description: 'You are given a 2D grid representing a Minesweeper board. Implement the "click" functionality that reveals cells when a player clicks on them. The board is represented as follows: - \'M\' - An unrevealed mine - \'E\' - An unrevealed empty cell - \'B\' - A revealed blank cell with no adjacent mines - \'1\' to \'8\' - A revealed cell with 1-8 adjacent mines - \'X\' - A revealed mine (game over) When a cell is clicked: 1. If a mine (\'M\') is clicked, change it to \'X\' (game over) 2. If an empty cell (\'E\') with *',
+        description: 'You are given a 2D grid representing a Minesweeper board. Implement the "click" functionality that reveals cells when a player clicks on them. The board is represented as follows: - \'M\' - An unrevealed mine - \'E\' - An unrevealed empty cell - \'B\' - A revealed blank cell with no adjacent mines - \'1\' to \'8\' - A revealed cell with 1-8 adjacent mines - \'X\' - A revealed mine (game over) When a cell is clicked: 1. If a mine (\'M\') is clicked, change it to \'X\' (game over) 2. If an empty cell (\'E\') with *.',
+        problem: 'Break the problem into smaller subproblems recursively. Define clear base cases and recursive cases. At each step, assume the recursive call returns the correct result for smaller inputs, and combine them. This achieves O(m * n) time with O(m * n) space.',
+        hints: [
+            'Define your base case clearly. When should the recursion stop?',
+            'For the recursive case, assume the function works for smaller inputs. How do you use that?',
+            'Think about whether you need to pass additional state through parameters.',
+            'Consider memoization if the same subproblems are being computed multiple times.'
+        ],
+
         complexity: {
             time: 'O(m * n)',
             space: 'O(m * n)'

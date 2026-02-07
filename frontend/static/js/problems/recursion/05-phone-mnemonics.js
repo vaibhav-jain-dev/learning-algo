@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'recursion-phone',
         description: 'Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent on a phone keypad. The mapping of digits to letters (just like on telephone buttons) is: `` 2 -> "abc" 3 -> "def" 4 -> "ghi" 5 -> "jkl" 6 -> "mno" 7 -> "pqrs" 8 -> "tuv" 9 -> "wxyz" `` Note that 1 does not map to any letters.',
+        problem: 'Break the problem into smaller subproblems recursively. Define clear base cases and recursive cases. At each step, assume the recursive call returns the correct result for smaller inputs, and combine them. This achieves O(4^n * n) time with O(n) space.',
+        hints: [
+            'Define your base case clearly. When should the recursion stop?',
+            'For the recursive case, assume the function works for smaller inputs. How do you use that?',
+            'Think about whether you need to pass additional state through parameters.',
+            'Consider memoization if the same subproblems are being computed multiple times.'
+        ],
+
         complexity: {
             time: 'O(4^n * n)',
             space: 'O(n)'

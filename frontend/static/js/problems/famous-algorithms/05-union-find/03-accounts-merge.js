@@ -46,7 +46,7 @@
         ]
 },
         output: [["John", "a@m.co", "b@m.co", "d@m.co"], ["John", "c@m.co"]],
-        explanation: 'Processing the input data produces the output. For input accounts=[[\'John\', \'a@m.co\', \'b@m.co\'], [\'John\', \'c@m.co\'], [\'John\', \'a@m.co\', \'d@m.co\']], the result is [[\'John\', \'a@m.co\', \'b@m.co\', \'d@m.co\'], [\'John\', \'c@m.co\']].'
+        explanation: 'Process each connection/edge. For each pair, find their root representatives. If different, merge the smaller tree into the larger one (union by rank). Path compression flattens the tree on each find.'
     }
         ],
         solutions: {

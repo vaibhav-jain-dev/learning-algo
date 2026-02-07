@@ -13,7 +13,7 @@
         difficulty: 'Medium',
         algorithm: 'dijkstras-algorithm',
         parent: '02-dijkstras-algorithm',
-        description: 'Implement Dijkstra\',
+        description: 'Implement Dijkstra.',
         problem: 'The array version is O(V^2) regardless of edges. For dense graphs (E near V^2), this beats O((V+E) log V) = O(V^2 log V). Forces thinking about when sophisticated data structures hurt rather than help.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -36,7 +36,7 @@
             {
                 input: {"vertices":0,"edges":[[0,1,4]],"source":0},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
             }
         ],
         solutions: {

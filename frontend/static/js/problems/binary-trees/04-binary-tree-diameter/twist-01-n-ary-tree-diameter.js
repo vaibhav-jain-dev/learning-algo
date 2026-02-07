@@ -30,13 +30,13 @@
             {
                 input: {"tree":{"value":1,"left":{"value":3,"left":{"value":7,"left":{"value":8}},"right":{"value":4,"right":{"value":5,"right":{"value":6}}}},"right":{"value":2}}},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the n ary tree diameter criteria.'
+                explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
             },
             // Edge case
             {
                 input: {"tree":{"value":1,"left":{"value":3,"left":{"value":7,"left":{"value":8}},"right":{"value":4,"right":{"value":5,"right":{"value":6}}}},"right":{"value":2}}},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
             }
         ],
         solutions: {

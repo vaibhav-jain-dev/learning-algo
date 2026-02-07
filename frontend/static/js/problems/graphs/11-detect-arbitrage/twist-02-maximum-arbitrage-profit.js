@@ -30,18 +30,18 @@
             {
                 input: {"exchangeRates":[[1,0.8631,0.5903],[1.1586,1,0.6849],[1.6939,1.46,1]]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the maximum arbitrage profit criteria.'
+                explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
             },
             {
                 input: {"exchangeRates":[[1,0.5,0.25],[2,1,0.5],[4,2,1]]},
                 output: 3,
-                explanation: 'For this input, there are 3 valid positions that satisfy the maximum arbitrage profit criteria.'
+                explanation: 'Process nodes systematically using the chosen traversal strategy. The visited set prevents infinite loops in cyclic graphs. Aggregate results across all components for the final answer.'
             },
             // Edge case
             {
                 input: {"exchangeRates":[[1,0.8631,0.5903]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
             }
         ],
         solutions: {

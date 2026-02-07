@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'bst-kth-largest',
         description: 'Write a function that takes in a Binary Search Tree (BST) and a positive integer k, and returns the kth largest integer contained in the BST. You can assume that there will only be integer values in the BST and that k is less than or equal to the number of nodes in the tree. Duplicate values should be treated as separate values. For example, in a BST with values [5, 5, 6], the second largest would be the second 5.',
+        problem: 'Leverage the BST property (left < root < right) to guide your decisions. At each node, the ordering property tells you which subtree to explore or how to restructure. This achieves O(h + k) time with O(h) space.',
+        hints: [
+            'The BST property means left < root < right. Use this to guide your search direction.',
+            'Think about which traversal order (inorder, preorder, postorder) best suits this problem.',
+            'Consider how the height of the tree affects your algorithm\'s complexity.',
+            'For balanced BSTs, operations are O(log n). What happens with skewed trees?'
+        ],
+
         complexity: {
             time: 'O(h + k)',
             space: 'O(h)'
@@ -32,7 +40,7 @@
         "k": 3
 },
         output: 17,
-        explanation: 'Processing the input data produces the output. For input tree=[15, 5, ..., 1] (length 8), k=3, the result is 17.'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     },
     {
         input: {
@@ -49,7 +57,7 @@
         "k": 1
 },
         output: 22,
-        explanation: 'Processing the input data produces the output. For input tree=[15, 5, ..., 1] (length 8), k=1, the result is 22.'
+        explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
     }
         ],
         twists: [

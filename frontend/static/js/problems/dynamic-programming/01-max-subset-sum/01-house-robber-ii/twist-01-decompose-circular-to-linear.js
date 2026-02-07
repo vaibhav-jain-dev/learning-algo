@@ -14,7 +14,7 @@
         algorithm: 'dp-max-subset',
         parent: '01-max-subset-sum/01-house-robber-ii',
         description: 'Explain precisely why the circular problem can be split into two linear House Robber subproblems. Why is max(rob[0..n-2], rob[1..n-1]) correct and complete?',
-        problem: 'Understanding the decomposition is the core insight. Many students memorize "run it twice" without understanding why this covers all cases and doesn\',
+        problem: 'Understanding the decomposition is the core insight. Many students memorize "run it twice" without understanding why this covers all cases and doesn.',
         hints: [
             'Start with the base problem solution and identify what assumption changes for this twist.',
             'Key difference from the base problem: Understanding the decomposition is the core insight. Many students memorize "run it twice" without understanding why thi',
@@ -30,23 +30,23 @@
             {
                 input: {"nums":[2,3,2]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the decompose circular to linear criteria.'
+                explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
             },
             {
                 input: {"nums":[1,2,3,1]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the decompose circular to linear criteria.'
+                explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
             },
             {
                 input: {"nums":[1,2,3]},
                 output: 0,
-                explanation: 'For this input, there are 0 valid positions that satisfy the decompose circular to linear criteria.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             },
             // Edge case
             {
                 input: {"nums":[2]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             }
         ],
         solutions: {

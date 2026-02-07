@@ -33,7 +33,7 @@
             {
                 input: {"tree":[7],"operations":["next"],"target":10},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
             }
         ],
         solutions: {

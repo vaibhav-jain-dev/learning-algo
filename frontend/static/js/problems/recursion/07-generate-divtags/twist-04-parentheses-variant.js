@@ -46,7 +46,7 @@
             {
                 input: {"raw":""},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process the input according to the core logic. Each element is examined and contributes to building the final result.'
             }
         ],
         solutions: {

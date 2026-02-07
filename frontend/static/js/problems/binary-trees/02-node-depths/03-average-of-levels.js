@@ -45,7 +45,7 @@
         }
 },
         output: [3.0, 14.5, 11.0],
-        explanation: 'Using breadth-first search, we explore level by level to find the optimal solution. For input tree={\'value\': 3, \'left\': {\'value\': 9}, \'right\': {\'value\': 20, \'left\': {\'value\': 15}, \'right\': {\'value\': 7}}}, the result is [3.0, 14.5, 11.0].'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -69,7 +69,7 @@
         }
 },
         output: [1.0, 2.5, 5.0],
-        explanation: 'Using breadth-first search, we explore level by level to find the optimal solution. For input tree={\'value\': 1, \'left\': {\'value\': 2, \'left\': {\'value\': 4}, \'right\': {\'value\': 5}}, \'right\': {\'value\': 3, \'right\': {\'value\': 6}}}, the result is [1.0, 2.5, 5.0].'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         solutions: {

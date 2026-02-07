@@ -31,18 +31,18 @@
             {
                 input: {"array":[1,3,5,2,4]},
                 output: 1,
-                explanation: ''
+                explanation: 'After sorting, process elements in order. Adjacent elements with overlapping or matching properties are grouped together. The sorted order guarantees no valid groupings are missed.'
             },
             {
                 input: {"array":[1,2,3,4]},
                 output: 0,
-                explanation: ''
+                explanation: 'The sorted arrangement reveals the structure of the solution. Scan from left to right, maintaining a running state that captures the current group or interval.'
             },
             // Edge case
             {
                 input: {"array":[5,3,1,4,2]},
                 output: 2,
-                explanation: ''
+                explanation: 'Sorting reduces the problem to a linear scan. Compare each element with the current running state and decide whether to extend, merge, or start a new group.'
             }
         ],
         solutions: {

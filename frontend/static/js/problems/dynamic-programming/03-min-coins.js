@@ -50,12 +50,12 @@
     }
         ],
         twists: [
-            { id: '03-min-coins/twist-01-greedy-fails-classic-counterexample', title: 'Greedy Fails: Classic Counterexample', difficulty: 'Medium' },
-            { id: '03-min-coins/twist-02-print-the-actual-coins-used', title: 'Print the Actual Coins Used', difficulty: 'Medium' },
-            { id: '03-min-coins/twist-03-top-down-recursive-with-memoization', title: 'Top-Down Recursive with Memoization', difficulty: 'Medium' },
-            { id: '03-min-coins/twist-04-conceptual-trap-infinity-handling', title: 'Conceptual Trap: Infinity Handling', difficulty: 'Easy' },
-            { id: '03-min-coins/twist-05-trace-the-dp-table-step-by-step', title: 'Trace the DP Table Step by Step', difficulty: 'Easy' },
-            { id: '03-min-coins/twist-06-counting-vs-optimization-duality', title: 'Counting vs Optimization Duality', difficulty: 'Medium' }
+            { id: '03-min-coins/twist-01-greedy-fails-classic-counterexample', name: 'Greedy Fails: Classic Counterexample', difficulty: 'Medium' },
+            { id: '03-min-coins/twist-02-print-the-actual-coins-used', name: 'Print the Actual Coins Used', difficulty: 'Medium' },
+            { id: '03-min-coins/twist-03-top-down-recursive-with-memoization', name: 'Top-Down Recursive with Memoization', difficulty: 'Medium' },
+            { id: '03-min-coins/twist-04-conceptual-trap-infinity-handling', name: 'Conceptual Trap: Infinity Handling', difficulty: 'Easy' },
+            { id: '03-min-coins/twist-05-trace-the-dp-table-step-by-step', name: 'Trace the DP Table Step by Step', difficulty: 'Easy' },
+            { id: '03-min-coins/twist-06-counting-vs-optimization-duality', name: 'Counting vs Optimization Duality', difficulty: 'Medium' }
         ],
         similar: [
     { id: '03-min-coins/03-min-coins/01-perfect-squares', name: 'Perfect Squares', difficulty: 'Medium' },

@@ -16,7 +16,7 @@
         description: 'Same problem but strings can be up to 10^5 length. Return the count modulo 10^9+7. Forces thinking about overflow handling and modular arithmetic throughout the DP, and space optimization becomes essential.',
         problem: 'Forces thinking about overflow handling and modular arithmetic throughout the DP, and space optimization becomes essential.',
         hints: [
-            'Think about how this twist differs from the standard version: Same problem but strings can be up to 10^5 length. Return the count modulo 10^9+.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Forces thinking about overflow handling and modular arithmetic throughout the DP, and space optimization becomes essential.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"s":"rabbbit","t":"rabbit"},
                 output: 3,
-                explanation: ''
+                explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
             },
             {
                 input: {"s":"aabb","t":"ab"},
                 output: 4,
-                explanation: ''
+                explanation: 'The greedy selection of minimum-weight edges, combined with cycle detection, ensures the resulting tree has the minimum total edge weight.'
             },
             // Edge case
             {
                 input: {"s":"abc","t":"xyz"},
                 output: 0,
-                explanation: ''
+                explanation: 'Each edge addition connects two previously separate components, reducing the total component count by one. Stop when all nodes are in a single component.'
             }
         ],
         solutions: {

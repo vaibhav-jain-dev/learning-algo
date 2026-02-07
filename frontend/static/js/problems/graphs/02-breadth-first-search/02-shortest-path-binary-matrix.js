@@ -12,7 +12,7 @@
         difficulty: 'Medium',
         algorithm: 'graph-bfs',
         parent: '02-breadth-first-search',
-        description: 'Given an n x n binary matrix grid, return the length of the shortest **clear path** in the matrix. If there is no clear path, return -1. A **clear path** in a binary matrix is a path from the **top-left** cell (i.e., (0, 0)) to the **bottom-right** cell (i.e., (n - 1, n - 1)) such that: - All the visited cells of the path are 0 - All the adjacent cells of the path are **8-directionally** connected (i.e., they are different and they share an edge or a corner) The **length** of a clear path is the',
+        description: 'Given an n x n binary matrix grid, return the length of the shortest **clear path** in the matrix. If there is no clear path, return -1. A **clear path** in a binary matrix is a path from the **top-left** cell (i.e., (0, 0)) to the **bottom-right** cell (i.e., (n - 1, n - 1)) such that: - All the visited cells of the path are 0 - All the adjacent cells of the path are **8-directionally** connected (i.e., they are different and they share an edge or a corner) The **length** of a clear path is the.',
         problem: 'Use Breadth-First Search to explore level by level. BFS is ideal for finding shortest paths in unweighted graphs. Use a queue to process nodes in order of distance.',
         complexity: {
             time: 'O(N^2)',
@@ -40,7 +40,7 @@
         ]
 },
         output: 2,
-        explanation: 'Using breadth-first search, we explore level by level to find the optimal solution. For input grid=[[0, 1], [1, 0]], the result is 2.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -63,7 +63,7 @@
         ]
 },
         output: 4,
-        explanation: 'Using breadth-first search, we explore level by level to find the optimal solution. For input grid=[[0, 0, 0], [1, 1, 0], [1, 1, 0]], the result is 4.'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     },
     {
         input: {
@@ -86,7 +86,7 @@
         ]
 },
         output: -1,
-        explanation: 'Using breadth-first search, we explore level by level to find the optimal solution. For input grid=[[1, 0, 0], [1, 1, 0], [1, 1, 0]], the result is -1.'
+        explanation: 'Process nodes systematically using the chosen traversal strategy. The visited set prevents infinite loops in cyclic graphs. Aggregate results across all components for the final answer.'
     }
         ],
         solutions: {

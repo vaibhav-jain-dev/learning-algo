@@ -47,7 +47,7 @@
         ]
 },
         output: 2,
-        explanation: 'Processing the input data produces the output. For input isConnected=[[1, 1, 0], [1, 1, 0], [0, 0, 1]], the result is 2.'
+        explanation: 'Process each connection/edge. For each pair, find their root representatives. If different, merge the smaller tree into the larger one (union by rank). Path compression flattens the tree on each find.'
     }
         ],
         solutions: {

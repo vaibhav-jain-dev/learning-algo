@@ -16,7 +16,7 @@
         description: 'The string s1 is circular. Find the minimum window where s2 is a subsequence, allowing wrap-around. The circular nature means windows can span the wrap-around point, requiring concatenation tricks or careful modular index handling.',
         problem: 'The circular nature means windows can span the wrap-around point, requiring concatenation tricks or careful modular index handling.',
         hints: [
-            'Think about how this twist differs from the standard version: The string s1 is circular. Find the minimum window where s2 is a subsequence, al.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'The circular nature means windows can span the wrap-around point, requiring concatenation tricks or careful modular index handling.',
             'For circular structures, consider concatenating the data with itself or using modular arithmetic.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"s1":"abcdebdde","s2":"bde"},
                 output: "bcde",
-                explanation: ''
+                explanation: 'The prefix function tells us the longest suffix of the matched portion that is also a prefix of the pattern. This allows intelligent backtracking during the text scan.'
             },
             {
                 input: {"s1":"abcdef","s2":"ace"},
                 output: "abcde",
-                explanation: ''
+                explanation: 'Precompute the failure function from the pattern. During matching, when a mismatch occurs, use the failure function to skip ahead without re-examining characters already matched.'
             },
             // Edge case
             {
                 input: {"s1":"xyz","s2":"abc"},
                 output: "",
-                explanation: ''
+                explanation: 'The combined preprocessing and matching phases ensure each character in the text is examined at most twice, achieving linear time complexity.'
             }
         ],
         solutions: {

@@ -44,7 +44,7 @@
         ]
 },
         output: [2, 3],
-        explanation: 'Processing the input data produces the output. For input edges=[[1, 2], [1, 3], [2, 3]], the result is [2, 3].'
+        explanation: 'Process each connection/edge. For each pair, find their root representatives. If different, merge the smaller tree into the larger one (union by rank). Path compression flattens the tree on each find.'
     }
         ],
         solutions: {

@@ -30,13 +30,13 @@
             {
                 input: {"n":4,"flights":[[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]],"src":0,"dst":3,"k":3},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the bidirectional flights criteria.'
+                explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
             },
             // Edge case
             {
                 input: {"n":0,"flights":[[0,1,100]],"src":0,"dst":0,"k":3},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
             }
         ],
         solutions: {

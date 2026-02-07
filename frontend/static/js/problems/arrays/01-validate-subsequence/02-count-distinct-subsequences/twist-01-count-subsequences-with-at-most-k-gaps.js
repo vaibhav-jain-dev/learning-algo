@@ -16,7 +16,7 @@
         description: 'Count distinct subsequences of s that equal t, but consecutive matched characters must have at most k characters between them in s. Adds a gap constraint that requires tracking the last matched position in the DP state, changing from 2D to 3D DP.',
         problem: 'Adds a gap constraint that requires tracking the last matched position in the DP state, changing from 2D to 3D DP.',
         hints: [
-            'Think about how this twist differs from the standard version: Count distinct subsequences of s that equal t, but consecutive matched character.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Adds a gap constraint that requires tracking the last matched position in the DP state, changing from 2D to 3D DP.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"s":"rabbbit","t":"rabbit"},
                 output: 3,
-                explanation: ''
+                explanation: 'Position the two pointers at the strategic starting locations. Advance each based on the comparison with the target. The pointers converge on the solution without revisiting elements.'
             },
             {
                 input: {"s":"aabb","t":"ab"},
                 output: 4,
-                explanation: ''
+                explanation: 'Each pointer moves in one direction only (or at most n steps total). The invariant ensures that no valid solution is skipped, while the single-pass approach gives O(n) time.'
             },
             // Edge case
             {
                 input: {"s":"abc","t":"xyz"},
                 output: 0,
-                explanation: ''
+                explanation: 'The pointer movement rules ensure systematic coverage. When pointers meet or cross, the traversal is complete and all candidates have been considered.'
             }
         ],
         solutions: {

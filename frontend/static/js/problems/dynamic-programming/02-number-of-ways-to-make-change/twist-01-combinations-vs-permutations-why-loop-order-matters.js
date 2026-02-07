@@ -14,14 +14,12 @@
         algorithm: 'dp-coin-change',
         parent: '02-number-of-ways-to-make-change',
         description: 'The outer loop iterates over coins and the inner loop over amounts. What happens if you swap the loop order? Explain the difference and what each version counts.',
-        problem: 'This is one of the most subtle distinctions in DP. Outer coins = combinations (order doesn\',
+        problem: 'This is one of the most subtle distinctions in DP. Outer coins = combinations (order doesn.',
         hints: [
-            'Start with the base problem solution and identify what assumption changes for this twist.',
-            'Key difference from the base problem: This is one of the most subtle distinctions in DP. Outer coins = combinations (order doesn\',
-            ',
-            ',
-            ',
-            '
+            'When the outer loop iterates over coins and the inner loop over amounts, each coin is considered once per amount, preventing duplicate orderings.',
+            'Swapping the loops so amounts are outer and coins are inner means for each amount you reconsider all coins, allowing different orderings like (1,5) and (5,1).',
+            'Outer coins loop counts combinations (unordered sets), while outer amounts loop counts permutations (ordered sequences).',
+            'Test with amount=6 and coins=[1,5]: combinations gives 2 ways, while permutations gives 3 ways because it treats (1,5) and (5,1) as distinct.'
         ],
         complexity: {
             time: 'O(n^2)',
@@ -48,7 +46,7 @@
             {
                 input: {"n":0,"denoms":[1]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Small input edge case demonstrating loop order impact on counting combinations vs permutations.'
             }
         ],
         solutions: {

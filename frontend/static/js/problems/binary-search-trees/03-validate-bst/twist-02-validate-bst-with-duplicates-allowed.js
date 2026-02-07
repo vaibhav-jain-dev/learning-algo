@@ -38,7 +38,7 @@
             {
                 input: {"tree":[10]},
                 output: false,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
             }
         ],
         solutions: {

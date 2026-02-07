@@ -30,23 +30,23 @@
             {
                 input: {"array":[5,7,-24,12,10,2,3,12,5,6,35]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the longest decreasing subsequence criteria.'
+                explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
             },
             {
                 input: {"array":[10,9,2,5,3,7,101,18]},
                 output: 3,
-                explanation: 'For this input, there are 3 valid positions that satisfy the longest decreasing subsequence criteria.'
+                explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
             },
             {
                 input: {"array":[0,1,0,3,2,3]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the longest decreasing subsequence criteria.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             },
             // Edge case
             {
                 input: {"array":[5]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             }
         ],
         solutions: {

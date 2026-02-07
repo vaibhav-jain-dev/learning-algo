@@ -16,7 +16,7 @@
         description: 'Find the LCS of three strings simultaneously instead of two. Extends the 2D DP table to 3D, significantly increasing complexity and requiring careful index management across three dimensions.',
         problem: 'Extends the 2D DP table to 3D, significantly increasing complexity and requiring careful index management across three dimensions.',
         hints: [
-            'Think about how this twist differs from the standard version: Find the LCS of three strings simultaneously instead of two..',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Extends the 2D DP table to 3D, significantly increasing complexity and requiring careful index management across three dimensions.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"text1":"abcde","text2":"ace"},
                 output: 3,
-                explanation: ''
+                explanation: 'The prefix function tells us the longest suffix of the matched portion that is also a prefix of the pattern. This allows intelligent backtracking during the text scan.'
             },
             {
                 input: {"text1":"abc","text2":"def"},
                 output: 0,
-                explanation: ''
+                explanation: 'Precompute the failure function from the pattern. During matching, when a mismatch occurs, use the failure function to skip ahead without re-examining characters already matched.'
             },
             // Edge case
             {
                 input: {"text1":"abcba","text2":"abcba"},
                 output: 5,
-                explanation: ''
+                explanation: 'The combined preprocessing and matching phases ensure each character in the text is examined at most twice, achieving linear time complexity.'
             }
         ],
         solutions: {

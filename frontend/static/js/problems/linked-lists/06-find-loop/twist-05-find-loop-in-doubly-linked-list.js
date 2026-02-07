@@ -14,7 +14,7 @@
         algorithm: 'll-find-loop',
         parent: '06-find-loop',
         description: 'The list is doubly linked (each node has both next and prev). Detect if there is a cycle in the next pointers and find its origin.',
-        problem: 'The prev pointers can create inconsistencies: if node A.next = B but B.prev != A, there may be structural corruption. Floyd\',
+        problem: 'The prev pointers can create inconsistencies: if node A.next = B but B.prev != A, there may be structural corruption. Floyd.',
         hints: [
             'The list is doubly linked (each node has both next and prev)',
             'The prev pointers can create inconsistencies: if node A.next = B but B.prev != A, there may be structural corruption',
@@ -30,7 +30,7 @@
             {
                 input: {"list":[1,2,3,4,5]},
                 output: [1,2,3,4,5],
-                explanation: ''
+                explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
             }
         ],
         solutions: {

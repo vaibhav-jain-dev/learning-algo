@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'recursion-permutations',
         description: 'Write a function that takes in an array of unique integers and returns an array of all permutations of those integers in no particular order. If the input array is empty, the function should return an empty array.',
+        problem: 'Break the problem into smaller subproblems recursively. Define clear base cases and recursive cases. At each step, assume the recursive call returns the correct result for smaller inputs, and combine them. This achieves O(n! * n) time with O(n) space.',
+        hints: [
+            'Define your base case clearly. When should the recursion stop?',
+            'For the recursive case, assume the function works for smaller inputs. How do you use that?',
+            'Think about whether you need to pass additional state through parameters.',
+            'Consider memoization if the same subproblems are being computed multiple times.'
+        ],
+
         complexity: {
             time: 'O(n! * n)',
             space: 'O(n)'

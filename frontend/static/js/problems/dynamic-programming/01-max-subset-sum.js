@@ -40,12 +40,12 @@
     }
         ],
         twists: [
-            { id: '01-max-subset-sum/twist-01-write-the-recurrence-from-scratch', title: 'Write the Recurrence from Scratch', difficulty: 'Easy' },
-            { id: '01-max-subset-sum/twist-02-space-optimization-on-to-o1', title: 'Space Optimization: O(n) to O(1)', difficulty: 'Easy' },
-            { id: '01-max-subset-sum/twist-03-print-the-actual-selected-elements', title: 'Print the Actual Selected Elements', difficulty: 'Medium' },
-            { id: '01-max-subset-sum/twist-04-greedy-fails-here-prove-it', title: 'Greedy Fails Here - Prove It', difficulty: 'Medium' },
-            { id: '01-max-subset-sum/twist-05-trace-the-dp-table', title: 'Trace the DP Table', difficulty: 'Easy' },
-            { id: '01-max-subset-sum/twist-06-circular-variant', title: 'Circular Variant', difficulty: 'Hard' }
+            { id: '01-max-subset-sum/twist-01-write-the-recurrence-from-scratch', name: 'Write the Recurrence from Scratch', difficulty: 'Easy' },
+            { id: '01-max-subset-sum/twist-02-space-optimization-on-to-o1', name: 'Space Optimization: O(n) to O(1)', difficulty: 'Easy' },
+            { id: '01-max-subset-sum/twist-03-print-the-actual-selected-elements', name: 'Print the Actual Selected Elements', difficulty: 'Medium' },
+            { id: '01-max-subset-sum/twist-04-greedy-fails-here-prove-it', name: 'Greedy Fails Here - Prove It', difficulty: 'Medium' },
+            { id: '01-max-subset-sum/twist-05-trace-the-dp-table', name: 'Trace the DP Table', difficulty: 'Easy' },
+            { id: '01-max-subset-sum/twist-06-circular-variant', name: 'Circular Variant', difficulty: 'Hard' }
         ],
         similar: [
     { id: '01-max-subset-sum/01-house-robber-ii', name: 'House Robber II', difficulty: 'Medium' },

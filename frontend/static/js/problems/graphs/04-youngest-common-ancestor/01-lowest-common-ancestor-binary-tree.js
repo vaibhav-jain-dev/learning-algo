@@ -13,6 +13,7 @@
         algorithm: 'graph-ancestor',
         parent: '04-youngest-common-ancestor',
         description: 'Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree. According to the definition of LCA: "The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself)."',
+        problem: 'Use recursion to solve the problem for each subtree, then combine results at each node. The base case handles null nodes. Each node is visited once, giving O(N) time with O(H) space for the recursion stack.',
         complexity: {
             time: 'O(N)',
             space: 'O(H)'
@@ -44,7 +45,7 @@
         "q": 1
 },
         output: 3,
-        explanation: 'Exploring the graph structure, we find the required path or value. For input root=[3, 5, ..., 4] (length 11), p=5, q=1, the result is 3.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -65,7 +66,7 @@
         "q": 4
 },
         output: 5,
-        explanation: 'Exploring the graph structure, we find the required path or value. For input root=[3, 5, ..., 4] (length 11), p=5, q=4, the result is 5.'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         solutions: {

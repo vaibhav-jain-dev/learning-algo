@@ -39,7 +39,7 @@
         ]
 },
         output: [1, 2, 5],
-        explanation: 'Processing the input data produces the output. For input list=[1, 2, ..., 5] (length 7), the result is [1, 2, 5].'
+        explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
     },
     {
         input: {
@@ -52,7 +52,7 @@
         ]
 },
         output: [2, 3],
-        explanation: 'Processing the input data produces the output. For input list=[1, 1, 1, 2, 3], the result is [2, 3].'
+        explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
     },
     {
         input: {
@@ -64,7 +64,7 @@
         ]
 },
         output: [],
-        explanation: 'Processing the input data produces the output. For input list=[1, 1, 2, 2], the result is [].'
+        explanation: 'The single-pass traversal examines each node once. By the time we reach the relevant position, we have enough information to produce the correct result.'
     }
         ],
         solutions: {

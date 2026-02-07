@@ -12,7 +12,7 @@
         difficulty: 'Medium',
         algorithm: 'll-construction',
         parent: '03-linked-list-construction',
-        description: 'A linked list of length n is given such that each node contains an additional **random pointer**, which could point to any node in the list, or null. Construct a **deep copy** of the list. The deep copy should consist of exactly n brand new nodes, where each new node has its value set to the value of its corresponding original node. Both the next and random pointer of the new nodes should point to new nodes in the copied list such that the pointers in the original list and copied list represent ',
+        description: 'A linked list of length n is given such that each node contains an additional **random pointer**, which could point to any node in the list, or null. Construct a **deep copy** of the list. The deep copy should consist of exactly n brand new nodes, where each new node has its value set to the value of its corresponding original node. Both the next and random pointer of the new nodes should point to new nodes in the copied list such that the pointers in the original list and copied list represent .',
         problem: 'Reverse links by maintaining three pointers: prev, curr, next. For each node, save next, point curr to prev, then advance. Handle edge cases for empty or single-node lists.',
         complexity: {
             time: 'O(n)',
@@ -52,7 +52,7 @@
         ]
 },
         output: [[7, null], [13, 0], [11, 4], [10, 2], [1, 0]],
-        explanation: 'Processing the input data produces the output. For input nodes=[[7, None], [13, 0], [11, 4], [10, 2], [1, 0]], the result is [[7, None], [13, 0], [11, 4], [10, 2], [1, 0]].'
+        explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
     },
     {
         input: {
@@ -68,7 +68,7 @@
         ]
 },
         output: [[1, 1], [2, 1]],
-        explanation: 'Processing the input data produces the output. For input nodes=[[1, 1], [2, 1]], the result is [[1, 1], [2, 1]].'
+        explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
     },
     {
         input: {
@@ -88,7 +88,7 @@
         ]
 },
         output: [[3, null], [3, 0], [3, null]],
-        explanation: 'Processing the input data produces the output. For input nodes=[[3, None], [3, 0], [3, None]], the result is [[3, None], [3, 0], [3, None]].'
+        explanation: 'The single-pass traversal examines each node once. By the time we reach the relevant position, we have enough information to produce the correct result.'
     }
         ],
         solutions: {

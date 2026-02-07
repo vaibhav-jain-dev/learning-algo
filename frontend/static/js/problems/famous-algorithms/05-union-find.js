@@ -11,7 +11,15 @@
         name: 'Disjoint Set Union',
         difficulty: 'Medium',
         algorithm: 'union-find',
-        description: 'Implement a Union-Find data structure (also known as Disjoint Set Union or DSU) that supports the following operations: 1. **Find(x)**: Determine which set element x belongs to (returns the representative/root) 2. **Union(x, y)**: Merge the sets containing elements x and y The data structure should be optimized with: - **Path Compression**: Flatten the tree during Find operations - **Union by Rank/Size**: Always attach the smaller tree under the larger one',
+        description: 'Implement a Union-Find data structure (also known as Disjoint Set Union or DSU) that supports the following operations: 1. **Find(x)**: Determine which set element x belongs to (returns the representative/root) 2. **Union(x, y)**: Merge the sets containing elements x and y The data structure should be optimized with: - **Path Compression**: Flatten the tree during Find operations - **Union by Rank/Size**: Always attach the smaller tree under the larger one.',
+        problem: 'Use a Union-Find (Disjoint Set Union) data structure to efficiently track connected components. Union by rank and path compression ensure near-constant time operations. This achieves O(alpha(n)) time with O(n) space.',
+        hints: [
+            'Union-Find efficiently tracks connected components with near-O(1) operations.',
+            'Think about what "connected" means in the context of this problem.',
+            'Path compression and union by rank are key optimizations.',
+            'Consider what additional information you need to track per component (size, max, etc.).'
+        ],
+
         complexity: {
             time: 'O(alpha(n))',
             space: 'O(n)'
@@ -29,7 +37,7 @@
         ]
 },
         output: {"disjointSets": 2, "find03": true, "find04": false},
-        explanation: 'Processing the input data produces the output. For input n=5, operations=[union(0,1), union(2,3), union(1,3), find(0)==find(3)?, find(0)==find(4)?], the result is {\'disjointSets\': 2, \'find03\': True, \'find04\': False}.'
+        explanation: 'Process each connection/edge. For each pair, find their root representatives. If different, merge the smaller tree into the larger one (union by rank). Path compression flattens the tree on each find.'
     }
         ],
         twists: [

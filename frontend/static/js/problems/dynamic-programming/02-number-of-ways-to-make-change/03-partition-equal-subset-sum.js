@@ -36,7 +36,7 @@
         ]
 },
         output: true,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input nums=[1, 5, 11, 5], the result is true.'
+        explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
     },
     {
         input: {
@@ -48,7 +48,7 @@
         ]
 },
         output: false,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input nums=[1, 2, 3, 5], the result is false.'
+        explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
     }
         ],
         solutions: {
@@ -136,11 +136,11 @@ func main() {
 }`
         },
         twists: [
-            { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-01-early-exit-odd-sum-check', title: 'Early Exit: Odd Sum Check', difficulty: 'Easy' },
-            { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-02-count-the-number-of-valid-partitions', title: 'Count the Number of Valid Partitions', difficulty: 'Hard' },
-            { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-03-print-the-actual-partition', title: 'Print the Actual Partition', difficulty: 'Medium' },
-            { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-04-greedy-fails-construct-a-counterexample', title: 'Greedy Fails: Construct a Counterexample', difficulty: 'Medium' },
-            { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-05-bitset-optimization', title: 'Bitset Optimization', difficulty: 'Very Hard' }
+            { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-01-early-exit-odd-sum-check', name: 'Early Exit: Odd Sum Check', difficulty: 'Easy' },
+            { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-02-count-the-number-of-valid-partitions', name: 'Count the Number of Valid Partitions', difficulty: 'Hard' },
+            { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-03-print-the-actual-partition', name: 'Print the Actual Partition', difficulty: 'Medium' },
+            { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-04-greedy-fails-construct-a-counterexample', name: 'Greedy Fails: Construct a Counterexample', difficulty: 'Medium' },
+            { id: '02-number-of-ways-to-make-change/03-partition-equal-subset-sum/twist-05-bitset-optimization', name: 'Bitset Optimization', difficulty: 'Very Hard' }
         ],
         similar: [
 

@@ -12,6 +12,14 @@
         difficulty: 'Hard',
         algorithm: 'tree-max-path',
         description: 'Write a function that takes in a Binary Tree and returns its max path sum. A path is a collection of connected nodes in a tree, where no node is connected to more than two other nodes. A path sum is the sum of the values of the nodes in a particular path. The path doesn\'t necessarily need to pass through the root, and it can start and end at any node. The path must contain at least one node.',
+        problem: 'Use recursion to solve the problem for each subtree, then combine results at each node. The base case handles null nodes. Each node is visited once, giving O(n) time with O(h) space for the recursion stack.',
+        hints: [
+            'Think recursively: solve the problem for the left and right subtrees, then combine results.',
+            'What information does each node need from its children to compute its result?',
+            'Consider whether you need a top-down (preorder) or bottom-up (postorder) approach.',
+            'Base case: what should happen when you reach a null/empty node?'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(h)'
@@ -42,7 +50,7 @@
         }
 },
         output: 18,
-        explanation: 'Traversing the tree structure, we process nodes to compute the result. For input tree={\'value\': 1, \'left\': {\'value\': 2, \'left\': {\'value\': 4}, \'right\': {\'value\': 5}}, \'right\': {\'value\': 3, \'left\': {\'value\': 6}, \'right\': {\'value\': 7}}}, the result is 18.'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     },
     {
         input: {
@@ -63,7 +71,7 @@
         }
 },
         output: 42,
-        explanation: 'Traversing the tree structure, we process nodes to compute the result. For input tree={\'value\': -10, \'left\': {\'value\': 9}, \'right\': {\'value\': 20, \'left\': {\'value\': 15}, \'right\': {\'value\': 7}}}, the result is 42.'
+        explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
     }
         ],
         twists: [

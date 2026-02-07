@@ -39,7 +39,7 @@
         "right": 4
 },
         output: [1, 4, 3, 2, 5],
-        explanation: 'Processing the input data produces the output. For input list=[1, 2, 3, 4, 5], left=2, right=4, the result is [1, 4, 3, 2, 5].'
+        explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
     },
     {
         input: {
@@ -50,7 +50,7 @@
         "right": 1
 },
         output: [5],
-        explanation: 'Processing the input data produces the output. For input list=[5], left=1, right=1, the result is [5].'
+        explanation: 'The single-pass traversal examines each node once. By the time we reach the relevant position, we have enough information to produce the correct result.'
     },
     {
         input: {
@@ -65,7 +65,7 @@
         "right": 5
 },
         output: [5, 4, 3, 2, 1],
-        explanation: 'Processing the input data produces the output. For input list=[1, 2, 3, 4, 5], left=1, right=5, the result is [5, 4, 3, 2, 1].'
+        explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
     },
     {
         input: {
@@ -80,7 +80,7 @@
         "right": 4
 },
         output: [1, 2, 4, 3, 5],
-        explanation: 'Processing the input data produces the output. For input list=[1, 2, 3, 4, 5], left=3, right=4, the result is [1, 2, 4, 3, 5].'
+        explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
     }
         ],
         solutions: {

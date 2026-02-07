@@ -30,13 +30,13 @@
             {
                 input: {"nums":[-2,1,-3,4,-1,2,1,-5,4]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the alternative data structure approach criteria.'
+                explanation: 'The running maximum at each index represents the best subarray ending at that position. A negative running sum is never worth carrying forward.'
             },
             // Edge case
             {
                 input: {"nums":[-2]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Maintain a running sum as you scan. At each position, choose to either extend the current subarray or start fresh. Track the global maximum across all positions.'
             }
         ],
         solutions: {

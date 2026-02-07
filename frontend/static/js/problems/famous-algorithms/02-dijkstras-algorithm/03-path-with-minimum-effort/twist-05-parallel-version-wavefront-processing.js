@@ -30,13 +30,13 @@
             {
                 input: {"heights":[[1,2,2],[3,8,2],[5,3,5]]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the parallel version wavefront processing criteria.'
+                explanation: 'The priority queue ensures we always process the nearest unvisited node. When a node is dequeued, its shortest distance is finalized. Neighbors are updated if a shorter path is found.'
             },
             // Edge case
             {
                 input: {"heights":[[1,2,2]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
             }
         ],
         solutions: {

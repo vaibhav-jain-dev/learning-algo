@@ -12,6 +12,14 @@
         difficulty: 'Very',
         algorithm: 'bst-augmented',
         description: 'Write a function that takes in an array of integers and returns an array of the same length, where each element in the output array corresponds to the number of integers in the input array that are to the right of the relevant index and that are strictly smaller than the integer at that index. In other words, for each index i, find the count of elements array[j] where j > i and array[j] < array[i].',
+        problem: 'Leverage the BST property (left < root < right) to guide your decisions. At each node, the ordering property tells you which subtree to explore or how to restructure. This achieves O(n log n) average, O(n^2) worst time with O(n) space.',
+        hints: [
+            'The BST property means left < root < right. Use this to guide your search direction.',
+            'Think about which traversal order (inorder, preorder, postorder) best suits this problem.',
+            'Consider how the height of the tree affects your algorithm\'s complexity.',
+            'For balanced BSTs, operations are O(log n). What happens with skewed trees?'
+        ],
+
         complexity: {
             time: 'O(n log n) average, O(n^2) worst',
             space: 'O(n)'
@@ -30,7 +38,7 @@
         ]
 },
         output: [5, 4, 4, 0, 1, 1, 0],
-        explanation: 'Processing the input data produces the output. For input array=[8, 5, ..., 2] (length 7), the result is [5, ..., 0] (length 7).'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     },
     {
         input: {
@@ -43,7 +51,7 @@
         ]
 },
         output: [0, 0, 0, 0, 0],
-        explanation: 'Processing the input data produces the output. For input array=[1, 2, 3, 4, 5], the result is [0, 0, 0, 0, 0].'
+        explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
     }
         ],
         twists: [

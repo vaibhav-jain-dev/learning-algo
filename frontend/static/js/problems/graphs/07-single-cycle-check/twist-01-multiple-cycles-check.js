@@ -46,7 +46,7 @@
             {
                 input: {"array":[2],"k":3},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
             }
         ],
         solutions: {

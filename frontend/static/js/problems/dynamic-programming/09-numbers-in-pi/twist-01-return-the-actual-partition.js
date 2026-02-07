@@ -30,23 +30,23 @@
             {
                 input: {"pi":"3141592653589793238462643383279","numbers":["314159265358979323846","26433","8","3279","314159265","35897932384626433832","79"]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the return the actual partition criteria.'
+                explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
             },
             {
                 input: {"pi":"314159","numbers":["314","159","3141","59"]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the return the actual partition criteria.'
+                explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
             },
             {
                 input: {"pi":"123456","numbers":["12","34","56"]},
                 output: 0,
-                explanation: 'For this input, there are 0 valid positions that satisfy the return the actual partition criteria.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             },
             // Edge case
             {
                 input: {"pi":"","numbers":["314159265358979323846"]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             }
         ],
         solutions: {

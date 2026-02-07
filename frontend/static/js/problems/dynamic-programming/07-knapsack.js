@@ -12,6 +12,14 @@
         difficulty: 'Hard',
         algorithm: 'dp-knapsack',
         description: 'You are given an array of items where each item has a weight and a value, and a knapsack with a maximum weight capacity. Write a function that returns the maximum value that can be obtained by selecting items to put in the knapsack without exceeding its capacity. Each item can only be selected once (0/1 property). Also return the indices of the items that achieve this maximum value.',
+        problem: 'Build the solution using dynamic programming. Define the state, establish the base cases, and derive the recurrence relation. Fill in the DP table bottom-up (or use memoized recursion top-down). This achieves O(n * capacity) time with O(n * capacity) space.',
+        hints: [
+            'Identify the subproblems: what decisions do you need to make at each step?',
+            'Define your DP state clearly. What parameters uniquely identify a subproblem?',
+            'Write the recurrence relation: how does the current state relate to previous states?',
+            'Consider whether you can optimize space by only keeping the last row/column of the DP table.'
+        ],
+
         complexity: {
             time: 'O(n * capacity)',
             space: 'O(n * capacity)'
@@ -40,7 +48,7 @@
         "capacity": 10
 },
         output: [10, [1, 3]],
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input items=[[1, 2], [4, 3], [5, 6], [6, 7]], capacity=10, the result is [10, [1, 3]].'
+        explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
     },
     {
         input: {
@@ -61,7 +69,7 @@
         "capacity": 50
 },
         output: [220, [1, 2]],
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input items=[[60, 10], [100, 20], [120, 30]], capacity=50, the result is [220, [1, 2]].'
+        explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
     },
     {
         input: {
@@ -86,15 +94,15 @@
         "capacity": 10
 },
         output: [90, [1, 3]],
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input items=[[10, 5], [40, 4], [30, 6], [50, 3]], capacity=10, the result is [90, [1, 3]].'
+        explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
     }
         ],
         twists: [
-            { id: '07-knapsack/twist-01-unbounded-knapsack', title: 'Unbounded Knapsack', difficulty: 'Medium' },
-            { id: '07-knapsack/twist-02-fractional-knapsack', title: 'Fractional Knapsack', difficulty: 'Easy' },
-            { id: '07-knapsack/twist-03-knapsack-with-exact-capacity', title: 'Knapsack With Exact Capacity', difficulty: 'Hard' },
-            { id: '07-knapsack/twist-04-two-knapsack-problem', title: 'Two-Knapsack Problem', difficulty: 'Very Hard' },
-            { id: '07-knapsack/twist-05-knapsack-with-item-dependencies', title: 'Knapsack With Item Dependencies', difficulty: 'Very Hard' }
+            { id: '07-knapsack/twist-01-unbounded-knapsack', name: 'Unbounded Knapsack', difficulty: 'Medium' },
+            { id: '07-knapsack/twist-02-fractional-knapsack', name: 'Fractional Knapsack', difficulty: 'Easy' },
+            { id: '07-knapsack/twist-03-knapsack-with-exact-capacity', name: 'Knapsack With Exact Capacity', difficulty: 'Hard' },
+            { id: '07-knapsack/twist-04-two-knapsack-problem', name: 'Two-Knapsack Problem', difficulty: 'Very Hard' },
+            { id: '07-knapsack/twist-05-knapsack-with-item-dependencies', name: 'Knapsack With Item Dependencies', difficulty: 'Very Hard' }
         ],
         similar: [
 

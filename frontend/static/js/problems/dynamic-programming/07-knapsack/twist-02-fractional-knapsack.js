@@ -30,23 +30,23 @@
             {
                 input: {"items":[[1,2],[4,3],[5,6],[6,7]],"capacity":10},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the fractional knapsack criteria.'
+                explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
             },
             {
                 input: {"items":[[60,10],[100,20],[120,30]],"capacity":50},
                 output: 3,
-                explanation: 'For this input, there are 3 valid positions that satisfy the fractional knapsack criteria.'
+                explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
             },
             {
                 input: {"items":[[10,5],[40,4],[30,6],[50,3]],"capacity":10},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the fractional knapsack criteria.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             },
             // Edge case
             {
                 input: {"items":[[1,2]],"capacity":0},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             }
         ],
         solutions: {

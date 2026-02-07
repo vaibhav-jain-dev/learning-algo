@@ -13,6 +13,7 @@
         algorithm: 'll-reverse',
         parent: '07-reverse-linked-list',
         description: 'Given the head of a linked list, reverse the nodes of the list k at a time, and return the modified list. k is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of k, the left-out nodes at the end should remain as they are. You may not alter the values in the list\'s nodes, only nodes themselves may be changed.',
+        problem: 'Traverse the linked list with appropriate pointer management. Keep track of previous, current, and next nodes as needed. Be careful to update pointers in the correct order to avoid losing references. This achieves O(n) time with O(1) space.',
         complexity: {
             time: 'O(n)',
             space: 'O(1)'
@@ -37,7 +38,7 @@
         "k": 2
 },
         output: [2, 1, 4, 3, 5],
-        explanation: 'Processing the input data produces the output. For input list=[1, 2, 3, 4, 5], k=2, the result is [2, 1, 4, 3, 5].'
+        explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
     },
     {
         input: {
@@ -51,7 +52,7 @@
         "k": 3
 },
         output: [3, 2, 1, 4, 5],
-        explanation: 'Processing the input data produces the output. For input list=[1, 2, 3, 4, 5], k=3, the result is [3, 2, 1, 4, 5].'
+        explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
     },
     {
         input: {
@@ -68,7 +69,7 @@
         "k": 3
 },
         output: [3, 2, 1, 6, 5, 4, 7, 8],
-        explanation: 'Processing the input data produces the output. For input list=[1, 2, ..., 8] (length 8), k=3, the result is [3, ..., 8] (length 8).'
+        explanation: 'The single-pass traversal examines each node once. By the time we reach the relevant position, we have enough information to produce the correct result.'
     }
         ],
         solutions: {

@@ -30,12 +30,12 @@
             {
                 input: {"string":"noonabbad"},
                 output: "result",
-                explanation: 'The resulting string is "result".'
+                explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
             },
             {
                 input: {"string":"aab"},
                 output: "output",
-                explanation: 'The resulting string is "output".'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             },
             {
                 input: {"string":"aba"},
@@ -45,13 +45,13 @@
             {
                 input: {"string":"abcde"},
                 output: "result",
-                explanation: 'The resulting string is "result".'
+                explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
             },
             // Edge case
             {
                 input: {"string":""},
                 output: "",
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             }
         ],
         solutions: {

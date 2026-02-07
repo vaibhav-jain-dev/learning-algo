@@ -12,7 +12,7 @@
         difficulty: 'Medium',
         algorithm: 'bst-iterator',
         parent: '02-bst-construction',
-        description: 'Implement the BSTIterator class that represents an iterator over the **in-order traversal** of a binary search tree (BST): - BSTIterator(TreeNode root) Initializes an object with the root of the BST. - int next() Returns the next smallest number in the BST. You may assume next() calls will always be valid. - boolean hasNext() Returns true if there exists a number in the traversal to the right of the pointer, otherwise returns false. The pointer should be initialized to a non-existent number smal',
+        description: 'Implement the BSTIterator class that represents an iterator over the **in-order traversal** of a binary search tree (BST): - BSTIterator(TreeNode root) Initializes an object with the root of the BST. - int next() Returns the next smallest number in the BST. You may assume next() calls will always be valid. - boolean hasNext() Returns true if there exists a number in the traversal to the right of the pointer, otherwise returns false. The pointer should be initialized to a non-existent number smal.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
         complexity: {
             time: 'O(1) amortized for next(), O(1) for hasNext()',
@@ -39,7 +39,7 @@
         ]
 },
         output: [3, 7, 9, 15, 20],
-        explanation: 'Processing the input data produces the output. For input tree=[7, 3, ..., 20] (length 7), the result is [3, 7, 9, 15, 20].'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     }
         ],
         solutions: {

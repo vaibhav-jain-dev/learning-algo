@@ -16,7 +16,7 @@
         description: 'Given a matrix where each row is sorted, pick one element from each of exactly three different rows so they sum to target. List all unique triplets. The elements come from different rows, so you cannot sort a single array. Requires combining row-wise two-pointer with cross-row iteration.',
         problem: 'The elements come from different rows, so you cannot sort a single array. Requires combining row-wise two-pointer with cross-row iteration.',
         hints: [
-            'Think about how this twist differs from the standard version: Given a matrix where each row is sorted, pick one element from each of exactly t.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'The elements come from different rows, so you cannot sort a single array. Requires combining row-wise two-pointer with cross-row iteration.',
             'Sorting the input first may simplify the problem significantly.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"nums":[-1,2,1,-4],"target":1},
                 output: 2,
-                explanation: ''
+                explanation: 'After sorting, process elements in order. Adjacent elements with overlapping or matching properties are grouped together. The sorted order guarantees no valid groupings are missed.'
             },
             {
                 input: {"nums":[0,0,0],"target":1},
                 output: 0,
-                explanation: ''
+                explanation: 'The sorted arrangement reveals the structure of the solution. Scan from left to right, maintaining a running state that captures the current group or interval.'
             },
             // Edge case
             {
                 input: {"nums":[1,2,3,4,5],"target":10},
                 output: 10,
-                explanation: ''
+                explanation: 'Sorting reduces the problem to a linear scan. Compare each element with the current running state and decide whether to extend, merge, or start a new group.'
             }
         ],
         solutions: {

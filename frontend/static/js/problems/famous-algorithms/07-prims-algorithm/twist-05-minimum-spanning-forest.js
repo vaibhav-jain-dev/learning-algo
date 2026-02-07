@@ -14,7 +14,7 @@
         algorithm: 'prims-algorithm',
         parent: '07-prims-algorithm',
         description: 'If the graph is disconnected, find the minimum spanning forest (MST for each connected component).',
-        problem: 'Prim\',
+        problem: 'Prim.',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
@@ -30,13 +30,13 @@
             {
                 input: {"V":5,"edges":[[0,1,2],[0,3,6],[1,2,3],[1,3,8],[1,4,5],[2,4,7],[3,4,9]]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the minimum spanning forest criteria.'
+                explanation: 'The greedy selection of minimum-weight edges, combined with cycle detection, ensures the resulting tree has the minimum total edge weight.'
             },
             // Edge case
             {
                 input: {"V":0,"edges":[[0,1,2]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
             }
         ],
         solutions: {

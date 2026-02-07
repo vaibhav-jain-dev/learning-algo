@@ -52,7 +52,7 @@
         ]
 },
         output: 20,
-        explanation: 'Traversing the tree structure, we process nodes to compute the result. For input points=[[0, 0], [2, 2], [3, 10], [5, 2], [7, 0]], the result is 20.'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     }
         ],
         solutions: {

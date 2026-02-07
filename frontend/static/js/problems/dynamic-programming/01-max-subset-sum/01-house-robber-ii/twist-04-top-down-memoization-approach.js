@@ -30,23 +30,23 @@
             {
                 input: {"nums":[2,3,2]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the top down memoization approach criteria.'
+                explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
             },
             {
                 input: {"nums":[1,2,3,1]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the top down memoization approach criteria.'
+                explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
             },
             {
                 input: {"nums":[1,2,3]},
                 output: 0,
-                explanation: 'For this input, there are 0 valid positions that satisfy the top down memoization approach criteria.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             },
             // Edge case
             {
                 input: {"nums":[2]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             }
         ],
         solutions: {

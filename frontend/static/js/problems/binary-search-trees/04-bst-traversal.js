@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'bst-traversal',
         description: 'Write three functions that take in a Binary Search Tree (BST) and an empty array, traverse the BST, add its nodes\' values to the input array, and return that array. The three functions should traverse the BST using the in-order, pre-order, and post-order tree-traversal techniques, respectively.',
+        problem: 'Leverage the BST property (left < root < right) to guide your decisions. At each node, the ordering property tells you which subtree to explore or how to restructure. This achieves O(n) time with O(n) for result, O(d) for call stack space.',
+        hints: [
+            'The BST property means left < root < right. Use this to guide your search direction.',
+            'Think about which traversal order (inorder, preorder, postorder) best suits this problem.',
+            'Consider how the height of the tree affects your algorithm\'s complexity.',
+            'For balanced BSTs, operations are O(log n). What happens with skewed trees?'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(n) for result, O(d) for call stack'
@@ -31,7 +39,7 @@
         ]
 },
         output: {"inorder": [1, 2, 5, 5, 10, 15, 22], "preorder": [10, 5, 2, 1, 5, 15, 22], "postorder": [1, 2, 5, 5, 22, 15, 10]},
-        explanation: 'Processing the input data produces the output. For input tree=[10, 5, ..., 1] (length 8), the result is {\'inorder\': [1, 2, 5, 5, 10, 15, 22], \'preorder\': [10, 5, 2, 1, 5, 15, 22], \'postorder\': [1, 2, 5, 5, 22, 15, 10]}.'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     }
         ],
         twists: [

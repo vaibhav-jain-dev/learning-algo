@@ -12,7 +12,7 @@
         difficulty: 'Medium',
         algorithm: 'll-remove-kth',
         parent: '04-remove-kth-node',
-        description: 'Given the head of a singly linked list, delete the **middle node** and return the head of the modified list. The middle node of a linked list of size n is the floor(n/2)-th node from the start (0-indexed). For a list with n nodes: - If n is odd: delete the exact middle node - If n is even: delete the second of the two middle nodes',
+        description: 'Given the head of a singly linked list, delete the **middle node** and return the head of the modified list. The middle node of a linked list of size n is the floor(n/2)-th node from the start (0-indexed). For a list with n nodes: - If n is odd: delete the exact middle node - If n is even: delete the second of the two middle nodes.',
         problem: 'Reverse links by maintaining three pointers: prev, curr, next. For each node, save next, point curr to prev, then advance. Handle edge cases for empty or single-node lists.',
         complexity: {
             time: 'O(n)',
@@ -39,7 +39,7 @@
         ]
 },
         output: [1, 3, 4, 1, 2, 6],
-        explanation: 'Processing the input data produces the output. For input list=[1, 3, ..., 6] (length 7), the result is [1, ..., 6] (length 6).'
+        explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
     },
     {
         input: {
@@ -51,7 +51,7 @@
         ]
 },
         output: [1, 2, 4],
-        explanation: 'Processing the input data produces the output. For input list=[1, 2, 3, 4], the result is [1, 2, 4].'
+        explanation: 'The single-pass traversal examines each node once. By the time we reach the relevant position, we have enough information to produce the correct result.'
     },
     {
         input: {
@@ -61,7 +61,7 @@
         ]
 },
         output: [2],
-        explanation: 'Processing the input data produces the output. For input list=[2, 1], the result is [2].'
+        explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
     },
     {
         input: {
@@ -70,7 +70,7 @@
         ]
 },
         output: [],
-        explanation: 'Processing the input data produces the output. For input list=[1], the result is [].'
+        explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
     }
         ],
         solutions: {

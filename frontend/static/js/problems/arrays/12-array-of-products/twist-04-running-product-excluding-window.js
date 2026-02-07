@@ -27,23 +27,23 @@
             {
                 input: {"array":[5,1,4,2],"window_size":3},
                 output: 0,
-                explanation: 'For this input, there are 0 valid positions that satisfy the running product excluding window criteria.'
+                explanation: 'The prefix function tells us the longest suffix of the matched portion that is also a prefix of the pattern. This allows intelligent backtracking during the text scan.'
             },
             {
                 input: {"array":[1,2,3,4,5],"window_size":3},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the running product excluding window criteria.'
+                explanation: 'The combined preprocessing and matching phases ensure each character in the text is examined at most twice, achieving linear time complexity.'
             },
             {
                 input: {"array":[-5,2,-4,14,-6],"window_size":3},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the running product excluding window criteria.'
+                explanation: 'Precompute the failure function from the pattern. During matching, when a mismatch occurs, use the failure function to skip ahead without re-examining characters already matched.'
             },
             // Edge case
             {
                 input: {"array":[5],"window_size":3},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Precompute the failure function from the pattern. During matching, when a mismatch occurs, use the failure function to skip ahead without re-examining characters already matched.'
             }
         ],
         solutions: {

@@ -12,7 +12,7 @@
         difficulty: 'Medium',
         algorithm: 'dp-max-subset',
         parent: '01-max-subset-sum',
-        description: 'You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are **arranged in a circle**. That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have a security system connected, and **it will automatically contact the police if two adjacent houses were broken into on the same night**. Given an integer array nums representing the amount of money of each house, return the maximum am',
+        description: 'You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are **arranged in a circle**. That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have a security system connected, and **it will automatically contact the police if two adjacent houses were broken into on the same night**. Given an integer array nums representing the amount of money of each house, return the maximum am.',
         problem: 'Use 2D dynamic programming where dp[i][j] represents the optimal solution for subproblem (i,j). Build the table by considering all possible transitions from smaller subproblems.',
         complexity: {
             time: 'O(n)',
@@ -35,7 +35,7 @@
         ]
 },
         output: 3,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input nums=[2, 3, 2], the result is 3.'
+        explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
     },
     {
         input: {
@@ -47,7 +47,7 @@
         ]
 },
         output: 4,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input nums=[1, 2, 3, 1], the result is 4.'
+        explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
     },
     {
         input: {
@@ -58,7 +58,7 @@
         ]
 },
         output: 3,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input nums=[1, 2, 3], the result is 3.'
+        explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
     }
         ],
         solutions: {
@@ -157,11 +157,11 @@ func main() {
 }`
         },
         twists: [
-            { id: '01-max-subset-sum/01-house-robber-ii/twist-01-decompose-circular-to-linear', title: 'Decompose Circular to Linear', difficulty: 'Medium' },
-            { id: '01-max-subset-sum/01-house-robber-ii/twist-02-track-which-houses-were-robbed', title: 'Track Which Houses Were Robbed', difficulty: 'Hard' },
-            { id: '01-max-subset-sum/01-house-robber-ii/twist-03-conceptual-trap-off-by-one-in-circular-indexing', title: 'Conceptual Trap: Off-by-One in Circular Indexing', difficulty: 'Medium' },
-            { id: '01-max-subset-sum/01-house-robber-ii/twist-04-top-down-memoization-approach', title: 'Top-Down Memoization Approach', difficulty: 'Medium' },
-            { id: '01-max-subset-sum/01-house-robber-ii/twist-05-three-houses-in-a-triangle', title: 'Three Houses in a Triangle', difficulty: 'Hard' }
+            { id: '01-max-subset-sum/01-house-robber-ii/twist-01-decompose-circular-to-linear', name: 'Decompose Circular to Linear', difficulty: 'Medium' },
+            { id: '01-max-subset-sum/01-house-robber-ii/twist-02-track-which-houses-were-robbed', name: 'Track Which Houses Were Robbed', difficulty: 'Hard' },
+            { id: '01-max-subset-sum/01-house-robber-ii/twist-03-conceptual-trap-off-by-one-in-circular-indexing', name: 'Conceptual Trap: Off-by-One in Circular Indexing', difficulty: 'Medium' },
+            { id: '01-max-subset-sum/01-house-robber-ii/twist-04-top-down-memoization-approach', name: 'Top-Down Memoization Approach', difficulty: 'Medium' },
+            { id: '01-max-subset-sum/01-house-robber-ii/twist-05-three-houses-in-a-triangle', name: 'Three Houses in a Triangle', difficulty: 'Hard' }
         ],
         similar: [
 

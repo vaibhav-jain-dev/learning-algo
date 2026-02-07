@@ -16,7 +16,7 @@
         description: 'Find the minimum window that contains all characters of s2 (as an anagram, not a subsequence). Changes from subsequence matching to frequency matching, converting the problem to a classic sliding window with character counts.',
         problem: 'Changes from subsequence matching to frequency matching, converting the problem to a classic sliding window with character counts.',
         hints: [
-            'Think about how this twist differs from the standard version: Find the minimum window that contains all characters of s2 (as an anagram, not a.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Changes from subsequence matching to frequency matching, converting the problem to a classic sliding window with character counts.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"s1":"abcdebdde","s2":"bde"},
                 output: "bcde",
-                explanation: ''
+                explanation: 'Process the input according to the core logic. Each element is examined and contributes to building the final result.'
             },
             {
                 input: {"s1":"abcdef","s2":"ace"},
                 output: "abcde",
-                explanation: ''
+                explanation: 'The algorithm handles this case by applying the key operation to each element. The accumulated result after processing all elements gives the answer.'
             },
             // Edge case
             {
                 input: {"s1":"xyz","s2":"abc"},
                 output: "",
-                explanation: ''
+                explanation: 'This test case validates the algorithm behavior. The step-by-step processing of input elements produces the expected output.'
             }
         ],
         solutions: {

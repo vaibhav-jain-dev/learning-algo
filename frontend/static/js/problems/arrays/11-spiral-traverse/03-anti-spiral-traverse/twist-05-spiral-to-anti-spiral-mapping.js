@@ -27,18 +27,18 @@
             {
                 input: {"matrix":["\\n    [1",2,"3]","\\n    [4",5,"6]","\\n    [7",8,"9]\\n"]},
                 output: 0,
-                explanation: 'For this input, there are 0 valid positions that satisfy the spiral to anti spiral mapping criteria.'
+                explanation: 'The matrix transformation maps each element from its original position to its target position. Process in an order that avoids overwriting values still needed.'
             },
             {
                 input: {"matrix":["\\n    [1",2,3,"4]","\\n    [5",6,7,"8]","\\n    [9",10,11,"12]\\n"]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the spiral to anti spiral mapping criteria.'
+                explanation: 'Work layer by layer from outside in. Each layer has four sides to process. Shrink boundaries after each complete layer until all elements are handled.'
             },
             // Edge case
             {
                 input: {"matrix":["\\n    [1"]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process the matrix following the required traversal pattern. Track the current boundaries (top, bottom, left, right) and adjust them after completing each direction.'
             }
         ],
         solutions: {

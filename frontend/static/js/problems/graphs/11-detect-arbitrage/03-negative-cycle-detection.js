@@ -53,7 +53,7 @@
         ]
 },
         output: true,
-        explanation: 'Processing the input data produces the output. For input n=4, edges=[[0, 1, 1], [1, 2, -3], [2, 3, 2], [3, 1, 1]], the result is true.'
+        explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
     }
         ],
         solutions: {

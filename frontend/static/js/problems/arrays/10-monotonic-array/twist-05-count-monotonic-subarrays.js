@@ -31,18 +31,18 @@
             {
                 input: {"array":[1,2,1,2,3]},
                 output: 2,
-                explanation: ''
+                explanation: 'The running maximum at each index represents the best subarray ending at that position. A negative running sum is never worth carrying forward.'
             },
             {
                 input: {"array":[1,2,3]},
                 output: 1,
-                explanation: ''
+                explanation: 'Maintain a running sum as you scan. At each position, choose to either extend the current subarray or start fresh. Track the global maximum across all positions.'
             },
             // Edge case
             {
                 input: {"array":[1,1,1]},
                 output: 3,
-                explanation: ''
+                explanation: 'Compare extending the current subarray (running_sum + current) vs starting new (just current). The global best is updated whenever a new maximum is found.'
             }
         ],
         solutions: {

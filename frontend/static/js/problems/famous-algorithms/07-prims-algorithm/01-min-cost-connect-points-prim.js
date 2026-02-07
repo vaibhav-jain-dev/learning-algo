@@ -13,6 +13,7 @@
         algorithm: 'prims-algorithm',
         parent: '07-prims-algorithm',
         description: 'Connect all points with minimum cost using Manhattan distance. Use Prim\'s algorithm instead of Kruskal\'s.',
+        problem: 'Build a Minimum Spanning Tree by greedily selecting edges. Either sort all edges and add them if they don\'t create a cycle (Kruskal\'s), or grow the tree from a starting node using the cheapest available edge (Prim\'s). This achieves O(n^2 log n) time with O(n) space.',
         complexity: {
             time: 'O(n^2 log n)',
             space: 'O(n)'
@@ -51,7 +52,7 @@
         ]
 },
         output: 20,
-        explanation: 'Processing the input data produces the output. For input points=[[0, 0], [2, 2], [3, 10], [5, 2], [7, 0]], the result is 20.'
+        explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
     }
         ],
         solutions: {

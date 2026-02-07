@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'tree-balanced',
         description: 'Write a function that takes in a Binary Tree and returns whether it is height-balanced. A binary tree is height-balanced if for each node in the tree, the difference between the height of its left subtree and the height of its right subtree is at most 1. An empty tree is considered height-balanced.',
+        problem: 'Use recursion to solve the problem for each subtree, then combine results at each node. The base case handles null nodes. Each node is visited once, giving O(n) time with O(h) space for the recursion stack.',
+        hints: [
+            'Think recursively: solve the problem for the left and right subtrees, then combine results.',
+            'What information does each node need from its children to compute its result?',
+            'Consider whether you need a top-down (preorder) or bottom-up (postorder) approach.',
+            'Base case: what should happen when you reach a null/empty node?'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(h)'
@@ -45,7 +53,7 @@
         }
 },
         output: true,
-        explanation: 'Traversing the tree structure, we process nodes to compute the result. For input tree={\'value\': 1, \'left\': {\'value\': 2, \'left\': {\'value\': 4}, \'right\': {\'value\': 5, \'left\': {\'value\': 7}, \'right\': {\'value\': 8}}}, \'right\': {\'value\': 3, \'right\': {\'value\': 6}}}, the result is true.'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     },
     {
         input: {
@@ -69,7 +77,7 @@
         }
 },
         output: false,
-        explanation: 'Traversing the tree structure, we process nodes to compute the result. For input tree={\'value\': 1, \'left\': {\'value\': 2, \'left\': {\'value\': 4, \'left\': {\'value\': 6}}, \'right\': {\'value\': 5}}, \'right\': {\'value\': 3}}, the result is false.'
+        explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
     }
         ],
         twists: [

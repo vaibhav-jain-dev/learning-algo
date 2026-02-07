@@ -13,8 +13,8 @@
         difficulty: 'Medium',
         algorithm: 'a-star',
         parent: '08-a-star-algorithm',
-        description: 'Solve the same grid pathfinding problem using Dijkstra\',
-        problem: 'Dijkstra explores in all directions equally (like BFS for unweighted), while A* focuses toward the goal. Comparing node counts demonstrates the heuristic\',
+        description: 'Dijkstra Comparison: Solve this algorithmic challenge by applying the appropriate technique.',
+        problem: 'Apply the core algorithmic technique to solve this variation. Consider the key differences from the standard approach.',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
@@ -30,13 +30,13 @@
             {
                 input: {"grid":[[0,0,0,0],[0,1,1,0],[0,0,0,0],[0,1,0,0]],"start":[0,0],"end":[3,3]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the dijkstra comparison criteria.'
+                explanation: 'The priority queue ensures we always process the nearest unvisited node. When a node is dequeued, its shortest distance is finalized. Neighbors are updated if a shorter path is found.'
             },
             // Edge case
             {
                 input: {"grid":[[0,0,0,0]],"start":[0],"end":[3]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
             }
         ],
         solutions: {

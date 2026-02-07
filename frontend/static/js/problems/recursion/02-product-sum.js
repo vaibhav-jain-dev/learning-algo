@@ -11,7 +11,15 @@
         name: 'Product Sum',
         difficulty: 'Easy',
         algorithm: 'recursion-product-sum',
-        description: 'Write a function that takes in a "special" array and returns its product sum. A "special" array is a non-empty array that contains either integers or other "special" arrays. The product sum of a "special" array is the sum of its elements, where "special" arrays inside it are summed themselves and then multiplied by their level of depth. The depth of a "special" array is how far nested it is. For instance, the depth of [] is 1; the depth of the inner array in [[]] is 2; the depth of the innermost',
+        description: 'Write a function that takes in a "special" array and returns its product sum. A "special" array is a non-empty array that contains either integers or other "special" arrays. The product sum of a "special" array is the sum of its elements, where "special" arrays inside it are summed themselves and then multiplied by their level of depth. The depth of a "special" array is how far nested it is. For instance, the depth of [] is 1; the depth of the inner array in [[]] is 2; the depth of the innermost.',
+        problem: 'Break the problem into smaller subproblems recursively. Define clear base cases and recursive cases. At each step, assume the recursive call returns the correct result for smaller inputs, and combine them. This achieves O(n) time with O(d) space.',
+        hints: [
+            'Define your base case clearly. When should the recursion stop?',
+            'For the recursive case, assume the function works for smaller inputs. How do you use that?',
+            'Think about whether you need to pass additional state through parameters.',
+            'Consider memoization if the same subproblems are being computed multiple times.'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(d)'

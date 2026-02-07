@@ -13,7 +13,7 @@
         difficulty: 'Hard',
         algorithm: 'bst-search',
         parent: '01-find-closest-value',
-        description: 'For every node in the BST, compute the closest value to the target within that node\',
+        description: 'For every node in the BST, compute the closest value to the target within that node.',
         problem: 'This is a bottom-up aggregation problem rather than a top-down search. You need to combine results from left and right subtrees at each node, completely changing the traversal pattern. Think about what changes from the base problem and how it affects your algorithmic approach.',
         hints: [
 
@@ -33,7 +33,7 @@
             {
                 input: {"tree":[10],"target":0},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Navigate the tree using the ordering property to guide traversal direction.'
             }
         ],
         solutions: {

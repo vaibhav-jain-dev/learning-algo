@@ -13,7 +13,7 @@
         difficulty: 'Medium',
         algorithm: 'dijkstras-algorithm',
         parent: '02-dijkstras-algorithm/01-network-delay-time',
-        description: 'What if there are multiple flights between the same pair of nodes with different times? Does Dijkstra\',
+        description: 'What if there are multiple flights between the same pair of nodes with different times? Does Dijkstra.',
         problem: 'Some implementations assume unique edges between node pairs. Multiple edges are handled naturally by the adjacency list, but self-loops (times=[[1,1,5]]) add unnecessary heap entries. Forces careful analysis of edge cases.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -36,7 +36,7 @@
             {
                 input: {"times":[[2,1,1]],"n":0,"k":0},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process the closest unvisited node first, relaxing all outgoing edges.'
             }
         ],
         solutions: {

@@ -16,7 +16,7 @@
         description: 'Find the longest common subsequence allowing up to k character mismatches between the matched pairs. Adds a third dimension to the DP state for tracking mismatches, changing the recurrence relation significantly.',
         problem: 'Adds a third dimension to the DP state for tracking mismatches, changing the recurrence relation significantly.',
         hints: [
-            'Think about how this twist differs from the standard version: Find the longest common subsequence allowing up to k character mismatches betwee.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Adds a third dimension to the DP state for tracking mismatches, changing the recurrence relation significantly.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"text1":"abcde","text2":"ace"},
                 output: 3,
-                explanation: ''
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             },
             {
                 input: {"text1":"abc","text2":"def"},
                 output: 0,
-                explanation: ''
+                explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
             },
             // Edge case
             {
                 input: {"text1":"abcba","text2":"abcba"},
                 output: 5,
-                explanation: ''
+                explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
             }
         ],
         solutions: {

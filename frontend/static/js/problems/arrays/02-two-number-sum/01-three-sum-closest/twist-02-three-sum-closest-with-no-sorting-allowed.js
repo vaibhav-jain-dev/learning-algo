@@ -16,7 +16,7 @@
         description: 'Find the three numbers whose sum is closest to target, but you cannot sort the array. Without sorting, the two-pointer technique is unavailable. You must use hash maps or accept O(n^3) brute force, fundamentally changing the approach.',
         problem: 'Without sorting, the two-pointer technique is unavailable. You must use hash maps or accept O(n^3) brute force, fundamentally changing the approach.',
         hints: [
-            'Think about how this twist differs from the standard version: Find the three numbers whose sum is closest to target, but you cannot sort the a.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Without sorting, the two-pointer technique is unavailable. You must use hash maps or accept O(n^3) brute force, fundamentally changing the approach.',
             'Sorting the input first may simplify the problem significantly.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"nums":[-1,2,1,-4],"target":1},
                 output: 2,
-                explanation: ''
+                explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
             },
             {
                 input: {"nums":[0,0,0],"target":1},
                 output: 0,
-                explanation: ''
+                explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
             },
             // Edge case
             {
                 input: {"nums":[1,2,3,4,5],"target":10},
                 output: 10,
-                explanation: ''
+                explanation: 'The single-pass traversal examines each node once. By the time we reach the relevant position, we have enough information to produce the correct result.'
             }
         ],
         solutions: {

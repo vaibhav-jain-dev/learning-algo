@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'two-pointer-move',
         description: 'You\'re given an array of integers and an integer. Write a function that moves all instances of that integer in the array to the end of the array and returns the array. The function should perform this in place (i.e., it should mutate the input array) and doesn\'t need to maintain the order of the other integers.',
+        problem: 'Use two pointers to efficiently traverse the input. Position them strategically and move them based on comparisons with the target condition. This achieves O(n) time with O(1) space by avoiding nested iterations.',
+        hints: [
+            'Consider using two pointers to traverse the data structure from different positions.',
+            'Think about what conditions determine when each pointer should move.',
+            'The two-pointer technique works best when the data has some sorted or ordered property.',
+            'Consider edge cases: what happens when pointers meet or cross each other?'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(1)'

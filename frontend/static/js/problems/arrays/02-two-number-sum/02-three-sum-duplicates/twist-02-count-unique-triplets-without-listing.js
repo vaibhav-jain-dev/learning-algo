@@ -16,7 +16,7 @@
         description: 'Instead of returning all triplets, just count how many unique triplets sum to target. While the core algorithm is similar, counting allows mathematical shortcuts: when duplicates exist, you can calculate combinations instead of enumerating.',
         problem: 'While the core algorithm is similar, counting allows mathematical shortcuts: when duplicates exist, you can calculate combinations instead of enumerating.',
         hints: [
-            'Think about how this twist differs from the standard version: Instead of returning all triplets, just count how many unique triplets sum to ta.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'While the core algorithm is similar, counting allows mathematical shortcuts: when duplicates exist, you can calculate combinations instead of enumerating.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"nums":[-1,2,1,-4],"target":1},
                 output: 2,
-                explanation: ''
+                explanation: 'Process the input according to the core logic. Each element is examined and contributes to building the final result.'
             },
             {
                 input: {"nums":[0,0,0],"target":1},
                 output: 0,
-                explanation: ''
+                explanation: 'The algorithm handles this case by applying the key operation to each element. The accumulated result after processing all elements gives the answer.'
             },
             // Edge case
             {
                 input: {"nums":[1,2,3,4,5],"target":10},
                 output: 10,
-                explanation: ''
+                explanation: 'This test case validates the algorithm behavior. The step-by-step processing of input elements produces the expected output.'
             }
         ],
         solutions: {

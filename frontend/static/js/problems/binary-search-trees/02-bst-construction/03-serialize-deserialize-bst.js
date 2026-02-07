@@ -12,7 +12,7 @@
         difficulty: 'Hard',
         algorithm: 'bst-construction',
         parent: '02-bst-construction',
-        description: 'Design an algorithm to serialize and deserialize a **binary search tree**. There is no restriction on how your serialization/deserialization algorithm should work. You just need to ensure that a BST can be serialized to a string and this string can be deserialized to the original tree structure. **The encoded string should be as compact as possible.**',
+        description: 'Design an algorithm to serialize and deserialize a **binary search tree**. There is no restriction on how your serialization/deserialization algorithm should work. You just need to ensure that a BST can be serialized to a string and this string can be deserialized to the original tree structure. **The encoded string should be as compact as possible.**.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
         complexity: {
             time: 'O(n) for both serialize and deserialize',
@@ -39,7 +39,7 @@
         ]
 },
         output: "5,3,2,4,7,6,8",
-        explanation: 'Processing the input data produces the output. For input tree=[5, 3, ..., 8] (length 7), the result is 5,3,2,4,7,6,8.'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     },
     {
         input: {
@@ -50,7 +50,7 @@
         ]
 },
         output: "2,1,3",
-        explanation: 'Processing the input data produces the output. For input tree=[2, 1, 3], the result is 2,1,3.'
+        explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
     }
         ],
         solutions: {

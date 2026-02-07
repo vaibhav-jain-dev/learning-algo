@@ -12,7 +12,7 @@
         difficulty: 'Medium',
         algorithm: 'graph-dfs',
         parent: '01-depth-first-search',
-        description: 'Given a reference of a node in a **connected** undirected graph, return a **deep copy** (clone) of the graph. Each node in the graph contains a value (int) and a list (List[Node]) of its neighbors. `` class Node {     public int val;     public List<Node> neighbors; } ``',
+        description: 'Given a reference of a node in a **connected** undirected graph, return a **deep copy** (clone) of the graph. Each node in the graph contains a value (int) and a list (List[Node]) of its neighbors. `` class Node {     public int val;     public List<Node> neighbors; } ``.',
         problem: 'Use Depth-First Search to explore the graph. DFS goes deep before going wide, using a stack (explicit or recursive call stack). Track visited nodes to avoid cycles.',
         complexity: {
             time: 'O(N + E)',
@@ -48,7 +48,7 @@
         ]
 },
         output: [[2, 4], [1, 3], [2, 4], [1, 3]],
-        explanation: 'Using depth-first search, we explore all paths to find the solution. For input adjList=[[2, 4], [1, 3], [2, 4], [1, 3]], the result is [[2, 4], [1, 3], [2, 4], [1, 3]].'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -57,7 +57,7 @@
         ]
 },
         output: [[]],
-        explanation: 'Using depth-first search, we explore all paths to find the solution. For input adjList=[[]], the result is [[]].'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         solutions: {

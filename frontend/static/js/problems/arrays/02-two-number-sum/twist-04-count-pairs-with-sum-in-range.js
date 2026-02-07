@@ -16,7 +16,7 @@
         description: 'Count the number of pairs whose sum falls within a given range [low, high] instead of equaling a specific target. Switches from exact matching to range checking, which may require sorting + two pointers and subtracting count of pairs below low from count below high+1.',
         problem: 'Switches from exact matching to range checking, which may require sorting + two pointers and subtracting count of pairs below low from count below high+1.',
         hints: [
-            'Think about how this twist differs from the standard version: Count the number of pairs whose sum falls within a given range [low, high] inste.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Switches from exact matching to range checking, which may require sorting + two pointers and subtracting count of pairs below low from count below high+1.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"array":[3,5,-4,8,11,1,-1,6],"targetSum":10},
                 output: [-1,11],
-                explanation: ''
+                explanation: 'Process the input according to the core logic. Each element is examined and contributes to building the final result.'
             },
             {
                 input: {"array":[1,2,3,4,5],"targetSum":10},
                 output: [],
-                explanation: ''
+                explanation: 'The algorithm handles this case by applying the key operation to each element. The accumulated result after processing all elements gives the answer.'
             },
             // Edge case
             {
                 input: {"array":[4,6],"targetSum":10},
                 output: [4,6],
-                explanation: ''
+                explanation: 'This test case validates the algorithm behavior. The step-by-step processing of input elements produces the expected output.'
             }
         ],
         solutions: {

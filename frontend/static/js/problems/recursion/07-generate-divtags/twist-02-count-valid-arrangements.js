@@ -30,23 +30,23 @@
             {
                 input: {"raw":"numberOfTags = 2"},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the count valid arrangements criteria.'
+                explanation: 'The algorithm handles this case by applying the key operation to each element. The accumulated result after processing all elements gives the answer.'
             },
             {
                 input: {"raw":"numberOfTags = 1"},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the count valid arrangements criteria.'
+                explanation: 'This test case validates the algorithm behavior. The step-by-step processing of input elements produces the expected output.'
             },
             {
                 input: {"raw":"numberOfTags = 3"},
                 output: 0,
-                explanation: 'For this input, there are 0 valid positions that satisfy the count valid arrangements criteria.'
+                explanation: 'Process the input according to the core logic. Each element is examined and contributes to building the final result.'
             },
             // Edge case
             {
                 input: {"raw":""},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process the input according to the core logic. Each element is examined and contributes to building the final result.'
             }
         ],
         solutions: {

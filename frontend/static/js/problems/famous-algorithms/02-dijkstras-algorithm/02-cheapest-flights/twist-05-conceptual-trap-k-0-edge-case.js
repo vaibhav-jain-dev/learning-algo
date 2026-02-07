@@ -36,7 +36,7 @@
             {
                 input: {"n":0,"flights":[[0,1,100]],"src":0,"dst":0,"k":3},
                 output: false,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
             }
         ],
         solutions: {

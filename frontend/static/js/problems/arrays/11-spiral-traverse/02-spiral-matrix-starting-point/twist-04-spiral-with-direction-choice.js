@@ -27,18 +27,18 @@
             {
                 input: {"rows":3,"cols":5,"rStart":1,"cStart":2},
                 output: {"direction":"right","wasted":6},
-                explanation: ''
+                explanation: 'The matrix transformation maps each element from its original position to its target position. Process in an order that avoids overwriting values still needed.'
             },
             {
                 input: {"rows":1,"cols":4,"rStart":0,"cStart":0},
                 output: {"direction":"right","wasted":0},
-                explanation: ''
+                explanation: 'Process the matrix following the required traversal pattern. Track the current boundaries (top, bottom, left, right) and adjust them after completing each direction.'
             },
             // Edge case
             {
                 input: {"rows":2,"cols":2,"rStart":0,"cStart":0},
                 output: {"direction":"right","wasted":0},
-                explanation: ''
+                explanation: 'Work layer by layer from outside in. Each layer has four sides to process. Shrink boundaries after each complete layer until all elements are handled.'
             }
         ],
         solutions: {

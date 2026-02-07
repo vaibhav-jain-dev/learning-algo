@@ -30,23 +30,23 @@
             {
                 input: {"disks":[[2,1,2],[3,2,3],[2,2,8],[2,3,4],[1,3,1],[4,4,5]]},
                 output: 3,
-                explanation: 'For this input, there are 3 valid positions that satisfy the maximize number of disks criteria.'
+                explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
             },
             {
                 input: {"disks":[[2,1,2]]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the maximize number of disks criteria.'
+                explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
             },
             {
                 input: {"disks":[[1,1,1],[2,2,2],[3,3,3]]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the maximize number of disks criteria.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             },
             // Edge case
             {
                 input: {"disks":[[2,1,2]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             }
         ],
         solutions: {

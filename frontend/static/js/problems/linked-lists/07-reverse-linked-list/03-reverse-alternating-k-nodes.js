@@ -12,7 +12,7 @@
         difficulty: 'Hard',
         algorithm: 'll-reverse',
         parent: '07-reverse-linked-list',
-        description: 'Given the head of a linked list and an integer k, reverse the first k nodes, then skip the next k nodes, then reverse the next k nodes, and so on. If there are fewer than k nodes remaining (either for reversing or skipping), handle them accordingly: - If reversing: reverse all remaining nodes - If skipping: skip all remaining nodes',
+        description: 'Given the head of a linked list and an integer k, reverse the first k nodes, then skip the next k nodes, then reverse the next k nodes, and so on. If there are fewer than k nodes remaining (either for reversing or skipping), handle them accordingly: - If reversing: reverse all remaining nodes - If skipping: skip all remaining nodes.',
         problem: 'Reverse links by maintaining three pointers: prev, curr, next. For each node, save next, point curr to prev, then advance. Handle edge cases for empty or single-node lists.',
         complexity: {
             time: 'O(n)',
@@ -41,7 +41,7 @@
         "k": 2
 },
         output: [2, 1, 3, 4, 6, 5, 7, 8],
-        explanation: 'Processing the input data produces the output. For input list=[1, 2, ..., 8] (length 8), k=2, the result is [2, ..., 8] (length 8).'
+        explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
     },
     {
         input: {
@@ -60,7 +60,7 @@
         "k": 3
 },
         output: [3, 2, 1, 4, 5, 6, 9, 8, 7, 10],
-        explanation: 'Processing the input data produces the output. For input list=[1, 2, ..., 10] (length 10), k=3, the result is [3, ..., 10] (length 10).'
+        explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
     },
     {
         input: {
@@ -74,7 +74,7 @@
         "k": 3
 },
         output: [3, 2, 1, 4, 5],
-        explanation: 'Processing the input data produces the output. For input list=[1, 2, 3, 4, 5], k=3, the result is [3, 2, 1, 4, 5].'
+        explanation: 'The single-pass traversal examines each node once. By the time we reach the relevant position, we have enough information to produce the correct result.'
     }
         ],
         solutions: {

@@ -13,6 +13,7 @@
         algorithm: 'two-pointer-move',
         parent: '09-move-element-to-end',
         description: 'Given an array of integers and a predicate function, rearrange the array so that all elements satisfying the predicate come before all elements that don\'t satisfy it. Return the partitioned array. The relative order within each partition does not need to be preserved.',
+        problem: 'Use two pointers to efficiently traverse the input. Position them strategically and move them based on comparisons with the target condition. This achieves O(n) time with O(1) space by avoiding nested iterations.',
         complexity: {
             time: 'O(n)',
             space: 'O(1)'

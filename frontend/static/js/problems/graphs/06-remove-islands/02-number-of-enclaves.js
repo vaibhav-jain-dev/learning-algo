@@ -56,7 +56,7 @@
         ]
 },
         output: 3,
-        explanation: 'Exploring the graph structure, we find the required path or value. For input grid=[[0, 0, 0, 0], [1, 0, 1, 0], [0, 1, 1, 0], [0, 0, 0, 0]], the result is 3.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     }
         ],
         solutions: {

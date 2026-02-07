@@ -13,6 +13,7 @@
         algorithm: 'topological-sort',
         parent: '03-topological-sort',
         description: 'You are given an integer n, which indicates there are n courses labeled from 1 to n. You are also given an array relations where relations[i] = [prevCourse, nextCourse], indicating that prevCourse must be taken before nextCourse. In one semester, you can take any number of courses as long as all prerequisites are completed. Return the minimum number of semesters needed to complete all courses. Return -1 if it\'s impossible.',
+        problem: 'Model the problem as a graph traversal. Choose the appropriate traversal strategy (DFS/BFS) based on whether you need depth exploration or shortest paths. Track visited nodes to handle cycles. This achieves O(V + E) time with O(V + E) space.',
         complexity: {
             time: 'O(V + E)',
             space: 'O(V + E)'
@@ -40,7 +41,7 @@
         ]
 },
         output: 2,
-        explanation: 'After sorting the input, we can apply an efficient algorithm to find the result. For input n=3, relations=[[1, 3], [2, 3]], the result is 2.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     }
         ],
         solutions: {

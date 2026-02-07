@@ -30,23 +30,23 @@
             {
                 input: {"matrix":[[5,3,-1,5],[-7,3,7,4],[12,8,0,0],[1,-8,-8,2]],"size":2,"target":10},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the count submatrices with target sum criteria.'
+                explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
             },
             {
                 input: {"matrix":[[1,2],[3,4]],"size":1,"target":10},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the count submatrices with target sum criteria.'
+                explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
             },
             {
                 input: {"matrix":[[1,2,3],[4,5,6],[7,8,9]],"size":2,"target":10},
                 output: 0,
-                explanation: 'For this input, there are 0 valid positions that satisfy the count submatrices with target sum criteria.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             },
             // Edge case
             {
                 input: {"matrix":[[5,3,-1,5]],"size":0,"target":10},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             }
         ],
         solutions: {

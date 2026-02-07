@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'bst-construction',
         description: 'Write a BST class for a Binary Search Tree. The class should support: - Inserting values with the insert method - Checking if values are contained with the contains method - Removing values with the remove method (with proper handling of all cases) Note that you can\'t remove values that aren\'t in the tree.',
+        problem: 'Leverage the BST property (left < root < right) to guide your decisions. At each node, the ordering property tells you which subtree to explore or how to restructure. This achieves O(log n) average, O(n) worst time with O(1) space.',
+        hints: [
+            'The BST property means left < root < right. Use this to guide your search direction.',
+            'Think about which traversal order (inorder, preorder, postorder) best suits this problem.',
+            'Consider how the height of the tree affects your algorithm\'s complexity.',
+            'For balanced BSTs, operations are O(log n). What happens with skewed trees?'
+        ],
+
         complexity: {
             time: 'O(log n) average, O(n) worst',
             space: 'O(1)'
@@ -36,7 +44,7 @@
         ]
 },
         output: [true, true, true],
-        explanation: 'Processing the input data produces the output. For input tree=[10, 5, ..., 1] (length 8), operations=[insert(12), remove(10), contains(15)], the result is [True, True, True].'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     }
         ],
         twists: [

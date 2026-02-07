@@ -27,18 +27,18 @@
             {
                 input: {"tree":[5,3,7,2,4,6,8]},
                 output: "result",
-                explanation: 'The resulting string is "result".'
+                explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
             },
             {
                 input: {"tree":[2,1,3]},
                 output: "output",
-                explanation: 'The resulting string is "output".'
+                explanation: 'The BST structure allows directed traversal. Each node decision is informed by the ordering invariant, leading to the correct result without examining unnecessary subtrees.'
             },
             // Edge case
             {
                 input: {"tree":[5]},
                 output: "",
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
             }
         ],
         solutions: {

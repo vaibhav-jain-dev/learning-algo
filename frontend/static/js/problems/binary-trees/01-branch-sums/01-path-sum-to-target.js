@@ -61,7 +61,7 @@
         "target": 22
 },
         output: [[5, 4, 11, 2], [5, 8, 4, 5]],
-        explanation: 'Using depth-first search, we explore all paths to find the solution. For input tree={\'value\': 5, \'left\': {\'value\': 4, \'left\': {\'value\': 11, \'left\': {\'value\': 7}, \'right\': {\'value\': 2}}}, \'right\': {\'value\': 8, \'left\': {\'value\': 13}, \'right\': {\'value\': 4, \'left\': {\'value\': 5}, \'right\': {\'value\': 1}}}}, target=22, the result is [[5, 4, 11, 2], [5, 8, 4, 5]].'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -77,7 +77,7 @@
         "target": 4
 },
         output: [[1, 3]],
-        explanation: 'Using depth-first search, we explore all paths to find the solution. For input tree={\'value\': 1, \'left\': {\'value\': 2}, \'right\': {\'value\': 3}}, target=4, the result is [[1, 3]].'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         solutions: {

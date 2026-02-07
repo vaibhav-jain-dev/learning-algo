@@ -13,7 +13,7 @@
         difficulty: 'Easy',
         algorithm: 'kadanes-algorithm',
         parent: '01-kadanes-algorithm',
-        description: 'What does Kadane\',
+        description: 'What does Kadane.',
         problem: 'Exposes a common implementation bug where maxSoFar is initialized to 0 instead of the first element, or where maxEndingHere is clamped to 0. Forces careful thinking about initialization.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -30,13 +30,13 @@
             {
                 input: {"nums":[-2,1,-3,4,-1,2,1,-5,4]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the conceptual trap all negatives criteria.'
+                explanation: 'The running maximum at each index represents the best subarray ending at that position. A negative running sum is never worth carrying forward.'
             },
             // Edge case
             {
                 input: {"nums":[-2]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Maintain a running sum as you scan. At each position, choose to either extend the current subarray or start fresh. Track the global maximum across all positions.'
             }
         ],
         solutions: {

@@ -13,8 +13,8 @@
         difficulty: 'Medium',
         algorithm: 'dijkstras-algorithm',
         parent: '02-dijkstras-algorithm/02-cheapest-flights',
-        description: 'Solve this problem using Bellman-Ford with exactly K+1 relaxation rounds instead of modified Dijkstra\',
-        problem: 'Bellman-Ford\',
+        description: 'Alternative: Bellman-Ford Approach: Solve this algorithmic challenge by applying the appropriate technique.',
+        problem: 'Apply the core algorithmic technique to solve this variation. Consider the key differences from the standard approach.',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
@@ -30,13 +30,13 @@
             {
                 input: {"n":4,"flights":[[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]],"src":0,"dst":3,"k":3},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the alternative bellman ford approach criteria.'
+                explanation: 'The priority queue ensures we always process the nearest unvisited node. When a node is dequeued, its shortest distance is finalized. Neighbors are updated if a shorter path is found.'
             },
             // Edge case
             {
                 input: {"n":0,"flights":[[0,1,100]],"src":0,"dst":0,"k":3},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
             }
         ],
         solutions: {

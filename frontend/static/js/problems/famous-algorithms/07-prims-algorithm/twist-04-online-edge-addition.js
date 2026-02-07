@@ -36,7 +36,7 @@
             {
                 input: {"V":0,"edges":[[0,1,2]]},
                 output: false,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
             }
         ],
         solutions: {

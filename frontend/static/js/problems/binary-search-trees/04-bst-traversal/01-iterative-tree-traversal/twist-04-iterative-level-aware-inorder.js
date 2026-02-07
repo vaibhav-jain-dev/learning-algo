@@ -27,13 +27,13 @@
             {
                 input: {"tree":[1,2,3,4,5,null,6]},
                 output: 3,
-                explanation: 'For this input, there are 3 valid positions that satisfy the iterative level aware inorder criteria.'
+                explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
             },
             // Edge case
             {
                 input: {"tree":[1]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
             }
         ],
         solutions: {

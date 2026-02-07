@@ -13,6 +13,7 @@
         algorithm: 'graph-bfs',
         parent: '02-breadth-first-search',
         description: 'Given the root of a binary tree, return the level order traversal of its nodes\' values (i.e., from left to right, level by level).',
+        problem: 'Use breadth-first search to explore nodes level by level. This ensures the shortest path is found first in unweighted scenarios. Use a queue to manage the frontier. This achieves O(N) time with O(W) space.',
         complexity: {
             time: 'O(N)',
             space: 'O(W)'
@@ -38,7 +39,7 @@
         ]
 },
         output: [[3], [9, 20], [15, 7]],
-        explanation: 'Using breadth-first search, we explore level by level to find the optimal solution. For input root=[3, 9, ..., 7] (length 7), the result is [[3], [9, 20], [15, 7]].'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -47,7 +48,7 @@
         ]
 },
         output: [[1]],
-        explanation: 'Using breadth-first search, we explore level by level to find the optimal solution. For input root=[1], the result is [[1]].'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         solutions: {

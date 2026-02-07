@@ -36,7 +36,7 @@
         "target": 4
 },
         output: 7,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input nums=[1, 2, 3], target=4, the result is 7.'
+        explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
     },
     {
         input: {
@@ -46,7 +46,7 @@
         "target": 3
 },
         output: 0,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input nums=[9], target=3, the result is 0.'
+        explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
     }
         ],
         solutions: {
@@ -128,11 +128,11 @@ func main() {
 }`
         },
         twists: [
-            { id: '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-01-why-this-counts-permutations-not-combinations', title: 'Why This Counts Permutations, Not Combinations', difficulty: 'Medium' },
-            { id: '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-02-top-down-memoization-version', title: 'Top-Down Memoization Version', difficulty: 'Medium' },
-            { id: '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-03-generate-all-permutations-not-just-count', title: 'Generate All Permutations (Not Just Count)', difficulty: 'Hard' },
-            { id: '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-04-handle-negative-numbers-in-nums', title: 'Handle Negative Numbers in nums', difficulty: 'Very Hard' },
-            { id: '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-05-trace-the-dp-array', title: 'Trace the DP Array', difficulty: 'Easy' }
+            { id: '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-01-why-this-counts-permutations-not-combinations', name: 'Why This Counts Permutations, Not Combinations', difficulty: 'Medium' },
+            { id: '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-02-top-down-memoization-version', name: 'Top-Down Memoization Version', difficulty: 'Medium' },
+            { id: '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-03-generate-all-permutations-not-just-count', name: 'Generate All Permutations (Not Just Count)', difficulty: 'Hard' },
+            { id: '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-04-handle-negative-numbers-in-nums', name: 'Handle Negative Numbers in nums', difficulty: 'Very Hard' },
+            { id: '02-number-of-ways-to-make-change/01-combination-sum-iv/twist-05-trace-the-dp-array', name: 'Trace the DP Array', difficulty: 'Easy' }
         ],
         similar: [
 

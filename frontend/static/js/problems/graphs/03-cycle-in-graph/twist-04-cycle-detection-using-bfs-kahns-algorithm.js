@@ -13,7 +13,7 @@
         difficulty: 'Medium',
         algorithm: 'graph-cycle',
         parent: '03-cycle-in-graph',
-        description: 'Detect cycles using BFS-based topological sort (Kahn\\',
+        description: 'Detect cycles using BFS-based topological sort (Kahn\\.',
         problem: 'Completely different approach: instead of DFS coloring, you process nodes with zero in-degree. This is iterative and avoids recursion, making it conceptually different from the standard DFS approach.',
         hints: [
             'Start by understanding the key difference: Completely different approach: instead of DFS coloring, you process nodes with zero in-degree.',
@@ -41,7 +41,7 @@
             {
                 input: {"edges":[[1,3]]},
                 output: false,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
             }
         ],
         solutions: {

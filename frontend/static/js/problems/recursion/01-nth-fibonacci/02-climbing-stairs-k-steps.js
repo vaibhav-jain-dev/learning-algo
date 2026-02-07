@@ -13,6 +13,7 @@
         algorithm: 'recursion-staircase',
         parent: '01-nth-fibonacci',
         description: 'You are climbing a staircase. It takes n steps to reach the top. Each time you can climb 1 to k steps. In how many distinct ways can you climb to the top? This is a generalization of the classic "Climbing Stairs" problem where you can take 1 or 2 steps.',
+        problem: 'Break the problem into smaller subproblems recursively. Define clear base cases and recursive cases. At each step, assume the recursive call returns the correct result for smaller inputs, and combine them. This achieves O(n) time with O(k) space.',
         complexity: {
             time: 'O(n)',
             space: 'O(k)'

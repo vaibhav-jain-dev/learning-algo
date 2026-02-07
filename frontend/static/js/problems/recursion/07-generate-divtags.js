@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'general',
         description: 'Write a function that takes in a positive integer numberOfTags and returns a list of all valid strings that you can generate with that number of matched <div></div> tags. A string is valid and contains matched <div></div> tags if for every opening tag <div>, there is a closing tag </div> that comes after it and isn\'t used as a match for a previously occurring opening tag. Each output string should contain exactly numberOfTags opening tags and numberOfTags closing tags.',
+        problem: 'Analyze the problem structure to identify the right approach. Consider the constraints to determine the target complexity. Implement the algorithm step by step, handling edge cases carefully. This achieves O(n) time with O(1) space.',
+        hints: [
+            'Break down the problem into smaller subproblems. What is the simplest case you can solve?',
+            'Consider what data structure would help you efficiently track the information you need.',
+            'Think about the time-space tradeoff. Can you trade extra memory for better time complexity?',
+            'Walk through a small example by hand. What steps do you take? Can you formalize that into an algorithm?'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(1)'

@@ -43,7 +43,7 @@
             {
                 input: {"array":[5]},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Precompute the failure function from the pattern. During matching, when a mismatch occurs, use the failure function to skip ahead without re-examining characters already matched.'
             }
         ],
         solutions: {

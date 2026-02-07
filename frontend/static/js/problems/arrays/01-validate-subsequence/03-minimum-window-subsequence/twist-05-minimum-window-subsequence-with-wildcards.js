@@ -16,7 +16,7 @@
         description: 'The pattern s2 can contain wildcard characters "?" that match any single character in s1. Wildcards change the matching logic: instead of exact character comparison, you need conditional matching that accepts any character at wildcard positions.',
         problem: 'Wildcards change the matching logic: instead of exact character comparison, you need conditional matching that accepts any character at wildcard positions.',
         hints: [
-            'Think about how this twist differs from the standard version: The pattern s2 can contain wildcard characters "?" that match any single charact.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Wildcards change the matching logic: instead of exact character comparison, you need conditional matching that accepts any character at wildcard positions.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -46,7 +46,7 @@
             {
                 input: {"s1":"","s2":""},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Position the two pointers at the strategic starting locations. Advance each based on the comparison with the target. The pointers converge on the solution without revisiting elements.'
             }
         ],
         solutions: {

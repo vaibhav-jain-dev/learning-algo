@@ -13,7 +13,7 @@
         difficulty: 'Medium',
         algorithm: 'graph-cycle',
         parent: '03-cycle-in-graph/02-redundant-connection',
-        description: 'If multiple edges could be removed to form a tree, return the one that appears latest in the input array (the original problem\\',
+        description: 'If multiple edges could be removed to form a tree, return the one that appears latest in the input array (the original problem\\.',
         problem: 'Tests understanding of why Union-Find naturally returns the last cycle-creating edge: it processes edges in order and the last one that fails union is the answer. Other approaches need explicit tie-breaking.',
         hints: [
             'Start by understanding the key difference: Tests understanding of why Union-Find naturally returns the last cycle-creating edge: it processes edges in order and the last one that fails union is the answer.',
@@ -39,7 +39,7 @@
             {
                 input: {"edges":[[1,2]]},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
             }
         ],
         solutions: {

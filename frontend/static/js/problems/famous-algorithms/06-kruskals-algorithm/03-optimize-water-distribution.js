@@ -48,7 +48,7 @@
         ]
 },
         output: 3,
-        explanation: 'Processing the input data produces the output. For input n=3, wells=[1, 2, 2], pipes=[[1, 2, 1], [2, 3, 1]], the result is 3.'
+        explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
     }
         ],
         solutions: {

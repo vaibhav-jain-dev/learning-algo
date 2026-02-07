@@ -30,13 +30,13 @@
             {
                 input: {"tree1":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"tree2":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}}},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the leaf traversal with depth criteria.'
+                explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
             },
             // Edge case
             {
                 input: {"tree1":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"tree2":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":7,"right":{"value":5,"right":{"value":6}}}},"right":{"value":3,"left":{"value":8}}}},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
             }
         ],
         solutions: {

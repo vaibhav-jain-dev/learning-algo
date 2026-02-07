@@ -27,18 +27,18 @@
             {
                 input: {"tree":[1,4,3,2,4,null,5,null,null,null,null,4,6]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the largest bst subtree criteria.'
+                explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
             },
             {
                 input: {"tree":[5,4,8,3,null,6,3]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the largest bst subtree criteria.'
+                explanation: 'The BST structure allows directed traversal. Each node decision is informed by the ordering invariant, leading to the correct result without examining unnecessary subtrees.'
             },
             // Edge case
             {
                 input: {"tree":[1]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
             }
         ],
         solutions: {

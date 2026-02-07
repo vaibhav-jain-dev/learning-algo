@@ -13,8 +13,8 @@
         difficulty: 'Easy',
         algorithm: 'prims-algorithm',
         parent: '07-prims-algorithm/01-min-cost-connect-points-prim',
-        description: 'Compare Prim\',
-        problem: 'The nearest neighbor heuristic is NOT the same as Prim\',
+        description: 'Compare Prim.',
+        problem: 'The nearest neighbor heuristic is NOT the same as Prim.',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
@@ -30,13 +30,13 @@
             {
                 input: {"points":[[0,0],[2,2],[3,10],[5,2],[7,0]]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the nearest neighbor heuristic criteria.'
+                explanation: 'The greedy selection of minimum-weight edges, combined with cycle detection, ensures the resulting tree has the minimum total edge weight.'
             },
             // Edge case
             {
                 input: {"points":[[0,0]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
             }
         ],
         solutions: {

@@ -27,18 +27,18 @@
             {
                 input: {"nums":[-10,-3,0,5,9]},
                 output: 3,
-                explanation: 'For this input, there are 3 valid positions that satisfy the convert sorted array to weight balanced bst criteria.'
+                explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
             },
             {
                 input: {"nums":[1,2,3,4,5,6,7]},
                 output: 3,
-                explanation: 'For this input, there are 3 valid positions that satisfy the convert sorted array to weight balanced bst criteria.'
+                explanation: 'The BST structure allows directed traversal. Each node decision is informed by the ordering invariant, leading to the correct result without examining unnecessary subtrees.'
             },
             // Edge case
             {
                 input: {"nums":[-10]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
             }
         ],
         solutions: {

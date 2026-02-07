@@ -13,8 +13,8 @@
         difficulty: 'Medium',
         algorithm: 'tree-dfs',
         parent: '02-node-depths',
-        description: 'Each node has a weight. The contribution of a node is weight * depth. Return the weighted depth sum. You cannot just count depth; you must multiply by each node\',
-        problem: 'You cannot just count depth; you must multiply by each node\',
+        description: 'Weighted Node Depths: Solve this algorithmic challenge by applying the appropriate technique.',
+        problem: 'Apply the core algorithmic technique to solve this variation. Consider the key differences from the standard approach.',
         hints: [
             'Consider: Each node has a weight.',
             'The contribution of a node is weight * depth.',
@@ -30,13 +30,13 @@
             {
                 input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the weighted node depths criteria.'
+                explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
             },
             // Edge case
             {
                 input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4,"left":{"value":8},"right":{"value":9}},"right":{"value":5}},"right":{"value":3,"left":{"value":6},"right":{"value":7}}}},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
             }
         ],
         solutions: {

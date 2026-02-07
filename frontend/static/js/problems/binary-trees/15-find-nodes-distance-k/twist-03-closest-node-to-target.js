@@ -29,18 +29,18 @@
             {
                 input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"target":5,"k":2},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the closest node to target criteria.'
+                explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
             },
             {
                 input: {"tree":{"value":1,"left":{"value":2},"right":{"value":3}},"target":1,"k":1},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the closest node to target criteria.'
+                explanation: 'The BST structure allows directed traversal. Each node decision is informed by the ordering invariant, leading to the correct result without examining unnecessary subtrees.'
             },
             // Edge case
             {
                 input: {"tree":{"value":1,"left":{"value":2,"left":{"value":4},"right":{"value":5,"left":{"value":7},"right":{"value":8}}},"right":{"value":3,"right":{"value":6}}},"target":0,"k":0},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
             }
         ],
         solutions: {

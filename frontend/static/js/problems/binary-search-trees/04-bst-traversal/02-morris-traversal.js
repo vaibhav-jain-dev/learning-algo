@@ -39,7 +39,7 @@
         ]
 },
         output: [1, 2, 3, 4, 5, 6, 7],
-        explanation: 'Processing the input data produces the output. For input tree=[4, 2, ..., 7] (length 7), the result is [1, ..., 7] (length 7).'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     },
     {
         input: {
@@ -54,7 +54,7 @@
         ]
 },
         output: [4, 2, 5, 1, 3, 6],
-        explanation: 'Processing the input data produces the output. For input tree=[1, 2, ..., 6] (length 7), the result is [4, ..., 6] (length 6).'
+        explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
     }
         ],
         solutions: {

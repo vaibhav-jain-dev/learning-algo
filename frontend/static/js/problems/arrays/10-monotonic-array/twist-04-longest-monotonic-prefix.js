@@ -31,18 +31,18 @@
             {
                 input: {"array":[1,2,3,2,1]},
                 output: 3,
-                explanation: ''
+                explanation: 'The prefix function tells us the longest suffix of the matched portion that is also a prefix of the pattern. This allows intelligent backtracking during the text scan.'
             },
             {
                 input: {"array":[5,4,3,2,1]},
                 output: 5,
-                explanation: ''
+                explanation: 'Precompute the failure function from the pattern. During matching, when a mismatch occurs, use the failure function to skip ahead without re-examining characters already matched.'
             },
             // Edge case
             {
                 input: {"array":[1]},
                 output: 1,
-                explanation: ''
+                explanation: 'The combined preprocessing and matching phases ensure each character in the text is examined at most twice, achieving linear time complexity.'
             }
         ],
         solutions: {

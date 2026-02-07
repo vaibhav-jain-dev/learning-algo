@@ -14,7 +14,7 @@
         algorithm: 'kruskals-algorithm',
         parent: '06-kruskals-algorithm/02-connecting-cities',
         description: 'Instead of returning just the total cost, return the list of edges that form the minimum spanning tree.',
-        problem: 'Requires storing which edges were accepted during Kruskal\',
+        problem: 'Requires storing which edges were accepted during Kruskal.',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
@@ -30,13 +30,13 @@
             {
                 input: {"n":3,"connections":[[1,2,5],[1,3,6],[2,3,1]]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the return mst edges criteria.'
+                explanation: 'The greedy selection of minimum-weight edges, combined with cycle detection, ensures the resulting tree has the minimum total edge weight.'
             },
             // Edge case
             {
                 input: {"n":0,"connections":[[1,2,5]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
             }
         ],
         solutions: {

@@ -11,7 +11,15 @@
         name: 'Shift Linked List',
         difficulty: 'Hard',
         algorithm: 'll-shift',
-        description: 'Write a function that takes in the head of a Singly Linked List and an integer k, shifts the list in place (i.e., doesn\'t create a brand new list) by k positions, and returns its new head. Shifting a Linked List means moving its nodes forward or backward and wrapping them around the list where appropriate. For example, shifting a Linked List forward by one position would make its tail become the new head of the linked list. - If k is positive, shift the list forward (tail nodes move to head) - I',
+        description: 'Write a function that takes in the head of a Singly Linked List and an integer k, shifts the list in place (i.e., doesn\'t create a brand new list) by k positions, and returns its new head. Shifting a Linked List means moving its nodes forward or backward and wrapping them around the list where appropriate. For example, shifting a Linked List forward by one position would make its tail become the new head of the linked list. - If k is positive, shift the list forward (tail nodes move to head) - I.',
+        problem: 'Traverse the linked list with appropriate pointer management. Keep track of previous, current, and next nodes as needed. Be careful to update pointers in the correct order to avoid losing references. This achieves O(n) time with O(1) space.',
+        hints: [
+            'Think about what pointers you need to maintain as you traverse the list.',
+            'The runner technique (slow and fast pointers) solves many linked list problems.',
+            'Be careful about edge cases: empty list, single node, and the head/tail nodes.',
+            'Draw out the pointer changes step by step before coding to avoid losing references.'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(1)'
@@ -30,7 +38,7 @@
         "k": 2
 },
         output: [4, 5, 0, 1, 2, 3],
-        explanation: 'Processing the input data produces the output. For input list=[0, 1, ..., 5] (length 6), k=2, the result is [4, ..., 3] (length 6).'
+        explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
     },
     {
         input: {
@@ -45,7 +53,7 @@
         "k": -2
 },
         output: [2, 3, 4, 5, 0, 1],
-        explanation: 'Processing the input data produces the output. For input list=[0, 1, ..., 5] (length 6), k=-2, the result is [2, ..., 1] (length 6).'
+        explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
     },
     {
         input: {
@@ -57,7 +65,7 @@
         "k": 4
 },
         output: [3, 1, 2],
-        explanation: 'Processing the input data produces the output. For input list=[1, 2, 3], k=4, the result is [3, 1, 2].'
+        explanation: 'The single-pass traversal examines each node once. By the time we reach the relevant position, we have enough information to produce the correct result.'
     }
         ],
         twists: [

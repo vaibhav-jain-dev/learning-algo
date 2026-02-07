@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'spiral-matrix',
         description: 'Write a function that takes in an n x m two-dimensional array (that can be square-shaped when n == m) and returns a one-dimensional array of all the array\'s elements in spiral order. Spiral order starts at the top left corner of the two-dimensional array, goes to the right, and proceeds in a spiral pattern all the way until every element has been visited.',
+        problem: 'Process the matrix systematically, paying attention to the relationship between indices during transformation. Handle boundary conditions carefully to avoid index errors. This achieves O(n) time with O(n) space.',
+        hints: [
+            'Think about how rows and columns relate to each other in this transformation.',
+            'Consider processing the matrix in a specific order: row-by-row, column-by-column, or diagonally.',
+            'In-place modifications require careful ordering to avoid overwriting data you still need.',
+            'Edge cases: single row/column, square vs rectangular matrices.'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(n)'
@@ -47,7 +55,7 @@
         ]
 },
         output: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
-        explanation: 'Processing the input data produces the output. For input matrix=[[1, 2, 3, 4], [12, 13, 14, 5], [11, 16, 15, 6], [10, 9, 8, 7]], the result is [1, ..., 16] (length 16).'
+        explanation: 'The matrix transformation maps each element from its original position to its target position. Process in an order that avoids overwriting values still needed.'
     },
     {
         input: {
@@ -70,7 +78,7 @@
         ]
 },
         output: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        explanation: 'Processing the input data produces the output. For input matrix=[[1, 2, 3], [8, 9, 4], [7, 6, 5]], the result is [1, ..., 9] (length 9).'
+        explanation: 'Process the matrix following the required traversal pattern. Track the current boundaries (top, bottom, left, right) and adjust them after completing each direction.'
     }
         ],
         twists: [

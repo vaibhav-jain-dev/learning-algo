@@ -13,7 +13,7 @@
         difficulty: 'Hard',
         algorithm: 'prims-algorithm',
         parent: '07-prims-algorithm/02-network-delay-mst',
-        description: 'Compare solving network delay using Dijkstra\',
+        description: 'Compare solving network delay using Dijkstra.',
         problem: 'MST minimizes total edge weight but does not minimize path lengths. Dijkstra minimizes path from source to each node. The two approaches solve fundamentally different problems.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -36,7 +36,7 @@
             {
                 input: {"n":0,"connections":[[0,1,1]]},
                 output: false,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process edges in weight order. Add each edge if it connects two separate components.'
             }
         ],
         solutions: {

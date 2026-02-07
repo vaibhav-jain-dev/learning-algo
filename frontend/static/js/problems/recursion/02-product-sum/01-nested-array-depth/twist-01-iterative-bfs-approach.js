@@ -30,13 +30,13 @@
             {
                 input: {"array":[1,[2,[3,4]]]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the iterative bfs approach criteria.'
+                explanation: 'At each recursive call, one decision is made (include/exclude, choose/skip). The recursion tree explores all valid paths, and results are collected or combined at each return.'
             },
             // Edge case
             {
                 input: {"array":[1]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'The recursive structure breaks this into subproblems. The base case handles the smallest input directly. Each recursive step makes progress toward the base case while combining partial results.'
             }
         ],
         solutions: {

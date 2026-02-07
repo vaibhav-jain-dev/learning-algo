@@ -12,7 +12,7 @@
         difficulty: 'Medium',
         algorithm: 'graph-cycle',
         parent: '03-cycle-in-graph',
-        description: 'There is a directed graph of n nodes with each node labeled from 0 to n - 1. The graph is represented by a 0-indexed 2D integer array graph where graph[i] is an integer array of nodes adjacent to node i, meaning there is an edge from node i to each node in graph[i]. A node is a **terminal node** if there are no outgoing edges. A node is a **safe node** if every possible path starting from that node leads to a terminal node (or another safe node). Return an array containing all the safe nodes of ',
+        description: 'There is a directed graph of n nodes with each node labeled from 0 to n - 1. The graph is represented by a 0-indexed 2D integer array graph where graph[i] is an integer array of nodes adjacent to node i, meaning there is an edge from node i to each node in graph[i]. A node is a **terminal node** if there are no outgoing edges. A node is a **safe node** if every possible path starting from that node leads to a terminal node (or another safe node). Return an array containing all the safe nodes of .',
         problem: 'Detect cycles using DFS with node coloring: WHITE (unvisited), GRAY (in current path), BLACK (fully processed). A cycle exists if we encounter a GRAY node.',
         complexity: {
             time: 'O(V + E)',
@@ -51,7 +51,7 @@
         ]
 },
         output: [2, 4, 5, 6],
-        explanation: 'Exploring the graph structure, we find the required path or value. For input graph=[[1, 2], [2, 3], ..., []] (length 7), the result is [2, 4, 5, 6].'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -78,7 +78,7 @@
         ]
 },
         output: [4],
-        explanation: 'Exploring the graph structure, we find the required path or value. For input graph=[[1, 2, 3, 4], [1, 2], [3, 4], [0, 4], []], the result is [4].'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         solutions: {

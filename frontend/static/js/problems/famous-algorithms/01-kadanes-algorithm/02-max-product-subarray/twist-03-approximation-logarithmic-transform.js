@@ -13,7 +13,7 @@
         difficulty: 'Hard',
         algorithm: 'kadanes-algorithm',
         parent: '01-kadanes-algorithm/02-max-product-subarray',
-        description: 'Convert the product problem to a sum problem by taking logarithms of absolute values, then use Kadane\',
+        description: 'Convert the product problem to a sum problem by taking logarithms of absolute values, then use Kadane.',
         problem: 'Transforms multiplication into addition, making it a direct Kadane application. But you must handle zeros (log undefined), negatives (sign tracking), and floating-point precision issues.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -41,7 +41,7 @@
             {
                 input: {"nums":[2]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Scan through maintaining a running value. At each position, decide to extend or start fresh.'
             }
         ],
         solutions: {

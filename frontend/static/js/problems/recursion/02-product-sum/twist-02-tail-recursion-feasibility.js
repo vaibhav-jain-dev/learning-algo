@@ -30,13 +30,13 @@
             {
                 input: {"array":[5,2,[7,-1],3,[6,[-13,8],4]]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the tail recursion feasibility criteria.'
+                explanation: 'At each recursive call, one decision is made (include/exclude, choose/skip). The recursion tree explores all valid paths, and results are collected or combined at each return.'
             },
             // Edge case
             {
                 input: {"array":[5]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'The recursive structure breaks this into subproblems. The base case handles the smallest input directly. Each recursive step makes progress toward the base case while combining partial results.'
             }
         ],
         solutions: {

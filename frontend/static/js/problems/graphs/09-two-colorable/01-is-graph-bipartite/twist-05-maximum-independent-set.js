@@ -30,18 +30,18 @@
             {
                 input: {"graph":[[1,2,3],[0,2],[0,1,3],[0,2]]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the maximum independent set criteria.'
+                explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
             },
             {
                 input: {"graph":[[1,3],[0,2],[1,3],[0,2]]},
                 output: 3,
-                explanation: 'For this input, there are 3 valid positions that satisfy the maximum independent set criteria.'
+                explanation: 'Process nodes systematically using the chosen traversal strategy. The visited set prevents infinite loops in cyclic graphs. Aggregate results across all components for the final answer.'
             },
             // Edge case
             {
                 input: {"graph":[[1,2,3]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
             }
         ],
         solutions: {

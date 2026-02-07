@@ -12,6 +12,14 @@
         difficulty: 'Hard',
         algorithm: 'recursion-measurements',
         description: 'You have a measuring cup that can measure exactly low to high milliliters of liquid inclusively (the measuring lines are ambiguous between low and high). Given a list of such measuring cups and a target amount of liquid, write a function that returns whether it\'s possible to measure exactly the target amount. Each measuring cup can be used any number of times. Note that you can pour liquid into a larger container and can freely discard liquid (but you can\'t pour part of a cup measurement).',
+        problem: 'Break the problem into smaller subproblems recursively. Define clear base cases and recursive cases. At each step, assume the recursive call returns the correct result for smaller inputs, and combine them. This achieves O(target * maxRange * numCups) time with O(target * maxRange) space.',
+        hints: [
+            'Define your base case clearly. When should the recursion stop?',
+            'For the recursive case, assume the function works for smaller inputs. How do you use that?',
+            'Think about whether you need to pass additional state through parameters.',
+            'Consider memoization if the same subproblems are being computed multiple times.'
+        ],
+
         complexity: {
             time: 'O(target * maxRange * numCups)',
             space: 'O(target * maxRange)'

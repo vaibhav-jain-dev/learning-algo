@@ -13,6 +13,7 @@
         algorithm: 'graph-flood-fill',
         parent: '06-remove-islands',
         description: 'Given an m x n matrix board containing \'X\' and \'O\', capture all regions that are 4-directionally surrounded by \'X\'. A region is captured by flipping all \'O\'s into \'X\'s in that surrounded region.',
+        problem: 'Model the problem as a graph traversal. Choose the appropriate traversal strategy (DFS/BFS) based on whether you need depth exploration or shortest paths. Track visited nodes to handle cycles. This achieves O(M * N) time with O(M * N) space.',
         complexity: {
             time: 'O(M * N)',
             space: 'O(M * N)'
@@ -55,7 +56,7 @@
         ]
 },
         output: [["X", "X", "X", "X"], ["X", "X", "X", "X"], ["X", "X", "X", "X"], ["X", "O", "X", "X"]],
-        explanation: 'Exploring the graph structure, we find the required path or value. For input board=[[\'X\', \'X\', \'X\', \'X\'], [\'X\', \'O\', \'O\', \'X\'], [\'X\', \'X\', \'O\', \'X\'], [\'X\', \'O\', \'X\', \'X\']], the result is [[\'X\', \'X\', \'X\', \'X\'], [\'X\', \'X\', \'X\', \'X\'], [\'X\', \'X\', \'X\', \'X\'], [\'X\', \'O\', \'X\', \'X\']].'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     }
         ],
         solutions: {

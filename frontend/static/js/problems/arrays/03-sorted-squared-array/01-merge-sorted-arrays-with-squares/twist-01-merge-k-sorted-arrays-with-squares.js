@@ -31,18 +31,18 @@
             {
                 input: {"array":[1,3,5,7],"k":2},
                 output: [1,3],
-                explanation: ''
+                explanation: 'After sorting, process elements in order. Adjacent elements with overlapping or matching properties are grouped together. The sorted order guarantees no valid groupings are missed.'
             },
             {
                 input: {"array":[10,20,30],"k":1},
                 output: [10],
-                explanation: ''
+                explanation: 'The sorted arrangement reveals the structure of the solution. Scan from left to right, maintaining a running state that captures the current group or interval.'
             },
             // Edge case
             {
                 input: {"array":[5,5,5,5],"k":3},
                 output: [5,5,5],
-                explanation: ''
+                explanation: 'Sorting reduces the problem to a linear scan. Compare each element with the current running state and decide whether to extend, merge, or start a new group.'
             }
         ],
         solutions: {

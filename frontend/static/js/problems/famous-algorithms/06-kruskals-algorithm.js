@@ -11,7 +11,15 @@
         name: 'Minimum Spanning Tree',
         difficulty: 'Medium',
         algorithm: 'kruskals-algorithm',
-        description: 'Given a connected, undirected, weighted graph with V vertices and E edges, find the Minimum Spanning Tree (MST) using Kruskal\'s algorithm. A Minimum Spanning Tree is a subset of edges that connects all vertices with the minimum total edge weight, without forming any cycles. Kruskal\'s algorithm is a greedy algorithm that: 1. Sorts all edges by weight 2. Picks edges in order, skipping those that would create a cycle',
+        description: 'Given a connected, undirected, weighted graph with V vertices and E edges, find the Minimum Spanning Tree (MST) using Kruskal\'s algorithm. A Minimum Spanning Tree is a subset of edges that connects all vertices with the minimum total edge weight, without forming any cycles. Kruskal\'s algorithm is a greedy algorithm that: 1. Sorts all edges by weight 2. Picks edges in order, skipping those that would create a cycle.',
+        problem: 'Build a Minimum Spanning Tree by greedily selecting edges. Either sort all edges and add them if they don\'t create a cycle (Kruskal\'s), or grow the tree from a starting node using the cheapest available edge (Prim\'s). This achieves O(E log E) time with O(V) space.',
+        hints: [
+            'A Minimum Spanning Tree connects all nodes with minimum total edge weight.',
+            'Kruskal\'s sorts edges by weight; Prim\'s grows the tree from a starting node.',
+            'Think about when to add an edge: it should connect two previously disconnected components.',
+            'The MST property: any edge not in the MST, if added, creates a cycle where it\'s the heaviest edge.'
+        ],
+
         complexity: {
             time: 'O(E log E)',
             space: 'O(V)'
@@ -50,7 +58,7 @@
         ]
 },
         output: {"mstEdges": [[2, 3, 4], [0, 3, 5], [0, 1, 10]], "totalWeight": 19},
-        explanation: 'Processing the input data produces the output. For input V=4, E=5, edges=[[0, 1, 10], [0, 2, 6], [0, 3, 5], [1, 3, 15], [2, 3, 4]], the result is {\'mstEdges\': [[2, 3, 4], [0, 3, 5], [0, 1, 10]], \'totalWeight\': 19}.'
+        explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
     }
         ],
         twists: [

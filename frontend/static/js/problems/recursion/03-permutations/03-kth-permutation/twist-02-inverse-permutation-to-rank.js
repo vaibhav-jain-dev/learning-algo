@@ -30,13 +30,13 @@
             {
                 input: {"n":3,"k":3},
                 output: "result",
-                explanation: 'The resulting string is "result".'
+                explanation: 'At each recursive call, one decision is made (include/exclude, choose/skip). The recursion tree explores all valid paths, and results are collected or combined at each return.'
             },
             // Edge case
             {
                 input: {"n":0,"k":0},
                 output: "",
-                explanation: 'Edge case: minimal input.'
+                explanation: 'The recursive structure breaks this into subproblems. The base case handles the smallest input directly. Each recursive step makes progress toward the base case while combining partial results.'
             }
         ],
         solutions: {

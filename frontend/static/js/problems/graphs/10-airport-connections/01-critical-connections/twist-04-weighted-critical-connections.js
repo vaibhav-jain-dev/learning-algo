@@ -30,13 +30,13 @@
             {
                 input: {"n":4,"connections":[[0,1],[1,2],[2,0],[1,3]]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the weighted critical connections criteria.'
+                explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
             },
             // Edge case
             {
                 input: {"n":0,"connections":[[0,1]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
             }
         ],
         solutions: {

@@ -13,7 +13,7 @@
         difficulty: 'Medium',
         algorithm: 'recursion-product-sum',
         parent: '02-product-sum/02-flatten-nested-list',
-        description: 'Modify flatten to accept a depth parameter. Only flatten arrays up to the specified depth, leaving deeper arrays intact. This matches JavaScript\',
+        description: 'Modify flatten to accept a depth parameter. Only flatten arrays up to the specified depth, leaving deeper arrays intact. This matches JavaScript.',
         problem: 'Adds a depth constraint to the recursion, requiring you to track and decrement the allowed depth. When depth reaches 0, you stop flattening and include sub-arrays as-is.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -36,7 +36,7 @@
             {
                 input: {"array":[[1,2]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Scan through maintaining a running value. At each position, decide to extend or start fresh.'
             }
         ],
         solutions: {

@@ -31,18 +31,18 @@
             {
                 input: {"array":[1,2,1,2,3]},
                 output: 2,
-                explanation: ''
+                explanation: 'The matrix transformation maps each element from its original position to its target position. Process in an order that avoids overwriting values still needed.'
             },
             {
                 input: {"array":[1,2,3]},
                 output: 1,
-                explanation: ''
+                explanation: 'Process the matrix following the required traversal pattern. Track the current boundaries (top, bottom, left, right) and adjust them after completing each direction.'
             },
             // Edge case
             {
                 input: {"array":[1,1,1]},
                 output: 3,
-                explanation: ''
+                explanation: 'Work layer by layer from outside in. Each layer has four sides to process. Shrink boundaries after each complete layer until all elements are handled.'
             }
         ],
         solutions: {

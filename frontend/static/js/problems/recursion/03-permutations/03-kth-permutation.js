@@ -13,6 +13,7 @@
         algorithm: 'recursion-permutations',
         parent: '03-permutations',
         description: 'The set [1, 2, 3, ..., n] contains a total of n! unique permutations. By listing and labeling all of the permutations in order, we get the following sequence for n = 3: 1. "123" 2. "132" 3. "213" 4. "231" 5. "312" 6. "321" Given n and k, return the kth permutation sequence (1-indexed).',
+        problem: 'Break the problem into smaller subproblems recursively. Define clear base cases and recursive cases. At each step, assume the recursive call returns the correct result for smaller inputs, and combine them. This achieves O(n^2) time with O(n) space.',
         complexity: {
             time: 'O(n^2)',
             space: 'O(n)'

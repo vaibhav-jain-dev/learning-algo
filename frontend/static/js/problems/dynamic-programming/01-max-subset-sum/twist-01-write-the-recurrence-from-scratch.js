@@ -30,18 +30,18 @@
             {
                 input: {"array":[75,105,120,75,90,135]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the write the recurrence from scratch criteria.'
+                explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
             },
             {
                 input: {"array":[7,10,12,7,9,14]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the write the recurrence from scratch criteria.'
+                explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
             },
             // Edge case
             {
                 input: {"array":[75]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             }
         ],
         solutions: {

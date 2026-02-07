@@ -12,6 +12,14 @@
         difficulty: 'Hard',
         algorithm: 'kmp-algorithm',
         description: 'Given a text string and a pattern string, find all occurrences of the pattern in the text using the KMP algorithm. The KMP algorithm improves upon the naive O(n*m) approach by preprocessing the pattern to build a "failure function" (also called LPS - Longest Proper Prefix which is also Suffix). This allows us to skip characters that we know will match, achieving O(n + m) time complexity.',
+        problem: 'Preprocess the pattern to build a failure/prefix function that tells you how far to shift on a mismatch, avoiding re-comparison of characters. This achieves O(n + m) time with O(m) space.',
+        hints: [
+            'Naive string matching is O(n*m). Pattern preprocessing can reduce this to O(n+m).',
+            'Think about what information from failed matches can help avoid re-comparing characters.',
+            'The failure/prefix function tells you the longest proper prefix that is also a suffix.',
+            'Consider edge cases: pattern longer than text, repeated characters, empty strings.'
+        ],
+
         complexity: {
             time: 'O(n + m)',
             space: 'O(m)'
@@ -23,7 +31,7 @@
         "pattern": "ABABCABAB"
 },
         output: [10],
-        explanation: 'Processing the input data produces the output. For input text=ABABDABACDABABCABAB, pattern=ABABCABAB, the result is [10].'
+        explanation: 'The prefix function tells us the longest suffix of the matched portion that is also a prefix of the pattern. This allows intelligent backtracking during the text scan.'
     },
     {
         input: {
@@ -31,7 +39,7 @@
         "pattern": "AA"
 },
         output: [0, 1, 2, 3, 4],
-        explanation: 'Processing the input data produces the output. For input text=AAAAAA, pattern=AA, the result is [0, 1, 2, 3, 4].'
+        explanation: 'Precompute the failure function from the pattern. During matching, when a mismatch occurs, use the failure function to skip ahead without re-examining characters already matched.'
     }
         ],
         twists: [

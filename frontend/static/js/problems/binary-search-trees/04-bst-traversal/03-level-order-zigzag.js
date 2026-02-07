@@ -13,6 +13,7 @@
         algorithm: 'bst-traversal',
         parent: '04-bst-traversal',
         description: 'Given the root of a binary tree, return the **zigzag level order traversal** of its nodes\' values. (i.e., from left to right, then right to left for the next level and alternate between).',
+        problem: 'Leverage the BST property (left < root < right) to guide your decisions. At each node, the ordering property tells you which subtree to explore or how to restructure. This achieves O(n) time with O(n) space.',
         complexity: {
             time: 'O(n)',
             space: 'O(n)'
@@ -38,7 +39,7 @@
         ]
 },
         output: [[3], [20, 9], [15, 7]],
-        explanation: 'Processing the input data produces the output. For input tree=[3, 9, ..., 7] (length 7), the result is [[3], [20, 9], [15, 7]].'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     },
     {
         input: {
@@ -53,7 +54,7 @@
         ]
 },
         output: [[1], [3, 2], [4, 5, 6, 7]],
-        explanation: 'Processing the input data produces the output. For input tree=[1, 2, ..., 7] (length 7), the result is [[1], [3, 2], [4, 5, 6, 7]].'
+        explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
     }
         ],
         solutions: {

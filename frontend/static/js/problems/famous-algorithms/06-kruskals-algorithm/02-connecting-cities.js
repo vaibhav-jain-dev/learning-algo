@@ -48,7 +48,7 @@
         ]
 },
         output: 6,
-        explanation: 'Processing the input data produces the output. For input n=3, connections=[[1, 2, 5], [1, 3, 6], [2, 3, 1]], the result is 6.'
+        explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
     }
         ],
         solutions: {

@@ -14,14 +14,12 @@
         algorithm: 'dp-max-subset',
         parent: '01-max-subset-sum/03-paint-house',
         description: 'A greedy approach picks the cheapest valid color at each house. Construct an input where this fails to find the global minimum.',
-        problem: 'Understanding when local optimal choices don\',
+        problem: 'Understanding when local optimal choices don.',
         hints: [
-            'Start with the base problem solution and identify what assumption changes for this twist.',
-            'Key difference from the base problem: Understanding when local optimal choices don\',
-            ',
-            ',
-            ',
-            '
+            'A greedy approach picks the cheapest color at each house that differs from the previous house. Think about when this leads to a suboptimal total.',
+            'Construct a cost matrix where choosing the cheapest option early forces expensive choices later.',
+            'Try a 3-house example where the greedy first choice blocks access to a much cheaper combination overall.',
+            'Compare the greedy total with the DP optimal total to confirm the greedy approach fails on your constructed input.'
         ],
         complexity: {
             time: 'O(n log n)',
@@ -43,7 +41,7 @@
             {
                 input: {"costs":[[17,2,17]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Small input showing that greedy color selection fails when the locally cheapest choice leads to a globally suboptimal result.'
             }
         ],
         solutions: {

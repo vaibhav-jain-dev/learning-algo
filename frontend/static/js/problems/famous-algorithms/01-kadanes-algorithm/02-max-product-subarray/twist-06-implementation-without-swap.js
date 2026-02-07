@@ -30,18 +30,18 @@
             {
                 input: {"nums":[2,3,-2,4]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the implementation without swap criteria.'
+                explanation: 'The running maximum at each index represents the best subarray ending at that position. A negative running sum is never worth carrying forward.'
             },
             {
                 input: {"nums":[-2,0,-1]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the implementation without swap criteria.'
+                explanation: 'Compare extending the current subarray (running_sum + current) vs starting new (just current). The global best is updated whenever a new maximum is found.'
             },
             // Edge case
             {
                 input: {"nums":[2]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Maintain a running sum as you scan. At each position, choose to either extend the current subarray or start fresh. Track the global maximum across all positions.'
             }
         ],
         solutions: {

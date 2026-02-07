@@ -13,7 +13,7 @@
         difficulty: 'Hard',
         algorithm: 'prims-algorithm',
         parent: '07-prims-algorithm',
-        description: 'Implement both lazy Prim\',
+        description: 'Implement both lazy Prim.',
         problem: 'Lazy Prim adds duplicate entries and skips them later. Eager Prim maintains exactly one entry per non-MST node, requiring an indexed PQ with decrease-key operation.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -36,7 +36,7 @@
             {
                 input: {"V":0,"edges":[[0,1,2]]},
                 output: false,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
             }
         ],
         solutions: {

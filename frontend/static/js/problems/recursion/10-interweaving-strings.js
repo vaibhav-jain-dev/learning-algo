@@ -12,6 +12,14 @@
         difficulty: 'Hard',
         algorithm: 'recursion-interweaving',
         description: 'Write a function that takes in three strings and returns a boolean representing whether the third string can be formed by interweaving the first two strings. To interweave strings means to merge them by alternating their characters without changing the relative order of characters within each string. For example, the strings "abc" and "123" can be interwoven as "a1b2c3", "abc123", "1a2b3c", "123abc", "a1bc23", etc.',
+        problem: 'Break the problem into smaller subproblems recursively. Define clear base cases and recursive cases. At each step, assume the recursive call returns the correct result for smaller inputs, and combine them. This achieves O(n * m) time with O(n * m) space.',
+        hints: [
+            'Define your base case clearly. When should the recursion stop?',
+            'For the recursive case, assume the function works for smaller inputs. How do you use that?',
+            'Think about whether you need to pass additional state through parameters.',
+            'Consider memoization if the same subproblems are being computed multiple times.'
+        ],
+
         complexity: {
             time: 'O(n * m)',
             space: 'O(n * m)'

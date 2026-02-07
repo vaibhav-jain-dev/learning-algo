@@ -13,7 +13,7 @@
         difficulty: 'Hard',
         algorithm: 'dijkstras-algorithm',
         parent: '02-dijkstras-algorithm/03-path-with-minimum-effort',
-        description: 'Standard Dijkstra minimizes sum of edge weights. Here we minimize the maximum edge weight on the path. Prove that Dijkstra\',
+        description: 'Standard Dijkstra minimizes sum of edge weights. Here we minimize the maximum edge weight on the path. Prove that Dijkstra.',
         problem: 'The max operation is not the same as sum. You must prove that the "bottleneck shortest path" variant preserves the key property: any alternative path through unvisited nodes has effort >= current effort.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -36,7 +36,7 @@
             {
                 input: {"heights":[[1,2,2]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process the closest unvisited node first, relaxing all outgoing edges.'
             }
         ],
         solutions: {

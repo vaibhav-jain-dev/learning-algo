@@ -11,7 +11,15 @@
         name: 'Lowest Common Manager',
         difficulty: 'Hard',
         algorithm: 'recursion-manager',
-        description: 'You\'re given three inputs: the top manager of an organization (the root of an organizational chart), and two employees that are guaranteed to be in the organization. Write a function that returns the lowest common manager of the two employees. The "lowest common manager" is the deepest manager (furthest from the top) that has both employees as subordinates (directly or indirectly through other managers). Each employee has: - A name (unique identifier) - A list of direct reports (subordinates) An',
+        description: 'You\'re given three inputs: the top manager of an organization (the root of an organizational chart), and two employees that are guaranteed to be in the organization. Write a function that returns the lowest common manager of the two employees. The "lowest common manager" is the deepest manager (furthest from the top) that has both employees as subordinates (directly or indirectly through other managers). Each employee has: - A name (unique identifier) - A list of direct reports (subordinates) An.',
+        problem: 'Break the problem into smaller subproblems recursively. Define clear base cases and recursive cases. At each step, assume the recursive call returns the correct result for smaller inputs, and combine them. This achieves O(n) time with O(h) space.',
+        hints: [
+            'Define your base case clearly. When should the recursion stop?',
+            'For the recursive case, assume the function works for smaller inputs. How do you use that?',
+            'Think about whether you need to pass additional state through parameters.',
+            'Consider memoization if the same subproblems are being computed multiple times.'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(h)'

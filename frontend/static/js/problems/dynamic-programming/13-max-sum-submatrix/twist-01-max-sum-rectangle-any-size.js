@@ -14,14 +14,12 @@
         algorithm: 'dp-matrix',
         parent: '13-max-sum-submatrix',
         description: 'Instead of a fixed size x size submatrix, find the rectangle of any dimensions within the matrix that has the maximum sum.',
-        problem: 'Variable dimensions make this much harder. Requires prefix sums combined with Kadane\',
+        problem: 'Variable dimensions make this much harder. Requires prefix sums combined with Kadane.',
         hints: [
-            'Start with the base problem solution and identify what assumption changes for this twist.',
-            'Key difference from the base problem: Variable dimensions make this much harder. Requires prefix sums combined with Kadane\',
-            ',
-            ',
-            ',
-            '
+            'Fix two row boundaries (top and bottom) and collapse the submatrix between them into a 1D array by summing each column.',
+            'Apply the Kadane algorithm on the collapsed 1D column-sum array to find the best left and right boundaries.',
+            'Iterate over all O(rows^2) pairs of top and bottom rows, running Kadane on each to find the overall maximum rectangle.',
+            'Use prefix sums on columns to efficiently compute the collapsed array for each pair of row boundaries in O(cols) time.'
         ],
         complexity: {
             time: 'O(rows^2 * cols)',
@@ -48,7 +46,7 @@
             {
                 input: {"matrix":[[5,3,-1,5]],"size":0},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Small input edge case testing boundary conditions of the rectangle selection.'
             }
         ],
         solutions: {

@@ -14,7 +14,7 @@
         algorithm: 'dijkstras-algorithm',
         parent: '02-dijkstras-algorithm/01-network-delay-time',
         description: 'What if memory is limited and you can only keep K entries in the priority queue? Design an approximation that gives correct answers when possible and bounded error otherwise. When does this limitation cause incorrect results?',
-        problem: 'Standard Dijkstra\',
+        problem: 'Standard Dijkstra.',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
@@ -36,7 +36,7 @@
             {
                 input: {"times":[[2,1,1]],"n":0,"k":0},
                 output: false,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
             }
         ],
         solutions: {

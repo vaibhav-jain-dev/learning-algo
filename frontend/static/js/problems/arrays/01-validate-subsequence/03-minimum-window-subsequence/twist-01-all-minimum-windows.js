@@ -16,7 +16,7 @@
         description: 'Instead of returning just one minimum window, return all non-overlapping minimum-length windows where s2 is a subsequence. Requires collecting all optimal windows and then resolving overlaps, adding a greedy interval selection step after the window-finding phase.',
         problem: 'Requires collecting all optimal windows and then resolving overlaps, adding a greedy interval selection step after the window-finding phase.',
         hints: [
-            'Think about how this twist differs from the standard version: Instead of returning just one minimum window, return all non-overlapping minimum.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Requires collecting all optimal windows and then resolving overlaps, adding a greedy interval selection step after the window-finding phase.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"s1":"abcdebdde","s2":"bde"},
                 output: "bcde",
-                explanation: ''
+                explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
             },
             {
                 input: {"s1":"abcdef","s2":"ace"},
                 output: "abcde",
-                explanation: ''
+                explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
             },
             // Edge case
             {
                 input: {"s1":"xyz","s2":"abc"},
                 output: "",
-                explanation: ''
+                explanation: 'The single-pass traversal examines each node once. By the time we reach the relevant position, we have enough information to produce the correct result.'
             }
         ],
         solutions: {

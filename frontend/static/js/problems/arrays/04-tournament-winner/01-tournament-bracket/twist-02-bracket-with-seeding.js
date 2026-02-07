@@ -31,18 +31,18 @@
             {
                 input: {"teams":["A","B","C","D"],"results":[1,0,1]},
                 output: "A",
-                explanation: ''
+                explanation: 'Process the input according to the core logic. Each element is examined and contributes to building the final result.'
             },
             {
                 input: {"teams":["X","Y"],"results":[0]},
                 output: "Y",
-                explanation: ''
+                explanation: 'The algorithm handles this case by applying the key operation to each element. The accumulated result after processing all elements gives the answer.'
             },
             // Edge case
             {
                 input: {"teams":["A","B","C"],"results":[1,1]},
                 output: "A",
-                explanation: ''
+                explanation: 'This test case validates the algorithm behavior. The step-by-step processing of input elements produces the expected output.'
             }
         ],
         solutions: {

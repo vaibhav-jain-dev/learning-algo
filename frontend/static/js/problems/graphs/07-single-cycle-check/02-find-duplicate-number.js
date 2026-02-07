@@ -37,7 +37,7 @@
         ]
 },
         output: 2,
-        explanation: 'Processing the input data produces the output. For input nums=[1, 3, 4, 2, 2], the result is 2.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     }
         ],
         solutions: {

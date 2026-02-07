@@ -30,18 +30,18 @@
             {
                 input: {"n":6,"edges":[[5,2],[5,0],[4,0],[4,1],[2,3],[3,1]]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the longest path in dag criteria.'
+                explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
             },
             {
                 input: {"n":2,"edges":[[1,0],[0,1]]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the longest path in dag criteria.'
+                explanation: 'Process nodes systematically using the chosen traversal strategy. The visited set prevents infinite loops in cyclic graphs. Aggregate results across all components for the final answer.'
             },
             // Edge case
             {
                 input: {"n":0,"edges":[[5,2]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
             }
         ],
         solutions: {

@@ -13,16 +13,13 @@
         difficulty: 'Hard',
         algorithm: 'll-find-loop',
         parent: '06-find-loop',
-        description: 'Find the loop and then break it by setting the tail node\',
+        description: 'Find the loop and then break it by setting the tail node.',
         problem: 'After finding the loop start, you must also find the node that points back to the loop start (the loop tail) and set its next to null. Requires tracking one step behind.',
         hints: [
-            'Find the loop and then break it by setting the tail node\',
-            ',
-            ',
-            ',
-            ',
-            ',
-            '
+            'First use Floyd cycle detection (slow and fast pointers) to confirm a loop exists and find a meeting point inside the loop.',
+            'Once you have the meeting point, find the loop start by resetting one pointer to the head and advancing both one step at a time until they meet.',
+            'To remove the loop, you need to find the node whose next pointer points to the loop start - this is the loop tail.',
+            'Traverse from the loop start around the loop until you find the node pointing back to the loop start, then set its next to null.'
         ],
         complexity: {
             time: 'O(n)',
@@ -33,7 +30,7 @@
             {
                 input: {"list":[1,2,3,4,5]},
                 output: [1,2,3,4,5],
-                explanation: ''
+                explanation: 'Use Floyd cycle detection to find the loop, then locate the tail node pointing back to the loop start and set its next to null.'
             }
         ],
         solutions: {

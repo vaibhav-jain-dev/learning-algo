@@ -37,7 +37,7 @@
         ]
 },
         output: true,
-        explanation: 'Exploring the graph structure, we find the required path or value. For input numCourses=2, prerequisites=[[1, 0]], the result is true.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -54,7 +54,7 @@
         ]
 },
         output: false,
-        explanation: 'Exploring the graph structure, we find the required path or value. For input numCourses=2, prerequisites=[[1, 0], [0, 1]], the result is false.'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         solutions: {
@@ -172,7 +172,7 @@ func main() {
         },
         twists: [
             { id: '03-cycle-in-graph/01-course-schedule/twist-01-return-a-valid-course-order-topological-sort', name: 'Return a Valid Course Order (Topological Sort)', difficulty: 'Medium' },
-            { id: '03-cycle-in-graph/01-course-schedule/twist-02-course-schedule-with-bfs-kahns-algorithm', name: 'Course Schedule with BFS (Kahn\\'s Algorithm)', difficulty: 'Medium' },
+            { id: '03-cycle-in-graph/01-course-schedule/twist-02-course-schedule-with-bfs-kahns-algorithm', name: 'Course Schedule with BFS (Kahn\'s Algorithm)', difficulty: 'Medium' },
             { id: '03-cycle-in-graph/01-course-schedule/twist-03-minimum-semesters-to-complete-all-courses', name: 'Minimum Semesters to Complete All Courses', difficulty: 'Hard' },
             { id: '03-cycle-in-graph/01-course-schedule/twist-04-course-schedule-with-weighted-prerequisites', name: 'Course Schedule with Weighted Prerequisites', difficulty: 'Hard' },
             { id: '03-cycle-in-graph/01-course-schedule/twist-05-detect-which-courses-form-circular-dependencies', name: 'Detect Which Courses Form Circular Dependencies', difficulty: 'Medium' }

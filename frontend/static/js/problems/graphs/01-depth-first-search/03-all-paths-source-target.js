@@ -43,7 +43,7 @@
         ]
 },
         output: [[0, 1, 3], [0, 2, 3]],
-        explanation: 'Using depth-first search, we explore all paths to find the solution. For input graph=[[1, 2], [3], [3], []], the result is [[0, 1, 3], [0, 2, 3]].'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -68,7 +68,7 @@
         ]
 },
         output: [[0, 4], [0, 3, 4], [0, 1, 3, 4], [0, 1, 2, 3, 4], [0, 1, 4]],
-        explanation: 'Using depth-first search, we explore all paths to find the solution. For input graph=[[4, 3, 1], [3, 2, 4], [3], [4], []], the result is [[0, 4], [0, 3, 4], [0, 1, 3, 4], [0, 1, 2, 3, 4], [0, 1, 4]].'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         solutions: {

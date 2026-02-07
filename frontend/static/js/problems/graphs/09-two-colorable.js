@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'graph-coloring',
         description: 'You\'re given a list of edges representing an undirected graph. Write a function that returns a boolean indicating whether the graph is two-colorable. A graph is two-colorable (also called bipartite) if all of its nodes can be assigned one of two colors such that no two adjacent nodes have the same color. The graph will always be connected, meaning that from any node you can reach any other node.',
+        problem: 'Model the problem as a graph traversal. Choose the appropriate traversal strategy (DFS/BFS) based on whether you need depth exploration or shortest paths. Track visited nodes to handle cycles. This achieves O(V + E) time with O(V) space.',
+        hints: [
+            'Choose the right graph representation: adjacency list vs adjacency matrix.',
+            'Consider whether the graph is directed or undirected, weighted or unweighted.',
+            'Track visited nodes to handle cycles and avoid infinite loops.',
+            'Think about which graph traversal algorithm best fits this problem: DFS, BFS, or something else.'
+        ],
+
         complexity: {
             time: 'O(V + E)',
             space: 'O(V)'
@@ -35,7 +43,7 @@
         ]
 },
         output: false,
-        explanation: 'Exploring the graph structure, we find the required path or value. For input edges=[[1, 2], [0, 2], [0, 1]], the result is false.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -59,7 +67,7 @@
         ]
 },
         output: true,
-        explanation: 'Exploring the graph structure, we find the required path or value. For input edges=[[1, 3], [0, 2], [1, 3], [0, 2]], the result is true.'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         twists: [

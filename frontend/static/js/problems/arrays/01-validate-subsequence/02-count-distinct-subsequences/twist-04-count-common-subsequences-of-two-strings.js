@@ -16,7 +16,7 @@
         description: 'Given two strings s1 and s2, count the total number of common subsequences (not just the longest one). Changes the DP recurrence: instead of matching against a target, you must count all shared subsequences between two strings simultaneously.',
         problem: 'Changes the DP recurrence: instead of matching against a target, you must count all shared subsequences between two strings simultaneously.',
         hints: [
-            'Think about how this twist differs from the standard version: Given two strings s1 and s2, count the total number of common subsequences (not .',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Changes the DP recurrence: instead of matching against a target, you must count all shared subsequences between two strings simultaneously.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"s":"rabbbit","t":"rabbit"},
                 output: 3,
-                explanation: ''
+                explanation: 'Precompute the failure function from the pattern. During matching, when a mismatch occurs, use the failure function to skip ahead without re-examining characters already matched.'
             },
             {
                 input: {"s":"aabb","t":"ab"},
                 output: 4,
-                explanation: ''
+                explanation: 'The prefix function tells us the longest suffix of the matched portion that is also a prefix of the pattern. This allows intelligent backtracking during the text scan.'
             },
             // Edge case
             {
                 input: {"s":"abc","t":"xyz"},
                 output: 0,
-                explanation: ''
+                explanation: 'The combined preprocessing and matching phases ensure each character in the text is examined at most twice, achieving linear time complexity.'
             }
         ],
         solutions: {

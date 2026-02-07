@@ -31,21 +31,21 @@
         "n": 2
 },
         output: 1,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input n=2, the result is 1.'
+        explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
     },
     {
         input: {
         "n": 10
 },
         output: 36,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input n=10, the result is 36.'
+        explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
     },
     {
         input: {
         "n": 8
 },
         output: 18,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input n=8, the result is 18.'
+        explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
     }
         ],
         solutions: {
@@ -126,11 +126,11 @@ func main() {
 }`
         },
         twists: [
-            { id: '03-min-coins/03-integer-break/twist-01-minimize-the-product', title: 'Minimize the Product', difficulty: 'Medium' },
-            { id: '03-min-coins/03-integer-break/twist-02-maximize-product-with-at-most-k-parts', title: 'Maximize Product With At Most K Parts', difficulty: 'Hard' },
-            { id: '03-min-coins/03-integer-break/twist-03-maximize-sum-of-squares', title: 'Maximize Sum of Squares', difficulty: 'Hard' },
-            { id: '03-min-coins/03-integer-break/twist-04-break-into-distinct-parts', title: 'Break Into Distinct Parts', difficulty: 'Hard' },
-            { id: '03-min-coins/03-integer-break/twist-05-count-ways-to-achieve-max-product', title: 'Count Ways to Achieve Max Product', difficulty: 'Medium' }
+            { id: '03-min-coins/03-integer-break/twist-01-minimize-the-product', name: 'Minimize the Product', difficulty: 'Medium' },
+            { id: '03-min-coins/03-integer-break/twist-02-maximize-product-with-at-most-k-parts', name: 'Maximize Product With At Most K Parts', difficulty: 'Hard' },
+            { id: '03-min-coins/03-integer-break/twist-03-maximize-sum-of-squares', name: 'Maximize Sum of Squares', difficulty: 'Hard' },
+            { id: '03-min-coins/03-integer-break/twist-04-break-into-distinct-parts', name: 'Break Into Distinct Parts', difficulty: 'Hard' },
+            { id: '03-min-coins/03-integer-break/twist-05-count-ways-to-achieve-max-product', name: 'Count Ways to Achieve Max Product', difficulty: 'Medium' }
         ],
         similar: [
 

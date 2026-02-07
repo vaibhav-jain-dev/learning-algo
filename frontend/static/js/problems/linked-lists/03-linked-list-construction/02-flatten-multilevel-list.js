@@ -12,7 +12,7 @@
         difficulty: 'Medium',
         algorithm: 'll-construction',
         parent: '03-linked-list-construction',
-        description: 'You are given a doubly linked list, which contains nodes that have a next pointer, a previous pointer, and an additional **child pointer**. This child pointer may or may not point to a separate doubly linked list, also containing these special nodes. These child lists may have one or more children of their own, and so on, to produce a **multilevel data structure**. **Flatten** the list so that all the nodes appear in a single-level, doubly linked list. You are given the head of the first level o',
+        description: 'You are given a doubly linked list, which contains nodes that have a next pointer, a previous pointer, and an additional **child pointer**. This child pointer may or may not point to a separate doubly linked list, also containing these special nodes. These child lists may have one or more children of their own, and so on, to produce a **multilevel data structure**. **Flatten** the list so that all the nodes appear in a single-level, doubly linked list. You are given the head of the first level o.',
         problem: 'Reverse links by maintaining three pointers: prev, curr, next. For each node, save next, point curr to prev, then advance. Handle edge cases for empty or single-node lists.',
         complexity: {
             time: 'O(n)',
@@ -31,14 +31,14 @@
         "list": "1-2-3-4-5-6 with 3->7-8-9-10 and 8->11-12"
 },
         output: [1, 2, 3, 7, 8, 11, 12, 9, 10, 4, 5, 6],
-        explanation: 'Processing the input data produces the output. For input list=1-2-3-4-5-6 with 3->7-8-9-10 and 8->11-12, the result is [1, ..., 6] (length 12).'
+        explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
     },
     {
         input: {
         "list": "1-2 with 1->3"
 },
         output: [1, 3, 2],
-        explanation: 'Processing the input data produces the output. For input list=1-2 with 1->3, the result is [1, 3, 2].'
+        explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
     }
         ],
         solutions: {

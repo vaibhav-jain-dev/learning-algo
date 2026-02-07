@@ -31,18 +31,18 @@
             {
                 input: {"array":[-3,-1,0,2,4]},
                 output: [0,1,4,9,16],
-                explanation: ''
+                explanation: 'Process the input according to the core logic. Each element is examined and contributes to building the final result.'
             },
             {
                 input: {"array":[1,2,3]},
                 output: [1,4,9],
-                explanation: ''
+                explanation: 'The algorithm handles this case by applying the key operation to each element. The accumulated result after processing all elements gives the answer.'
             },
             // Edge case
             {
                 input: {"array":[-5,-3,-1]},
                 output: [1,9,25],
-                explanation: ''
+                explanation: 'This test case validates the algorithm behavior. The step-by-step processing of input elements produces the expected output.'
             }
         ],
         solutions: {

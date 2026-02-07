@@ -11,7 +11,15 @@
         name: 'Staircase Traversal',
         difficulty: 'Medium',
         algorithm: 'recursion-staircase',
-        description: 'You\'re given two positive integers representing the height of a staircase and the maximum number of steps you can advance up the staircase at a time. Write a function that returns the number of distinct ways to climb the staircase. For example, if you were given a staircase of height = 3 and maxSteps = 2, you could climb the staircase in 3 ways: - 1 step, 1 step, 1 step - 1 step, 2 steps - 2 steps, 1 step',
+        description: 'You\'re given two positive integers representing the height of a staircase and the maximum number of steps you can advance up the staircase at a time. Write a function that returns the number of distinct ways to climb the staircase. For example, if you were given a staircase of height = 3 and maxSteps = 2, you could climb the staircase in 3 ways: - 1 step, 1 step, 1 step - 1 step, 2 steps - 2 steps, 1 step.',
+        problem: 'Break the problem into smaller subproblems recursively. Define clear base cases and recursive cases. At each step, assume the recursive call returns the correct result for smaller inputs, and combine them. This achieves O(n) time with O(n) space.',
+        hints: [
+            'Define your base case clearly. When should the recursion stop?',
+            'For the recursive case, assume the function works for smaller inputs. How do you use that?',
+            'Think about whether you need to pass additional state through parameters.',
+            'Consider memoization if the same subproblems are being computed multiple times.'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(n)'

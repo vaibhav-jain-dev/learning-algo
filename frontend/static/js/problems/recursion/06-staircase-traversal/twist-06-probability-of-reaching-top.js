@@ -30,13 +30,13 @@
             {
                 input: {"height":4,"maxSteps":2},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the probability of reaching top criteria.'
+                explanation: 'At each recursive call, one decision is made (include/exclude, choose/skip). The recursion tree explores all valid paths, and results are collected or combined at each return.'
             },
             // Edge case
             {
                 input: {"height":0,"maxSteps":0},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'The recursive structure breaks this into subproblems. The base case handles the smallest input directly. Each recursive step makes progress toward the base case while combining partial results.'
             }
         ],
         solutions: {

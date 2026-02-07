@@ -30,13 +30,13 @@
             {
                 input: {"n":4,"edges":[[0,1,1],[1,2,-3],[2,3,2],[3,1,1]]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the negative cycle in undirected graph criteria.'
+                explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
             },
             // Edge case
             {
                 input: {"n":0,"edges":[[0,1,1]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
             }
         ],
         solutions: {

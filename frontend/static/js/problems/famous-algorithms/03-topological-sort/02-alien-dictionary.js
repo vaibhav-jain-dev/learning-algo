@@ -13,6 +13,7 @@
         algorithm: 'topological-sort',
         parent: '03-topological-sort',
         description: 'There is a new alien language that uses the English alphabet. The order among letters is unknown. You are given a list of strings words from the alien language\'s dictionary, where the strings are sorted lexicographically by the rules of this new language. Derive the order of letters in this language and return it. If no valid order exists, return "". If there are multiple valid orderings, return any of them.',
+        problem: 'Model the problem as a graph traversal. Choose the appropriate traversal strategy (DFS/BFS) based on whether you need depth exploration or shortest paths. Track visited nodes to handle cycles. This achieves O(C) time with O(1) space.',
         complexity: {
             time: 'O(C)',
             space: 'O(1)'
@@ -36,7 +37,7 @@
         ]
 },
         output: "wertf",
-        explanation: 'After sorting the input, we can apply an efficient algorithm to find the result. For input words=[wrt, wrf, er, ett, rftt], the result is wertf.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -46,7 +47,7 @@
         ]
 },
         output: "zx",
-        explanation: 'After sorting the input, we can apply an efficient algorithm to find the result. For input words=[z, x], the result is zx.'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         solutions: {

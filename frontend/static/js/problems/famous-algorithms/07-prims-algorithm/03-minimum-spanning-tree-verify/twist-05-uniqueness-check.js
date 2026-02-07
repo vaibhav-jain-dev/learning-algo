@@ -30,13 +30,13 @@
             {
                 input: {"n":4,"graphEdges":[[0,1,1],[0,2,2],[1,2,3],[1,3,4],[2,3,5]],"proposed":[[0,1,1],[0,2,2],[1,3,4]]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the uniqueness check criteria.'
+                explanation: 'The greedy selection of minimum-weight edges, combined with cycle detection, ensures the resulting tree has the minimum total edge weight.'
             },
             // Edge case
             {
                 input: {"n":0,"graphEdges":[[0,1,1]],"proposed":[[0,1,1]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
             }
         ],
         solutions: {

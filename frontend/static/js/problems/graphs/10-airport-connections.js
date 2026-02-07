@@ -12,6 +12,14 @@
         difficulty: 'Very',
         algorithm: 'graph-connections',
         description: 'You\'re given a list of airports (represented as three-letter codes), a list of one-way flight routes connecting these airports, and a starting airport. Write a function that returns the minimum number of additional one-way routes that need to be added so that you can reach any airport from the starting airport. Note that routes are one-way (directed), so just because you can fly from airport A to airport B doesn\'t mean you can fly from B to A.',
+        problem: 'Model the problem as a graph traversal. Choose the appropriate traversal strategy (DFS/BFS) based on whether you need depth exploration or shortest paths. Track visited nodes to handle cycles. This achieves O(A * (A + R)) time with O(A + R) space.',
+        hints: [
+            'Choose the right graph representation: adjacency list vs adjacency matrix.',
+            'Consider whether the graph is directed or undirected, weighted or unweighted.',
+            'Track visited nodes to handle cycles and avoid infinite loops.',
+            'Think about which graph traversal algorithm best fits this problem: DFS, BFS, or something else.'
+        ],
+
         complexity: {
             time: 'O(A * (A + R))',
             space: 'O(A + R)'
@@ -120,7 +128,7 @@
         "startingAirport": "LGA"
 },
         output: 3,
-        explanation: 'Exploring the graph structure, we find the required path or value. For input airports=[BGI, CDG, ..., BUD] (length 18), routes=[[\'DSM\', \'ORD\'], [\'ORD\', \'BGI\'], ..., [\'SAN\', \'EYW\']] (length 19), startingAirport=LGA, the result is 3.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     }
         ],
         twists: [

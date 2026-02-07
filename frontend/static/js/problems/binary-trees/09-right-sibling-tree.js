@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'tree-sibling',
         description: 'Write a function that takes in a Binary Tree, transforms it into a Right Sibling Tree, and returns its root. A Right Sibling Tree is obtained by making every node in a Binary Tree have its right property point to its right sibling instead of its right child. A node\'s right sibling is the node immediately to its right on the same level, or None/nil if there is no node immediately to its right. After the transformation, all nodes\' left pointers should remain unchanged.',
+        problem: 'Use recursion to solve the problem for each subtree, then combine results at each node. The base case handles null nodes. Each node is visited once, giving O(n) time with O(w) space for the recursion stack.',
+        hints: [
+            'Think recursively: solve the problem for the left and right subtrees, then combine results.',
+            'What information does each node need from its children to compute its result?',
+            'Consider whether you need a top-down (preorder) or bottom-up (postorder) approach.',
+            'Base case: what should happen when you reach a null/empty node?'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(w)'
@@ -57,7 +65,7 @@
         }
 },
         output: "siblings connected at each level",
-        explanation: 'Traversing the tree structure, we process nodes to compute the result. For input tree={\'value\': 1, \'left\': {\'value\': 2, \'left\': {\'value\': 4, \'left\': {\'value\': 8}, \'right\': {\'value\': 9}}, \'right\': {\'value\': 5, \'right\': {\'value\': 10}}}, \'right\': {\'value\': 3, \'left\': {\'value\': 6, \'left\': {\'value\': 11}, \'right\': {\'value\': 12}}, \'right\': {\'value\': 7}}}, the result is siblings connected at each level.'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     }
         ],
         twists: [

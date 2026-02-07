@@ -13,7 +13,7 @@
         difficulty: 'Medium',
         algorithm: 'prims-algorithm',
         parent: '07-prims-algorithm/01-min-cost-connect-points-prim',
-        description: 'Since this is a dense graph (every point connects to every other), implement Prim\',
+        description: 'Since this is a dense graph (every point connects to every other), implement Prim.',
         problem: 'For complete graphs with n^2 edges, maintaining a heap of n^2 entries is wasteful. An O(n^2) approach with a minDist array avoids heap overhead entirely.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -36,7 +36,7 @@
             {
                 input: {"points":[[0,0]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process edges in weight order. Add each edge if it connects two separate components.'
             }
         ],
         solutions: {

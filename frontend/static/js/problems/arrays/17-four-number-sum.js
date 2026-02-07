@@ -12,6 +12,14 @@
         difficulty: 'Hard',
         algorithm: 'hash-pair-sum',
         description: 'Write a function that takes in a non-empty array of distinct integers and an integer representing a target sum. The function should find all quadruplets in the array that sum up to the target sum and return a two-dimensional array of all these quadruplets in no particular order. If no four numbers sum up to the target sum, the function should return an empty array.',
+        problem: 'Use a hash table to store seen elements for O(1) lookup. Iterate through the input, checking if the complement or required value exists in the hash table. This trades O(n²) space for O(n²) time.',
+        hints: [
+            'A hash table can give you O(1) lookup. What do you need to look up quickly?',
+            'Think about what to store as keys vs values in your hash table.',
+            'Consider a single pass through the data, building the hash table as you go.',
+            'Watch out for duplicates and collisions. How should your algorithm handle them?'
+        ],
+
         complexity: {
             time: 'O(n²)',
             space: 'O(n²)'
@@ -50,11 +58,11 @@
     }
         ],
         twists: [
-            { title: 'Four Sum Unique Absolute Values', difficulty: 'Hard', description: 'Find quadruplets where all four elements have different absolute values. Sum must still equal target.', whyDifferent: 'Adds an extra uniqueness constraint beyond just distinct indices, requiring filtering during pair generation.', example: 'array = [1, -1, 2, -2, 3], target = 3. [1, -1, 2, 3] invalid (|1|==|-1|). Must find others.' },
-            { title: 'Four Sum Streaming', difficulty: 'Very Hard', description: 'Elements arrive one at a time. After each new element, report any new quadruplets that can be formed.', whyDifferent: 'Incremental algorithm: must efficiently update pair sums table and check for new quadruplets with each insertion.', example: 'Stream: 7, 6, 4, -1, 1, 2. After 4th element arrive, first quadruplet may form.' },
-            { title: 'Closest Four Sum', difficulty: 'Hard', description: 'Find the quadruplet whose sum is closest to the target, even if no exact match exists.', whyDifferent: 'Cannot just check for exact complement. Must track minimum absolute difference across all quadruplet combinations.', example: 'array = [1, 2, 3, 4, 5], target = 20. Closest: 2+3+4+5 = 14 (diff 6).' },
-            { title: 'Four Sum with Ordered Elements', difficulty: 'Hard', description: 'Find quadruplets where the four values are in non-decreasing order within the quadruplet: a <= b <= c <= d.', whyDifferent: 'The ordering constraint limits which combinations are valid, requiring sorted enumeration or post-filtering.', example: 'array = [7, 6, 4, -1, 1, 2], target = 16. Only quadruplets in sorted order count.' },
-            { title: 'Maximum Product Four Sum', difficulty: 'Hard', description: 'Among all quadruplets that sum to target, find the one with the maximum product of its four elements.', whyDifferent: 'Dual objective: match the sum exactly while maximizing the product, requiring exhaustive search with pruning.', example: 'array = [1, 2, 3, 4, 6, -1], target = 10. Valid quads: [1,2,3,4] prod=24, [1,3,6,-1+...] etc. Max product wins.' }
+            { name: 'Four Sum Unique Absolute Values', difficulty: 'Hard', description: 'Find quadruplets where all four elements have different absolute values. Sum must still equal target.', whyDifferent: 'Adds an extra uniqueness constraint beyond just distinct indices, requiring filtering during pair generation.', example: 'array = [1, -1, 2, -2, 3], target = 3. [1, -1, 2, 3] invalid (|1|==|-1|). Must find others.' },
+            { name: 'Four Sum Streaming', difficulty: 'Very Hard', description: 'Elements arrive one at a time. After each new element, report any new quadruplets that can be formed.', whyDifferent: 'Incremental algorithm: must efficiently update pair sums table and check for new quadruplets with each insertion.', example: 'Stream: 7, 6, 4, -1, 1, 2. After 4th element arrive, first quadruplet may form.' },
+            { name: 'Closest Four Sum', difficulty: 'Hard', description: 'Find the quadruplet whose sum is closest to the target, even if no exact match exists.', whyDifferent: 'Cannot just check for exact complement. Must track minimum absolute difference across all quadruplet combinations.', example: 'array = [1, 2, 3, 4, 5], target = 20. Closest: 2+3+4+5 = 14 (diff 6).' },
+            { name: 'Four Sum with Ordered Elements', difficulty: 'Hard', description: 'Find quadruplets where the four values are in non-decreasing order within the quadruplet: a <= b <= c <= d.', whyDifferent: 'The ordering constraint limits which combinations are valid, requiring sorted enumeration or post-filtering.', example: 'array = [7, 6, 4, -1, 1, 2], target = 16. Only quadruplets in sorted order count.' },
+            { name: 'Maximum Product Four Sum', difficulty: 'Hard', description: 'Among all quadruplets that sum to target, find the one with the maximum product of its four elements.', whyDifferent: 'Dual objective: match the sum exactly while maximizing the product, requiring exhaustive search with pruning.', example: 'array = [1, 2, 3, 4, 6, -1], target = 10. Valid quads: [1,2,3,4] prod=24, [1,3,6,-1+...] etc. Max product wins.' }
         ],
         similar: [
     { id: '17-four-number-sum/01-k-sum-generalized', name: '01 K Sum Generalized', difficulty: 'Hard' },

@@ -27,13 +27,13 @@
             {
                 input: {"tree":[7,3,15,null,null,9,20]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the bst iterator starting from a given value criteria.'
+                explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
             },
             // Edge case
             {
                 input: {"tree":[7]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
             }
         ],
         solutions: {

@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'two-pointer-diff',
         description: 'Write a function that takes in two non-empty arrays of integers, finds the pair of numbers (one from each array) whose absolute difference is closest to zero, and returns an array containing these two numbers, with the number from the first array in the first position. Note that the absolute difference of two integers is the distance between them on the real number line.',
+        problem: 'Use two pointers to efficiently traverse the input. Position them strategically and move them based on comparisons with the target condition. This achieves O(n log n + m log m) time with O(1) space by avoiding nested iterations.',
+        hints: [
+            'Consider using two pointers to traverse the data structure from different positions.',
+            'Think about what conditions determine when each pointer should move.',
+            'The two-pointer technique works best when the data has some sorted or ordered property.',
+            'Consider edge cases: what happens when pointers meet or cross each other?'
+        ],
+
         complexity: {
             time: 'O(n log n + m log m)',
             space: 'O(1)'

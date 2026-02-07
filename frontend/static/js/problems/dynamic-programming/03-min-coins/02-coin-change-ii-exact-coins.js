@@ -13,6 +13,7 @@
         algorithm: 'dp-coin-change',
         parent: '03-min-coins',
         description: 'Given an array of coin denominations coins, a target amount, and an integer k, return whether it\'s possible to make the amount using **exactly** k coins. If possible, return the coins used; otherwise return an empty list. This is a variation of the classic coin change problem where instead of minimizing coins, you must use a specific count.',
+        problem: 'Build the solution using dynamic programming. Define the state, establish the base cases, and derive the recurrence relation. Fill in the DP table bottom-up (or use memoized recursion top-down). This achieves O(amount * k * len(coins)) time with O(amount * k) space.',
         complexity: {
             time: 'O(amount * k * len(coins))',
             space: 'O(amount * k)'
@@ -36,7 +37,7 @@
         "k": 3
 },
         output: true,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input amount=11, coins=[1, 2, 5], k=3, the result is true.'
+        explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
     },
     {
         input: {
@@ -48,7 +49,7 @@
         "k": 2
 },
         output: true,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input amount=10, coins=[2, 5], k=2, the result is true.'
+        explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
     },
     {
         input: {
@@ -60,7 +61,7 @@
         "k": 3
 },
         output: false,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input amount=7, coins=[2, 4], k=3, the result is false.'
+        explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
     }
         ],
         solutions: {
@@ -164,11 +165,11 @@ func main() {
 }`
         },
         twists: [
-            { id: '03-min-coins/02-coin-change-ii-exact-coins/twist-01-count-all-combinations', title: 'Count All Combinations', difficulty: 'Medium' },
-            { id: '03-min-coins/02-coin-change-ii-exact-coins/twist-02-minimize-largest-coin-used', title: 'Minimize Largest Coin Used', difficulty: 'Hard' },
-            { id: '03-min-coins/02-coin-change-ii-exact-coins/twist-03-exact-coins-with-limited-supply', title: 'Exact Coins With Limited Supply', difficulty: 'Hard' },
-            { id: '03-min-coins/02-coin-change-ii-exact-coins/twist-04-exact-coins-minimum-amount', title: 'Exact Coins Minimum Amount', difficulty: 'Medium' },
-            { id: '03-min-coins/02-coin-change-ii-exact-coins/twist-05-reconstruct-coin-selection', title: 'Reconstruct Coin Selection', difficulty: 'Medium' }
+            { id: '03-min-coins/02-coin-change-ii-exact-coins/twist-01-count-all-combinations', name: 'Count All Combinations', difficulty: 'Medium' },
+            { id: '03-min-coins/02-coin-change-ii-exact-coins/twist-02-minimize-largest-coin-used', name: 'Minimize Largest Coin Used', difficulty: 'Hard' },
+            { id: '03-min-coins/02-coin-change-ii-exact-coins/twist-03-exact-coins-with-limited-supply', name: 'Exact Coins With Limited Supply', difficulty: 'Hard' },
+            { id: '03-min-coins/02-coin-change-ii-exact-coins/twist-04-exact-coins-minimum-amount', name: 'Exact Coins Minimum Amount', difficulty: 'Medium' },
+            { id: '03-min-coins/02-coin-change-ii-exact-coins/twist-05-reconstruct-coin-selection', name: 'Reconstruct Coin Selection', difficulty: 'Medium' }
         ],
         similar: [
 

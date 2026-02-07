@@ -30,13 +30,13 @@
             {
                 input: {"n":7,"parent":[-1,0,0,1,1,2,2],"queries":[[3,1],[5,2],[6,3]]},
                 output: 3,
-                explanation: 'For this input, there are 3 valid positions that satisfy the ancestor at given depth criteria.'
+                explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
             },
             // Edge case
             {
                 input: {"n":0,"parent":[-1],"queries":[[3,1]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
             }
         ],
         solutions: {

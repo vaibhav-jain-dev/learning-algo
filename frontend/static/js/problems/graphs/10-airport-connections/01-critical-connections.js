@@ -49,7 +49,7 @@
         ]
 },
         output: [[1, 3]],
-        explanation: 'Exploring the graph structure, we find the required path or value. For input n=4, connections=[[0, 1], [1, 2], [2, 0], [1, 3]], the result is [[1, 3]].'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     }
         ],
         solutions: {

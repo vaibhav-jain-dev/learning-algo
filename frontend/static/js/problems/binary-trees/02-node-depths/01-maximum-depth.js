@@ -13,6 +13,7 @@
         algorithm: 'tree-dfs',
         parent: '02-node-depths',
         description: 'Given the root of a binary tree, return its maximum depth. A binary tree\'s maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.',
+        problem: 'Use depth-first search to explore all possible paths. Start from the root/source, go as deep as possible before backtracking. Track visited nodes to avoid cycles. This achieves O(n) time with O(h) space.',
         complexity: {
             time: 'O(n)',
             space: 'O(h)'
@@ -44,7 +45,7 @@
         }
 },
         output: 3,
-        explanation: 'Using depth-first search, we explore all paths to find the solution. For input tree={\'value\': 3, \'left\': {\'value\': 9}, \'right\': {\'value\': 20, \'left\': {\'value\': 15}, \'right\': {\'value\': 7}}}, the result is 3.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -56,7 +57,7 @@
         }
 },
         output: 2,
-        explanation: 'Using depth-first search, we explore all paths to find the solution. For input tree={\'value\': 1, \'right\': {\'value\': 2}}, the result is 2.'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         solutions: {

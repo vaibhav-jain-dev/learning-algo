@@ -11,7 +11,15 @@
         name: 'Rearrange Linked List',
         difficulty: 'Hard',
         algorithm: 'll-rearrange',
-        description: 'Write a function that takes in the head of a Singly Linked List and an integer k, rearranges the list in place (i.e., doesn\'t create a brand new list) around nodes with value k, and returns its new head. Rearranging a Linked List around nodes with value k means: 1. All nodes with a value smaller than k come before nodes with value k 2. All nodes with a value equal to k come in the middle 3. All nodes with a value greater than k come after nodes with value k The relative order of nodes within eac',
+        description: 'Write a function that takes in the head of a Singly Linked List and an integer k, rearranges the list in place (i.e., doesn\'t create a brand new list) around nodes with value k, and returns its new head. Rearranging a Linked List around nodes with value k means: 1. All nodes with a value smaller than k come before nodes with value k 2. All nodes with a value equal to k come in the middle 3. All nodes with a value greater than k come after nodes with value k The relative order of nodes within eac.',
+        problem: 'Traverse the linked list with appropriate pointer management. Keep track of previous, current, and next nodes as needed. Be careful to update pointers in the correct order to avoid losing references. This achieves O(n) time with O(1) space.',
+        hints: [
+            'Think about what pointers you need to maintain as you traverse the list.',
+            'The runner technique (slow and fast pointers) solves many linked list problems.',
+            'Be careful about edge cases: empty list, single node, and the head/tail nodes.',
+            'Draw out the pointer changes step by step before coding to avoid losing references.'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(1)'
@@ -30,7 +38,7 @@
         "k": 3
 },
         output: [0, 2, 1, 3, 5, 4],
-        explanation: 'Processing the input data produces the output. For input list=[3, 0, ..., 4] (length 6), k=3, the result is [0, ..., 4] (length 6).'
+        explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
     },
     {
         input: {
@@ -45,7 +53,7 @@
         "k": 3
 },
         output: [1, 2, 2, 3, 4, 5],
-        explanation: 'Processing the input data produces the output. For input list=[1, 4, ..., 2] (length 6), k=3, the result is [1, ..., 5] (length 6).'
+        explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
     },
     {
         input: {
@@ -59,7 +67,7 @@
         "k": 3
 },
         output: [1, 0, 3, 5, 8],
-        explanation: 'Processing the input data produces the output. For input list=[5, 1, 8, 0, 3], k=3, the result is [1, 0, 3, 5, 8].'
+        explanation: 'The single-pass traversal examines each node once. By the time we reach the relevant position, we have enough information to produce the correct result.'
     }
         ],
         twists: [

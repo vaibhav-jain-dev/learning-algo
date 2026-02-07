@@ -13,16 +13,13 @@
         difficulty: 'Easy',
         algorithm: 'll-find-loop',
         parent: '06-find-loop',
-        description: 'Find the loop origin using a hash set to store visited nodes instead of Floyd\',
-        problem: 'Trading space for simplicity. The hash set approach is straightforward (first repeated node is loop start) but uses O(n) space. Useful to understand why Floyd\',
+        description: 'Find the loop origin using a hash set to store visited nodes instead of Floyd.',
+        problem: 'Trading space for simplicity. The hash set approach is straightforward (first repeated node is loop start) but uses O(n) space. Useful to understand why Floyd.',
         hints: [
-            'Find the loop origin using a hash set to store visited nodes instead of Floyd\',
-            ',
-            ',
-            ',
-            ',
-            ',
-            '
+            'Traverse the linked list and store each visited node in a hash set.',
+            'The first node you encounter that is already in the hash set is the start of the loop.',
+            'This approach trades O(n) space for simpler logic compared to the Floyd two-pointer cycle detection.',
+            'Consider why the Floyd O(1) space algorithm is preferred in interviews despite this approach being easier to implement.'
         ],
         complexity: {
             time: 'O(n)',
@@ -33,7 +30,7 @@
             {
                 input: {"list":[1,2,3,4,5]},
                 output: [1,2,3,4,5],
-                explanation: ''
+                explanation: 'Traverse the list storing each visited node in a hash set. The first node encountered that is already in the set is the loop start.'
             }
         ],
         solutions: {

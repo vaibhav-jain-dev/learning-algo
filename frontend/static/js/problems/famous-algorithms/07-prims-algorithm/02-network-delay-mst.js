@@ -58,7 +58,7 @@
         ]
 },
         output: {"mstCost": 7, "maxDepth": 2},
-        explanation: 'Processing the input data produces the output. For input n=4, connections=[[0, 1, 1], [0, 2, 2], [1, 2, 3], [1, 3, 4], [2, 3, 5]], the result is {\'mstCost\': 7, \'maxDepth\': 2}.'
+        explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
     }
         ],
         solutions: {

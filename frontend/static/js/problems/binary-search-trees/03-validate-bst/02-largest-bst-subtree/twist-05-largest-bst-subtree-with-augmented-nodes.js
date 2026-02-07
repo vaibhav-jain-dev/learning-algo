@@ -14,7 +14,7 @@
         algorithm: 'bst-validation',
         parent: '03-validate-bst/02-largest-bst-subtree',
         description: 'While finding the largest BST subtree, augment each node with its BST subtree size. After processing, each node should know the size of the largest BST subtree rooted at or below it.',
-        problem: 'This adds an output requirement -- you are not just computing a single answer but annotating the entire tree. The augmentation must propagate correctly, and non-BST nodes must carry the max of their children\',
+        problem: 'This adds an output requirement -- you are not just computing a single answer but annotating the entire tree. The augmentation must propagate correctly, and non-BST nodes must carry the max of their children.',
         hints: [
 
         ],
@@ -27,18 +27,18 @@
             {
                 input: {"tree":[10,5,15,1,8,null,7]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the largest bst subtree with augmented nodes criteria.'
+                explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
             },
             {
                 input: {"tree":[2,1,3]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the largest bst subtree with augmented nodes criteria.'
+                explanation: 'The BST structure allows directed traversal. Each node decision is informed by the ordering invariant, leading to the correct result without examining unnecessary subtrees.'
             },
             // Edge case
             {
                 input: {"tree":[10]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
             }
         ],
         solutions: {

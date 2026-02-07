@@ -14,7 +14,7 @@
         algorithm: 'dijkstras-algorithm',
         parent: '02-dijkstras-algorithm/03-path-with-minimum-effort',
         description: 'Sort all edges by weight (height difference), then add them one by one using Union-Find until (0,0) and (rows-1, cols-1) are connected. The last edge added gives the minimum effort.',
-        problem: 'This is essentially Kruskal\',
+        problem: 'This is essentially Kruskal.',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
@@ -30,13 +30,13 @@
             {
                 input: {"heights":[[1,2,2],[3,8,2],[5,3,5]]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the alternative union find approach criteria.'
+                explanation: 'The priority queue ensures we always process the nearest unvisited node. When a node is dequeued, its shortest distance is finalized. Neighbors are updated if a shorter path is found.'
             },
             // Edge case
             {
                 input: {"heights":[[1,2,2]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
             }
         ],
         solutions: {

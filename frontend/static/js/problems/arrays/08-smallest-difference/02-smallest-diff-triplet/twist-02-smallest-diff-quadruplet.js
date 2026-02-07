@@ -31,23 +31,23 @@
             {
                 input: {"array":[1,2,3,4,5]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the smallest diff quadruplet criteria.'
+                explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
             },
             {
                 input: {"array":[5,3,1]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the smallest diff quadruplet criteria.'
+                explanation: 'The single-pass traversal examines each node once. By the time we reach the relevant position, we have enough information to produce the correct result.'
             },
             {
                 input: {"array":[1]},
                 output: 0,
-                explanation: 'For this input, there are 0 valid positions that satisfy the smallest diff quadruplet criteria.'
+                explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
             },
             // Edge case
             {
                 input: {"array":[1]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
             }
         ],
         solutions: {

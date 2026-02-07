@@ -43,7 +43,7 @@
             { id: '03-cycle-in-graph/twist-01-cycle-detection-in-an-undirected-graph', name: 'Cycle Detection in an Undirected Graph', difficulty: 'Medium' },
             { id: '03-cycle-in-graph/twist-02-find-the-actual-cycle-path', name: 'Find the Actual Cycle Path', difficulty: 'Hard' },
             { id: '03-cycle-in-graph/twist-03-detect-cycle-of-specific-length', name: 'Detect Cycle of Specific Length', difficulty: 'Hard' },
-            { id: '03-cycle-in-graph/twist-04-cycle-detection-using-bfs-kahns-algorithm', name: 'Cycle Detection Using BFS (Kahn\\'s Algorithm)', difficulty: 'Medium' },
+            { id: '03-cycle-in-graph/twist-04-cycle-detection-using-bfs-kahns-algorithm', name: 'Cycle Detection Using BFS (Kahn\'s Algorithm)', difficulty: 'Medium' },
             { id: '03-cycle-in-graph/twist-05-count-the-number-of-distinct-cycles', name: 'Count the Number of Distinct Cycles', difficulty: 'Very Hard' }
         ],
         similar: [

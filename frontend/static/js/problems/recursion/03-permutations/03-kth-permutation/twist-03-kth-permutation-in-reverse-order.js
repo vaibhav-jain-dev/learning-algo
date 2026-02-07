@@ -30,13 +30,13 @@
             {
                 input: {"n":3,"k":3},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the kth permutation in reverse order criteria.'
+                explanation: 'At each recursive call, one decision is made (include/exclude, choose/skip). The recursion tree explores all valid paths, and results are collected or combined at each return.'
             },
             // Edge case
             {
                 input: {"n":0,"k":0},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'The recursive structure breaks this into subproblems. The base case handles the smallest input directly. Each recursive step makes progress toward the base case while combining partial results.'
             }
         ],
         solutions: {

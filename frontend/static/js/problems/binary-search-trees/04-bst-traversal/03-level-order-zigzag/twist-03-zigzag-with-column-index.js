@@ -27,18 +27,18 @@
             {
                 input: {"tree":[3,9,20,null,null,15,7]},
                 output: 0,
-                explanation: 'For this input, there are 0 valid positions that satisfy the zigzag with column index criteria.'
+                explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
             },
             {
                 input: {"tree":[1,2,3,4,5,6,7]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the zigzag with column index criteria.'
+                explanation: 'The BST structure allows directed traversal. Each node decision is informed by the ordering invariant, leading to the correct result without examining unnecessary subtrees.'
             },
             // Edge case
             {
                 input: {"tree":[3]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
             }
         ],
         solutions: {

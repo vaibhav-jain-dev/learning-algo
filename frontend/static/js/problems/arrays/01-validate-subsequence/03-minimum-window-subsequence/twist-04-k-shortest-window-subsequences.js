@@ -16,7 +16,7 @@
         description: 'Find the k shortest windows in s1 where s2 appears as a subsequence. Windows may overlap. Requires maintaining a priority queue or sorted collection of all valid windows, not just tracking the single best.',
         problem: 'Requires maintaining a priority queue or sorted collection of all valid windows, not just tracking the single best.',
         hints: [
-            'Think about how this twist differs from the standard version: Find the k shortest windows in s1 where s2 appears as a subsequence. Windows may.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Requires maintaining a priority queue or sorted collection of all valid windows, not just tracking the single best.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"s1":"abcdebdde","s2":"bde"},
                 output: "bcde",
-                explanation: ''
+                explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
             },
             {
                 input: {"s1":"abcdef","s2":"ace"},
                 output: "abcde",
-                explanation: ''
+                explanation: 'Each node is processed at most once. When dequeued, its distance is finalized. Update neighbors if a shorter path is found through the current node.'
             },
             // Edge case
             {
                 input: {"s1":"xyz","s2":"abc"},
                 output: "",
-                explanation: ''
+                explanation: 'The algorithm greedily selects the closest unvisited node. This greedy choice is optimal for non-negative edge weights.'
             }
         ],
         solutions: {

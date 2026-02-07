@@ -13,6 +13,7 @@
         algorithm: 'dp-coin-change',
         parent: '02-number-of-ways-to-make-change',
         description: 'You are given an integer array nums and an integer target. You want to build an **expression** out of nums by adding one of the symbols \'+\' and \'-\' before each integer in nums and then concatenate all the integers. Return the number of different expressions that you can build, which evaluates to target.',
+        problem: 'Build the solution using dynamic programming. Define the state, establish the base cases, and derive the recurrence relation. Fill in the DP table bottom-up (or use memoized recursion top-down). This achieves O(n * sum) time with O(sum) space.',
         complexity: {
             time: 'O(n * sum)',
             space: 'O(sum)'
@@ -37,7 +38,7 @@
         "target": 3
 },
         output: 5,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input nums=[1, 1, 1, 1, 1], target=3, the result is 5.'
+        explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
     },
     {
         input: {
@@ -47,7 +48,7 @@
         "target": 1
 },
         output: 1,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input nums=[1], target=1, the result is 1.'
+        explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
     }
         ],
         solutions: {
@@ -148,11 +149,11 @@ func main() {
 }`
         },
         twists: [
-            { id: '02-number-of-ways-to-make-change/02-target-sum/twist-01-derive-the-subset-sum-transformation', title: 'Derive the Subset Sum Transformation', difficulty: 'Hard' },
-            { id: '02-number-of-ways-to-make-change/02-target-sum/twist-02-top-down-with-offset-index', title: 'Top-Down with Offset Index', difficulty: 'Medium' },
-            { id: '02-number-of-ways-to-make-change/02-target-sum/twist-03-print-all-valid-expressions', title: 'Print All Valid Expressions', difficulty: 'Hard' },
-            { id: '02-number-of-ways-to-make-change/02-target-sum/twist-04-conceptual-trap-handling-zeros-in-the-array', title: 'Conceptual Trap: Handling Zeros in the Array', difficulty: 'Medium' },
-            { id: '02-number-of-ways-to-make-change/02-target-sum/twist-05-2d-to-1d-space-reduction', title: '2D to 1D Space Reduction', difficulty: 'Medium' }
+            { id: '02-number-of-ways-to-make-change/02-target-sum/twist-01-derive-the-subset-sum-transformation', name: 'Derive the Subset Sum Transformation', difficulty: 'Hard' },
+            { id: '02-number-of-ways-to-make-change/02-target-sum/twist-02-top-down-with-offset-index', name: 'Top-Down with Offset Index', difficulty: 'Medium' },
+            { id: '02-number-of-ways-to-make-change/02-target-sum/twist-03-print-all-valid-expressions', name: 'Print All Valid Expressions', difficulty: 'Hard' },
+            { id: '02-number-of-ways-to-make-change/02-target-sum/twist-04-conceptual-trap-handling-zeros-in-the-array', name: 'Conceptual Trap: Handling Zeros in the Array', difficulty: 'Medium' },
+            { id: '02-number-of-ways-to-make-change/02-target-sum/twist-05-2d-to-1d-space-reduction', name: '2D to 1D Space Reduction', difficulty: 'Medium' }
         ],
         similar: [
 

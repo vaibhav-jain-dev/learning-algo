@@ -13,7 +13,7 @@
         difficulty: 'Hard',
         algorithm: 'dijkstras-algorithm',
         parent: '02-dijkstras-algorithm',
-        description: 'Dijkstra\',
+        description: 'Dijkstra.',
         problem: 'Forces understanding of WHY the greedy choice works: once a node is finalized, no future path can improve it (only if edges are non-negative). A negative edge violates this invariant.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -36,7 +36,7 @@
             {
                 input: {"vertices":0,"edges":[[0,1,4]],"source":0},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
             }
         ],
         solutions: {

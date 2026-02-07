@@ -12,7 +12,7 @@
         difficulty: 'Medium',
         algorithm: 'dp-max-subset',
         parent: '01-max-subset-sum',
-        description: 'There is a row of n houses, where each house can be painted one of three colors: red, blue, or green. The cost of painting each house with a certain color is different. You have to paint all the houses such that **no two adjacent houses have the same color**. Given a 2D array costs where costs[i][j] is the cost of painting house i with color j: - costs[i][0] = cost to paint house i red - costs[i][1] = cost to paint house i blue - costs[i][2] = cost to paint house i green Return the **minimum cos',
+        description: 'There is a row of n houses, where each house can be painted one of three colors: red, blue, or green. The cost of painting each house with a certain color is different. You have to paint all the houses such that **no two adjacent houses have the same color**. Given a 2D array costs where costs[i][j] is the cost of painting house i with color j: - costs[i][0] = cost to paint house i red - costs[i][1] = cost to paint house i blue - costs[i][2] = cost to paint house i green Return the **minimum cos.',
         problem: 'Use 2D dynamic programming where dp[i][j] represents the optimal solution for subproblem (i,j). Build the table by considering all possible transitions from smaller subproblems.',
         complexity: {
             time: 'O(n)',
@@ -47,7 +47,7 @@
         ]
 },
         output: 10,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input costs=[[17, 2, 17], [16, 16, 5], [14, 3, 19]], the result is 10.'
+        explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
     },
     {
         input: {
@@ -60,7 +60,7 @@
         ]
 },
         output: 2,
-        explanation: 'Using dynamic programming, we build up the solution from smaller subproblems. For input costs=[[7, 6, 2]], the result is 2.'
+        explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
     }
         ],
         solutions: {
@@ -161,11 +161,11 @@ func main() {
 }`
         },
         twists: [
-            { id: '01-max-subset-sum/03-paint-house/twist-01-generalize-to-k-colors', title: 'Generalize to K Colors', difficulty: 'Hard' },
-            { id: '01-max-subset-sum/03-paint-house/twist-02-print-the-color-assignment', title: 'Print the Color Assignment', difficulty: 'Medium' },
-            { id: '01-max-subset-sum/03-paint-house/twist-03-circular-houses-first-last-neighbor', title: 'Circular Houses (First = Last Neighbor)', difficulty: 'Very Hard' },
-            { id: '01-max-subset-sum/03-paint-house/twist-04-space-optimization-o1-instead-of-on', title: 'Space Optimization: O(1) Instead of O(n)', difficulty: 'Easy' },
-            { id: '01-max-subset-sum/03-paint-house/twist-05-greedy-fails-show-a-counterexample', title: 'Greedy Fails: Show a Counterexample', difficulty: 'Medium' }
+            { id: '01-max-subset-sum/03-paint-house/twist-01-generalize-to-k-colors', name: 'Generalize to K Colors', difficulty: 'Hard' },
+            { id: '01-max-subset-sum/03-paint-house/twist-02-print-the-color-assignment', name: 'Print the Color Assignment', difficulty: 'Medium' },
+            { id: '01-max-subset-sum/03-paint-house/twist-03-circular-houses-first-last-neighbor', name: 'Circular Houses (First = Last Neighbor)', difficulty: 'Very Hard' },
+            { id: '01-max-subset-sum/03-paint-house/twist-04-space-optimization-o1-instead-of-on', name: 'Space Optimization: O(1) Instead of O(n)', difficulty: 'Easy' },
+            { id: '01-max-subset-sum/03-paint-house/twist-05-greedy-fails-show-a-counterexample', name: 'Greedy Fails: Show a Counterexample', difficulty: 'Medium' }
         ],
         similar: [
 

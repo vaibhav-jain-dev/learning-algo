@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'prims-algorithm',
         description: 'Given a connected, undirected, weighted graph with V vertices and E edges, find the Minimum Spanning Tree (MST) using Prim\'s algorithm. Prim\'s algorithm builds the MST by starting from a single vertex and greedily adding the minimum weight edge that connects a vertex in the MST to a vertex outside of it.',
+        problem: 'Build a Minimum Spanning Tree by greedily selecting edges. Either sort all edges and add them if they don\'t create a cycle (Kruskal\'s), or grow the tree from a starting node using the cheapest available edge (Prim\'s). This achieves O((V + E) log V) time with O(V + E) space.',
+        hints: [
+            'A Minimum Spanning Tree connects all nodes with minimum total edge weight.',
+            'Kruskal\'s sorts edges by weight; Prim\'s grows the tree from a starting node.',
+            'Think about when to add an edge: it should connect two previously disconnected components.',
+            'The MST property: any edge not in the MST, if added, creates a cycle where it\'s the heaviest edge.'
+        ],
+
         complexity: {
             time: 'O((V + E) log V)',
             space: 'O(V + E)'
@@ -59,7 +67,7 @@
         ]
 },
         output: {"mstWeight": 16, "mstEdges": [[0, 1, 2], [1, 2, 3], [1, 4, 5], [0, 3, 6]]},
-        explanation: 'Processing the input data produces the output. For input V=5, edges=[[0, 1, 2], [0, 3, 6], ..., [3, 4, 9]] (length 7), the result is {\'mstWeight\': 16, \'mstEdges\': [[0, 1, 2], [1, 2, 3], [1, 4, 5], [0, 3, 6]]}.'
+        explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
     }
         ],
         twists: [

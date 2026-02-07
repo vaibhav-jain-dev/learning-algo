@@ -40,7 +40,7 @@
         "target": 22
 },
         output: [7, 15],
-        explanation: 'Processing the input data produces the output. For input tree=[10, 5, ..., 20] (length 7), target=22, the result is [7, 15].'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     },
     {
         input: {
@@ -56,7 +56,7 @@
         "target": 10
 },
         output: [3, 7],
-        explanation: 'Processing the input data produces the output. For input tree=[5, 3, ..., 8] (length 7), target=10, the result is [3, 7].'
+        explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
     }
         ],
         solutions: {

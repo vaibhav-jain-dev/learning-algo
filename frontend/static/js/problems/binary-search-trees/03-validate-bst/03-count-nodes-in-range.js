@@ -41,7 +41,7 @@
         "high": 15
 },
         output: {"count": 3, "sum": 32},
-        explanation: 'Processing the input data produces the output. For input tree=[10, 5, ..., 18] (length 7), low=7, high=15, the result is {\'count\': 3, \'sum\': 32}.'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     },
     {
         input: {
@@ -61,7 +61,7 @@
         "high": 10
 },
         output: {"count": 3, "sum": 23},
-        explanation: 'Processing the input data produces the output. For input tree=[10, 5, ..., 6] (length 10), low=6, high=10, the result is {\'count\': 3, \'sum\': 23}.'
+        explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
     }
         ],
         solutions: {

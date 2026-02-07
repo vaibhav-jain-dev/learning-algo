@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'dijkstras-algorithm',
         description: 'Given a weighted graph with non-negative edge weights, find the shortest path from a source vertex to all other vertices in the graph. Dijkstra\'s algorithm is a greedy algorithm that uses a priority queue to always process the vertex with the smallest known distance first.',
+        problem: 'Apply a shortest path algorithm. Use a priority queue to always process the closest unvisited node first. Relax edges to update shortest distances. This achieves O((V + E) log V) time with O(V + E) space.',
+        hints: [
+            'Choose the right algorithm: Dijkstra for non-negative weights, Bellman-Ford for negative weights.',
+            'Think about what the "distance" or "cost" represents in this problem.',
+            'Consider whether you need the shortest path itself or just the shortest distance.',
+            'A priority queue (min-heap) is essential for efficient shortest path algorithms.'
+        ],
+
         complexity: {
             time: 'O((V + E) log V)',
             space: 'O(V + E)'
@@ -55,7 +63,7 @@
         "source": 0
 },
         output: [0, 3, 1, 4, 7],
-        explanation: 'Processing the input data produces the output. For input vertices=5, edges=[[0, 1, 4], [0, 2, 1], ..., [3, 4, 3]] (length 6), source=0, the result is [0, 3, 1, 4, 7].'
+        explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
     }
         ],
         twists: [

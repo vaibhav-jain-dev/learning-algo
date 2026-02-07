@@ -12,7 +12,7 @@
         difficulty: 'Medium',
         algorithm: 'bst-traversal',
         parent: '04-bst-traversal',
-        description: 'Implement **in-order**, **pre-order**, and **post-order** tree traversals **iteratively** using explicit stacks (without recursion). For a binary tree, implement: 1. inorderIterative(root) - returns inorder traversal 2. preorderIterative(root) - returns preorder traversal 3. postorderIterative(root) - returns postorder traversal',
+        description: 'Implement **in-order**, **pre-order**, and **post-order** tree traversals **iteratively** using explicit stacks (without recursion). For a binary tree, implement: 1. inorderIterative(root) - returns inorder traversal 2. preorderIterative(root) - returns preorder traversal 3. postorderIterative(root) - returns postorder traversal.',
         problem: 'Analyze the problem structure and identify the optimal approach. Consider the constraints and edge cases. Build the solution incrementally, testing with small examples.',
         complexity: {
             time: 'O(n)',
@@ -39,7 +39,7 @@
         ]
 },
         output: {"inorder": [4, 2, 5, 1, 3, 6], "preorder": [1, 2, 4, 5, 3, 6], "postorder": [4, 5, 2, 6, 3, 1]},
-        explanation: 'Processing the input data produces the output. For input tree=[1, 2, ..., 6] (length 7), the result is {\'inorder\': [4, 2, 5, 1, 3, 6], \'preorder\': [1, 2, 4, 5, 3, 6], \'postorder\': [4, 5, 2, 6, 3, 1]}.'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     }
         ],
         solutions: {

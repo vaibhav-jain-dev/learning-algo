@@ -52,7 +52,7 @@
         "end": 2
 },
         output: 0.25,
-        explanation: 'Processing the input data produces the output. For input n=3, edges=[[0, 1], [1, 2], [0, 2]], succProb=[0.5, 0.5, 0.2], start=0, end=2, the result is 0.25.'
+        explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
     }
         ],
         solutions: {

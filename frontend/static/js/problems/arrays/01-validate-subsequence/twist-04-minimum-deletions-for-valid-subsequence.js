@@ -16,7 +16,7 @@
         description: 'The sequence is NOT a subsequence. Find the minimum elements to delete from the array so it becomes one. Switches from verification to optimization. Requires thinking about which elements block subsequence formation.',
         problem: 'Switches from verification to optimization. Requires thinking about which elements block subsequence formation.',
         hints: [
-            'Think about how this twist differs from the standard version: The sequence is NOT a subsequence. Find the minimum elements to delete from the .',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Switches from verification to optimization. Requires thinking about which elements block subsequence formation.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,23 +30,23 @@
             {
                 input: {"array":[5,1,22,25,6,-1,8,10],"sequence":[1,6,-1,10]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the minimum deletions for valid subsequence criteria.'
+                explanation: 'Each pointer moves in one direction only (or at most n steps total). The invariant ensures that no valid solution is skipped, while the single-pass approach gives O(n) time.'
             },
             {
                 input: {"array":[1,2,3,4,5],"sequence":[5,3,1]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the minimum deletions for valid subsequence criteria.'
+                explanation: 'The pointer movement rules ensure systematic coverage. When pointers meet or cross, the traversal is complete and all candidates have been considered.'
             },
             {
                 input: {"array":[1,1,1,1,1],"sequence":[1,1,1]},
                 output: 0,
-                explanation: 'For this input, there are 0 valid positions that satisfy the minimum deletions for valid subsequence criteria.'
+                explanation: 'Position the two pointers at the strategic starting locations. Advance each based on the comparison with the target. The pointers converge on the solution without revisiting elements.'
             },
             // Edge case
             {
                 input: {"array":[5],"sequence":[1]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Position the two pointers at the strategic starting locations. Advance each based on the comparison with the target. The pointers converge on the solution without revisiting elements.'
             }
         ],
         solutions: {

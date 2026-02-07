@@ -13,7 +13,7 @@
         difficulty: 'Hard',
         algorithm: 'dijkstras-algorithm',
         parent: '02-dijkstras-algorithm',
-        description: 'Prove by induction that when Dijkstra\',
+        description: 'Prove by induction that when Dijkstra.',
         problem: 'Requires formal reasoning about the greedy invariant. The key insight: if all edges are non-negative, any path through unvisited nodes can only be longer than the current best, so the minimum in the queue is optimal.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -36,7 +36,7 @@
             {
                 input: {"vertices":0,"edges":[[0,1,4]],"source":0},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process the closest unvisited node first, relaxing all outgoing edges.'
             }
         ],
         solutions: {

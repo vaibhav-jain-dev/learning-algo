@@ -12,6 +12,14 @@
         difficulty: 'Medium',
         algorithm: 'bst-reconstruction',
         description: 'Given an array of integers representing the preorder traversal of a BST, write a function that creates the corresponding BST and returns its root. The preorder traversal of a BST records nodes in the following order: root, left subtree, right subtree. Each value in the input array is guaranteed to be unique.',
+        problem: 'Leverage the BST property (left < root < right) to guide your decisions. At each node, the ordering property tells you which subtree to explore or how to restructure. This achieves O(n) time with O(h) space.',
+        hints: [
+            'The BST property means left < root < right. Use this to guide your search direction.',
+            'Think about which traversal order (inorder, preorder, postorder) best suits this problem.',
+            'Consider how the height of the tree affects your algorithm\'s complexity.',
+            'For balanced BSTs, operations are O(log n). What happens with skewed trees?'
+        ],
+
         complexity: {
             time: 'O(n)',
             space: 'O(h)'
@@ -31,7 +39,7 @@
         ]
 },
         output: [10, 4, 17, 2, 5, null, 19, 1, null, null, null, 18],
-        explanation: 'Processing the input data produces the output. For input preorderTraversalValues=[10, 4, ..., 18] (length 8), the result is [10, ..., 18] (length 12).'
+        explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
     },
     {
         input: {
@@ -46,7 +54,7 @@
         ]
 },
         output: [5, 3, 7, 1, 4, 6, 8],
-        explanation: 'Processing the input data produces the output. For input preorderTraversalValues=[5, 3, ..., 8] (length 7), the result is [5, ..., 8] (length 7).'
+        explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
     }
         ],
         twists: [

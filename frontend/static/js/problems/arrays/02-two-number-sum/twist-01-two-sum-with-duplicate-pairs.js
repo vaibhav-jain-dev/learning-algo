@@ -16,7 +16,7 @@
         description: 'The array may contain duplicates. Return all unique pairs that sum to the target. Duplicate handling changes the hash table approach: you must track counts and avoid reporting the same pair multiple times.',
         problem: 'Duplicate handling changes the hash table approach: you must track counts and avoid reporting the same pair multiple times.',
         hints: [
-            'Think about how this twist differs from the standard version: The array may contain duplicates. Return all unique pairs that sum to the target.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Duplicate handling changes the hash table approach: you must track counts and avoid reporting the same pair multiple times.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"array":[3,5,-4,8,11,1,-1,6],"targetSum":10},
                 output: [-1,11],
-                explanation: ''
+                explanation: 'For each element, compute what complement is needed and check the hash table in O(1). If found, we have our answer. Otherwise, store the current element for future lookups.'
             },
             {
                 input: {"array":[1,2,3,4,5],"targetSum":10},
                 output: [],
-                explanation: ''
+                explanation: 'The hash table stores previously seen values, enabling instant lookups. A single pass through the array is sufficient to find the required pair/match.'
             },
             // Edge case
             {
                 input: {"array":[4,6],"targetSum":10},
                 output: [4,6],
-                explanation: ''
+                explanation: 'The space-time tradeoff is key: O(n) extra space for the hash table buys us O(1) per lookup, reducing overall time from O(n^2) to O(n).'
             }
         ],
         solutions: {

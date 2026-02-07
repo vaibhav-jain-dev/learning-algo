@@ -13,7 +13,7 @@
         difficulty: 'Medium',
         algorithm: 'kadanes-algorithm',
         parent: '01-kadanes-algorithm',
-        description: 'Modify Kadane\',
+        description: 'Modify Kadane.',
         problem: 'Tracking indices requires careful bookkeeping of when you start fresh vs extend. The top-K extension breaks the O(n) single-pass approach and requires fundamentally different thinking about excluding previously found ranges.',
         hints: [
             'Consider how this twist changes the core problem structure.',
@@ -30,13 +30,13 @@
             {
                 input: {"nums":[-2,1,-3,4,-1,2,1,-5,4]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the space time tradeoff return the subarray criteria.'
+                explanation: 'The running maximum at each index represents the best subarray ending at that position. A negative running sum is never worth carrying forward.'
             },
             // Edge case
             {
                 input: {"nums":[-2]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Maintain a running sum as you scan. At each position, choose to either extend the current subarray or start fresh. Track the global maximum across all positions.'
             }
         ],
         solutions: {

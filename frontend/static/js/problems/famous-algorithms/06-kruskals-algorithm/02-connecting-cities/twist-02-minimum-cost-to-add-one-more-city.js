@@ -30,13 +30,13 @@
             {
                 input: {"n":3,"connections":[[1,2,5],[1,3,6],[2,3,1]]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the minimum cost to add one more city criteria.'
+                explanation: 'The greedy selection of minimum-weight edges, combined with cycle detection, ensures the resulting tree has the minimum total edge weight.'
             },
             // Edge case
             {
                 input: {"n":0,"connections":[[1,2,5]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Process edges in order of weight. For each edge, check if its endpoints are already connected. If not, add the edge to the MST and merge their components.'
             }
         ],
         solutions: {

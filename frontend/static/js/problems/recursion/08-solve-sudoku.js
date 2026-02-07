@@ -12,6 +12,14 @@
         difficulty: 'Hard',
         algorithm: 'recursion-sudoku',
         description: 'Write a function that takes in a 9x9 two-dimensional array representing a partially filled Sudoku board and returns the solved Sudoku board. Sudoku is a puzzle where you need to fill a 9x9 grid with digits 1-9 such that each column, each row, and each of the nine 3x3 sub-boxes contains all digits from 1 to 9. The input board will always have exactly one solution.',
+        problem: 'Break the problem into smaller subproblems recursively. Define clear base cases and recursive cases. At each step, assume the recursive call returns the correct result for smaller inputs, and combine them. This achieves O(9^m) time with O(m) space.',
+        hints: [
+            'Define your base case clearly. When should the recursion stop?',
+            'For the recursive case, assume the function works for smaller inputs. How do you use that?',
+            'Think about whether you need to pass additional state through parameters.',
+            'Consider memoization if the same subproblems are being computed multiple times.'
+        ],
+
         complexity: {
             time: 'O(9^m)',
             space: 'O(m)'

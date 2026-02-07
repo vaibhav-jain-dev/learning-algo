@@ -30,28 +30,28 @@
             {
                 input: {"width":4,"height":3},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the paths through mandatory waypoint criteria.'
+                explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
             },
             {
                 input: {"width":2,"height":2},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the paths through mandatory waypoint criteria.'
+                explanation: 'The DP state transition handles this case by comparing the include vs. exclude options. Each cell represents the best achievable result for the corresponding subproblem size.'
             },
             {
                 input: {"width":3,"height":3},
                 output: 0,
-                explanation: 'For this input, there are 0 valid positions that satisfy the paths through mandatory waypoint criteria.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             },
             {
                 input: {"width":1,"height":5},
                 output: 3,
-                explanation: 'For this input, there are 3 valid positions that satisfy the paths through mandatory waypoint criteria.'
+                explanation: 'Build the DP table row by row. At each cell, the recurrence relation combines results from previous subproblems. The optimal choice at each step propagates through to the final answer.'
             },
             // Edge case
             {
                 input: {"width":0,"height":0},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize the DP table with base cases. For each entry, choose the optimal sub-solution: either include the current element (adding its value to the diagonal/previous state) or skip it (carrying forward the best seen so far). The final cell contains the answer.'
             }
         ],
         solutions: {

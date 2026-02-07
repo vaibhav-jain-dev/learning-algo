@@ -13,8 +13,8 @@
         difficulty: 'Very Hard',
         algorithm: 'dijkstras-algorithm',
         parent: '02-dijkstras-algorithm',
-        description: 'Design a parallel version of Dijkstra\',
-        problem: 'Standard Dijkstra\',
+        description: 'Parallel Version: Delta-Stepping: Solve this algorithmic challenge by applying the appropriate technique.',
+        problem: 'Apply the core algorithmic technique to solve this variation. Consider the key differences from the standard approach.',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
@@ -36,7 +36,7 @@
             {
                 input: {"vertices":0,"edges":[[0,1,4]],"source":0},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
             }
         ],
         solutions: {

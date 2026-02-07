@@ -36,7 +36,7 @@
             {
                 input: {"nums":[2]},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Position the two pointers at the strategic starting locations. Advance each based on the comparison with the target. The pointers converge on the solution without revisiting elements.'
             }
         ],
         solutions: {

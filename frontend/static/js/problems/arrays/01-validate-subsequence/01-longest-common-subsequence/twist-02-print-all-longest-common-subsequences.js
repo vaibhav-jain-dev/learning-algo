@@ -16,7 +16,7 @@
         description: 'Instead of just the length, return all distinct LCS strings of maximum length. Requires backtracking through the DP table with branching at ties, turning a single-answer problem into a multi-answer enumeration problem.',
         problem: 'Requires backtracking through the DP table with branching at ties, turning a single-answer problem into a multi-answer enumeration problem.',
         hints: [
-            'Think about how this twist differs from the standard version: Instead of just the length, return all distinct LCS strings of maximum length..',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Requires backtracking through the DP table with branching at ties, turning a single-answer problem into a multi-answer enumeration problem.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"text1":"abcde","text2":"ace"},
                 output: 3,
-                explanation: ''
+                explanation: 'Initialize pointers at the appropriate positions. Advance them according to the traversal rules (e.g., slow/fast, or one step at a time). The meeting or final position yields the answer.'
             },
             {
                 input: {"text1":"abc","text2":"def"},
                 output: 0,
-                explanation: ''
+                explanation: 'Traverse the list while maintaining the necessary references. Pointer updates must be done in the correct order to avoid breaking the chain.'
             },
             // Edge case
             {
                 input: {"text1":"abcba","text2":"abcba"},
                 output: 5,
-                explanation: ''
+                explanation: 'The single-pass traversal examines each node once. By the time we reach the relevant position, we have enough information to produce the correct result.'
             }
         ],
         solutions: {

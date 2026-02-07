@@ -13,6 +13,7 @@
         algorithm: 'floyd-cycle-detection',
         parent: '07-single-cycle-check',
         description: 'Given head, the head of a linked list, determine if the linked list has a cycle in it. A cycle exists if there is some node in the list that can be reached again by continuously following the next pointer. Internally, pos is used to denote the index of the node that tail\'s next pointer is connected to. Note that pos is not passed as a parameter. Return true if there is a cycle in the linked list. Otherwise, return false.',
+        problem: 'Traverse the linked list with appropriate pointer management. Keep track of previous, current, and next nodes as needed. Be careful to update pointers in the correct order to avoid losing references. This achieves O(n) time with O(1) space.',
         complexity: {
             time: 'O(n)',
             space: 'O(1)'
@@ -36,7 +37,7 @@
         "pos": 1
 },
         output: true,
-        explanation: 'Processing the input data produces the output. For input head=[3, 2, 0, -4], pos=1, the result is true.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     }
         ],
         solutions: {

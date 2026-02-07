@@ -30,18 +30,18 @@
             {
                 input: {"tree":{"value":1,"left":{"value":2,"left":{"value":3},"right":{"value":4}},"right":{"value":2,"left":{"value":4},"right":{"value":3}}}},
                 output: [[0,1]],
-                explanation: 'Found 1 group(s) matching the criteria.'
+                explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
             },
             {
                 input: {"tree":{"value":1,"left":{"value":2,"right":{"value":3}},"right":{"value":2,"right":{"value":3}}}},
                 output: [[0,1],[2,3]],
-                explanation: 'Found 2 group(s) matching the criteria.'
+                explanation: 'The BST structure allows directed traversal. Each node decision is informed by the ordering invariant, leading to the correct result without examining unnecessary subtrees.'
             },
             // Edge case
             {
                 input: {"tree":{"value":1,"left":{"value":2,"left":{"value":3},"right":{"value":4}},"right":{"value":2,"left":{"value":4},"right":{"value":3}}}},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
             }
         ],
         solutions: {

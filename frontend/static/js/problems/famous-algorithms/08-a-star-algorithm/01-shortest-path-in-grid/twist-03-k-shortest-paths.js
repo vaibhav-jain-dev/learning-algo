@@ -14,7 +14,7 @@
         algorithm: 'bfs-astar',
         parent: '08-a-star-algorithm/01-shortest-path-in-grid',
         description: 'Find the k shortest paths from start to end in the binary grid (paths may share cells).',
-        problem: 'A* finds only the shortest path. Finding k shortest requires allowing nodes to be visited multiple times and using Yen\',
+        problem: 'A* finds only the shortest path. Finding k shortest requires allowing nodes to be visited multiple times and using Yen.',
         hints: [
             'Consider how this twist changes the core problem structure.',
             'Think about what data structures or techniques apply to this variation.',
@@ -30,13 +30,13 @@
             {
                 input: {"grid":[[0,0,0],[1,1,0],[1,1,0]]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the k shortest paths criteria.'
+                explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
             },
             // Edge case
             {
                 input: {"grid":[[0,0,0]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
             }
         ],
         solutions: {

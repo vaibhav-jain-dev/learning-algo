@@ -11,7 +11,15 @@
         name: 'Minimum Passes of Matrix',
         difficulty: 'Medium',
         algorithm: 'graph-min-passes',
-        description: 'Write a function that takes in an integer matrix and returns the minimum number of passes required to convert all negative integers to positive integers. A negative integer in the matrix can only be converted to a positive integer if one or more of its adjacent elements (horizontally or vertically adjacent, not diagonally) is positive. A pass consists of converting all negative integers that can be converted at that time. Note that 0 is neither positive nor negative, meaning it cannot convert an',
+        description: 'Write a function that takes in an integer matrix and returns the minimum number of passes required to convert all negative integers to positive integers. A negative integer in the matrix can only be converted to a positive integer if one or more of its adjacent elements (horizontally or vertically adjacent, not diagonally) is positive. A pass consists of converting all negative integers that can be converted at that time. Note that 0 is neither positive nor negative, meaning it cannot convert an.',
+        problem: 'Model the problem as a graph traversal. Choose the appropriate traversal strategy (DFS/BFS) based on whether you need depth exploration or shortest paths. Track visited nodes to handle cycles. This achieves O(N * M) time with O(N * M) space.',
+        hints: [
+            'Choose the right graph representation: adjacency list vs adjacency matrix.',
+            'Consider whether the graph is directed or undirected, weighted or unweighted.',
+            'Track visited nodes to handle cycles and avoid infinite loops.',
+            'Think about which graph traversal algorithm best fits this problem: DFS, BFS, or something else.'
+        ],
+
         complexity: {
             time: 'O(N * M)',
             space: 'O(N * M)'
@@ -44,7 +52,7 @@
         ]
 },
         output: 3,
-        explanation: 'Exploring the graph structure, we find the required path or value. For input matrix=[[0, -1, -3, 2, 0], [1, -2, -5, -1, -3], [3, 0, 0, -4, -1]], the result is 3.'
+        explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
     },
     {
         input: {
@@ -80,7 +88,7 @@
         ]
 },
         output: -1,
-        explanation: 'Exploring the graph structure, we find the required path or value. For input matrix=[[1, 0, 0, -2, -3], [-4, -5, -6, -2, -1], [0, 0, 0, 0, -1], [1, 2, 3, 0, -2]], the result is -1.'
+        explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
     }
         ],
         twists: [

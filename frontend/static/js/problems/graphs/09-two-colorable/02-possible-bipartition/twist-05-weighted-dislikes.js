@@ -30,18 +30,18 @@
             {
                 input: {"n":4,"dislikes":[[1,2],[1,3],[2,4]]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the weighted dislikes criteria.'
+                explanation: 'The traversal explores all reachable nodes from the starting point. Each edge is examined once, and the algorithm tracks the required state (distance, parent, color) at each node.'
             },
             {
                 input: {"n":3,"dislikes":[[1,2],[1,3],[2,3]]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the weighted dislikes criteria.'
+                explanation: 'Process nodes systematically using the chosen traversal strategy. The visited set prevents infinite loops in cyclic graphs. Aggregate results across all components for the final answer.'
             },
             // Edge case
             {
                 input: {"n":0,"dislikes":[[1,2]]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Start traversal from each unvisited node. For each connected component found, compute the required property (size, path, validity). Mark nodes as visited to avoid re-processing.'
             }
         ],
         solutions: {

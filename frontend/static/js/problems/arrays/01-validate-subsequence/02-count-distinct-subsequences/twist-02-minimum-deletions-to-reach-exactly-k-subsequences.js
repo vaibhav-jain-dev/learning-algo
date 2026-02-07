@@ -16,7 +16,7 @@
         description: 'Given s and t, delete the minimum characters from s so that the number of distinct subsequences matching t equals exactly k. Inverts the counting problem into an optimization problem, requiring binary search or careful DP over deletion choices.',
         problem: 'Inverts the counting problem into an optimization problem, requiring binary search or careful DP over deletion choices.',
         hints: [
-            'Think about how this twist differs from the standard version: Given s and t, delete the minimum characters from s so that the number of distin.',
+            'What makes this variant different from the standard problem? Identify the key constraint that changes the approach.',
             'Inverts the counting problem into an optimization problem, requiring binary search or careful DP over deletion choices.',
             'Start with a brute force approach, then optimize by identifying repeated work.',
             'Test your solution with edge cases: empty input, single element, all identical values.'
@@ -30,18 +30,18 @@
             {
                 input: {"s":"rabbbit","t":"rabbit"},
                 output: 3,
-                explanation: ''
+                explanation: 'Position the two pointers at the strategic starting locations. Advance each based on the comparison with the target. The pointers converge on the solution without revisiting elements.'
             },
             {
                 input: {"s":"aabb","t":"ab"},
                 output: 4,
-                explanation: ''
+                explanation: 'Each pointer moves in one direction only (or at most n steps total). The invariant ensures that no valid solution is skipped, while the single-pass approach gives O(n) time.'
             },
             // Edge case
             {
                 input: {"s":"abc","t":"xyz"},
                 output: 0,
-                explanation: ''
+                explanation: 'The pointer movement rules ensure systematic coverage. When pointers meet or cross, the traversal is complete and all candidates have been considered.'
             }
         ],
         solutions: {

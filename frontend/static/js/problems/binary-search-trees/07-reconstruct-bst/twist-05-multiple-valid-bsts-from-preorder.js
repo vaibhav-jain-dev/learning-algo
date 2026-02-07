@@ -27,18 +27,18 @@
             {
                 input: {"preorderTraversalValues":[10,4,2,1,5,17,19,18]},
                 output: 1,
-                explanation: 'For this input, there is 1 valid position that satisfy the multiple valid bsts from preorder criteria.'
+                explanation: 'Process the tree recursively. For each subtree, the BST property guarantees all left descendants are smaller and right descendants are larger, enabling efficient computation.'
             },
             {
                 input: {"preorderTraversalValues":[5,3,1,4,7,6,8]},
                 output: 2,
-                explanation: 'For this input, there are 2 valid positions that satisfy the multiple valid bsts from preorder criteria.'
+                explanation: 'The BST structure allows directed traversal. Each node decision is informed by the ordering invariant, leading to the correct result without examining unnecessary subtrees.'
             },
             // Edge case
             {
                 input: {"preorderTraversalValues":[10]},
                 output: 0,
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Use the BST ordering property to navigate efficiently. At each node, the comparison determines whether to go left or right, reducing the search space by roughly half each step.'
             }
         ],
         solutions: {

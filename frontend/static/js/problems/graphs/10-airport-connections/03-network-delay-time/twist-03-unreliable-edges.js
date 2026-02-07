@@ -36,7 +36,7 @@
             {
                 input: {"times":[[2,1,1]],"n":0,"k":0},
                 output: [],
-                explanation: 'Edge case: minimal input.'
+                explanation: 'Initialize distances to infinity except the source (distance 0). Process the closest unvisited node first, relaxing all its outgoing edges. Continue until all reachable nodes have final distances.'
             }
         ],
         solutions: {
