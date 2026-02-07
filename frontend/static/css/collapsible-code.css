@@ -44,13 +44,12 @@
 .code-content {
     max-height: 10000px;
     overflow: hidden;
-    transition: max-height 0.3s ease, visibility 0.3s ease;
-    visibility: visible;
+    transition: max-height 0.3s ease;
 }
 
 .collapsible-code.collapsed .code-content {
     max-height: 0;
-    visibility: hidden;
+    overflow: hidden;
 }
 
 .code-content pre {

@@ -154,12 +154,14 @@
         function initCollapsibleCode() {
             var headers = document.querySelectorAll('.code-header');
             headers.forEach(function(header) {
-                // Remove existing listeners by cloning
-                var newHeader = header.cloneNode(true);
-                header.parentNode.replaceChild(newHeader, header);
+                // Remove any existing click listeners by checking if already initialized
+                if (header.dataset.collapsibleInit) return;
+                header.dataset.collapsibleInit = 'true';
 
-                newHeader.addEventListener('click', function(e) {
+                header.style.cursor = 'pointer';
+                header.addEventListener('click', function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     var container = this.closest('.collapsible-code');
                     if (container) {
                         container.classList.toggle('collapsed');
