@@ -210,12 +210,41 @@
         border-radius: 10px;
         margin: 20px 0;
         overflow-x: auto;
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .diagram-container .mermaid {
+        width: 100%;
+        min-width: 600px;
+    }
+    /* Responsive diagram sizes */
+    @media (max-width: 768px) {
+        .diagram-container {
+            padding: 15px;
+            min-height: 250px;
+        }
+        .diagram-container .mermaid {
+            min-width: 100%;
+        }
+    }
+    @media (max-width: 480px) {
+        .diagram-container {
+            padding: 10px;
+            overflow-x: scroll;
+        }
     }
     .ai-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 20px;
         margin-top: 20px;
+    }
+    @media (max-width: 640px) {
+        .ai-grid {
+            grid-template-columns: 1fr;
+        }
     }
     .ai-card {
         background: var(--bg-tertiary, #f1f5f9);
@@ -298,6 +327,47 @@ sequenceDiagram
     Backend-->>Client: Stream response
     Backend->>Backend: Log cost & metrics
                     </pre>
+                </div>
+
+                <button class="collapsible-btn">📊 Understanding This Diagram - Step by Step</button>
+                <div class="collapsible-content">
+                    <div class="inner">
+                        <div class="tool-detail">
+                            <h6>Step 1: Client Request</h6>
+                            <p><strong>Client → Backend:</strong> User sends a POST request to /chat with their prompt (e.g., "Explain quantum computing"). This is a standard HTTP REST call from your frontend.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 2: Rate Limiting</h6>
+                            <p><strong>Backend → Rate Limiter:</strong> Before processing, check if user has exceeded their quota (e.g., 100 requests/hour). Uses Redis with token bucket algorithm. Returns 429 if exceeded.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 3: Cache Check</h6>
+                            <p><strong>Backend → Cache:</strong> Check if identical prompt was recently asked. If cache hit, return cached response instantly (saves $$ and time). Cache key = hash(prompt + model + params).</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 4: LLM API Call</h6>
+                            <p><strong>Backend → LLM API:</strong> On cache miss, call OpenAI/Anthropic API with the prompt. This is an HTTP POST with API key in headers. LLM starts processing.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 5: Streaming Response</h6>
+                            <p><strong>LLM → Backend:</strong> LLM streams tokens back (Server-Sent Events). Backend receives "Hello", then " world", then "!". You pipe these to the client in real-time via WebSocket/SSE.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 6: Token Counting & Caching</h6>
+                            <p><strong>Backend Processing:</strong> Count input tokens (prompt) + output tokens (response) for billing. Store complete response in cache for future identical queries.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 7: Client Streaming</h6>
+                            <p><strong>Backend → Client:</strong> Stream tokens to user's browser as they arrive. User sees text appearing word-by-word (better UX than waiting for full response).</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 8: Observability</h6>
+                            <p><strong>Backend Logging:</strong> Log cost ($0.002 for 200 tokens), latency (850ms), model used (gpt-4), user_id, timestamp. Send to Prometheus/Datadog for dashboards.</p>
+                        </div>
+                        <div class="ai-highlight">
+                            <strong>💡 Key Insight:</strong> The LLM itself is just one box in this flow. You (backend engineer) own 7 out of 8 steps: rate limiting, caching, streaming, token counting, logging, error handling, and client communication. The model is a commodity API - your infrastructure is the differentiator.
+                        </div>
+                    </div>
                 </div>
 
                 <h3>What Backend Devs Own</h3>
@@ -431,6 +501,38 @@ flowchart LR
     style D fill:#10b981,color:#fff
                     </pre>
                 </div>
+
+                <button class="collapsible-btn">📊 Understanding Tokenization - Breaking It Down</button>
+                <div class="collapsible-content">
+                    <div class="inner">
+                        <div class="tool-detail">
+                            <h6>Input Text (Blue Box)</h6>
+                            <p><strong>"Hello world!"</strong> - This is the raw string from the user. Could be anything: a question, code, or multi-paragraph document.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Tokenizer (BPE/WordPiece)</h6>
+                            <p><strong>Byte Pair Encoding (BPE):</strong> Breaks text into subword units. "Hello" might be one token, "world" another, "!" a third. Common words = single tokens. Rare words = multiple tokens. GPT-4 has ~100K tokens in vocabulary.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Token IDs</h6>
+                            <p><strong>[15496, 995, 0]:</strong> Each token maps to a unique number. "Hello" = 15496, "world" = 995, "!" = 0 (example). This is how the model sees text - just numbers. You can use tiktoken library to see this mapping.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Embeddings (Green Box)</h6>
+                            <p><strong>High-dimensional vectors:</strong> Each token ID becomes a 768D-4096D vector. These vectors encode semantic meaning learned during training. Similar words have similar vectors (cosine similarity).</p>
+                        </div>
+                        <div class="ai-highlight">
+                            <strong>💰 Why This Matters for Backend:</strong> Token count = cost. A 1000-word essay might be 1300 tokens. At $0.01/1K tokens, that's $0.013 input. If you generate 2000 token response at $0.03/1K, that's $0.06 output. Total: $0.073 per request. Scale to 100K requests/day = $7,300/day. Optimize prompts to reduce tokens!
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Practical Example</h6>
+                            <p><strong>Inefficient:</strong> "Please provide a comprehensive, detailed, and thorough explanation..." (12 tokens)<br>
+                            <strong>Efficient:</strong> "Explain in detail..." (4 tokens)<br>
+                            Same meaning, 66% fewer tokens, 66% lower cost.</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="work-item">
                     <h4>What Happens</h4>
                     <ul>
@@ -670,6 +772,67 @@ flowchart LR
                     </pre>
                 </div>
 
+                <button class="collapsible-btn">📊 Understanding Embeddings Pipeline - Two Phases</button>
+                <div class="collapsible-content">
+                    <div class="inner">
+                        <h5 style="color: #3b82f6; margin-bottom: 10px;">📥 Indexing Phase (Top Row - Offline Process)</h5>
+                        <div class="tool-detail">
+                            <h6>1. Documents</h6>
+                            <p>Your raw content: product descriptions, blog posts, documentation, customer reviews. Stored in database, S3, or filesystem.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>2. Text Chunking</h6>
+                            <p>Split documents into 200-500 token chunks. Why? Embedding models have token limits (512-8192). Smaller chunks = more precise retrieval. Example: 5000-word article → 20 chunks.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>3. Batch Texts</h6>
+                            <p>Group chunks into batches of 50-100 for API efficiency. Single API call for 100 texts vs. 100 separate calls. Reduces latency and cost.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>4. Embedding API (Blue)</h6>
+                            <p>Call OpenAI/Cohere API: <code>POST /embeddings</code> with batch of texts. Returns 768D vectors (OpenAI ada-002) or 1536D (text-embedding-3-large). Cost: ~$0.0001/1K tokens.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>5. Vectors (768D)</h6>
+                            <p>Each chunk → 768-dimensional array: [0.023, -0.15, 0.87, ...]. Semantically similar texts have similar vectors (high cosine similarity ~0.85+).</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>6. Vector DB (Purple)</h6>
+                            <p>Store vectors in Pinecone/Weaviate/pgvector with metadata (source, date, category). Index with HNSW algorithm for fast similarity search.</p>
+                        </div>
+
+                        <h5 style="color: #10b981; margin-top: 20px; margin-bottom: 10px;">🔍 Query Phase (Bottom Row - Real-time)</h5>
+                        <div class="tool-detail">
+                            <h6>7. User Query</h6>
+                            <p>User asks: "How do I reset my password?". This is a search query, not exact keyword match.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>8. Embed Query</h6>
+                            <p>Convert query to vector using same embedding model. Query embedding: [0.12, -0.08, 0.76, ...]. Must use same model as indexing!</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>9. Search Vector DB (Green)</h6>
+                            <p>Find top K (e.g., 10) most similar vectors using cosine similarity. Returns chunks with scores: [("Reset password via settings", 0.92), ("Change login credentials", 0.87), ...]</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>10. Top K Results</h6>
+                            <p>Retrieve associated text chunks and metadata for top results. Filter by metadata if needed (e.g., only docs from last year).</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>11. Re-rank</h6>
+                            <p>Optional: Use cross-encoder model or business logic to reorder results. Boost recent docs, penalize outdated ones. Improves relevance.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>12. Return to User</h6>
+                            <p>Present results to user OR pass to LLM for RAG (feed as context to answer question). Total latency: 50-200ms.</p>
+                        </div>
+
+                        <div class="ai-highlight">
+                            <strong>🔧 Backend Ownership:</strong> You build the entire pipeline: document ingestion cron jobs, chunking logic, batch processing, vector DB schema, search APIs, caching layer, re-ranking algorithms. The embedding API is just one HTTP call - everything else is infrastructure code.
+                        </div>
+                    </div>
+                </div>
+
                 <h3>What You Build</h3>
 
                 <div class="work-item">
@@ -770,6 +933,77 @@ sequenceDiagram
     Backend->>Cache: Store result
     Backend-->>User: Return answer
                     </pre>
+                </div>
+
+                <button class="collapsible-btn">📊 Understanding RAG - The Complete Picture</button>
+                <div class="collapsible-content">
+                    <div class="inner">
+                        <h5 style="color: #8b5cf6; margin-bottom: 10px;">🔧 Indexing Phase (Offline - Runs periodically)</h5>
+                        <div class="tool-detail">
+                            <h6>Step 1: Ingest Documents</h6>
+                            <p><strong>Backend cron job:</strong> Connect to data sources (S3 buckets, databases, web scraping, file uploads). Extract text from PDFs, DOCX, HTML. Handle 10K-1M documents. Store in staging table with metadata (source, date, author).</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 2: Chunk Text (500 tokens)</h6>
+                            <p><strong>Chunking strategy:</strong> Split each document into 500-token chunks with 50-token overlap (preserves context across boundaries). Use LangChain RecursiveTextSplitter or custom logic. 100-page doc → 200 chunks.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 3-4: Batch Embed Chunks</h6>
+                            <p><strong>Backend to Embedding API:</strong> Group chunks into batches of 100. Call OpenAI <code>POST /v1/embeddings</code> with <code>model: "text-embedding-3-small"</code>. Parallel processing with worker pool. 1M chunks = 10K API calls (batched).</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 5: Store Vectors + Metadata</h6>
+                            <p><strong>Upsert to Vector DB:</strong> Store each chunk: <code>{id, vector: [0.12, ...], metadata: {text, source, date}, namespace}</code>. Pinecone/Weaviate auto-indexes with HNSW. Typically runs nightly or on document update webhooks.</p>
+                        </div>
+
+                        <h5 style="color: #10b981; margin-top: 20px; margin-bottom: 10px;">⚡ Query Phase (Real-time - User-facing)</h5>
+                        <div class="tool-detail">
+                            <h6>Step 6: User Asks Question</h6>
+                            <p><strong>Example:</strong> "What is our refund policy for defective products?" → Backend receives this via <code>POST /api/chat</code></p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 7-8: Check Cache</h6>
+                            <p><strong>Redis lookup:</strong> Key = hash(query). If identical question asked recently (last hour), return cached answer instantly. Cache hit rate: 15-30% in production. Saves API costs.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 9-10: Embed Query</h6>
+                            <p><strong>On cache miss:</strong> Convert user's question to vector using same embedding model. "What is our refund policy..." → [0.23, -0.15, 0.76, ...]. Takes ~50ms.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 11-12: Similarity Search</h6>
+                            <p><strong>Vector DB query:</strong> <code>query(vector, top_k=5, filter={namespace: "policies"})</code>. Returns 5 most similar chunks with scores: [(chunk_id, 0.89), ...]. Takes ~30ms with HNSW index.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 13: Assemble Context</h6>
+                            <p><strong>Backend logic:</strong> Format top 5 chunks into prompt context:<br>
+                            <code>"Context:\n1. [Refund policy states...]\n2. [Defective items...]\n\nQuestion: {user_query}\nAnswer:"</code><br>
+                            Ensure total tokens &lt; context window (8K-128K).</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 14-15: LLM Generation</h6>
+                            <p><strong>Call LLM API:</strong> <code>POST /v1/chat/completions</code> with assembled prompt. LLM reads context and generates answer grounded in your data. Streams response back. Takes ~800ms.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 16: Cache Result</h6>
+                            <p><strong>Store in Redis:</strong> <code>SET hash(query) answer EX 3600</code> (1-hour TTL). Next identical query returns instantly from cache.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 17: Return Answer</h6>
+                            <p><strong>Backend to User:</strong> Stream answer with source citations: "According to our policy [Source: Refund_Policy_2024.pdf], defective products...". Total latency: 900ms (cache miss) or 20ms (cache hit).</p>
+                        </div>
+
+                        <div class="ai-highlight">
+                            <strong>💡 RAG Reality Check:</strong> Out of 17 steps, the LLM only handles 1 (generation). Backend engineers own: data ingestion (1), chunking (1), embedding orchestration (2), vector storage (1), caching (3), retrieval (2), context assembly (1), streaming (1), error handling (all steps), monitoring (all steps). RAG is 95% backend infrastructure, 5% LLM API call.
+                        </div>
+
+                        <div class="real-world-example">
+                            <h5>🏢 Production Numbers (Mid-Size SaaS)</h5>
+                            <p><strong>Indexing:</strong> 500K documents, 10M chunks, embedded in 6 hours (nightly job), $50 embedding cost<br>
+                            <strong>Queries:</strong> 100K/day, 25% cache hit rate, 75K vector searches, 75K LLM calls<br>
+                            <strong>Cost:</strong> Embeddings $0.50/day, Vector DB $200/month, LLM $150/day, Total: ~$5K/month<br>
+                            <strong>Team:</strong> 2 backend engineers own this entire system</p>
+                        </div>
+                    </div>
                 </div>
 
                 <h3>Complete Backend Ownership</h3>
@@ -939,6 +1173,98 @@ sequenceDiagram
                     </pre>
                 </div>
 
+                <button class="collapsible-btn">📊 Understanding Function Calling - LLMs Execute Your Code</button>
+                <div class="collapsible-content">
+                    <div class="inner">
+                        <div class="tool-detail">
+                            <h6>Step 1: User Request</h6>
+                            <p><strong>"Book flight to Mumbai"</strong> - Natural language input. User doesn't write SQL or call APIs. Backend needs to interpret intent.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 2: Send Tool Schemas to LLM</h6>
+                            <p><strong>Backend defines functions:</strong> Send JSON schema describing available tools:<br>
+                            <code>{
+  "name": "search_flights",
+  "description": "Search for available flights",
+  "parameters": {
+    "origin": {"type": "string"},
+    "destination": {"type": "string"},
+    "date": {"type": "string", "format": "YYYY-MM-DD"}
+  }
+}</code><br>
+                            LLM sees this as "API documentation" - learns what functions exist and how to call them.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 3: LLM Decides to Call Function</h6>
+                            <p><strong>LLM responds with function call:</strong> Instead of text, LLM returns:<br>
+                            <code>{
+  "function_call": {
+    "name": "search_flights",
+    "arguments": {
+      "origin": "DEL",
+      "destination": "BOM",
+      "date": "2024-03-15"
+    }
+  }
+}</code><br>
+                            LLM inferred "Mumbai" = BOM airport code, assumed "today" if no date given.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 4: Backend Validates Parameters</h6>
+                            <p><strong>Security check:</strong> Validate origin/dest are valid IATA codes, date is future, user has permission to search flights. Reject if invalid. Never trust LLM output blindly!</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 5-7: Execute Function</h6>
+                            <p><strong>Backend calls actual function:</strong> <code>search_flights(origin="DEL", dest="BOM", date="2024-03-15")</code> queries PostgreSQL flights table. Returns JSON: <code>[{id: "AI123", price: 8500, departure: "10:30"}, ...]</code></p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 8: Return Results to LLM</h6>
+                            <p><strong>Feed function output back:</strong> Send flight results to LLM as "function result". LLM now sees available flights and decides next action.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 9: LLM Calls Another Function</h6>
+                            <p><strong>Multi-step reasoning:</strong> LLM analyzes results and decides to call <code>book_flight(flight_id="AI123")</code>. This is a write operation - destructive action!</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 10: Check User Permissions (CRITICAL)</h6>
+                            <p><strong>Authorization:</strong> Verify user has payment method on file, sufficient balance, not exceeding booking limits. Check JWT claims. Log attempt. This is 100% backend security code.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 11-13: Execute Booking</h6>
+                            <p><strong>Database transaction:</strong> <code>INSERT INTO bookings ...</code> Deduct payment, send confirmation email, update inventory. Wrap in transaction (rollback on failure).</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 14-15: Final Response</h6>
+                            <p><strong>LLM formats result:</strong> Given booking success, LLM generates natural language response: "I've booked flight AI123 from Delhi to Mumbai on March 15th for ₹8,500. Confirmation sent to your email."</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Step 16: Return to User</h6>
+                            <p><strong>Backend sends response:</strong> Stream final answer to user. Also include structured data (booking ID, receipt) for frontend to display.</p>
+                        </div>
+
+                        <div class="ai-highlight">
+                            <strong>🔐 Security Reality:</strong> The LLM is a prompt interpreter, NOT a security boundary. YOU must:<br>
+                            - Validate all function parameters (type, format, range)<br>
+                            - Enforce authentication & authorization on every function<br>
+                            - Rate limit function calls per user<br>
+                            - Require confirmation for destructive actions (delete, payment)<br>
+                            - Audit log all function executions with user_id, timestamp<br>
+                            - Implement circuit breakers for cascading failures<br>
+                            The LLM just suggests function calls - you decide whether to execute them.
+                        </div>
+
+                        <div class="real-world-example">
+                            <h5>⚠️ Common Security Mistakes</h5>
+                            <p><strong>❌ Bad:</strong> Execute any function LLM suggests without validation<br>
+                            <strong>✅ Good:</strong> Allowlist of safe functions per user role (customer can search, only admin can refund)<br><br>
+                            <strong>❌ Bad:</strong> Trust LLM parameter extraction (it might hallucinate values)<br>
+                            <strong>✅ Good:</strong> Validate params with JSON schema, regex, database lookup<br><br>
+                            <strong>❌ Bad:</strong> Let LLM call <code>delete_user()</code> directly<br>
+                            <strong>✅ Good:</strong> Require explicit user confirmation for destructive actions</p>
+                        </div>
+                    </div>
+                </div>
+
                 <h3>What You Own (Everything)</h3>
 
                 <div class="work-item">
@@ -1022,6 +1348,91 @@ flowchart TB
     style Tools fill:#10b981,color:#fff
     style Memory fill:#f59e0b,color:#fff
                     </pre>
+                </div>
+
+                <button class="collapsible-btn">📊 Understanding AI Agents - Autonomous Backend Systems</button>
+                <div class="collapsible-content">
+                    <div class="inner">
+                        <div class="tool-detail">
+                            <h6>User Input → Agent Controller (Blue)</h6>
+                            <p><strong>Entry point:</strong> User sends task: "Analyze last month's sales and email report to team". Agent Controller is your orchestration layer - a state machine that manages multi-step workflows. Implemented as a backend service (Python/Node.js).</p>
+                        </div>
+
+                        <h5 style="color: #f59e0b; margin-top: 15px;">🧠 Memory Store (Orange) - Two Types</h5>
+                        <div class="tool-detail">
+                            <h6>Short-term Memory: Redis</h6>
+                            <p><strong>Conversation context:</strong> Store last 10-20 messages in Redis with session_id as key. TTL = 1 hour. Includes user messages, tool calls, results. Used for immediate context within conversation.<br>
+                            <code>redis.set(f"session:{session_id}", json.dumps(messages), ex=3600)</code></p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Long-term Memory: Vector DB</h6>
+                            <p><strong>Semantic memory:</strong> Store facts, preferences, past interactions as embeddings in Pinecone/Weaviate. Retrieve relevant memories based on current query.<br>
+                            Example: User mentioned "I prefer CSV reports" 3 months ago → Agent retrieves this preference when generating report today.</p>
+                        </div>
+
+                        <h5 style="color: #8b5cf6; margin-top: 15px;">🤖 LLM Reasoning (Purple) - Decision Maker</h5>
+                        <div class="tool-detail">
+                            <h6>Decision Diamond</h6>
+                            <p><strong>LLM evaluates options:</strong> Given current state + memories + available tools, LLM decides:<br>
+                            <strong>Option 1:</strong> "I need to use a tool" → Goes to Tool Executor (green)<br>
+                            <strong>Option 2:</strong> "I have enough info to respond" → Generate Response<br>
+                            This is a loop - agent can call multiple tools in sequence.</p>
+                        </div>
+
+                        <h5 style="color: #10b981; margin-top: 15px;">🔧 Tool Executor (Green) - Action Layer</h5>
+                        <div class="tool-detail">
+                            <h6>Database Tools</h6>
+                            <p><strong>SQL query executor:</strong> Agent calls <code>query_sales_data(start_date, end_date)</code> → Backend executes <code>SELECT SUM(revenue) FROM sales WHERE ...</code> Returns structured data to LLM.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>External API Tools</h6>
+                            <p><strong>Integration layer:</strong> Call Stripe API for payments, SendGrid for emails, Slack for notifications. Backend wraps these in tool functions with error handling, retries, authentication.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Code Runner (Advanced)</h6>
+                            <p><strong>Sandboxed execution:</strong> For complex tasks, agent writes Python/JavaScript code, backend executes in isolated Docker container (e.g., using E2B, Modal). Security-critical: proper sandboxing prevents arbitrary code execution.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Tool Result Feedback Loop</h6>
+                            <p><strong>Results go back to LLM:</strong> Agent executed <code>query_sales_data()</code> → Got results: <code>{"revenue": 125000, "orders": 450}</code> → LLM sees this and decides next action (maybe call <code>generate_chart()</code> or <code>send_email()</code>)</p>
+                        </div>
+
+                        <h5 style="color: #ef4444; margin-top: 15px;">🛡️ Safety Rails (Red Border) - Production Requirements</h5>
+                        <div class="tool-detail">
+                            <h6>Rate Limits</h6>
+                            <p><strong>Prevent runaway agents:</strong> Max 50 tool calls per session, max 10 LLM calls per minute. Use Redis counters. If exceeded, pause agent and ask for user confirmation to continue.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Permissions</h6>
+                            <p><strong>RBAC enforcement:</strong> Before executing any tool, check <code>user.role</code>. Regular users can read data, only admins can delete/modify. Check permissions at tool execution time, not just schema definition time.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Audit Log</h6>
+                            <p><strong>Compliance:</strong> Log every tool call: <code>{timestamp, user_id, tool_name, params, result, status}</code>. Store in PostgreSQL or CloudWatch. Required for debugging ("Why did agent send that email?") and compliance.</p>
+                        </div>
+
+                        <div class="ai-highlight">
+                            <strong>🏗️ What You Build as Backend Engineer:</strong><br>
+                            <strong>1. Agent Controller:</strong> State machine orchestrating LLM + tools (Python: LangGraph, JavaScript: LangChain.js)<br>
+                            <strong>2. Memory Systems:</strong> Redis for short-term, Vector DB for long-term, retrieval logic<br>
+                            <strong>3. Tool Registry:</strong> Define 10-50 tool functions, JSON schemas, validators<br>
+                            <strong>4. Tool Implementations:</strong> Write actual functions (DB queries, API calls, file operations)<br>
+                            <strong>5. Safety Infrastructure:</strong> Rate limiters, permission checkers, audit loggers<br>
+                            <strong>6. Error Handling:</strong> Retry logic, fallbacks, graceful degradation<br>
+                            <strong>7. Observability:</strong> Trace agent execution, measure latency per step, cost tracking<br>
+                            The LLM is just the "brain" that decides what to do next - you build the entire body (tools, memory, safety, infrastructure).
+                        </div>
+
+                        <div class="real-world-example">
+                            <h5>📈 Agent Execution Example: "Analyze sales and email report"</h5>
+                            <p><strong>Turn 1:</strong> LLM decides to call <code>query_sales_data("2024-01", "2024-01")</code><br>
+                            <strong>Turn 2:</strong> Got data. LLM decides to call <code>calculate_growth_rate(current, previous)</code><br>
+                            <strong>Turn 3:</strong> LLM decides to call <code>generate_chart(data, type="bar")</code><br>
+                            <strong>Turn 4:</strong> LLM decides to call <code>send_email(to="team@company.com", subject="Sales Report", body=..., attachments=[chart])</code><br>
+                            <strong>Turn 5:</strong> All done. LLM generates response: "Report sent! Revenue grew 12% to $125K across 450 orders."<br><br>
+                            <strong>Backend managed:</strong> 5 tool executions, 5 LLM calls, memory updates, permission checks, audit logs, error handling. Total: ~4 seconds, $0.05 in API costs.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <h3>What You Build</h3>
@@ -1275,6 +1686,124 @@ flowchart TB
                     </pre>
                 </div>
 
+                <button class="collapsible-btn">📊 Understanding Full Production Architecture - All Pieces Together</button>
+                <div class="collapsible-content">
+                    <div class="inner">
+                        <h5 style="color: #3b82f6;">🚪 Entry Layer (Blue/Purple)</h5>
+                        <div class="tool-detail">
+                            <h6>User → API Gateway</h6>
+                            <p><strong>Entry point:</strong> User hits your REST API, GraphQL endpoint, or WebSocket. AWS API Gateway, Kong, or custom Express/FastAPI server. Handles HTTPS, CORS, DDoS protection.</p>
+                        </div>
+                        <div class="tool-detail">
+                            <h6>Auth & Rate Limit (Purple)</h6>
+                            <p><strong>Security layer:</strong> Validate JWT token, check API key, verify user identity. Rate limit: 100 req/min per user (Redis counters). Return 401 if unauthenticated, 429 if rate limited.</p>
+                        </div>
+
+                        <h5 style="color: #10b981; margin-top: 15px;">🎯 Model Router (Green) - Traffic Controller</h5>
+                        <div class="tool-detail">
+                            <h6>Intelligent Routing Logic</h6>
+                            <p><strong>Decision logic:</strong> Based on request type, route to:<br>
+                            - <strong>Simple queries:</strong> GPT-3.5-turbo (fast, cheap)<br>
+                            - <strong>Complex reasoning:</strong> GPT-4 or Claude Opus<br>
+                            - <strong>Code generation:</strong> GPT-4 or Llama 70B<br>
+                            - <strong>Fallback:</strong> If OpenAI down, route to Anthropic<br>
+                            Implemented as backend service with routing rules.</p>
+                        </div>
+
+                        <h5 style="color: #3b82f6; margin-top: 15px;">🤖 LLM API Layer</h5>
+                        <div class="tool-detail">
+                            <h6>Multi-Provider Strategy</h6>
+                            <p><strong>LLM1: GPT-4</strong> - High quality, $0.03/1K output tokens, 128K context<br>
+                            <strong>LLM2: Claude</strong> - Long context (200K), better safety, $0.015/1K<br>
+                            <strong>LLM3: Llama (self-hosted)</strong> - Fixed cost, full control, requires GPU infra<br>
+                            Router maintains health checks, circuit breakers, automatic failover.</p>
+                        </div>
+
+                        <h5 style="color: #f59e0b; margin-top: 15px;">📚 RAG Pipeline (Orange) - Knowledge Layer</h5>
+                        <div class="tool-detail">
+                            <h6>RAG Components</h6>
+                            <p><strong>Embedding API:</strong> Convert queries/docs to vectors<br>
+                            <strong>Vector DB:</strong> Pinecone/Weaviate storing 10M+ vectors<br>
+                            <strong>Redis Cache:</strong> Cache embedded queries (1hr TTL), API responses (5min TTL)<br>
+                            When user asks about your data, Router sends request through RAG pipeline first.</p>
+                        </div>
+
+                        <h5 style="color: #ef4444; margin-top: 15px;">🔧 Function Calling (Red) - Action Layer</h5>
+                        <div class="tool-detail">
+                            <h6>Tool Execution Infrastructure</h6>
+                            <p><strong>PostgreSQL:</strong> Query/modify your app database (orders, users, products)<br>
+                            <strong>External APIs:</strong> Stripe, SendGrid, Slack, Google Maps<br>
+                            <strong>AWS Lambda:</strong> Serverless functions for heavy computation<br>
+                            Router uses this when user request needs actions (book, send, create, delete).</p>
+                        </div>
+
+                        <h5 style="color: #06b6d4; margin-top: 15px;">🤖 AI Agent (Cyan) - Autonomous Layer</h5>
+                        <div class="tool-detail">
+                            <h6>Agent System</h6>
+                            <p><strong>Memory Store:</strong> Redis + Vector DB for conversation state<br>
+                            <strong>State Machine:</strong> Track multi-step workflows (task planning, execution, verification)<br>
+                            <strong>Orchestrator:</strong> Manages agent lifecycle, schedules background tasks<br>
+                            Router delegates complex, multi-step tasks to Agent system.</p>
+                        </div>
+
+                        <h5 style="color: #8b5cf6; margin-top: 15px;">🛡️ Guardrails - Safety & Compliance</h5>
+                        <div class="tool-detail">
+                            <h6>Protection Layers</h6>
+                            <p><strong>Input Validation:</strong> Block prompt injection attempts, malicious payloads, oversized inputs<br>
+                            <strong>Output Filtering:</strong> Scan for toxic content, profanity, sensitive data leaks<br>
+                            <strong>PII Redaction:</strong> Detect & mask email, phone, SSN, credit cards before logging<br>
+                            Every request flows through guardrails before reaching LLM.</p>
+                        </div>
+
+                        <h5 style="color: #10b981; margin-top: 15px;">📊 Observability - Production Monitoring</h5>
+                        <div class="tool-detail">
+                            <h6>Metrics Collection</h6>
+                            <p><strong>Prometheus:</strong> Metrics (request rate, latency p50/p95/p99, error rate, token count)<br>
+                            <strong>CloudWatch Logs:</strong> Full request/response logs, error traces, audit trail<br>
+                            <strong>Cost Tracking:</strong> Per-user, per-feature cost breakdown (LLM calls, embeddings, vector searches)<br>
+                            All components send metrics → Observability layer → Grafana dashboards.</p>
+                        </div>
+
+                        <div class="ai-highlight">
+                            <strong>🏗️ Backend Engineering Breakdown by Component:</strong><br>
+                            <strong>YOU Own:</strong> API Gateway, Auth, Rate Limiting, Router (100% yours)<br>
+                            <strong>YOU Integrate:</strong> LLM APIs (10% yours - just HTTP calls)<br>
+                            <strong>YOU Build:</strong> RAG Pipeline (95% yours - only embedding call is external)<br>
+                            <strong>YOU Build:</strong> Function Calling (100% yours - LLM just suggests, you execute)<br>
+                            <strong>YOU Build:</strong> AI Agents (95% yours - orchestration, memory, tools all yours)<br>
+                            <strong>YOU Build:</strong> Guardrails (100% yours - validation, filtering, security)<br>
+                            <strong>YOU Build:</strong> Observability (100% yours - instrumentation, logging, dashboards)<br><br>
+                            <strong>Total:</strong> LLMs are ~5% of the system (3 boxes out of 60+ components). Everything else is backend engineering: APIs, databases, caching, queues, orchestration, security, monitoring.
+                        </div>
+
+                        <div class="real-world-example">
+                            <h5>💰 Production Cost Breakdown (100K users, 1M requests/day)</h5>
+                            <p><strong>Infrastructure:</strong> AWS/GCP compute, databases, Redis - $3K/month<br>
+                            <strong>Vector DB:</strong> Pinecone/Weaviate - $500/month<br>
+                            <strong>LLM API calls:</strong> OpenAI/Anthropic - $8K/month (varies with usage)<br>
+                            <strong>Embeddings:</strong> OpenAI embeddings API - $200/month<br>
+                            <strong>Monitoring:</strong> Datadog/New Relic - $500/month<br>
+                            <strong>Total:</strong> ~$12K/month, $144K/year<br><br>
+                            <strong>Team:</strong> 3-4 backend engineers manage this entire system. Senior backend engineers with AI/ML awareness are building the next generation of software.</p>
+                        </div>
+
+                        <div class="real-world-example">
+                            <h5>🎯 Request Flow Example: "Show me sales for last month and email to CEO"</h5>
+                            <p><strong>1.</strong> User → API Gateway → Auth (validate JWT) → Rate Limit (check quota)<br>
+                            <strong>2.</strong> Router analyzes: "Complex task needs Agent"<br>
+                            <strong>3.</strong> Agent receives task → Checks Memory (any preferences?)<br>
+                            <strong>4.</strong> Agent → LLM: "What steps needed?" → LLM: "Query DB, generate chart, send email"<br>
+                            <strong>5.</strong> Agent calls Tool: <code>query_sales(last_month)</code> → PostgreSQL → Returns data<br>
+                            <strong>6.</strong> Agent calls Tool: <code>generate_chart(data)</code> → Lambda generates PNG<br>
+                            <strong>7.</strong> Guardrails scan email content (no PII leaks?)<br>
+                            <strong>8.</strong> Agent calls Tool: <code>send_email(to="ceo@...", attachments=[chart])</code><br>
+                            <strong>9.</strong> Metrics logged: 3 tools, 2 LLM calls, 850ms latency, $0.04 cost<br>
+                            <strong>10.</strong> Response to User: "Sales report sent! Revenue: $125K (+12% vs last month)"<br><br>
+                            <strong>Components used:</strong> 8 different systems, 15+ services, all orchestrated by your backend code.</p>
+                        </div>
+                    </div>
+                </div>
+
                 <h3>Component Summary</h3>
                 <div class="ai-grid">
                     <div class="ai-card">
@@ -1336,7 +1865,10 @@ flowchart TB
 
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <script>
-    // Initialize Mermaid
+    // Initialize Mermaid with responsive sizing
+    const isMobile = window.innerWidth < 768;
+    const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+
     mermaid.initialize({
         startOnLoad: true,
         theme: 'base',
@@ -1348,11 +1880,21 @@ flowchart TB
             secondaryColor: '#8b5cf6',
             tertiaryColor: '#10b981',
             fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
-            fontSize: '14px'
+            fontSize: isMobile ? '12px' : isTablet ? '15px' : '16px'
+        },
+        flowchart: {
+            useMaxWidth: true,
+            htmlLabels: true,
+            curve: 'basis'
+        },
+        sequence: {
+            useMaxWidth: true,
+            wrap: true,
+            width: isMobile ? 300 : isTablet ? 500 : 800
         }
     });
 
-    // Tab switching
+    // Tab switching with Mermaid re-initialization
     document.querySelectorAll('.ai-tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const tabId = btn.getAttribute('data-tab');
@@ -1361,7 +1903,21 @@ flowchart TB
             document.querySelectorAll('.ai-tab-content').forEach(c => c.classList.remove('active'));
 
             btn.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
+            const activeTab = document.getElementById(tabId);
+            activeTab.classList.add('active');
+
+            // Re-render Mermaid diagrams in the newly active tab
+            setTimeout(() => {
+                const mermaidDiagrams = activeTab.querySelectorAll('.mermaid');
+                mermaidDiagrams.forEach((diagram, index) => {
+                    // Only re-render if diagram hasn't been rendered yet
+                    if (!diagram.getAttribute('data-processed')) {
+                        mermaid.run({
+                            nodes: [diagram]
+                        });
+                    }
+                });
+            }, 100);
         });
     });
 
