@@ -5667,24 +5667,12 @@
                 occurrencesHighlight: 'singleFile',
                 selectionHighlight: true,
 
-                // Suggestions / IntelliSense
-                suggestOnTriggerCharacters: true,
-                quickSuggestions: { other: true, comments: false, strings: false },
-                acceptSuggestionOnCommitCharacter: true,
+                // Disable Monaco's built-in suggest widget (we use our own)
+                suggestOnTriggerCharacters: false,
+                quickSuggestions: false,
                 wordBasedSuggestions: 'off',
-                parameterHints: { enabled: true },
-                suggest: {
-                    showKeywords: true,
-                    showSnippets: true,
-                    showFunctions: true,
-                    showVariables: true,
-                    showClasses: true,
-                    showModules: true,
-                    insertMode: 'insert',
-                    filterGraceful: true,
-                    snippetsPreventQuickSuggestions: false,
-                    preview: true
-                },
+                parameterHints: { enabled: false },
+                suggest: { preview: false },
 
                 // Editor chrome
                 padding: { top: 8, bottom: 8 },
@@ -5710,66 +5698,299 @@
                 automaticLayout: true
             });
 
-            // Fix suggest widget text visibility
-            // Uses setInterval to continuously enforce colors on all widget elements
-            (function fixSuggestWidgetColors() {
-                if (window._suggestFixActive) return;
-                window._suggestFixActive = true;
-
-                // Re-append style AFTER Monaco's styles to win specificity
-                function ensureStyles() {
-                    var old = document.getElementById('monaco-suggest-fix');
-                    if (old) old.remove();
-                    var s = document.createElement('style');
-                    s.id = 'monaco-suggest-fix';
-                    s.textContent =
-                        // Use extremely specific selectors and !important
-                        'html body div.suggest-widget,' +
-                        'html body div.editor-widget.suggest-widget { background: #fff !important; color: #1e1e1e !important; border: 1px solid #bbb !important; }\n' +
-                        'html body div.suggest-widget div.monaco-list-row,' +
-                        'html body div.suggest-widget div.monaco-list-row span,' +
-                        'html body div.suggest-widget div.monaco-list-row a,' +
-                        'html body div.suggest-widget div.monaco-list-row div { color: #1e1e1e !important; }\n' +
-                        'html body div.suggest-widget div.monaco-list-row span.highlight { color: #0066bf !important; font-weight: bold !important; }\n' +
-                        'html body div.suggest-widget div.monaco-list-row.focused { background: #cce5ff !important; }\n' +
-                        'html body div.parameter-hints-widget { background: #fff !important; color: #1e1e1e !important; border: 1px solid #bbb !important; }\n' +
-                        'html body div.parameter-hints-widget span,' +
-                        'html body div.parameter-hints-widget div { color: #1e1e1e !important; }\n' +
-                        'html body div.monaco-hover { background: #fff !important; color: #1e1e1e !important; border: 1px solid #bbb !important; }\n' +
-                        'html body div.monaco-hover span,' +
-                        'html body div.monaco-hover div { color: #1e1e1e !important; }\n';
-                    document.head.appendChild(s);
+            // ===== Custom Autocomplete Widget =====
+            // Replaces Monaco's broken suggest widget with a fully custom one
+            (function setupCustomAutocomplete() {
+                // Inject CSS for autocomplete and param highlighting
+                var styleId = 'custom-autocomplete-css';
+                if (!document.getElementById(styleId)) {
+                    var style = document.createElement('style');
+                    style.id = styleId;
+                    style.textContent = [
+                        '#custom-autocomplete { position: fixed; z-index: 100000; background: #fff; border: 1px solid #c8c8c8; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); max-height: 220px; min-width: 200px; max-width: 400px; overflow-y: auto; font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 13px; display: none; }',
+                        '#custom-autocomplete .ac-item { padding: 4px 10px; cursor: pointer; display: flex; align-items: center; gap: 8px; color: #1e1e1e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }',
+                        '#custom-autocomplete .ac-item:hover { background: #e8e8e8; }',
+                        '#custom-autocomplete .ac-item.ac-selected { background: #cce5ff; }',
+                        '#custom-autocomplete .ac-icon { width: 18px; height: 18px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }',
+                        '#custom-autocomplete .ac-icon-var { background: #e3f2fd; color: #1565c0; }',
+                        '#custom-autocomplete .ac-icon-kw { background: #fce4ec; color: #c62828; }',
+                        '#custom-autocomplete .ac-icon-fn { background: #e8f5e9; color: #2e7d32; }',
+                        '#custom-autocomplete .ac-icon-snip { background: #fff3e0; color: #e65100; }',
+                        '#custom-autocomplete .ac-icon-method { background: #f3e5f5; color: #6a1b9a; }',
+                        '#custom-autocomplete .ac-label { color: #1e1e1e; flex: 1; overflow: hidden; text-overflow: ellipsis; }',
+                        '#custom-autocomplete .ac-label .ac-match { color: #0066bf; font-weight: 700; }',
+                        '#custom-autocomplete .ac-detail { color: #888; font-size: 11px; margin-left: auto; padding-left: 12px; }',
+                        '.param-highlight { color: #795548 !important; font-style: italic; }'
+                    ].join('\n');
+                    document.head.appendChild(style);
                 }
-                ensureStyles();
 
-                // Poll every 150ms to force inline styles on visible suggest widget
-                setInterval(function() {
-                    // Find ALL suggest widgets on the page (could be in editor or body)
-                    var widgets = document.querySelectorAll('.suggest-widget, .editor-widget.suggest-widget');
-                    for (var w = 0; w < widgets.length; w++) {
-                        var widget = widgets[w];
-                        // Check if widget is visible (display !== none)
-                        if (widget.style.display === 'none' || widget.offsetHeight === 0) continue;
+                // Create autocomplete container
+                var acEl = document.getElementById('custom-autocomplete');
+                if (!acEl) {
+                    acEl = document.createElement('div');
+                    acEl.id = 'custom-autocomplete';
+                    document.body.appendChild(acEl);
+                }
 
-                        widget.style.setProperty('background', '#ffffff', 'important');
-                        widget.style.setProperty('color', '#1e1e1e', 'important');
+                var acVisible = false;
+                var acItems = [];
+                var acSelectedIdx = 0;
+                var acPrefix = '';
 
-                        // Force color on every element inside
-                        var allEls = widget.querySelectorAll('*');
-                        for (var i = 0; i < allEls.length; i++) {
-                            var el = allEls[i];
-                            var cn = el.className || '';
-                            if (typeof cn === 'string' && cn.indexOf('highlight') >= 0) {
-                                el.style.setProperty('color', '#0066bf', 'important');
-                            } else {
-                                el.style.setProperty('color', '#1e1e1e', 'important');
+                function getLanguageKeywords() {
+                    var lang = editor.getModel().getLanguageId();
+                    if (lang === 'python') {
+                        return {
+                            keywords: ['and','as','assert','async','await','break','class','continue','def','del','elif','else','except','finally','for','from','global','if','import','in','is','lambda','nonlocal','not','or','pass','raise','return','try','while','with','yield','True','False','None'],
+                            builtins: ['print','len','range','list','dict','set','tuple','str','int','float','bool','max','min','sum','abs','sorted','reversed','enumerate','zip','map','filter','any','all','isinstance','type','input','open','hash','id','ord','chr','append','extend','pop','remove','insert','index','count','sort','reverse','copy','clear','keys','values','items','get','update','add','discard','defaultdict','Counter','deque','heapq','heappush','heappop','heapify','bisect_left','bisect_right','collections','itertools','functools','math'],
+                            methods: ['append','extend','insert','remove','pop','clear','index','count','sort','reverse','copy','keys','values','items','get','update','setdefault','add','discard','union','intersection','difference','split','join','strip','lstrip','rstrip','replace','find','startswith','endswith','upper','lower','format']
+                        };
+                    }
+                    return {
+                        keywords: ['break','case','chan','const','continue','default','defer','else','fallthrough','for','func','go','goto','if','import','interface','map','package','range','return','select','struct','switch','type','var','true','false','nil','int','int8','int16','int32','int64','uint','uint8','float32','float64','string','bool','byte','rune','error'],
+                        builtins: ['fmt.Println','fmt.Printf','fmt.Sprintf','sort.Ints','sort.Strings','sort.Slice','math.Max','math.Min','strings.Contains','strings.Split','strconv.Itoa','strconv.Atoi','append','copy','delete','len','cap','close','make','new','panic','recover'],
+                        methods: ['append','copy','delete','len','cap','close','make','new']
+                    };
+                }
+
+                function extractLocals() {
+                    var model = editor.getModel();
+                    var text = model.getValue();
+                    var lines = text.split('\n');
+                    var locals = [];
+                    var seen = new Set();
+                    var lang = model.getLanguageId();
+                    var kwSet = new Set(getLanguageKeywords().keywords);
+
+                    for (var i = 0; i < lines.length; i++) {
+                        var line = lines[i];
+                        if (lang === 'python') {
+                            // Function params
+                            var defM = line.match(/^\s*def\s+\w+\s*\(([^)]*)\)/);
+                            if (defM) {
+                                defM[1].split(',').forEach(function(p) {
+                                    var n = p.trim().replace(/\s*[:=].*$/, '').replace(/^\*+/, '');
+                                    if (n && n !== 'self' && n !== 'cls' && !seen.has(n) && !kwSet.has(n)) { seen.add(n); locals.push(n); }
+                                });
+                            }
+                            // Assignments
+                            var aM = line.match(/^\s*(\w+)\s*=[^=]/);
+                            if (aM && !kwSet.has(aM[1]) && !seen.has(aM[1])) { seen.add(aM[1]); locals.push(aM[1]); }
+                            // For loop vars
+                            var fM = line.match(/^\s*for\s+(\w+)(?:\s*,\s*(\w+))?\s+in\s/);
+                            if (fM) {
+                                if (fM[1] && fM[1] !== '_' && !seen.has(fM[1])) { seen.add(fM[1]); locals.push(fM[1]); }
+                                if (fM[2] && fM[2] !== '_' && !seen.has(fM[2])) { seen.add(fM[2]); locals.push(fM[2]); }
+                            }
+                        } else {
+                            // Go func params
+                            var funcM = line.match(/^\s*func\s+\w*\s*\(([^)]*)\)/);
+                            if (funcM) {
+                                funcM[1].split(',').forEach(function(p) {
+                                    var n = p.trim().split(/\s+/)[0];
+                                    if (n && !kwSet.has(n) && !seen.has(n)) { seen.add(n); locals.push(n); }
+                                });
+                            }
+                            // Short decl
+                            var sM = line.match(/^\s*(\w+)(?:\s*,\s*(\w+))?\s*:=/);
+                            if (sM) {
+                                if (sM[1] && sM[1] !== '_' && !seen.has(sM[1])) { seen.add(sM[1]); locals.push(sM[1]); }
+                                if (sM[2] && sM[2] !== '_' && !seen.has(sM[2])) { seen.add(sM[2]); locals.push(sM[2]); }
                             }
                         }
                     }
-                }, 150);
+                    return locals;
+                }
+
+                function buildSuggestions(prefix) {
+                    if (!prefix || prefix.length < 1) return [];
+                    var lp = prefix.toLowerCase();
+                    var lang = getLanguageKeywords();
+                    var locals = extractLocals();
+                    var results = [];
+
+                    // Check if after dot
+                    var pos = editor.getPosition();
+                    var lineContent = editor.getModel().getLineContent(pos.lineNumber);
+                    var textBefore = lineContent.substring(0, pos.column - 1);
+                    var isDot = textBefore.match(/\w+\.\w*$/);
+
+                    if (isDot) {
+                        lang.methods.forEach(function(m) {
+                            if (m.toLowerCase().indexOf(lp) === 0) {
+                                results.push({ label: m, kind: 'method', detail: '' });
+                            }
+                        });
+                        return results;
+                    }
+
+                    // Locals first
+                    locals.forEach(function(v) {
+                        if (v.toLowerCase().indexOf(lp) === 0) {
+                            results.push({ label: v, kind: 'var', detail: 'local' });
+                        }
+                    });
+                    // Keywords
+                    lang.keywords.forEach(function(k) {
+                        if (k.toLowerCase().indexOf(lp) === 0) {
+                            results.push({ label: k, kind: 'kw', detail: '' });
+                        }
+                    });
+                    // Builtins (skip if already in locals)
+                    var localSet = new Set(locals);
+                    lang.builtins.forEach(function(b) {
+                        if (!localSet.has(b) && b.toLowerCase().indexOf(lp) === 0) {
+                            results.push({ label: b, kind: 'fn', detail: '' });
+                        }
+                    });
+                    return results;
+                }
+
+                function highlightMatch(text, prefix) {
+                    if (!prefix) return text;
+                    var idx = text.toLowerCase().indexOf(prefix.toLowerCase());
+                    if (idx < 0) return text;
+                    return text.substring(0, idx) +
+                        '<span class="ac-match">' + text.substring(idx, idx + prefix.length) + '</span>' +
+                        text.substring(idx + prefix.length);
+                }
+
+                function iconClass(kind) {
+                    switch (kind) {
+                        case 'var': return 'ac-icon ac-icon-var';
+                        case 'kw': return 'ac-icon ac-icon-kw';
+                        case 'fn': return 'ac-icon ac-icon-fn';
+                        case 'snip': return 'ac-icon ac-icon-snip';
+                        case 'method': return 'ac-icon ac-icon-method';
+                        default: return 'ac-icon';
+                    }
+                }
+                function iconLetter(kind) {
+                    switch (kind) {
+                        case 'var': return 'V';
+                        case 'kw': return 'K';
+                        case 'fn': return 'F';
+                        case 'snip': return 'S';
+                        case 'method': return 'M';
+                        default: return '?';
+                    }
+                }
+
+                function showAutocomplete() {
+                    var pos = editor.getPosition();
+                    var word = editor.getModel().getWordUntilPosition(pos);
+                    acPrefix = word.word;
+
+                    if (!acPrefix || acPrefix.length < 1) { hideAutocomplete(); return; }
+
+                    acItems = buildSuggestions(acPrefix);
+                    if (acItems.length === 0) { hideAutocomplete(); return; }
+
+                    acSelectedIdx = 0;
+                    renderAutocomplete();
+
+                    // Position the widget near the cursor
+                    var coords = editor.getScrolledVisiblePosition(pos);
+                    var editorDom = editor.getDomNode();
+                    var editorRect = editorDom.getBoundingClientRect();
+                    var left = editorRect.left + coords.left;
+                    var top = editorRect.top + coords.top + coords.height;
+
+                    // Ensure it doesn't go off screen
+                    if (top + 220 > window.innerHeight) top = editorRect.top + coords.top - 220;
+                    if (left + 300 > window.innerWidth) left = window.innerWidth - 310;
+
+                    acEl.style.left = left + 'px';
+                    acEl.style.top = top + 'px';
+                    acEl.style.display = 'block';
+                    acVisible = true;
+                }
+
+                function renderAutocomplete() {
+                    var html = '';
+                    var max = Math.min(acItems.length, 12);
+                    for (var i = 0; i < max; i++) {
+                        var item = acItems[i];
+                        html += '<div class="ac-item' + (i === acSelectedIdx ? ' ac-selected' : '') + '" data-idx="' + i + '">';
+                        html += '<span class="' + iconClass(item.kind) + '">' + iconLetter(item.kind) + '</span>';
+                        html += '<span class="ac-label">' + highlightMatch(item.label, acPrefix) + '</span>';
+                        if (item.detail) html += '<span class="ac-detail">' + item.detail + '</span>';
+                        html += '</div>';
+                    }
+                    acEl.innerHTML = html;
+
+                    // Scroll selected into view
+                    var selected = acEl.querySelector('.ac-selected');
+                    if (selected) selected.scrollIntoView({ block: 'nearest' });
+                }
+
+                function hideAutocomplete() {
+                    acEl.style.display = 'none';
+                    acVisible = false;
+                    acItems = [];
+                }
+
+                function acceptSuggestion(idx) {
+                    if (idx < 0 || idx >= acItems.length) return;
+                    var item = acItems[idx];
+                    var pos = editor.getPosition();
+                    var word = editor.getModel().getWordUntilPosition(pos);
+                    var range = new monaco.Range(pos.lineNumber, word.startColumn, pos.lineNumber, pos.column);
+                    editor.executeEdits('autocomplete', [{
+                        range: range,
+                        text: item.label
+                    }]);
+                    editor.setPosition({ lineNumber: pos.lineNumber, column: word.startColumn + item.label.length });
+                    hideAutocomplete();
+                    editor.focus();
+                }
+
+                // Mouse click on suggestion
+                acEl.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    var item = e.target.closest('.ac-item');
+                    if (item) acceptSuggestion(parseInt(item.dataset.idx));
+                });
+
+                // Keyboard handling
+                editor.onKeyDown(function(e) {
+                    if (!acVisible) return;
+
+                    if (e.keyCode === monaco.KeyCode.DownArrow) {
+                        e.preventDefault(); e.stopPropagation();
+                        acSelectedIdx = Math.min(acSelectedIdx + 1, Math.min(acItems.length, 12) - 1);
+                        renderAutocomplete();
+                    } else if (e.keyCode === monaco.KeyCode.UpArrow) {
+                        e.preventDefault(); e.stopPropagation();
+                        acSelectedIdx = Math.max(acSelectedIdx - 1, 0);
+                        renderAutocomplete();
+                    } else if (e.keyCode === monaco.KeyCode.Enter || e.keyCode === monaco.KeyCode.Tab) {
+                        e.preventDefault(); e.stopPropagation();
+                        acceptSuggestion(acSelectedIdx);
+                    } else if (e.keyCode === monaco.KeyCode.Escape) {
+                        e.preventDefault(); e.stopPropagation();
+                        hideAutocomplete();
+                    }
+                });
+
+                // Trigger on content change (debounced)
+                var acTimer = null;
+                editor.onDidChangeModelContent(function() {
+                    clearTimeout(acTimer);
+                    acTimer = setTimeout(showAutocomplete, 80);
+                });
+
+                // Hide on cursor move (click elsewhere), blur, scroll
+                editor.onDidChangeCursorSelection(function(e) {
+                    if (e.reason === 0) return; // Ignore content changes
+                    if (e.reason === 3) { hideAutocomplete(); } // Explicit cursor move
+                });
+                editor.onDidBlurEditorText(function() { setTimeout(hideAutocomplete, 150); });
+                editor.onDidScrollChange(function() { if (acVisible) showAutocomplete(); });
             })();
 
-            // Highlight function parameters in the editor with a distinct color
+            // ===== Parameter Highlighting =====
             (function setupParamHighlighting() {
                 function highlightParams() {
                     if (!editor || !editor.getModel()) return;
@@ -5789,56 +6010,36 @@
                         }
                         if (!defMatch || !defMatch[1]) continue;
 
-                        var paramsStr = defMatch[1];
-                        var paramStart = line.indexOf('(') + 1;
-                        var params = paramsStr.split(',');
-                        var offset = paramStart;
+                        var params = defMatch[1].split(',');
+                        var searchFrom = line.indexOf('(') + 1;
                         params.forEach(function(p) {
-                            var trimmed = p.trimStart();
-                            var leadingSpaces = p.length - p.trimStart().length;
                             var name;
                             if (lang === 'python') {
-                                name = trimmed.replace(/\s*[:=].*$/, '').replace(/^\*+/, '').trim();
+                                name = p.trim().replace(/\s*[:=].*$/, '').replace(/^\*+/, '').trim();
                             } else {
-                                name = trimmed.split(/\s+/)[0];
+                                name = p.trim().split(/\s+/)[0];
                             }
                             if (name && name !== 'self' && name !== 'cls') {
-                                var nameIdx = line.indexOf(name, offset);
-                                if (nameIdx >= 0) {
+                                var idx = line.indexOf(name, searchFrom);
+                                if (idx >= 0) {
                                     decorations.push({
-                                        range: new monaco.Range(i + 1, nameIdx + 1, i + 1, nameIdx + name.length + 1),
-                                        options: {
-                                            inlineClassName: 'param-highlight'
-                                        }
+                                        range: new monaco.Range(i + 1, idx + 1, i + 1, idx + name.length + 1),
+                                        options: { inlineClassName: 'param-highlight' }
                                     });
+                                    searchFrom = idx + name.length;
                                 }
                             }
-                            offset += p.length + 1; // +1 for comma
                         });
                     }
-                    editor._paramDecorations = editor.deltaDecorations(
-                        editor._paramDecorations || [], decorations
-                    );
+                    editor._paramDecos = editor.deltaDecorations(editor._paramDecos || [], decorations);
                 }
 
-                // Add CSS for parameter highlighting
-                var paramStyle = document.getElementById('param-highlight-style');
-                if (!paramStyle) {
-                    paramStyle = document.createElement('style');
-                    paramStyle.id = 'param-highlight-style';
-                    paramStyle.textContent = '.param-highlight { color: #795548 !important; font-style: italic; }';
-                    document.head.appendChild(paramStyle);
-                }
-
-                // Highlight on load and on content change
                 highlightParams();
                 editor.onDidChangeModelContent(function() {
-                    clearTimeout(window._paramHighlightTimer);
-                    window._paramHighlightTimer = setTimeout(highlightParams, 300);
+                    clearTimeout(window._phTimer);
+                    window._phTimer = setTimeout(highlightParams, 300);
                 });
-                editor.onDidChangeModel(function() {
-                    setTimeout(highlightParams, 100);
-                });
+                editor.onDidChangeModel(function() { setTimeout(highlightParams, 100); });
             })();
 
             // Track code changes
