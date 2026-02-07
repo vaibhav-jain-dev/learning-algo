@@ -538,75 +538,8 @@
         var markers = [];
         var lines = code.split('\n');
 
-        // ---- Package declaration ----
-        var hasPackage = false;
-        var firstNonEmpty = -1;
-
-        // First pass: find package and collect imports
-        var importedPackages = {}; // name -> lineNum
-        var inImportBlock = false;
-        var importBlockParen = false;
-
-        for (var p = 0; p < lines.length; p++) {
-            var lt = lines[p].trim();
-            if (lt === '' || lt.indexOf('//') === 0) continue;
-            if (firstNonEmpty === -1) firstNonEmpty = p + 1;
-
-            if (/^package\s+\w+/.test(lt)) {
-                hasPackage = true;
-            }
-
-            // Collect imports
-            if (/^import\s*\(/.test(lt)) {
-                inImportBlock = true;
-                importBlockParen = true;
-                continue;
-            }
-            if (inImportBlock) {
-                if (lt === ')') {
-                    inImportBlock = false;
-                    continue;
-                }
-                // Extract package name from import line like: "fmt" or alias "fmt"
-                var impMatch = lt.match(/^\s*(?:(\w+)\s+)?"([^"]+)"\s*$/);
-                if (impMatch) {
-                    var alias = impMatch[1];
-                    var path = impMatch[2];
-                    var pkgName = alias || path.split('/').pop();
-                    importedPackages[pkgName] = p + 1;
-                }
-                continue;
-            }
-            // Single-line import
-            var singleImp = lt.match(/^import\s+"([^"]+)"/);
-            if (singleImp) {
-                var sp = singleImp[1].split('/').pop();
-                importedPackages[sp] = p + 1;
-            }
-        }
-
-        // Note: we don't check for 'package' declaration because the backend
-        // wraps user code with 'package main' and imports before execution.
-        // Similarly, we skip unused-import checks since the backend manages imports.
-
-        // ---- Unused imports (basic): check if the package name appears in non-import lines ----
-        var codeWithoutImports = [];
-        var pastImports = false;
-        var insideImportBlock = false;
-        for (var ci = 0; ci < lines.length; ci++) {
-            var clt = lines[ci].trim();
-            if (/^import\s*\(/.test(clt)) { insideImportBlock = true; continue; }
-            if (insideImportBlock) {
-                if (clt === ')') insideImportBlock = false;
-                continue;
-            }
-            if (/^import\s+"/.test(clt)) continue;
-            if (/^package\s+/.test(clt)) continue;
-            codeWithoutImports.push(lines[ci]);
-        }
-        var codeBody = codeWithoutImports.join('\n');
-
-        // Unused import check skipped - backend manages imports for user code
+        // Note: package declaration and import checks are skipped because the
+        // backend wraps user code with 'package main' and auto-imports before execution.
 
         // ---- Per-line checks ----
         var braceStack = []; // [{char, line, col}]
@@ -780,11 +713,7 @@
                 }
             }
 
-            // ---- fmt.Println without fmt import ----
-            if (/\bfmt\.\w+/.test(cleaned) && !importedPackages['fmt']) {
-                markers.push(wordMarker(lineNum, raw, 'fmt',
-                    "Package 'fmt' is used but not imported", 'Error'));
-            }
+            // Note: fmt import check skipped - backend auto-imports fmt for user code
         }
 
         // ---- Remaining unmatched opening braces ----
